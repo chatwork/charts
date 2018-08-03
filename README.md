@@ -1,0 +1,5 @@
+# Helm Charts from ChatWork
+
+# Submitting Issues and Pull Requests
+
+Please submit any issues or feature requests against https://github.com/chatwork/charts/issues. We accept PRs against that repo as well.
