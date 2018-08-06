@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "example.fullname" . }}-test
+  labels:
+    app: {{ template "example.name" . }}
+    chart: {{ template "example.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    role: test
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: {{ .Chart.Name }}-test
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
+      command:
+        - /bin/sh
+        - -c
+        - echo 1
+  restartPolicy: Never
