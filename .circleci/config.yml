@@ -1,0 +1,61 @@
+version: 2
+jobs:
+  test:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Install kubernetes
+          command: |
+            wget https://cdn.rawgit.com/kubernetes-sigs/kubeadm-dind-cluster/master/fixed/dind-cluster-v1.8.sh
+            chmod +x dind-cluster-v1.8.sh
+            ./dind-cluster-v1.8.sh up
+            echo 'export PATH=$HOME/.kubeadm-dind-cluster:$PATH' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Install helm
+          command: |
+            curl https://storage.googleapis.com/kubernetes-helm/helm-v2.10.0-rc.3-linux-amd64.tar.gz | tar zx -C $HOME
+            echo 'export PATH=$HOME/linux-amd64:$PATH' >> $BASH_ENV
+            source $BASH_ENV
+      - run: helm --kube-context dind --tiller-namespace kube-system init --wait
+      - run: helm --kube-context dind --tiller-namespace kube-system install --name example --namespace kube-public ./example
+      - run: helm --kube-context dind --tiller-namespace kube-system test example
+  "build-repo":
+    docker:
+      - image: dtzar/helm-kubectl:2.9.1
+    steps:
+      - checkout
+      - run: mkdir -p repo && helm init --client-only
+      - run: helm package -d repo example
+      - run: helm repo index repo --url https://chatwork.github.io/charts
+      - persist_to_workspace:
+         root: repo
+         paths:
+          - ./*
+  "update-repo":
+    docker:
+      - image: buildpack-deps:jessie
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "56:a1:e2:9e:89:f8:c2:87:7c:5a:89:bd:31:ed:88:2d"
+      - attach_workspace:
+          at: ../repo
+      - checkout
+      - run: git checkout gh-pages
+      - run: cp -av ../repo/* ./
+      - run: git commit -a --allow-empty-message -m '' && git push origin gh-pages
+workflows:
+  version: 2
+  integration:
+    jobs:
+      - test
+      - build-repo
+      - "update-repo":
+          requires:
+            - test
+            - build-repo
+          filters:
+            branches:
+              only: example-charts
