@@ -1,0 +1,3 @@
+dist/
+*/*-*.tgz
+.DS_Store
