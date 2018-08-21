@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  example:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-08-21T08:44:25.34205055Z
+    description: A Helm chart for Kubernetes
+    digest: 2ccf823a2d0b564df84ac428443d17775d7096fdb9ed1bd9b39d9224d400229e
+    name: example
+    urls:
+    - https://chatwork.github.io/charts/example-0.1.0.tgz
+    version: 0.1.0
+generated: 2018-08-21T08:44:25.340942529Z
