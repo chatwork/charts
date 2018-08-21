@@ -24,8 +24,12 @@ PHONY: ci\:enable\:helm
 ci\:enable\:helm:
 	wget -O - https://storage.googleapis.com/kubernetes-helm/helm-v2.10.0-rc.3-linux-amd64.tar.gz | tar zxvf - -O linux-amd64/helm > helm;
 	chmod +x helm;
+	if [ -n "$${HELM_CLIENT_ONLY}" ]; then \
+		./helm init --client-only; \
+	else \
+		./helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} init --wait; \
+	fi
 	echo 'export PATH=$$PWD:$$PATH' >> $${BASH_ENV:-"/home/circleci/.bashrc"};
-	./helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} init --wait;
 
 PHONY: ci\:diff
 ci\:diff:

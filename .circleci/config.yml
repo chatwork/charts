@@ -8,60 +8,50 @@ jobs:
       - run: make ci:enable:helm
       - run: make apply
       - run: make test
-  "checkout-repo":
+  publish:
     machine: true
     steps:
-      - checkout
-      - run: git checkout gh-pages
-      - persist_to_workspace:
-         root: .
-         paths:
-          - ./*
-  "build-repo":
-    docker:
-      - image: dtzar/helm-kubectl:2.9.1
-    steps:
-      - checkout
-      - run: helm init --client-only
-      - attach_workspace:
-          at: ./dist
-      - run: make ci:diff | xargs -I{} helm package {} -d dist/
-      - run: helm repo index dist/ --url https://chatwork.github.io/charts
-      - persist_to_workspace:
-         root: dist
-         paths:
-          - ./*
-  "publish-repo":
-    docker:
-      - image: buildpack-deps:jessie
-    steps:
-      # ~/.ssh/config
-      # Host github.com
-      #   IdentitiesOnly yes
-      #   IdentityFile /root/.ssh/id_rsa_xxxx
-      #   StrictHostKeyChecking no
       - add_ssh_keys:
           fingerprints:
             - "56:a1:e2:9e:89:f8:c2:87:7c:5a:89:bd:31:ed:88:2d"
       - run: echo -e "  StrictHostKeyChecking no\n" >> ~/.ssh/config
-      - attach_workspace:
-          at: .
-      - run: git commit -a --allow-empty-message -m '' && git push origin gh-pages
+      - checkout
+      - run: make ci:enable:helm -e HELM_CLIENT_ONLY=true
+      - run: git clone -b gh-pages git@github.com:chatwork/charts.git .dist
+      - run: ls -d */ | xargs -I{} helm package {} -d .dist/
+      - run: helm repo index .dist/ --url https://chatwork.github.io/charts
+      - run: cd .dist && git commit -a --allow-empty-message -m '' && git push origin gh-pages
+      - run: docker login -u="${DOCKER_REGISTRY_USERNAME}" -p="${DOCKER_REGISTRY_PASSWORD}"
+      - run:
+          name: notification failed
+          command: |
+            make ci:diff | xargs -I{} /bin/bash -c '
+              version=$(helm inspect chart ./{} | awk '/^version:/ {print $NF}');
+              make ci:notify -e TITLE="CircleCI: Failed push chatwork/charts {}:${version} (devil)" \
+                             -e BODY="$(git log -1 --pretty=format:"%h - %an : %s" ${CIRCLE_BRANCH})";
+            '
+          when: on_fail
+      - run:
+          name: notification success
+          command: |
+            make ci:diff | xargs -I{} /bin/bash -c '
+              version=$(helm inspect chart ./{} | awk "/^version:/ {print $NF}");
+              changelog=$(make ci:changelog -e DIR="{}/");
+              make ci:notify -e TITLE="Release chatwork/charts {}:${version} (gogo)" \
+                             -e BODY="$(echo -e "changelog\n${changelog}")";
+            '
+          when: on_success
 workflows:
   version: 2
   integration:
     jobs:
-      # integration
-      - test
-      # delivery
-      - "checkout-repo":
+      - test:
           filters:
             branches:
-              only: example-charts
-      - "build-repo":
-          requires:
-            - checkout-repo
-      - "publish-repo":
+              ignore: gh-pages
+      - publish:
           requires:
             - test
-            - build-repo
+          filters:
+            branches:
+              only: master
