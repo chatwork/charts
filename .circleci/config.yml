@@ -8,7 +8,7 @@ jobs:
       - run: make ci:enable:helm
       - run: make apply
       - run: make test
-  "gh-pages":
+  "checkout-repo":
     machine: true
     steps:
       - checkout
@@ -25,20 +25,20 @@ jobs:
       - run: helm init --client-only
       - attach_workspace:
           at: ./dist
-      - run: ls -d */ | xargs -I{} helm package {} -d dist/
+      - run: make ci:diff | xargs -I{} helm package {} -d dist/
       - run: helm repo index dist/ --url https://chatwork.github.io/charts
       - persist_to_workspace:
          root: dist
          paths:
           - ./*
-  "update-repo":
+  "publish-repo":
     docker:
       - image: buildpack-deps:jessie
     steps:
       # ~/.ssh/config
       # Host github.com
       #   IdentitiesOnly yes
-      #   IdentityFile /root/.ssh/id_rsa_xxxx¥
+      #   IdentityFile /root/.ssh/id_rsa_xxxx
       #   StrictHostKeyChecking no
       - add_ssh_keys:
           fingerprints:
@@ -51,15 +51,17 @@ workflows:
   version: 2
   integration:
     jobs:
+      # integration
       - test
-      - gh-pages
-      - "build-repo":
-          requires:
-            - gh-pages
-      - "update-repo":
-          requires:
-            - test
-            - build-repo
+      # delivery
+      - "checkout-repo":
           filters:
             branches:
               only: example-charts
+      - "build-repo":
+          requires:
+            - checkout-repo
+      - "publish-repo":
+          requires:
+            - test
+            - build-repo
