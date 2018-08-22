@@ -6,13 +6,6 @@ PHONY: test
 test:
 	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make test";
 
-PHONY: package
-package:
-	@rm -rf $${DIR:-"dist"} && mkdir -p $${DIR:-"dist"};
-	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make package";
-	@find . -name '*.tgz' | xargs -I{} cp -f {} $${DIR:-"dist"};
-	helm repo index $${DIR:-"dist"} --url https://chatwork.github.io/charts;
-
 PHONY: ci\:enable\:k8s
 ci\:enable\:k8s:
 	wget https://cdn.rawgit.com/kubernetes-sigs/kubeadm-dind-cluster/master/fixed/dind-cluster-v1.8.sh;
