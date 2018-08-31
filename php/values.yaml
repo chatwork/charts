@@ -698,6 +698,9 @@ service:
 ingress:
   enabled: false
 
+test:
+  extraContainer: []
+
 tolerations: []
 
 affinity: {}
