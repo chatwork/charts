@@ -21,6 +21,24 @@ nginx:
     tag: 1.15.1-alpine
     pullPolicy: IfNotPresent
   env: {}
+  livenessProbe:
+    httpGet:
+      path: /status
+      port: 7777
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+  readnessProbe: {}
+    # httpGet:
+    #   path: /
+    #   port: http
+    # initialDelaySeconds: 15
+    # periodSeconds: 5
+    # timeoutSeconds: 1
+    # successThreshold: 1
+    # failureThreshold: 3
   resources: {}
   # extraPorts: []
   # extraVolumeMounts: []
@@ -81,6 +99,20 @@ nginx:
                 fastcgi_index index.php;
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
                 include fastcgi_params;
+            }
+        }
+      status.conf: |
+        server {
+            listen 7777;
+
+            allow 127.0.0.1;
+            allow 10.0.0.0/8;
+            allow 172.16.0.0/12;
+            allow 192.168.0.0/16;
+            deny all;
+
+            location /status {
+                stub_status on;
             }
         }
 
