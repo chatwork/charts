@@ -59,16 +59,16 @@ spec:
           value: {{ $v }}
 {{- end }}
 {{- end }}
-{{- with .Values.nginx.resources }}
-        resources:
-{{ toYaml . | indent 10 }}
-{{- end }}
 {{- with .Values.nginx.livenessProbe }}
         livenessProbe:
 {{ toYaml . | indent 10 }}
 {{- end }}
 {{- with .Values.nginx.readinessProbe }}
         readinessProbe:
+{{ toYaml . | indent 10 }}
+{{- end }}
+{{- with .Values.nginx.resources }}
+        resources:
 {{ toYaml . | indent 10 }}
 {{- end }}
         volumeMounts:
@@ -100,8 +100,18 @@ spec:
           value: {{ $v }}
 {{- end }}
 {{- end }}
+{{- with .Values.fpm.livenessProbe }}
+        livenessProbe:
+{{ toYaml . | indent 10 }}
+{{- end }}
+{{- with .Values.fpm.readinessProbe }}
+        readinessProbe:
+{{ toYaml . | indent 10 }}
+{{- end }}
+{{- with .Values.fpm.resources }}
         resources:
-{{ toYaml .Values.fpm.resources | indent 10 }}
+{{ toYaml . | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: share
           mountPath: {{ .Values.sharedPath }}
