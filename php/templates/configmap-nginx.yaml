@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "php.fullname" . }}-nginx-conf
+  labels:
+    app: {{ template "php.name" . }}
+    chart: {{ template "php.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  nginx.conf:
+{{- tpl (index .Values.nginx.templates "nginx.conf") . | toYaml | indent 2 }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "php.fullname" . }}-nginx-confd
+  labels:
+    app: {{ template "php.name" . }}
+    chart: {{ template "php.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- $root := . -}}
+{{- range $k, $v := (index .Values.nginx.templates "conf.d") }}
+  {{ $k }}:
+{{- tpl $v $root | toYaml | indent 2 }}
+{{- end }}
