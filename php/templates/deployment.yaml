@@ -71,6 +71,10 @@ spec:
         resources:
 {{ toYaml . | indent 10 }}
 {{- end }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sh", "-c", "sleep {{ .Values.fpm.processControlTimeout | default 0 }}; nginx -s quit; sleep 5"]
         volumeMounts:
         - name: share
           mountPath: {{ .Values.sharedPath }}
@@ -112,6 +116,13 @@ spec:
         resources:
 {{ toYaml . | indent 10 }}
 {{- end }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ .Values.fpm.processControlTimeout | default 0 }}"]
+        {{- with .Values.fpm.processControlTimeout }}
+        terminationGracePeriodSeconds: {{ add . 10 }}
+        {{- end }}
         volumeMounts:
         - name: share
           mountPath: {{ .Values.sharedPath }}
