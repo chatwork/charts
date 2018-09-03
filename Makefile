@@ -8,9 +8,9 @@ test:
 
 PHONY: ci\:enable\:k8s
 ci\:enable\:k8s:
-	wget https://cdn.rawgit.com/kubernetes-sigs/kubeadm-dind-cluster/master/fixed/dind-cluster-v1.8.sh;
-	chmod +x dind-cluster-v1.8.sh;
-	./dind-cluster-v1.8.sh up;
+	wget https://cdn.rawgit.com/kubernetes-sigs/kubeadm-dind-cluster/master/fixed/dind-cluster-v1.9.sh;
+	chmod +x dind-cluster-v1.9.sh;
+	./dind-cluster-v1.9.sh up;
 	echo 'export PATH=$$HOME/.kubeadm-dind-cluster:$$PATH' >> $${BASH_ENV:-"/home/circleci/.bashrc"}
 
 PHONY: ci\:enable\:helm
