@@ -75,6 +75,9 @@ spec:
           preStop:
             exec:
               command: ["sh", "-c", "sleep {{ .Values.fpm.processControlTimeout | default 0 }}; nginx -s quit; sleep 5"]
+        {{- with .Values.fpm.processControlTimeout }}
+        terminationGracePeriodSeconds: {{ add . 10 }}
+        {{- end }}
         volumeMounts:
         - name: share
           mountPath: {{ .Values.sharedPath }}
