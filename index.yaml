@@ -3,11 +3,21 @@ entries:
   example:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-08-22T02:52:21.376720874Z
+    created: 2018-09-14T02:32:45.100173796Z
     description: A Helm chart for Kubernetes
-    digest: 0965a7f4f995af3679b41c051d6498956c98ea44f22b592dddab8359ef690d52
+    digest: a1e5512c1063ffed53f2433456b2d18c86d0e9534463a925b9dac8a04096acd2
     name: example
     urls:
     - https://chatwork.github.io/charts/example-0.1.0.tgz
     version: 0.1.0
-generated: 2018-08-22T02:52:21.375583675Z
+  php:
+  - apiVersion: v1
+    created: 2018-09-14T02:32:45.101391704Z
+    description: PHP-FPM Web Application
+    digest: d494591b833be44dc58d0d64c69cce4b7d3f9014da71ed1d8ab096482f30091d
+    icon: http://php.net/images/logos/php-logo-bigger.png
+    name: php
+    urls:
+    - https://chatwork.github.io/charts/php-0.1.0.tgz
+    version: 0.1.0
+generated: 2018-09-14T02:32:45.099339143Z
