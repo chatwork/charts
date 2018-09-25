@@ -1,3 +1,4 @@
+{{- $root := . -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,7 +28,7 @@ spec:
         imagePullPolicy: {{ .Values.busybox.image.pullPolicy }}
         restartPolicy: Never
         command:
-{{ toYaml .Values.busybox.command | indent 8 }}
+{{ tpl (toYaml .Values.busybox.command) $root | indent 8 }}
 {{- with .Values.busybox.env }}
         env:
 {{- range $k, $v := . }}
@@ -35,11 +36,15 @@ spec:
           value: {{ $v }}
 {{- end }}
 {{- end }}
+{{- with .Values.busybox.envFrom }}
+        envFrom:
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
         volumeMounts:
         - name: share
           mountPath: {{ .Values.sharedPath }}
 {{- with .Values.busybox.extraVolumeMounts }}
-{{ toYaml . | indent 8}}
+{{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
       containers:
       - name: "{{ .Chart.Name }}-{{ .Values.nginx.name }}"
@@ -50,26 +55,30 @@ spec:
           containerPort: {{ .Values.nginx.port }}
           protocol: TCP
 {{- with .Values.nginx.extraPorts }}
-{{ toYaml . | indent 8 }}
+{{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
 {{- with .Values.nginx.env }}
         env:
 {{- range $k, $v := . }}
         - name: {{ $k }}
-          value: {{ $v }}
+          value: {{ tpl $v $root }}
 {{- end }}
+{{- end }}
+{{- with .Values.nginx.envFrom }}
+        envFrom:
+{{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
 {{- with .Values.nginx.livenessProbe }}
         livenessProbe:
-{{ toYaml . | indent 10 }}
+{{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
 {{- with .Values.nginx.readinessProbe }}
         readinessProbe:
-{{ toYaml . | indent 10 }}
+{{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
 {{- with .Values.nginx.resources }}
         resources:
-{{ toYaml . | indent 10 }}
+{{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
         lifecycle:
           preStop:
@@ -89,7 +98,7 @@ spec:
         - name: nginx-confd
           mountPath: /etc/nginx/conf.d
 {{- with .Values.nginx.extraVolumeMounts }}
-{{ toYaml . | indent 8}}
+{{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
       - name: "{{ .Chart.Name }}-{{ .Values.fpm.name }}"
         image: "{{ .Values.fpm.image.repository }}:{{ .Values.fpm.image.tag }}"
@@ -97,7 +106,7 @@ spec:
 {{- with .Values.fpm.extraPorts }}
         ports:
 {{- range $v := . }}
-{{ toYaml $v | indent 8 }}
+{{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
 {{- end }}
 {{- with .Values.fpm.env }}
@@ -107,17 +116,21 @@ spec:
           value: {{ $v }}
 {{- end }}
 {{- end }}
+{{- with .Values.fpm.envFrom }}
+        envFrom:
+{{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
 {{- with .Values.fpm.livenessProbe }}
         livenessProbe:
-{{ toYaml . | indent 10 }}
+{{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
 {{- with .Values.fpm.readinessProbe }}
         readinessProbe:
-{{ toYaml . | indent 10 }}
+{{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
 {{- with .Values.fpm.resources }}
         resources:
-{{ toYaml . | indent 10 }}
+{{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
         lifecycle:
           preStop:
@@ -137,7 +150,7 @@ spec:
         - name: fpm-confd
           mountPath: /usr/local/etc/php-fpm.d
 {{- with .Values.fpm.extraVolumeMounts }}
-{{ toYaml . | indent 8}}
+{{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
       volumes:
       - name: share
@@ -157,13 +170,17 @@ spec:
         configMap:
           name: {{ template "php.fullname" . }}-fpm-confd
 {{- with .Values.extraVolume }}
-{{ toYaml . | indent 6}}
+{{ tpl (toYaml .) $root | indent 6 }}
+{{- end }}
+{{- with .Values.imagePullSecrets}}
+      imagePullSecrets:
+{{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
 {{- with .Values.affinity }}
       affinity:
-{{ toYaml . | indent 6 }}
+{{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
 {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml . | indent 6 }}
+{{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
