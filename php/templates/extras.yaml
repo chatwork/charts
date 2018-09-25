@@ -1,4 +1,4 @@
-{{- $root := .Values -}}
+{{- $root := . -}}
 {{- if .Values.extras }}
 {{- range $k, $v := .Values.extras.templates }}
 ---
