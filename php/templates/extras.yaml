@@ -1,0 +1,7 @@
+{{- $root := .Values -}}
+{{- if .Values.extras }}
+{{- range $k, $v := .Values.extras.templates }}
+---
+{{ tpl $v $root | toYaml | indent 0 }}
+{{- end }}
+{{- end }}

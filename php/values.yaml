@@ -734,6 +734,24 @@ service:
 ingress:
   enabled: false
 
+# If you need it you can write raw Kubernetes Config
+# extras:
+#   hoge: 1
+#   templates:
+#     secret1: |
+#       apiVersion: v1
+#       kind: Secret
+#       metadata:
+#         name: {{ template "php.fullname" . }}
+#         labels:
+#           app: {{ template "php.name" . }}
+#           chart: {{ template "php.chart" . }}
+#           release: {{ .Release.Name }}
+#           heritage: {{ .Release.Service }}
+#       type: Opaque
+#       data:
+#         hoge: {{ .Values.extras.hoge }}
+
 test:
   extraContainer: []
 
