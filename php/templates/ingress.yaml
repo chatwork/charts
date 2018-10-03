@@ -1,6 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "php.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
+{{- $ingressPort := .Values.ingress.port -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -33,6 +34,6 @@ spec:
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}
-              servicePort: http
+              servicePort: {{ $ingressPort }}
   {{- end }}
 {{- end }}
