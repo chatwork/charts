@@ -1,23 +1,13 @@
 apiVersion: v1
 entries:
-  example:
-  - apiVersion: v1
-    appVersion: "1.0"
-    created: 2018-09-14T02:32:45.100173796Z
-    description: A Helm chart for Kubernetes
-    digest: a1e5512c1063ffed53f2433456b2d18c86d0e9534463a925b9dac8a04096acd2
-    name: example
-    urls:
-    - https://chatwork.github.io/charts/example-0.1.0.tgz
-    version: 0.1.0
   php:
   - apiVersion: v1
-    created: 2018-09-14T02:32:45.101391704Z
+    created: 2018-10-03T07:23:28.187096784Z
     description: PHP-FPM Web Application
-    digest: d494591b833be44dc58d0d64c69cce4b7d3f9014da71ed1d8ab096482f30091d
+    digest: d0944d50495018b685e4e9ee4a90728586a8d117d09c7189d7bd66f55cd02c5b
     icon: http://php.net/images/logos/php-logo-bigger.png
     name: php
     urls:
     - https://chatwork.github.io/charts/php-0.1.0.tgz
     version: 0.1.0
-generated: 2018-09-14T02:32:45.099339143Z
+generated: 2018-10-03T07:23:28.185472176Z
