@@ -8,6 +8,10 @@ metadata:
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.fpm.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 data:
   php-fpm.conf:
 {{- tpl (index .Values.fpm.templates "php-fpm.conf") . | toYaml | indent 2 }}
