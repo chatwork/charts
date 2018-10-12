@@ -1,0 +1,21 @@
+# Default values for example.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# See: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token
+server: "https://index.docker.io/v1/"
+username: "" # Your docker username
+password: "" # Your docker password
+email: "" # Your docker email
+
+dockerconfigjson: |
+  {
+    "auths": {
+      "{{ .Values.server }}": {
+        "username": "{{ .Values.username }}",
+        "password": "{{ .Values.password }}",
+        "email": "{{ .Values.email }}",
+        "auth": "{{ print .Values.username ":" .Values.password | b64enc }}"
+      }
+    }
+  }
