@@ -1,0 +1,44 @@
+nameOverride: ""
+fullNameOverride: ""
+
+podAnnotations: {}
+
+replicas: 1
+image:
+  pullSecrets: ""
+  repository: appscode/guard
+  tag: 0.2.1
+
+containerPort: 8443
+initialDelaySeconds: 30
+
+tlsCaFileName: "ca.crt"
+tlsCertFileName: "tls.crt"
+tlsPrivateKeyFileName: "tls.key"
+tlsFilesBase: "/etc/guard/pki"
+
+args:
+  verbose: 3
+  authProvider: "github"
+
+runOnMaster: true
+
+pki:
+  # $GUARD_DATA_DIR/pki/ca.crt
+  caCrt: "caCrt"
+  # $GUARD_DATA_DIR/pki/server.crt
+  tlsCrt: "tlsCrt"
+  # $GUARD_DATA_DIR/pki/server.key
+  tlsKey: "tlsKey"
+
+service:
+  # fixed clusterIP for crt
+  clusterIP: 10.96.10.96
+  port: 443
+
+rbac:
+  ## If true, create & use RBAC resources
+  create: true
+
+  ## Ignored if rbac.create is true
+  serviceAccountName: default
