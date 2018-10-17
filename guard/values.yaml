@@ -12,16 +12,13 @@ image:
 containerPort: 8443
 initialDelaySeconds: 30
 
-tlsCaFileName: "ca.crt"
-tlsCertFileName: "tls.crt"
-tlsPrivateKeyFileName: "tls.key"
-tlsFilesBase: "/etc/guard/pki"
-
 args:
   verbose: 3
   authProvider: "github"
 
 runOnMaster: true
+
+tlsFilesBase: "/etc/guard/pki"
 
 pki:
   # $GUARD_DATA_DIR/pki/ca.crt

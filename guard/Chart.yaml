@@ -1,7 +1,7 @@
 apiVersion: v1
 name: guard
 version: 0.0.1
-appVersion: 0.2.0
+appVersion: 0.2.1
 description: chart for Guard (https://appscode.com/products/guard)
 keywords:
   - webhook-authentication
