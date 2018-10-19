@@ -8,6 +8,10 @@ metadata:
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.nginx.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 data:
   nginx.conf:
 {{- tpl (index .Values.nginx.templates "nginx.conf") . | toYaml | indent 2 }}
