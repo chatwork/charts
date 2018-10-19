@@ -20,7 +20,13 @@ spec:
     metadata:
       labels:
         app: {{ template "php.name" . }}
+        chart: {{ template "php.chart" . }}
         release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+{{- with .Values.annotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       initContainers:
       - name: "{{ .Chart.Name }}-{{ .Values.busybox.name }}"
