@@ -1,13 +1,33 @@
 apiVersion: v1
 entries:
+  docker-registry:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-10-19T06:52:53.451003742Z
+    description: Pull an Image from a Private Registry
+    digest: ce6b4396c45fbf9677a00451e3f627062e5cccafab97c0ce28f52d9f31878967
+    name: docker-registry
+    urls:
+    - https://chatwork.github.io/charts/docker-registry-0.1.0.tgz
+    version: 0.1.0
+  example:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-10-19T06:52:53.451298272Z
+    description: A Helm chart for Kubernetes
+    digest: 1c579940d671e322bad344e04cd33f1b50b3c2adc59313837b823491720b4653
+    name: example
+    urls:
+    - https://chatwork.github.io/charts/example-0.1.0.tgz
+    version: 0.1.0
   php:
   - apiVersion: v1
-    created: 2018-10-19T05:45:27.999605063Z
+    created: 2018-10-19T06:52:53.452701548Z
     description: PHP-FPM Web Application
-    digest: 9694efd39862594bb004b49efd271c2fd61c95f1b5132c4d7b468be5a2a8015d
+    digest: a4d69a353089b49754c26bc455d06e28e55ca94f2eb415e1878e6d8706184a21
     icon: http://php.net/images/logos/php-logo-bigger.png
     name: php
     urls:
     - https://chatwork.github.io/charts/php-0.2.0.tgz
     version: 0.2.0
-generated: 2018-10-19T05:45:27.997901152Z
+generated: 2018-10-19T06:52:53.450564977Z
