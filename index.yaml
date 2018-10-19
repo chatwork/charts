@@ -1,13 +1,13 @@
 apiVersion: v1
 entries:
-  php:
+  docker-registry:
   - apiVersion: v1
-    created: 2018-10-03T07:23:28.187096784Z
-    description: PHP-FPM Web Application
-    digest: d0944d50495018b685e4e9ee4a90728586a8d117d09c7189d7bd66f55cd02c5b
-    icon: http://php.net/images/logos/php-logo-bigger.png
-    name: php
+    appVersion: "1.0"
+    created: 2018-10-19T05:34:13.583921232Z
+    description: Pull an Image from a Private Registry
+    digest: cc45d16a75f280f5d00dc5dd079ef43b7f25a02a5e4e2b2f915906a0dae9c96a
+    name: docker-registry
     urls:
-    - https://chatwork.github.io/charts/php-0.1.0.tgz
+    - https://chatwork.github.io/charts/docker-registry-0.1.0.tgz
     version: 0.1.0
-generated: 2018-10-03T07:23:28.185472176Z
+generated: 2018-10-19T05:34:13.583250386Z
