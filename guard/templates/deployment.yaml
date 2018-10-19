@@ -55,7 +55,13 @@ spec:
             path: /healthz
             port: {{ .Values.containerPort }}
             scheme: HTTPS
-          initialDelaySeconds: {{ .Values.initialDelaySeconds }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.containerPort }}
+            scheme: HTTPS
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
       volumes:
       - name: {{ template "guard.fullname" . }}
         secret:

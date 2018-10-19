@@ -10,7 +10,12 @@ image:
   tag: 0.2.1
 
 containerPort: 8443
-initialDelaySeconds: 30
+
+readinessProbe:
+  initialDelaySeconds: 25
+
+livenessProbe:
+  initialDelaySeconds: 25
 
 args:
   verbose: 3
@@ -103,6 +108,7 @@ service:
 
 test:
   extraContainer: {}
+
 rbac:
   ## If true, create & use RBAC resources
   create: true
