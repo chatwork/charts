@@ -70,11 +70,7 @@ nginx:
           include       /etc/nginx/mime.types;
           default_type  application/octet-stream;
 
-          log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                            '$status $body_bytes_sent "$http_referer" '
-                            '"$http_user_agent" "$http_x_forwarded_for"';
-
-          access_log  /dev/stdout  main;
+          access_log  /dev/stdout combined;
 
           sendfile        on;
           #tcp_nopush     on;
@@ -189,7 +185,7 @@ fpm:
       ; into a local file.
       ; Note: the default prefix is /usr/local/var
       ; Default Value: log/php-fpm.log
-      error_log = /proc/self/fd/2
+      error_log = /dev/stderr
 
       ; syslog_facility is used to specify what type of program is logging the
       ; message. This lets syslogd specify that messages from different facilities
@@ -716,7 +712,7 @@ fpm:
         ;php_admin_value[error_log] = /var/log/fpm-php.www.log
         ;php_admin_flag[log_errors] = on
         ;php_admin_value[memory_limit] = 32M
-        php_admin_value[error_log] = /proc/self/fd/2
+        php_admin_value[error_log] = /dev/stderr
         php_admin_flag[log_errors] = on
         {{- range $k, $v := .Values.fpm.ini }}
         {{- if eq (print "%t" $v) "true" }}
