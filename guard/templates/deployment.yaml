@@ -1,0 +1,87 @@
+apiVersion: {{ template "deployment.apiVersion" . }}
+#apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "guard.fullname" . }}
+  labels:
+    app: {{ template "guard.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+       app: {{ include "guard.fullname" . }}
+       release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "guard.fullname" . }}
+        release: {{ .Release.Name }}
+      name: {{ template "guard.fullname" . }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        args:
+        - run
+        - --v={{ .Values.args.verbose }}
+        - --auth-providers={{ .Values.args.authProvider }}
+        - --tls-ca-file={{ .Values.tlsFilesBase }}/ca.crt
+        - --tls-cert-file={{ .Values.tlsFilesBase }}/tls.crt
+        - --tls-private-key-file={{ .Values.tlsFilesBase }}/tls.key
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        ports:
+        - containerPort: {{ .Values.containerPort }}
+        volumeMounts:
+        - mountPath: {{ .Values.tlsFilesBase }}
+          name: {{ template "guard.fullname" . }}
+        {{- if .Values.extractVolumeMounts }}
+{{ toYaml .Values.extractVolumeMounts | indent 8 }}
+        {{- end }}
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.containerPort }}
+            scheme: HTTPS
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.containerPort }}
+            scheme: HTTPS
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+      volumes:
+      - name: {{ template "guard.fullname" . }}
+        secret:
+          defaultMode: 365
+          secretName: {{ template "guard.fullname" . }}
+      {{- if .Values.runOnMaster }}
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      {{- end }}
+      tolerations:
+      {{- if .Values.runOnMaster }}
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Exists
+      {{- end }}
+      {{- if .Values.tolerations }}
+{{ toYaml .Values.extraTolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "guard.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

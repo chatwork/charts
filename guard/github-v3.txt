@@ -1,0 +1,3 @@
+[SAN]
+keyUsage= critical,keyEncipherment,digitalSignature
+extendedKeyUsage=clientAuth
