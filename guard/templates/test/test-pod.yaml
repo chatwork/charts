@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "guard.fullname" . }}-test
+  labels:
+    app: {{ template "guard.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: {{ .Chart.Name }}-test
+      image: appropriate/curl
+      command:
+        - /bin/sh
+        - -c
+        - |
+          curl http://{{ template "guard.fullname" . }}:{{ .Values.service.port | default "443" }}
+{{- with .Values.test.extraContainer }}
+{{ toYaml . | indent 8}}
+{{- end }}
+  restartPolicy: Never

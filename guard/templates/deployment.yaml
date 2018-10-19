@@ -35,9 +35,9 @@ spec:
         - run
         - --v={{ .Values.args.verbose }}
         - --auth-providers={{ .Values.args.authProvider }}
-        - --tls-ca-file={{ .Values.tlsFilesBase }}/{{ .Values.tlsCaFileName }}
-        - --tls-cert-file={{ .Values.tlsFilesBase }}/{{ .Values.tlsCertFileName }}
-        - --tls-private-key-file={{ .Values.tlsFilesBase }}/{{.Values.tlsPrivateKeyFileName }}
+        - --tls-ca-file={{ .Values.tlsFilesBase }}/ca.crt
+        - --tls-cert-file={{ .Values.tlsFilesBase }}/tls.crt
+        - --tls-private-key-file={{ .Values.tlsFilesBase }}/tls.key
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
