@@ -6,8 +6,9 @@ jobs:
       - checkout
       - run: make ci:enable:k8s
       - run: make ci:enable:helm
-      - run: make apply
-      - run: make test
+      - run: make ci:diff
+      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make apply || exit 255"
+      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255"
   publish:
     machine: true
     steps:
