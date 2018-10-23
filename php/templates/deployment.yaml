@@ -48,7 +48,7 @@ spec:
 {{- end }}
         volumeMounts:
         - name: share
-          mountPath: {{ .Values.sharedPath }}
+          mountPath: {{ .Values.busybox.sharedPath | default .Values.sharedPath }}
 {{- with .Values.busybox.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
