@@ -4,7 +4,7 @@ apply:
 
 .PHONY: test
 test:
-	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255";
+	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255" || make ci:dump && exit 1;
 
 .PHONY: ci\:enable\:k8s
 ci\:enable\:k8s:
@@ -12,6 +12,16 @@ ci\:enable\:k8s:
 	chmod +x dind-cluster-v1.11.sh;
 	./dind-cluster-v1.11.sh up;
 	echo 'export PATH=$$HOME/.kubeadm-dind-cluster:$$PATH' >> $${BASH_ENV:-"/home/circleci/.bashrc"}
+
+.PHONY: ci\:dump
+ci\:dump:
+	./dind-cluster-v1.11.sh dump | ./dind-cluster-v1.11.sh split-dump;
+	echo "\n\n@@@ kubectl-all @@@";
+	cat cluster-dump/kubectl-all.txt;
+	echo "\n\n@@@ describe-all @@@";
+	cat cluster-dump/describe-all.txt;
+	ls cluster-dump/pod-*.log | xargs -I{} /bin/sh -c "echo \"\n\n@@@ {} @@@\" && cat {}";
+
 
 .PHONY: ci\:enable\:helm
 ci\:enable\:helm:
