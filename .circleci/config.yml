@@ -8,7 +8,7 @@ jobs:
       - run: make ci:enable:helm
       - run: make ci:diff
       - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make apply || exit 255"
-      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255"
+      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255" || (make ci:dump && exit 1)
   publish:
     machine: true
     steps:
@@ -19,9 +19,9 @@ jobs:
       - checkout
       - run: make ci:enable:helm -e HELM_CLIENT_ONLY=true
       - run: git clone -b gh-pages git@github.com:chatwork/charts.git .dist
-      - run: make ci:diff | xargs -I{} helm package {} -d .dist/
+      - run: ls -d */ | xargs -I{} helm package {} -d .dist/
       - run: helm repo index .dist/ --url https://chatwork.github.io/charts
-      - run: cd .dist && git commit -a --allow-empty-message -m '' && git push origin gh-pages
+      - run: cd .dist && git add . && git commit --allow-empty-message -m "$CIRCLE_SHA1" && git push origin gh-pages
       - run: docker login -u="${DOCKER_REGISTRY_USERNAME}" -p="${DOCKER_REGISTRY_PASSWORD}"
       - run:
           name: notification failed
