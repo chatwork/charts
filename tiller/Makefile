@@ -4,7 +4,7 @@ apply:
 		kubectl create namespace "$$(basename $$PWD)$$(git rev-parse HEAD)"; \
 	fi
 	helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} upgrade --wait --install --namespace "$$(basename $$PWD)$$(git rev-parse HEAD)" $$(basename $$PWD)-$$(git rev-parse HEAD) .;
-	sleep 5
+	sleep 10 # FIXME: apply -> test failed on CI
 
 .PHONY: test
 test:
