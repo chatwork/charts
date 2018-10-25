@@ -1,0 +1,11 @@
+# Default values for example.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: gcr.io/kubernetes-helm/tiller
+  tag: v2.10.0
+  pullPolicy: IfNotPresent
+
+rback:
+  create: true

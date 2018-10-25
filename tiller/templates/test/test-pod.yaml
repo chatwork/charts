@@ -1,0 +1,47 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tiller-deploy-test
+  labels:
+    app: helm
+    name: tiller
+    chart: {{ template "tiller.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    role: test
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: tiller-deploy-test
+      image: chatwork/helm:2.10.0
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
+      args:
+        - ls
+        - --tiller-namespace
+        - {{ .Release.Namespace }}
+  restartPolicy: Never
+  serviceAccountName: tiller-client
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tiller-client
+  namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: helm-client-role-binding
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: tiller-client
+  namespace: {{ .Release.Namespace }}
