@@ -4,7 +4,7 @@ apply:
 
 .PHONY: test
 test:
-	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255" || make ci:dump && exit 1;
+	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255" || (make ci:dump && exit 1);
 
 .PHONY: ci\:enable\:k8s
 ci\:enable\:k8s:

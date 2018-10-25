@@ -8,7 +8,7 @@ jobs:
       - run: make ci:enable:helm
       - run: make ci:diff
       - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make apply || exit 255"
-      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255" || make ci:dump && exit 1
+      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255" || (make ci:dump && exit 1)
   publish:
     machine: true
     steps:
