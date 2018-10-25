@@ -4,7 +4,11 @@ apply:
 
 .PHONY: test
 test:
+<<<<<<< HEAD
 	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255";
+=======
+	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255" || (make ci:dump && exit 1);
+>>>>>>> 4d6ace5... [tiller] fixes ci test
 
 .PHONY: ci\:enable\:k8s
 ci\:enable\:k8s:
