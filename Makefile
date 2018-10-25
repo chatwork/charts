@@ -4,7 +4,7 @@ apply:
 
 .PHONY: test
 test:
-	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255";
+	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255" || (make ci:dump && exit 1);
 
 .PHONY: ci\:enable\:k8s
 ci\:enable\:k8s:
@@ -12,6 +12,16 @@ ci\:enable\:k8s:
 	chmod +x dind-cluster-v1.11.sh;
 	./dind-cluster-v1.11.sh up;
 	echo 'export PATH=$$HOME/.kubeadm-dind-cluster:$$PATH' >> $${BASH_ENV:-"/home/circleci/.bashrc"}
+
+.PHONY: ci\:dump
+ci\:dump:
+	./dind-cluster-v1.11.sh dump | ./dind-cluster-v1.11.sh split-dump;
+	echo "\n\n@@@ kubectl-all @@@";
+	cat cluster-dump/kubectl-all.txt;
+	echo "\n\n@@@ describe-all @@@";
+	cat cluster-dump/describe-all.txt;
+	ls cluster-dump/pod-*.log | xargs -I{} /bin/sh -c "echo \"\n\n@@@ {} @@@\" && cat {}";
+
 
 .PHONY: ci\:enable\:helm
 ci\:enable\:helm:
@@ -26,8 +36,7 @@ ci\:enable\:helm:
 
 .PHONY: ci\:diff\:from
 ci\:diff\:from:
-	@branch=$$(git symbolic-ref --short HEAD); \
-		if [ "$${branch}" = "master" ]; then \
+		@if [ "$(shell git symbolic-ref --short HEAD)" = "master" ]; then \
 			git --no-pager log --merges -n 2 --pretty=format:"%H" | tail -n 1; \
 		else \
 			echo "HEAD"; \
@@ -35,23 +44,22 @@ ci\:diff\:from:
 
 .PHONY: ci\:diff\:to
 ci\:diff\:to:
-	@branch=$$(git symbolic-ref --short HEAD); \
-		if [ "$${branch}" = "master" ]; then \
+		@if [ "$(shell git symbolic-ref --short HEAD)" = "master" ]; then \
 			echo "HEAD"; \
 		else \
-			echo "master"; \
+			echo "remotes/origin/master"; \
 		fi
 
 .PHONY: ci\:diff
 ci\:diff:
-	@git diff --name-only "$$(make ci:diff:from)" "$$(make ci:diff:to)" | sed 's:^.*/compare/::g' | xargs -I{} dirname {} | sed 's/[.\/].*$$//' | sed '/^$$/d' | uniq;
+	@git --no-pager diff --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" | sed 's:^.*/compare/::g' | xargs -I{} dirname {} | sed 's/[.\/].*$$//' | sed '/^$$/d' | uniq;
 
 .PHONY: ci\:changelog
 ci\:changelog:
 	@if [ -n "${DIR}" ]; then \
-		git --no-pager log --no-merges --pretty=format:"- %s" "$$(make ci:diff:from)...$$(make ci:diff:to)" -- ${DIR}; \
+		git --no-pager log --no-merges --pretty=format:"- %s" "$(shell make ci:diff:from)...$(shell make ci:diff:to)" -- ${DIR}; \
 	else \
-		git --no-pager log --no-merges --pretty=format:"- %s" "$$(make ci:diff:from)...$$(make ci:diff:to)"; \
+		git --no-pager log --no-merges --pretty=format:"- %s" "$(shell make ci:diff:from)...$(shell make ci:diff:to)"; \
 	fi
 
 .PHONY: ci\:notify
