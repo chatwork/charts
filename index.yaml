@@ -1,3 +1,51 @@
 apiVersion: v1
-entries: {}
-generated: 2018-10-23T07:42:48.466979684Z
+entries:
+  docker-registry:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-10-25T04:51:42.085025213Z
+    description: Pull an Image from a Private Registry
+    digest: 087a0d8a2c1e5ff6f487557b048e8b17a8881aa7609f8c66a8bd3a7f54fa9b33
+    name: docker-registry
+    urls:
+    - https://chatwork.github.io/charts/docker-registry-0.1.0.tgz
+    version: 0.1.0
+  example:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-10-25T04:51:42.085550523Z
+    description: A Helm chart for Kubernetes
+    digest: 33b37ae5ac508a3d5c7ddcdbcc4800aba19b4ab2df5f630178d763aa28300f3e
+    name: example
+    urls:
+    - https://chatwork.github.io/charts/example-0.1.0.tgz
+    version: 0.1.0
+  guard:
+  - apiVersion: v1
+    appVersion: 0.2.1
+    created: 2018-10-25T04:51:42.086522139Z
+    description: chart for Guard (https://appscode.com/products/guard)
+    digest: beaa44efdeb9a14d68ddb873258ea1f4fa1c4a3c0c82e5820540d11ff9beff94
+    home: https://appscode.com/products/guard
+    keywords:
+    - webhook-authentication
+    maintainers:
+    - email: sakamoto@chatwork.com
+      name: Ryo Sakamoto
+    name: guard
+    sources:
+    - https://github.com/appscode/guard
+    urls:
+    - https://chatwork.github.io/charts/guard-0.0.1.tgz
+    version: 0.0.1
+  php:
+  - apiVersion: v1
+    created: 2018-10-25T04:51:42.087698418Z
+    description: PHP-FPM Web Application
+    digest: 03c7b26e6bf9db1b645abe3f58501d63f60ad893db6b6302ac974a9840f1cc28
+    icon: http://php.net/images/logos/php-logo-bigger.png
+    name: php
+    urls:
+    - https://chatwork.github.io/charts/php-0.3.0.tgz
+    version: 0.3.0
+generated: 2018-10-25T04:51:42.084174358Z
