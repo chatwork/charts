@@ -8,8 +8,9 @@ metadata:
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- with .Values.nginx.annotations }}
   annotations:
+    checksum/nginx-conf: {{ tpl (index .Values.nginx.templates "nginx.conf" | toYaml) . | sha256sum }}
+{{- with .Values.nginx.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 data:
@@ -26,6 +27,11 @@ metadata:
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    checksum/nginx-confd: {{ tpl (index .Values.nginx.templates "conf.d" | toYaml) . | sha256sum }}
+{{- with .Values.nginx.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 data:
 {{- $root := . -}}
 {{- range $k, $v := (index .Values.nginx.templates "conf.d") }}
