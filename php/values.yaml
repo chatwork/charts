@@ -757,3 +757,6 @@ test:
 tolerations: []
 
 affinity: {}
+
+podDisruptionBudget:
+  enabled: false
