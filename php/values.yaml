@@ -762,3 +762,7 @@ test:
 tolerations: []
 
 affinity: {}
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 80%
