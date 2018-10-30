@@ -12,6 +12,10 @@ spec:
 {{- with .Values.replicaCount }}
   replicas: {{ . }}
 {{- end }}
+{{- with .Values.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "php.name" . }}
@@ -23,8 +27,12 @@ spec:
         chart: {{ template "php.chart" . }}
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
-{{- with .Values.annotations }}
       annotations:
+        checksum/nginx-conf: {{ tpl (index .Values.nginx.templates "nginx.conf" | toYaml) . | sha256sum }}
+        checksum/nginx-confd: {{ tpl (index .Values.nginx.templates "conf.d" | toYaml) . | sha256sum }}
+        checksum/fpm-conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf" | toYaml) . | sha256sum }}
+        checksum/fpm-confd: {{ tpl (index .Values.fpm.templates "php-fpm.d" | toYaml) . | sha256sum }}
+{{- with .Values.annotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:

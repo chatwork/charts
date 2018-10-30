@@ -3,6 +3,11 @@
 # Declare variables to be passed into your templates.
 sharedPath: /var/www/html
 
+strategy:
+  rollingUpdate:
+    maxSurge: 10%
+    maxUnavailable: 25%
+
 busybox:
   name: busybox
   image:
@@ -757,3 +762,7 @@ test:
 tolerations: []
 
 affinity: {}
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 80%

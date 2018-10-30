@@ -8,8 +8,9 @@ metadata:
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- with .Values.fpm.annotations }}
   annotations:
+    checksum/fpm-conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf" | toYaml) . | sha256sum }}
+{{- with .Values.fpm.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 data:
@@ -25,6 +26,11 @@ metadata:
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    checksum/fpm-confd: {{ tpl (index .Values.fpm.templates "php-fpm.d" | toYaml) . | sha256sum }}
+{{- with .Values.fpm.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 data:
 {{- $root := . -}}
 {{- range $k, $v := (index .Values.fpm.templates "php-fpm.d") }}
