@@ -12,6 +12,10 @@ spec:
 {{- with .Values.replicaCount }}
   replicas: {{ . }}
 {{- end }}
+{{- with .Values.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "php.name" . }}
