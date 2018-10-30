@@ -27,8 +27,12 @@ spec:
         chart: {{ template "php.chart" . }}
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
-{{- with .Values.annotations }}
       annotations:
+        checksum/nginx-conf: {{ tpl (index .Values.nginx.templates "nginx.conf" | toYaml) . | sha256sum }}
+        checksum/nginx-confd: {{ tpl (index .Values.nginx.templates "conf.d" | toYaml) . | sha256sum }}
+        checksum/fpm-conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf" | toYaml) . | sha256sum }}
+        checksum/fpm-confd: {{ tpl (index .Values.fpm.templates "php-fpm.d" | toYaml) . | sha256sum }}
+{{- with .Values.annotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
