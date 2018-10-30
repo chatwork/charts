@@ -3,9 +3,9 @@ entries:
   docker-registry:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-10-25T05:32:52.017780626Z
+    created: 2018-10-30T01:01:37.660779145Z
     description: Pull an Image from a Private Registry
-    digest: 81e3dc41069930484c079b480f5e13b0c59406923a40fa384ee7b7574dee4e1e
+    digest: 386c50baa37a9f79f07359daaabc9b14e3061c254a47ec9bca103f6e1bd53723
     name: docker-registry
     urls:
     - https://chatwork.github.io/charts/docker-registry-0.1.0.tgz
@@ -13,9 +13,9 @@ entries:
   example:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-10-25T05:32:52.018447681Z
+    created: 2018-10-30T01:01:37.661636579Z
     description: A Helm chart for Kubernetes
-    digest: 4816a72b1878413ac5a77e82b30d044e521ed599b86d66d0d7cc327ebe9e3494
+    digest: 904a05ca2cddc8110a49e24fc09b184bdc355433adf2ad9df2664b1cd01bfe53
     name: example
     urls:
     - https://chatwork.github.io/charts/example-0.1.0.tgz
@@ -23,9 +23,9 @@ entries:
   guard:
   - apiVersion: v1
     appVersion: 0.2.1
-    created: 2018-10-25T05:32:52.019441338Z
+    created: 2018-10-30T01:01:37.662735149Z
     description: chart for Guard (https://appscode.com/products/guard)
-    digest: 8a4c4659a9870e24c7bf1ecc0613bac4ea357800670641a5230ff19cff2e3212
+    digest: 8db2611720442a33040da863b84c1bf24178e5a4d0fdbaff883d8f4719f9be8c
     home: https://appscode.com/products/guard
     keywords:
     - webhook-authentication
@@ -40,9 +40,9 @@ entries:
     version: 0.0.1
   php:
   - apiVersion: v1
-    created: 2018-10-25T05:32:52.020707442Z
+    created: 2018-10-30T01:01:37.664013193Z
     description: PHP-FPM Web Application
-    digest: 27bd02d85c40e3fdbbc8da274edee72f9926bade306bc9b82c9d2127f06aee66
+    digest: 37a2b141a3e62ee51b2d1be92c1bbfda48a29d1d12ff1c70656f8c03e49a15f3
     icon: http://php.net/images/logos/php-logo-bigger.png
     name: php
     urls:
@@ -51,11 +51,11 @@ entries:
   tiller:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-10-25T05:32:52.021241012Z
+    created: 2018-10-30T01:01:37.664512238Z
     description: Helm Charts for installing Helm Tiller.
-    digest: 912b604de40cac80fa8c20b065caca7c54fcfe53af3474666909f5c89bc1bc06
+    digest: d4f0bf38714ca657c6420892324a9999f0a9b2458b229323480fbf8abe49e9dc
     name: tiller
     urls:
     - https://chatwork.github.io/charts/tiller-2.10.0.tgz
     version: 2.10.0
-generated: 2018-10-25T05:32:52.016986802Z
+generated: 2018-10-30T01:01:37.660431003Z
