@@ -38,6 +38,7 @@ spec:
         - --tls-ca-file={{ .Values.tlsFilesBase }}/ca.crt
         - --tls-cert-file={{ .Values.tlsFilesBase }}/tls.crt
         - --tls-private-key-file={{ .Values.tlsFilesBase }}/tls.key
+        - --ntp-server={{ .Values.ntpServer }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:

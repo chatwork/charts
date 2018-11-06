@@ -106,6 +106,9 @@ service:
   clusterIP: 10.96.10.96
   port: 443
 
+# http://wiki.nothing.sh/page/NTP/%BF%E4%BE%A9%B8%F8%B3%AB%A5%B5%A1%BC%A5%D0#b262580b
+ntpServer: s2csntp.miz.nao.ac.jp
+
 test:
   extraContainer: {}
 
