@@ -106,6 +106,8 @@ service:
   clusterIP: 10.96.10.96
   port: 443
 
+ntpServer: s2csntp.miz.nao.ac.jp
+
 test:
   extraContainer: {}
 
