@@ -1,9 +1,10 @@
+# private_key needs base64 encoding
 credentialsJson: |
   {
     "type": "service_account",
     "project_id": "{{ .Values.projectId }}",
     "private_key_id": "{{ .Values.privateKeyId }}",
-    "private_key": "{{ .Values.privateKey }}",
+    "private_key": "{{ .Values.privateKey | b64dec }}",
     "client_email": "{{ .Values.clientEmail }}",
     "client_id": "{{ .Values.clientId }}",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
