@@ -3,9 +3,9 @@ entries:
   docker-registry:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-11-06T05:34:00.178962565Z
+    created: 2018-11-12T08:37:29.046517817Z
     description: Pull an Image from a Private Registry
-    digest: 5dbddcd81214cf9f9f76a9b2666f986b7f3a9510c5bc2e8be04de260e1678e15
+    digest: 26bf1bdd8276e512da8994c778870afdc767e9a45ec6182dee968585e47d2ff1
     name: docker-registry
     urls:
     - https://chatwork.github.io/charts/docker-registry-0.1.0.tgz
@@ -13,19 +13,27 @@ entries:
   example:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-11-06T05:34:00.179639063Z
+    created: 2018-11-12T08:37:29.047201315Z
     description: A Helm chart for Kubernetes
-    digest: e839d2954164fd87ca853fb21efe8691c02818e466f13eb70cb879942ce2cb7b
+    digest: 4e9537776f84daec92f28ec92c1611087b7cb3c787e2aecbeaad55f3b8517f56
     name: example
     urls:
     - https://chatwork.github.io/charts/example-0.1.0.tgz
     version: 0.1.0
+  gcp-credentials:
+  - created: 2018-11-12T08:37:29.047663463Z
+    description: GCP credentials
+    digest: 3effd4da61f24240dba6ee8e2358bf48d82f89b2602c5f9be76297bc0a4319ea
+    name: gcp-credentials
+    urls:
+    - https://chatwork.github.io/charts/gcp-credentials-0.0.1.tgz
+    version: 0.0.1
   guard:
   - apiVersion: v1
     appVersion: 0.2.1
-    created: 2018-11-06T05:34:00.181495845Z
+    created: 2018-11-12T08:37:29.049701223Z
     description: chart for Guard (https://appscode.com/products/guard)
-    digest: 8f7ddd2a87b85e15eb73db7a9f5320b1413ec7d55d935bef8933a7b22df0e05b
+    digest: 67bdc32f86ae74bc914b64ff1c0c9168d7c77bf40986e11aa8a21b765ad88dba
     home: https://appscode.com/products/guard
     keywords:
     - webhook-authentication
@@ -40,7 +48,7 @@ entries:
     version: 0.0.2
   - apiVersion: v1
     appVersion: 0.2.1
-    created: 2018-11-06T05:34:00.180592675Z
+    created: 2018-11-12T08:37:29.048698056Z
     description: chart for Guard (https://appscode.com/products/guard)
     digest: 96904e9e6935e3b68f1c9d9a485f4a071cd9098605a32bc0db525e7244981679
     home: https://appscode.com/products/guard
@@ -57,16 +65,16 @@ entries:
     version: 0.0.1
   php:
   - apiVersion: v1
-    created: 2018-11-06T05:34:00.183853458Z
+    created: 2018-11-12T08:37:29.05228129Z
     description: PHP-FPM Web Application
-    digest: d1ff8ed97ee7a41831979d67ac9261e8bbc8519f1ab52a1345270f4ec7895eb4
+    digest: a59e58a833d86da9e9254ea058dd25ea2008e18b17bd6f3a83fb28b890b47efd
     icon: http://php.net/images/logos/php-logo-bigger.png
     name: php
     urls:
     - https://chatwork.github.io/charts/php-0.4.0.tgz
     version: 0.4.0
   - apiVersion: v1
-    created: 2018-11-06T05:34:00.182830976Z
+    created: 2018-11-12T08:37:29.051017162Z
     description: PHP-FPM Web Application
     digest: 37a2b141a3e62ee51b2d1be92c1bbfda48a29d1d12ff1c70656f8c03e49a15f3
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -77,11 +85,11 @@ entries:
   tiller:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-11-06T05:34:00.184115898Z
+    created: 2018-11-12T08:37:29.052549309Z
     description: Helm Charts for installing Helm Tiller.
-    digest: 9beb3336c0c2445d8b9bb018d15b84023ad40f6c90ed3fa13419c2b98a940c51
+    digest: 5b04307a937a01097a27c557e7136c1f22cbfa5d864317fe7106bacc1d1836b2
     name: tiller
     urls:
     - https://chatwork.github.io/charts/tiller-2.10.0.tgz
     version: 2.10.0
-generated: 2018-11-06T05:34:00.178179271Z
+generated: 2018-11-12T08:37:29.045626311Z
