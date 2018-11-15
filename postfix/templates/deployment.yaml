@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "postfix.fullname" . }}
+  labels:
+    app: {{ include "postfix.name" . }}
+    chart: {{ include "postfix.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "postfix.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "postfix.name" . }}
+        chart: {{ template "postfix.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+      annotations:
+        checksum/main-cf: {{ tpl (index .Values.postfix.templates "main.cf" | toYaml) . | sha256sum }}
+{{- with .Values.annotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: smtp
+          containerPort: 25
+          protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: 25
+          failureThreshold: 2
+          initialDelaySeconds: 10
+          periodSeconds: 60
+        readinessProbe:
+          tcpSocket:
+            port: 25
+          failureThreshold: 2
+          periodSeconds: 5
+        volumeMounts:
+        - name: main-cf
+          subPath: main.cf
+          mountPath: /etc/postfix/main.cf
+      volumes:
+      - name: main-cf
+        configMap:
+          name: {{ template "postfix.fullname" . }}-main-cf
+{{- with .Values.resources }}
+      resources:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}

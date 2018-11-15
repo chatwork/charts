@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postfix.fullname" . }}-main-cf
+  labels:
+    app: {{ template "postfix.name" . }}
+    chart: {{ template "postfix.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    checksum/main-cf: {{ tpl (index .Values.postfix.templates "main.cf" | toYaml) . | sha256sum }}
+{{- with .Values.postfix.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+data:
+  main.cf:
+{{- tpl (index .Values.postfix.templates "main.cf") . | toYaml | indent 2 }}
