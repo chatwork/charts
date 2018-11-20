@@ -46,13 +46,15 @@ spec:
           failureThreshold: 2
           periodSeconds: 5
         volumeMounts:
-        - name: main-cf
-          subPath: main.cf
-          mountPath: /etc/postfix/main.cf
+        {{- range $key, $value := .Values.postfix.templates }}
+        - name: configmap-postfix
+          subPath: {{ $key }}
+          mountPath: /etc/postfix/{{ $key }}
+        {{- end }}
       volumes:
-      - name: main-cf
+      - name: configmap-postfix
         configMap:
-          name: {{ template "postfix.fullname" . }}-main-cf
+          name: {{ template "postfix.fullname" . }}-configmap-postfix
 {{- with .Values.resources }}
       resources:
 {{ toYaml . | indent 8 }}
