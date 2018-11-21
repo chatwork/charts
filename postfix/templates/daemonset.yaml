@@ -1,6 +1,6 @@
-{{- if .Values.deployment.enabled }}
+{{- if .Values.daemonset.enabled }}
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: {{ include "postfix.fullname" . }}
   labels:
@@ -9,7 +9,6 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
       app: {{ include "postfix.name" . }}
@@ -25,10 +24,14 @@ spec:
       {{- range $key, $value := .Values.postfix.templates }}
         checksum/{{ $key }}: {{ $value | toYaml | sha256sum }}
       {{- end }}
-{{- with .Values.annotations }}
+{{- with .Values.daemonset.annotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.daemonset.useHostNetwork }}
+      hostNetwork: {{ .Values.daemonset.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -36,6 +39,9 @@ spec:
         ports:
         - name: smtp
           containerPort: 25
+          {{- if .Values.daemonset.hostPort }}
+          hostPort: {{ .Values.daemonset.hostPort }}
+          {{- end }}
           protocol: TCP
         livenessProbe:
           tcpSocket:
@@ -54,24 +60,35 @@ spec:
           subPath: {{ $key }}
           mountPath: /etc/postfix/{{ $key }}
         {{- end }}
+        {{- if .Values.daemonset.hostPathSpoolPostfix }}
+        - name: host-spool-postfix
+          mountPath: /var/spool/postfix
+        {{- end }}
       volumes:
       - name: configmap-postfix
         configMap:
           name: {{ template "postfix.fullname" . }}-configmap-postfix
+      {{- if .Values.daemonset.hostPathSpoolPostfix }}
+      - name: host-spool-postfix
+        hostPath:
+          path: {{ .Values.daemonset.hostPathSpoolPostfix }}
+      {{- end }}
 {{- with .Values.resources }}
       resources:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.nodeSelector }}
+{{- with .Values.daemonset.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.affinity }}
+{{- with .Values.daemonset.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.tolerations }}
+{{- with .Values.daemonset.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{ end }}
+      updateStrategy:
+        type: {{ default "RollingUpdate" .Values.daemonset.updateStrategy | quote }}
+{{- end }}

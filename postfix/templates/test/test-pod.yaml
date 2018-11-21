@@ -18,7 +18,17 @@ spec:
         - /bin/sh
         - -c
         - |
-          echo -en "helo a" | nc {{ template "postfix.fullname" . }} {{ .Values.service.port | default "25" }}
+          echo -en "helo a" | nc {{ template "postfix.fullname" . }} {{ .Values.deployment.service.port | default "25" }}
+#      env:
+#      - name: NODE_IP
+#        valueFrom:
+#          fieldRef:
+#            fieldPath: status.hostIP
+#      command:
+#        - /bin/sh
+#        - -c
+#        - |
+#          echo -en "helo a" | nc $NODE_IP {{ .Values.daemonset.hostPort | default "25" }}
 {{- with .Values.test.extraContainer }}
 {{ toYaml . | indent 8}}
 {{- end }}
