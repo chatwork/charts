@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: localhost:5000/chatwork/postfix # FIXME
+  repository: chatwork/postfix
   tag: latest
   pullPolicy: IfNotPresent
 
