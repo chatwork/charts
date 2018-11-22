@@ -28,6 +28,9 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
       annotations:
+{{- with .Values.busybox.templates }}
+        checksum/busybox: {{ tpl (toYaml .) $root | sha256sum }}
+{{- end }}
         checksum/nginx-conf: {{ tpl (index .Values.nginx.templates "nginx.conf" | toYaml) . | sha256sum }}
         checksum/nginx-confd: {{ tpl (index .Values.nginx.templates "conf.d" | toYaml) . | sha256sum }}
         checksum/fpm-conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf" | toYaml) . | sha256sum }}
