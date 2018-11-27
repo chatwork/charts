@@ -770,6 +770,18 @@ postfix:
       meta_directory = /etc/postfix
       shlib_directory = /usr/lib/postfix
 
+      smtp_sasl_auth_enable = yes
+      smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+      smtp_sasl_security_options = noanonymous
+      smtp_sasl_tls_security_options = noanonymous
+      smtp_tls_security_level = encrypt
+      header_size_limit = 4096000
+      relayhost = [smtp.sendgrid.net]:587
+  secrets:
+    # duumy value
+    # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
+    # [smtp.sendgrid.net]:587 yourSendGridUsername:yourSendGridPassword
+    sasl_passwd: W3NtdHAuc2VuZGdyaWQubmV0XTo1ODcgeW91clNlbmRHcmlkVXNlcm5hbWU6eW91clNlbmRHcmlkUGFzc3dvcmQK
 
 test:
   extraContainer: []
