@@ -12,6 +12,9 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+# Duration in seconds the pod needs to terminate gracefully.
+terminationGracePeriodSeconds: 60
+
 daemonset:
   enabled: true
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might

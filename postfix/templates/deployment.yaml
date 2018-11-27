@@ -29,6 +29,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -37,6 +38,9 @@ spec:
           postStart:
             exec:
               command: ["/usr/sbin/postmap", "/etc/postfix/sasl_passwd"]
+          preStop:
+            exec:
+              command: ["/usr/sbin/postfix", "flush"]
         ports:
         - name: smtp
           containerPort: 25
