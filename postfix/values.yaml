@@ -773,6 +773,7 @@ postfix:
       meta_directory = /etc/postfix
       shlib_directory = /usr/lib/postfix
 
+      # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
       smtp_sasl_auth_enable = yes
       smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
       smtp_sasl_security_options = noanonymous

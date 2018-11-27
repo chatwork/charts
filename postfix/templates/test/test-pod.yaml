@@ -13,22 +13,15 @@ metadata:
 spec:
   containers:
     - name: {{ .Chart.Name }}-test
-      image: appropriate/curl
+      image: php:7.2-alpine
+      env:
+        - name: SMTPHOST
+          value: "{{ template "postfix.fullname" . }}:{{ .Values.deployment.service.port | default "25" }}"
       command:
         - /bin/sh
         - -c
         - |
-          echo -en "helo a" | nc {{ template "postfix.fullname" . }} {{ .Values.deployment.service.port | default "25" }}
-#      env:
-#      - name: NODE_IP
-#        valueFrom:
-#          fieldRef:
-#            fieldPath: status.hostIP
-#      command:
-#        - /bin/sh
-#        - -c
-#        - |
-#          echo -en "helo a" | nc $NODE_IP {{ .Values.daemonset.hostPort | default "25" }}
+          /usr/local/bin/php -r '$ret = mail("a@example.com", "Hello", "Body"); var_dump($ret);' | grep true
 {{- with .Values.test.extraContainer }}
 {{ toYaml . | indent 8}}
 {{- end }}
