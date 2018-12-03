@@ -64,6 +64,9 @@ spec:
           subPath: sasl_passwd
           mountPath: /etc/postfix/sasl_passwd
           readOnly: true
+{{- if .Values.extraVolumeMounts }}
+{{ tpl .Values.extraVolumeMounts . | indent 8 }}
+{{- end }}
       {{- if .Values.test.enabled }}
       - name: {{ .Chart.Name }}-mailhog
         image: mailhog/mailhog
@@ -86,15 +89,15 @@ spec:
       resources:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.nodeSelector }}
+{{- with .Values.deployment.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.affinity }}
+{{- with .Values.deployment.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.tolerations }}
+{{- with .Values.deployment.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
