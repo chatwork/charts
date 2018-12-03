@@ -87,7 +87,7 @@ nodeSelector: {}
 
 postfix:
   templates:
-    main.cf: |
+    main-cf: |
       # Global Postfix configuration file. This file lists only a subset
       # of all parameters. For the syntax, and for a complete parameter
       # list, see the postconf(5) manual page (command: "man 5 postconf").
@@ -769,14 +769,13 @@ postfix:
       shlib_directory = /usr/lib/postfix
 
       # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
-      #smtp_sasl_auth_enable = yes
-      #smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-      #smtp_sasl_security_options = noanonymous
-      #smtp_sasl_tls_security_options = noanonymous
-      #smtp_tls_security_level = encrypt
+      smtp_sasl_auth_enable = yes
+      smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+      smtp_sasl_security_options = noanonymous
+      smtp_sasl_tls_security_options = noanonymous
+      smtp_tls_security_level = encrypt
       header_size_limit = 4096000
-      #relayhost = [smtp.sendgrid.net]:587
-      relayhost = [localhost]:1025
+      relayhost = [smtp.sendgrid.net]:587
   secrets:
     # duumy value
     # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html

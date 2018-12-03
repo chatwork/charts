@@ -57,11 +57,9 @@ spec:
           failureThreshold: 2
           periodSeconds: 5
         volumeMounts:
-        {{- range $key, $value := .Values.postfix.templates }}
         - name: configmap-postfix
-          subPath: {{ $key }}
-          mountPath: /etc/postfix/{{ $key }}
-        {{- end }}
+          subPath: main-cf
+          mountPath: /etc/postfix/main.cf
         - name: secret-postfix
           subPath: sasl_passwd
           mountPath: /etc/postfix/sasl_passwd
