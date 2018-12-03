@@ -9,7 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    checksum/main-cf: {{ tpl (index .Values.postfix.templates "main.cf" | toYaml) . | sha256sum }}
+  {{- range $key, $value := .Values.postfix.templates }}
+    checksum/{{ $key }}: {{ $value | toYaml | sha256sum }}
+  {{- end }}
 {{- with .Values.postfix.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
