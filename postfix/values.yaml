@@ -17,12 +17,7 @@ terminationGracePeriodSeconds: 60
 
 daemonset:
   enabled: true
-  ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
-  ## not be supported. The ports will need to be available on all hosts. Can be
-  ## used for custom metrics instead of a service endpoint.
-  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
-  ## metrics and traces will be accepted from any host able to connect to this host.
-  # useHostNetwork: true
+  useHostNetwork: true
 
   ## Annotations to add to the DaemonSet's Pods
   # podAnnotations:
@@ -774,13 +769,14 @@ postfix:
       shlib_directory = /usr/lib/postfix
 
       # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
-      smtp_sasl_auth_enable = yes
-      smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-      smtp_sasl_security_options = noanonymous
-      smtp_sasl_tls_security_options = noanonymous
-      smtp_tls_security_level = encrypt
+      #smtp_sasl_auth_enable = yes
+      #smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+      #smtp_sasl_security_options = noanonymous
+      #smtp_sasl_tls_security_options = noanonymous
+      #smtp_tls_security_level = encrypt
       header_size_limit = 4096000
-      relayhost = [smtp.sendgrid.net]:587
+      #relayhost = [smtp.sendgrid.net]:587
+      relayhost = [localhost]:1025
   secrets:
     # duumy value
     # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
@@ -788,5 +784,7 @@ postfix:
     sasl_passwd: W3NtdHAuc2VuZGdyaWQubmV0XTo1ODcgeW91clNlbmRHcmlkVXNlcm5hbWU6eW91clNlbmRHcmlkUGFzc3dvcmQK
 
 test:
+  enabled: false
+  mailHogHttpPort: 8025
   extraContainer: []
 

@@ -76,6 +76,18 @@ spec:
         - name: host-spool-postfix
           mountPath: /var/spool/postfix
         {{- end }}
+      {{- if .Values.test.enabled }}
+      - name: {{ .Chart.Name }}-mailhog
+        image: mailhog/mailhog
+        ports:
+          - name: hog-smtp
+            containerPort: 1025
+            protocol: TCP
+          - name: hog-http
+            containerPort: 8025
+            hostPort: {{ .Values.test.mailHogHttpPort }}
+            protocol: TCP
+      {{- end }}
       volumes:
       - name: configmap-postfix
         configMap:
