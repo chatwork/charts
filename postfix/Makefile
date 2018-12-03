@@ -16,7 +16,7 @@ test-daemonset:
 .PHONY: test-deployment
 test-deployment:
 	# 作成済 Chart、 test pod を削除
-	helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} delete $$(basename $$PWD)-$$(git rev-parse HEAD) --prune
+	helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} delete $$(basename $$PWD)-$$(git rev-parse HEAD) --purge
 	kubectl delete pods --namespace "$$(basename $$PWD)$$(git rev-parse HEAD)" $$(basename $$PWD)-$$(git rev-parse HEAD)-test
 
 	# kubeadm-dind-cluster 環境で Service を利用する場合、type=LoadBalancer だと 起動しない。NodePort を指定して回避。
