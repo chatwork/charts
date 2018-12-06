@@ -18,6 +18,8 @@ busybox:
   env: {}
   envFrom: []
   extraVolumeMounts: {}
+  secrets: {}
+  templates: {}
 
 # NGINX
 nginx:
@@ -56,6 +58,9 @@ nginx:
   errorLevel: warn
   http:
     keepaliveTimeout: 65
+
+  # NGINX secrets values or files
+  secrets: {}
 
   # configuration NGINX templates
   # If you can not be satisfied with the default settings you can change the template.
@@ -162,6 +167,9 @@ fpm:
     displayErrors: off
     errorReporting: E_ALL
     exposePhp: off
+
+  # PHP-FPM secrets values or files
+  secrets: {}
 
   # configuration PHP-FPM templates
   # If you can not be satisfied with the default settings you can change the template.

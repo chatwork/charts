@@ -1,0 +1,19 @@
+{{- if .Values.busybox.templates }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "php.fullname" . }}-busybox
+  labels:
+    app: {{ template "php.name" . }}
+    chart: {{ template "php.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    checksum/busybox: {{ tpl (toYaml .Values.busybox.templates) . | sha256sum }}
+{{- with .Values.busybox.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+data:
+{{ tpl (toYaml .Values.busybox.templates) . | indent 2 }}
+{{- end }}
