@@ -41,7 +41,7 @@ spec:
 {{- with .Values.nginx.secrets }}
         checksum/nginx-secret: {{ . | toYaml | sha256sum }}
 {{- end }}
-{{- with .Values.nginx.secrets }}
+{{- with .Values.fpm.secrets }}
         checksum/fpm-secret: {{ . | toYaml | sha256sum }}
 {{- end }}
 {{- with .Values.annotations }}
