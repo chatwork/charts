@@ -55,6 +55,7 @@ resources: {}
   #  memory: 128Mi
 
 extraVolumeMounts: []
+extraVolumes: []
 
 postfix:
   templates:

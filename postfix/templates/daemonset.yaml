@@ -101,6 +101,9 @@ spec:
         hostPath:
           path: {{ .Values.daemonset.hostPathSpoolPostfix }}
       {{- end }}
+{{- if .Values.extraVolumes }}
+{{ tpl .Values.extraVolumes . | indent 6 }}
+{{- end }}
 {{- with .Values.resources }}
       resources:
 {{ toYaml . | indent 8 }}
