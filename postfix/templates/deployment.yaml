@@ -85,6 +85,9 @@ spec:
       - name: secret-postfix
         secret:
           secretName: {{ template "postfix.fullname" . }}-secret-postfix
+{{- if .Values.extraVolumes }}
+{{ tpl .Values.extraVolumes . | indent 6 }}
+{{- end }}
 {{- with .Values.resources }}
       resources:
 {{ toYaml . | indent 8 }}
