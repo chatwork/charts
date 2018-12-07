@@ -21,3 +21,5 @@
 *.tmproj
 
 templates/test/main.cf
+templates/test/extraVolumes.yaml
+templates/test/extraVolumeMounts.yaml

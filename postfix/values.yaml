@@ -18,9 +18,6 @@ daemonset:
   # If you set it to true, Daemonset use hostNetwork
   useHostNetwork: true
 
-  # If you set it, Daemonset mount hostPath volume as mail spool
-  hostPathSpoolPostfix: /var/postfix/spool
-
   hostPort: 25
 
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
