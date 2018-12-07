@@ -679,4 +679,4 @@ meta_directory = /etc/postfix
 shlib_directory = /usr/lib/postfix
 
 header_size_limit = 4096000
-relayhost = [localhost]:1025
+relayhost = [10.110.200.100]:1025

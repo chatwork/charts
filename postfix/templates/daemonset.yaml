@@ -73,18 +73,6 @@ spec:
 {{- if .Values.extraVolumeMounts }}
 {{ tpl .Values.extraVolumeMounts . | indent 8 }}
 {{- end }}
-      {{- if .Values.test.enabled }}
-      - name: {{ .Chart.Name }}-mailhog
-        image: mailhog/mailhog
-        ports:
-          - name: hog-smtp
-            containerPort: 1025
-            protocol: TCP
-          - name: hog-http
-            containerPort: 8025
-            hostPort: {{ .Values.test.mailHogHttpPort }}
-            protocol: TCP
-      {{- end }}
       volumes:
       - name: configmap-postfix
         configMap:
