@@ -1,3 +1,4 @@
+{{- if .Values.test.enabled }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -15,8 +16,10 @@ spec:
             fieldRef:
               fieldPath: status.hostIP
       {{- end }}
+        - name: MAILHOG_HOST
+          value: {{ include "postfix.fullname" . }}-test-mailhog
         - name: MAILHOG_HTTP_PORT
-          value: "{{ .Values.test.mailHogHttpPort }}"
+          value: "8025"
         - name: TO_EMAIL
           value: "a@example.com"
       command:
@@ -25,15 +28,12 @@ spec:
         - |
         {{- if .Values.daemonset.enabled }}
           export SMTPHOST="${NODE_IP}:{{ .Values.daemonset.hostPort }}" \
-          && export MAILHOG_HOST=${NODE_IP} \
         {{- end }}
         {{- if .Values.deployment.enabled }}
           export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.deployment.service.port | default "25" }}" \
-          && export MAILHOG_HOST={{ template "postfix.fullname" . }} \
         {{- end }}
           && /usr/local/bin/php -r "\$ret = mail(\"${TO_EMAIL}\", \"Hello\", \"Body\"); var_dump(\$ret);" | grep true \
-          && echo "curl http://${MAILHOG_HOST}:${MAILHOG_HTTP_PORT}/api/v2/messages | grep ${TO_EMAIL}"
-  {{- with .Values.test.extraContainer }}
-  {{ toYaml . | indent 8}}
-  {{- end }}
+          && sleep 1 \
+          && curl http://${MAILHOG_HOST}:${MAILHOG_HTTP_PORT}/api/v2/messages | grep ${TO_EMAIL}
   restartPolicy: Never
+{{- end }}

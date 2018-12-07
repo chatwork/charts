@@ -753,6 +753,4 @@ postfix:
 
 test:
   enabled: false
-  mailHogHttpPort: 8025
-  extraContainer: []
 
