@@ -46,16 +46,9 @@ spec:
           containerPort: 25
           protocol: TCP
         livenessProbe:
-          tcpSocket:
-            port: 25
-          failureThreshold: 2
-          initialDelaySeconds: 10
-          periodSeconds: 60
+{{ toYaml .Values.livenessProbe | indent 12 }}
         readinessProbe:
-          tcpSocket:
-            port: 25
-          failureThreshold: 2
-          periodSeconds: 5
+{{ toYaml .Values.readinessProbe | indent 12 }}
         volumeMounts:
         - name: configmap-postfix
           subPath: main-cf
@@ -65,7 +58,7 @@ spec:
           mountPath: /etc/postfix/sasl_passwd
           readOnly: true
 {{- if .Values.extraVolumeMounts }}
-{{ tpl .Values.extraVolumeMounts . | indent 8 }}
+{{ toYaml .Values.extraVolumeMounts . | indent 8 }}
 {{- end }}
       volumes:
       - name: configmap-postfix
@@ -75,7 +68,7 @@ spec:
         secret:
           secretName: {{ template "postfix.fullname" . }}-secret-postfix
 {{- if .Values.extraVolumes }}
-{{ tpl .Values.extraVolumes . | indent 6 }}
+{{ toYaml .Values.extraVolumes . | indent 6 }}
 {{- end }}
 {{- with .Values.resources }}
       resources:

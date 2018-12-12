@@ -21,5 +21,4 @@
 *.tmproj
 
 templates/test/main.cf
-templates/test/extraVolumes.yaml
-templates/test/extraVolumeMounts.yaml
+templates/test/test-hostPath-values.yaml

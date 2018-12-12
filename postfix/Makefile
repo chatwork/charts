@@ -10,7 +10,7 @@ apply:
 		kubectl create namespace $(namespace); \
 	fi
 	# enable daemonset and test
-	helm $(helmContext) upgrade $(helmInstallOptions) --set-file extraVolumes=templates/test/extraVolumes.yaml --set-file extraVolumeMounts=templates/test/extraVolumeMounts.yaml $(releaseName) .;
+	helm $(helmContext) upgrade $(helmInstallOptions) -f templates/test/test-hostPath-values.yaml $(releaseName) .;
 
 .PHONY: test
 test: test-daemonset test-deployment
