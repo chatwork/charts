@@ -1,2 +1,0 @@
-- name: host-spool-postfix
-  mountPath: /var/spool/postfix
