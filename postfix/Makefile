@@ -1,7 +1,7 @@
 namespace = "$$(basename $$PWD)$$(git rev-parse HEAD)"
 helmContext = --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"}
 
-helmInstallOptions = --wait --install --namespace $(namespace) --set test.enabled=true --set-file postfix.templates.main-cf=templates/test/main.cf
+helmInstallOptions = --wait --install --namespace $(namespace) --set test.enabled=true --set-file postfix.configMaps.main_cf=templates/test/main.cf
 releaseName = $$(basename $$PWD)-$$(git rev-parse HEAD)
 
 .PHONY: apply

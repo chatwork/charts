@@ -21,10 +21,9 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
       annotations:
-      {{- range $key, $value := .Values.postfix.templates }}
-        checksum/{{ $key }}: {{ $value | toYaml | sha256sum }}
-      {{- end }}
-{{- with .Values.daemonset.annotations }}
+        checksum/main_cf: {{ .Values.postfix.configMaps.main_cf | toYaml | sha256sum }}
+        checksum/sasl_passwd: {{ .Values.postfix.secrets.sasl_passwd | toYaml | sha256sum }}
+{{- with .Values.daemonset.podAnnotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
@@ -56,10 +55,10 @@ spec:
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         volumeMounts:
-        - name: configmap-postfix
-          subPath: main-cf
+        - name: configmap
+          subPath: main_cf
           mountPath: /etc/postfix/main.cf
-        - name: secret-postfix
+        - name: secret
           subPath: sasl_passwd
           mountPath: /etc/postfix/sasl_passwd
           readOnly: true
@@ -67,12 +66,12 @@ spec:
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
       volumes:
-      - name: configmap-postfix
+      - name: configmap
         configMap:
-          name: {{ template "postfix.fullname" . }}-configmap-postfix
-      - name: secret-postfix
+          name: {{ template "postfix.fullname" . }}-configmap
+      - name: secret
         secret:
-          secretName: {{ template "postfix.fullname" . }}-secret-postfix
+          secretName: {{ template "postfix.fullname" . }}-secret
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}

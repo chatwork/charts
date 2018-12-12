@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postfix.fullname" . }}-configmap
+  labels:
+    app: {{ template "postfix.name" . }}
+    chart: {{ template "postfix.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- range $key, $value := .Values.postfix.configMaps }}
+  {{ $key }}:
+{{- $value | toYaml | indent 2 }}
+{{- end }}
