@@ -15,12 +15,6 @@ spec:
       targetPort: 25
       protocol: TCP
       name: smtp
-  {{- if .Values.test.enabled }}
-    - port: 8025
-      targetPort: 8025
-      protocol: TCP
-      name: http
-  {{- end }}
   selector:
     app: {{ include "postfix.name" . }}
     release: {{ .Release.Name }}
