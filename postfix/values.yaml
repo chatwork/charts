@@ -51,6 +51,7 @@ daemonset:
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   #updateStrategy: RollingUpdate
 
+  podAnnotations: {}
   affinity: {}
   tolerations: []
   nodeSelector: {}
@@ -63,13 +64,14 @@ deployment:
     type: LoadBalancer
     port: 25
 
+  podAnnotations: {}
   affinity: {}
   tolerations: []
   nodeSelector: {}
 
 postfix:
-  templates:
-    main-cf: |
+  configMaps:
+    main_cf: |
       # Global Postfix configuration file. This file lists only a subset
       # of all parameters. For the syntax, and for a complete parameter
       # list, see the postconf(5) manual page (command: "man 5 postconf").
@@ -764,6 +766,9 @@ postfix:
     # [smtp.sendgrid.net]:587 yourSendGridUsername:yourSendGridPassword
     sasl_passwd: W3NtdHAuc2VuZGdyaWQubmV0XTo1ODcgeW91clNlbmRHcmlkVXNlcm5hbWU6eW91clNlbmRHcmlkUGFzc3dvcmQK
 
+# for helm test setting
+# test.enabled=true にすると、テスト用 MailHog サービス（templates/test/test-*.yaml）が起動する。
+# helm test 用の機能なので、本番環境では false にしておく。
 test:
   enabled: false
 
