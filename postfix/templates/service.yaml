@@ -15,6 +15,12 @@ spec:
       targetPort: 25
       protocol: TCP
       name: smtp
+{{- if .Values.mailhog.enabled }}
+    - port: {{ .Values.mailhog.httpPort }}
+      targetPort: 8025
+      protocol: TCP
+      name: mail-hog-http
+{{- end }}
   selector:
     app: {{ include "postfix.name" . }}
     release: {{ .Release.Name }}

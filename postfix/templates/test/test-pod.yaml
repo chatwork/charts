@@ -1,4 +1,3 @@
-{{- if .Values.test.enabled }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -17,9 +16,9 @@ spec:
               fieldPath: status.hostIP
       {{- end }}
         - name: MAILHOG_HOST
-          value: {{ include "postfix.fullname" . }}-test-mailhog
+          value: {{ include "postfix.fullname" . }}
         - name: MAILHOG_HTTP_PORT
-          value: "8025"
+          value: "{{ .Values.mailhog.httpPort }}"
         - name: TO_EMAIL
           value: "a@example.com"
       command:
@@ -28,6 +27,7 @@ spec:
         - |
         {{- if .Values.daemonset.enabled }}
           export SMTPHOST="${NODE_IP}:{{ .Values.daemonset.hostPort }}" \
+          && export MAILHOG_HOST=${NODE_IP} \
         {{- end }}
         {{- if .Values.deployment.enabled }}
           export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.deployment.service.port | default "25" }}" \
@@ -36,4 +36,3 @@ spec:
           && sleep 1 \
           && curl http://${MAILHOG_HOST}:${MAILHOG_HTTP_PORT}/api/v2/messages | grep ${TO_EMAIL}
   restartPolicy: Never
-{{- end }}

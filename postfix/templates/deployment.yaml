@@ -22,7 +22,7 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
       annotations:
-        checksum/main_cf: {{ .Values.postfix.configMaps.main_cf | toYaml | sha256sum }}
+        checksum/main_cf: {{ tpl .Values.postfix.templates.main_cf . | toYaml | sha256sum }}
         checksum/sasl_passwd: {{ .Values.postfix.secrets.sasl_passwd | toYaml | sha256sum }}
 {{- with .Values.deployment.podAnnotations }}
 {{ toYaml . | indent 8 }}
@@ -58,6 +58,17 @@ spec:
           readOnly: true
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts . | indent 8 }}
+{{- end }}
+{{- if .Values.mailhog.enabled }}
+      - name: {{ .Chart.Name }}-mailhog
+        image: {{ .Values.mailhog.image }}
+        ports:
+          - name: smtp
+            containerPort: 1025
+            protocol: TCP
+          - name: http
+            containerPort: 8025
+            protocol: TCP
 {{- end }}
       volumes:
       - name: configmap
