@@ -68,6 +68,11 @@ deployment:
   affinity: {}
   tolerations: []
 
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    maxUnavailable:
+
 postfix:
   configMaps:
     main_cf: |
