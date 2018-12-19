@@ -30,7 +30,7 @@ spec:
           export SMTPHOST="${NODE_IP}:{{ .Values.daemonset.hostPort }}" \
         {{- end }}
         {{- if .Values.deployment.enabled }}
-          export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.deployment.service.port | default "25" }}" \
+          export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.deployment.service.port }}" \
         {{- end }}
           && /usr/local/bin/php -r "\$ret = mail(\"${TO_EMAIL}\", \"Hello\", \"Body\"); var_dump(\$ret);" | grep true \
           && sleep 1 \
