@@ -10,7 +10,7 @@ apply:
 	@if ! kubectl get namespace $(namespace) >/dev/null 2>&1; then \
 		kubectl create namespace $(namespace); \
 	fi
-	# enable daemonset and test
+	# enable daemonset
 	helm $(helmContext) upgrade $(helmInstallOptions) -f templates/test/test-hostPath-values.yaml $(releaseName) .;
 
 .PHONY: test
@@ -18,21 +18,21 @@ test: test-daemonset test-daemonset-mailhog test-deployment test-deployment-mail
 
 .PHONY: test-daemonset
 test-daemonset:
-	$(deleteChart)
+	-$(deleteChart)
 
 	helm $(helmContext) upgrade $(helmInstallOptions) -f templates/test/test-hostPath-values.yaml $(releaseName) .;
 	helm $(helmContext) test $(releaseName)
 
 .PHONY: test-daemonset-mailhog
 test-daemonset:
-	$(deleteChart)
+	-$(deleteChart)
 
 	helm $(helmContext) upgrade $(helmInstallOptions) -f templates/test/test-hostPath-values.yaml --set mailhog.enabled=true $(releaseName) .;
 	helm $(helmContext) test $(releaseName)
 
 .PHONY: test-deployment
 test-deployment:
-	$(deleteChart)
+	-$(deleteChart)
 
 	# kubeadm-dind-cluster 環境で Service を利用する場合、type=LoadBalancer だと 起動しない。NodePort を指定して回避。
 	# @see https://github.com/kubernetes-sigs/kubeadm-dind-cluster/issues/74
@@ -42,7 +42,7 @@ test-deployment:
 
 .PHONY: test-deployment-mailhog
 test-deployment:
-	$(deleteChart)
+	-$(deleteChart)
 
 	# kubeadm-dind-cluster 環境で Service を利用する場合、type=LoadBalancer だと 起動しない。NodePort を指定して回避。
 	# @see https://github.com/kubernetes-sigs/kubeadm-dind-cluster/issues/74
