@@ -33,6 +33,10 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- with .Values.resources }}
+        resources:
+{{ toYaml . | indent 12 }}
+{{- end }}
         lifecycle:
           preStop:
             exec:
@@ -65,10 +69,6 @@ spec:
           secretName: {{ template "postfix.fullname" . }}-secret
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes . | indent 6 }}
-{{- end }}
-{{- with .Values.resources }}
-      resources:
-{{ toYaml . | indent 8 }}
 {{- end }}
 {{- with .Values.deployment.nodeSelector }}
       nodeSelector:

@@ -36,6 +36,10 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- with .Values.resources }}
+        resources:
+{{ toYaml . | indent 12 }}
+{{- end }}
         lifecycle:
           preStop:
             exec:
@@ -72,10 +76,6 @@ spec:
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
-{{- with .Values.resources }}
-      resources:
-{{ toYaml . | indent 8 }}
-{{- end }}
 {{- with .Values.daemonset.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -88,6 +88,6 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
-      updateStrategy:
-        type: {{ default "RollingUpdate" .Values.daemonset.updateStrategy | quote }}
+  updateStrategy:
+    type: {{ .Values.daemonset.updateStrategy }}
 {{- end }}

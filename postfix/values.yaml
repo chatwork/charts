@@ -55,6 +55,7 @@ daemonset:
   affinity: {}
   tolerations: []
   nodeSelector: {}
+  updateStrategy: "RollingUpdate"
 
 deployment:
   enabled: false
