@@ -76,10 +76,6 @@ spec:
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
-{{- with .Values.daemonset.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-{{- end }}
 {{- with .Values.daemonset.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}

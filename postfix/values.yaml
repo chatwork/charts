@@ -54,7 +54,6 @@ daemonset:
   podAnnotations: {}
   affinity: {}
   tolerations: []
-  nodeSelector: {}
   updateStrategy: "RollingUpdate"
 
 deployment:
@@ -68,7 +67,6 @@ deployment:
   podAnnotations: {}
   affinity: {}
   tolerations: []
-  nodeSelector: {}
 
 postfix:
   configMaps:
