@@ -37,9 +37,6 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         lifecycle:
-          postStart:
-            exec:
-              command: ["/usr/sbin/postmap", "/etc/postfix/sasl_passwd"]
           preStop:
             exec:
               command: ["/usr/sbin/postfix", "flush"]
