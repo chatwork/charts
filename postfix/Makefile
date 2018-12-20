@@ -34,9 +34,9 @@ test-daemonset-mailhog:
 test-deployment:
 	-$(deleteChart)
 
-	# kubeadm-dind-cluster 環境で Service を利用する場合、type=LoadBalancer だと 起動しない。ClusterIP を指定して回避。
+	# kubeadm-dind-cluster 環境で Service を利用する場合、type=LoadBalancer だと 起動しない。NodePort を指定して回避。
 	# @see https://github.com/kubernetes-sigs/kubeadm-dind-cluster/issues/74
-	helm $(helmContext) upgrade $(helmInstallOptions) --set deployment.enabled=true --set daemonset.enabled=false --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP  $(releaseName) .;
+	helm $(helmContext) upgrade $(helmInstallOptions) --set deployment.enabled=true --set daemonset.enabled=false --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=NodePort  $(releaseName) .;
 
 	helm $(helmContext) test $(releaseName)
 
@@ -44,9 +44,9 @@ test-deployment:
 test-deployment-mailhog:
 	-$(deleteChart)
 
-	# kubeadm-dind-cluster 環境で Service を利用する場合、type=LoadBalancer だと 起動しない。ClusterIP を指定して回避。
+	# kubeadm-dind-cluster 環境で Service を利用する場合、type=LoadBalancer だと 起動しない。NodePort を指定して回避。
 	# @see https://github.com/kubernetes-sigs/kubeadm-dind-cluster/issues/74
-	helm $(helmContext) upgrade $(helmInstallOptions) --set deployment.enabled=true --set daemonset.enabled=false --set mailhog.enabled=true --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP  $(releaseName) .;
+	helm $(helmContext) upgrade $(helmInstallOptions) --set deployment.enabled=true --set daemonset.enabled=false --set mailhog.enabled=true --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=NodePort  $(releaseName) .;
 
 	helm $(helmContext) test $(releaseName)
 
