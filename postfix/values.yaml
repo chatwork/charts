@@ -74,7 +74,7 @@ deployment:
     maxUnavailable:
 
 postfix:
-  configMaps:
+  templates:
     main_cf: |
       # Global Postfix configuration file. This file lists only a subset
       # of all parameters. For the syntax, and for a complete parameter
@@ -756,6 +756,9 @@ postfix:
       meta_directory = /etc/postfix
       shlib_directory = /usr/lib/postfix
 
+      {{- if .Values.mailhog.enabled }}
+      relayhost = [{{ .Values.mailhog.clusterIp }}]:1025
+      {{- else }}
       # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
       smtp_sasl_auth_enable = yes
       smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
@@ -764,6 +767,7 @@ postfix:
       smtp_tls_security_level = encrypt
       header_size_limit = 4096000
       relayhost = [smtp.sendgrid.net]:587
+      {{- end }}
   secrets:
     # duumy value
     # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
@@ -771,8 +775,12 @@ postfix:
     sasl_passwd: W3NtdHAuc2VuZGdyaWQubmV0XTo1ODcgeW91clNlbmRHcmlkVXNlcm5hbWU6eW91clNlbmRHcmlkUGFzc3dvcmQK
 
 # for helm test setting
-# test.enabled=true にすると、テスト用 MailHog サービス（templates/test/test-*.yaml）が起動する。
-# helm test 用の機能なので、本番環境では false にしておく。
-test:
+# mailhog.enabled=true にすると以下が有効になる。
+# * テスト用 MailHog サービス（templates/test/test-*.yaml）が起動する。
+# * 全てのメールが MailHog にリレーされる。
+# helm test 用の機能なので、本番運用では false にしておく。
+mailhog:
   enabled: false
+  clusterIp: 10.111.255.250
+  toEmail: "a@example.com"
 

@@ -1,16 +1,16 @@
-{{- if .Values.test.enabled }}
+{{- if .Values.mailhog.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "postfix.fullname" . }}-test-mailhog
+  name: {{ include "postfix.fullname" . }}-mailhog
   labels:
-    app: {{ include "postfix.name" . }}-test-mailhog
+    app: {{ include "postfix.name" . }}-mailhog
     chart: {{ include "postfix.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   type: ClusterIP
-  clusterIP: 10.110.200.100
+  clusterIP: {{ .Values.mailhog.clusterIp }}
   ports:
     - port: 1025
       protocol: TCP
