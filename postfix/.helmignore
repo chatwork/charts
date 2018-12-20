@@ -20,5 +20,4 @@
 .idea/
 *.tmproj
 
-templates/test/main.cf
 templates/test/test-hostPath-values.yaml
