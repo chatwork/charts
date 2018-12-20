@@ -782,4 +782,5 @@ postfix:
 mailhog:
   enabled: false
   clusterIp: 10.111.255.250
+  toEmail: "a@example.com"
 

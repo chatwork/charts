@@ -17,7 +17,7 @@ spec:
               fieldPath: status.hostIP
       {{- end }}
         - name: TO_EMAIL
-          value: "a@example.com"
+          value: {{ .Values.mailhog.toEmail }}
       command:
         - /bin/sh
         - -c
