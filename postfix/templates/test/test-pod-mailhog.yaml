@@ -21,7 +21,7 @@ spec:
         - name: MAILHOG_HTTP_PORT
           value: "8025"
         - name: TO_EMAIL
-          value: {{ .Values.mailhog.toEmail }}
+          value: {{ .Values.test.toEmail }}
       command:
         - /bin/sh
         - -c

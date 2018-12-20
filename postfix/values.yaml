@@ -779,8 +779,11 @@ postfix:
 # * テスト用 MailHog サービス（templates/test/test-*.yaml）が起動する。
 # * 全てのメールが MailHog にリレーされる。
 # helm test 用の機能なので、本番運用では false にしておく。
+test:
+  # helm test でテスト送信する宛先
+  toEmail: "a@example.com"
+
 mailhog:
   enabled: false
   clusterIp: 10.111.255.250
-  toEmail: "a@example.com"
 
