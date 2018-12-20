@@ -757,7 +757,7 @@ postfix:
       shlib_directory = /usr/lib/postfix
 
       {{- if .Values.mailhog.enabled }}
-      relayhost = [10.110.200.100]:1025
+      relayhost = [{{ .Values.mailhog.clusterIp }}]:1025
       {{- else }}
       # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
       smtp_sasl_auth_enable = yes
@@ -781,4 +781,5 @@ postfix:
 # helm test 用の機能なので、本番運用では false にしておく。
 mailhog:
   enabled: false
+  clusterIp: 10.111.255.250
 

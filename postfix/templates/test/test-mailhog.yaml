@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   type: ClusterIP
-  clusterIP: 10.110.200.100
+  clusterIP: {{ .Values.mailhog.clusterIp }}
   ports:
     - port: 1025
       protocol: TCP
