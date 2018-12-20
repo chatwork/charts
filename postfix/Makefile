@@ -2,8 +2,8 @@ namespace = "$$(basename $$PWD)$$(git rev-parse HEAD)"
 helmContext = --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"}
 releaseName = $$(basename $$PWD)-$$(git rev-parse HEAD)
 
-helmInstallOptions = --wait --install --namespace $(namespace)
-deleteChart = helm $(helmContext) delete $(releaseName) --purge && kubectl delete pods --namespace $(namespace) $(releaseName)-test
+helmInstallOptions = --wait --install --namespace $(namespace) --set terminationGracePeriodSeconds=1
+deleteChart = kubectl delete pods --namespace $(namespace) $(releaseName)-test && helm $(helmContext) delete $(releaseName) --purge
 
 .PHONY: apply
 apply:
@@ -14,7 +14,7 @@ apply:
 	helm $(helmContext) upgrade $(helmInstallOptions) -f templates/test/test-hostPath-values.yaml $(releaseName) .;
 
 .PHONY: test
-test: test-daemonset test-daemonset-mailhog test-deployment-mailhog test-deployment
+test: test-daemonset test-daemonset-mailhog test-deployment test-deployment-mailhog
 
 .PHONY: test-daemonset
 test-daemonset:
