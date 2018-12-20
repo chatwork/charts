@@ -14,7 +14,7 @@ apply:
 	helm $(helmContext) upgrade $(helmInstallOptions) -f templates/test/test-hostPath-values.yaml $(releaseName) .;
 
 .PHONY: test
-test: test-daemonset test-daemonset-mailhog test-deployment test-deployment-mailhog
+test: test-daemonset test-daemonset-mailhog test-deployment-mailhog test-deployment
 
 .PHONY: test-daemonset
 test-daemonset:
