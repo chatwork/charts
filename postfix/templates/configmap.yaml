@@ -9,4 +9,5 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  main_cf: {{ tpl .Values.postfix.templates.main_cf . | toYaml }}
+  main_cf: |
+{{ tpl .Values.postfix.templates.main_cf . | indent 4 }}
