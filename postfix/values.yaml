@@ -779,8 +779,8 @@ postfix:
   secrets:
     # duumy value
     # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
-    # [smtp.sendgrid.net]:587 yourSendGridUsername:yourSendGridPassword
-    sasl_passwd: W3NtdHAuc2VuZGdyaWQubmV0XTo1ODcgeW91clNlbmRHcmlkVXNlcm5hbWU6eW91clNlbmRHcmlkUGFzc3dvcmQK
+    sasl_passwd: |-
+      [smtp.sendgrid.net]:587 yourSendGridUsername:yourSendGridPassword
 
 # for helm test
 test:

@@ -26,8 +26,8 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
       annotations:
-        checksum/main_cf: {{ tpl .Values.postfix.templates.main_cf . | toYaml | sha256sum }}
-        checksum/sasl_passwd: {{ .Values.postfix.secrets.sasl_passwd | toYaml | sha256sum }}
+        checksum/main_cf: {{ tpl .Values.postfix.templates.main_cf . | sha256sum }}
+        checksum/sasl_passwd: {{ .Values.postfix.secrets.sasl_passwd | sha256sum }}
 {{- with .Values.deployment.podAnnotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
