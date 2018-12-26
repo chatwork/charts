@@ -763,7 +763,9 @@ postfix:
       shlib_directory = /usr/lib/postfix
 
       {{- if .Values.mailhog.enabled }}
-      relayhost = [{{ .Values.mailhog.clusterIp }}]:1025
+      # Postfix の名前解決では、サービス名が引けないので native を指定
+      smtp_host_lookup = native
+      relayhost = [{{ include "postfix.fullname" . }}-mailhog]:1025
       {{- else }}
       # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
       smtp_sasl_auth_enable = yes
@@ -780,16 +782,18 @@ postfix:
     # [smtp.sendgrid.net]:587 yourSendGridUsername:yourSendGridPassword
     sasl_passwd: W3NtdHAuc2VuZGdyaWQubmV0XTo1ODcgeW91clNlbmRHcmlkVXNlcm5hbWU6eW91clNlbmRHcmlkUGFzc3dvcmQK
 
-# for helm test setting
-# mailhog.enabled=true にすると以下が有効になる。
-# * テスト用 MailHog サービス（templates/test/test-*.yaml）が起動する。
-# * 全てのメールが MailHog にリレーされる。
-# helm test 用の機能なので、本番運用では false にしておく。
+# for helm test
 test:
   # helm test でテスト送信する宛先
   toEmail: "a@example.com"
 
+# for dev
+# mailhog.enabled=true にすると以下が有効になる。
+# * MailHog サービス（templates/dev-mailhog.yaml）が起動する。
+# * 全てのメールが MailHog にリレーされる。
+
+# 開発環境、helm test 用の機能なので、本番運用では false にしておく。
 mailhog:
   enabled: false
-  clusterIp: 10.111.255.250
+  hostHttpPort: 30080
 
