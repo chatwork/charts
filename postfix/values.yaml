@@ -789,11 +789,13 @@ test:
 
 # for dev
 # mailhog.enabled=true にすると以下が有効になる。
-# * MailHog サービス（templates/dev-mailhog.yaml）が起動する。
-# * 全てのメールが MailHog にリレーされる。
-
+# - MailHog サービス（templates/dev-mailhog.yaml）が起動する。
+# - 全てのメールが MailHog にリレーされる。
+#
 # 開発環境、helm test 用の機能なので、本番運用では false にしておく。
 mailhog:
   enabled: false
+  # MailHog HTTP ポート
+  # Docker for Mac では http://localhost:30080/ でアクセスできる
   hostHttpPort: 30080
 
