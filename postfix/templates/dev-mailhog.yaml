@@ -9,33 +9,33 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  type: ClusterIP
-  clusterIP: {{ .Values.mailhog.clusterIp }}
+  type: NodePort
   ports:
     - port: 1025
       protocol: TCP
       name: smtp
     - port: 8025
+      nodePort: {{ .Values.mailhog.hostHttpPort }}
       protocol: TCP
       name: http
   selector:
-    app: {{ include "postfix.name" . }}-test-mailhog
+    app: {{ include "postfix.name" . }}-mailhog
     release: {{ .Release.Name }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "postfix.fullname" . }}-test-mailhog
+  name: {{ include "postfix.fullname" . }}-mailhog
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "postfix.name" . }}-test-mailhog
+      app: {{ include "postfix.name" . }}-mailhog
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ include "postfix.name" . }}-test-mailhog
+        app: {{ include "postfix.name" . }}-mailhog
         chart: {{ template "postfix.chart" . }}
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
