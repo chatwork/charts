@@ -6,8 +6,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-  annotations:
-    "helm.sh/hook": test-success
   name: {{ template "assume-role-operator.fullname" .}}-test
 rules:
 - apiGroups:
@@ -27,8 +25,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-  annotations:
-    "helm.sh/hook": test-success
   name: {{ template "assume-role-operator.fullname" .}}-test
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -39,8 +35,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-  annotations:
-    "helm.sh/hook": test-success
   name: {{ template "assume-role-operator.fullname" .}}-test
 subjects:
   - kind: ServiceAccount
