@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "assume-role-operator.fullname" . }}
+  labels:
+    app: "{{ template "assume-role-operator.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: "{{ template "assume-role-operator.fullname" . }}"
+  template:
+    metadata:
+      labels:
+        app: {{ template "assume-role-operator.fullname" . }}
+      annotations:
+        iam.amazonaws.com/role: {{ .Values.awsRoleArn }}
+      {{- if .Values.PodAnnotations}}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      containers:
+        - name: assume-role-operator
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "assume-role-operator.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
