@@ -4,6 +4,7 @@ apply:
 		kubectl create namespace "$$(basename $$PWD)$$(git rev-parse --short HEAD)"; \
 	fi
 	@if [ -n "$${CI}" ]; then \
+		helm repo add chatwork https://chatwork.github.io/charts
 		helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} upgrade --wait --install --namespace "$$(basename $$PWD)$$(git rev-parse --short HEAD)" arop-for-ci chatwork/assume-role-operator --set image.repository="cwsakamoto/assume-role-operator"; \
 		helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} upgrade --wait --install --namespace "$$(basename $$PWD)$$(git rev-parse --short HEAD)" $$(basename $$PWD)-$$(git rev-parse --short HEAD) .; \
 	else \
