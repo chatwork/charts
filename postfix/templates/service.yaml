@@ -1,0 +1,21 @@
+{{- if .Values.deployment.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "postfix.fullname" . }}
+  labels:
+    app: {{ include "postfix.name" . }}
+    chart: {{ include "postfix.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.deployment.service.type }}
+  ports:
+    - port: {{ .Values.deployment.service.port }}
+      targetPort: 25
+      protocol: TCP
+      name: smtp
+  selector:
+    app: {{ include "postfix.name" . }}
+    release: {{ .Release.Name }}
+{{- end }}
