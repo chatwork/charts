@@ -1,0 +1,7 @@
+name: assume-role-operator
+version: 0.0.1
+appVersion: 0.0.1
+description: AWS Role assume policy modify for role using kiam
+maintainers:
+- name: cwsakamoto
+  email: sakamoto@chatwork.com

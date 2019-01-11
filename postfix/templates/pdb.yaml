@@ -1,0 +1,23 @@
+{{- if and .Values.deployment.enabled .Values.deployment.podDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "postfix.fullname" . }}
+  labels:
+   app: {{ include "postfix.name" . }}
+   chart: {{ include "postfix.chart" . }}
+   release: {{ .Release.Name }}
+   heritage: {{ .Release.Service }}
+spec:
+  {{- if .Values.deployment.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.deployment.podDisruptionBudget.minAvailable }}
+  {{- end  }}
+  {{- if .Values.deployment.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.deployment.podDisruptionBudget.maxUnavailable }}
+  {{- end  }}
+  selector:
+    matchLabels:
+      app: {{ include "postfix.name" . }}
+      release: {{ .Release.Name }}
+{{- end }}
+

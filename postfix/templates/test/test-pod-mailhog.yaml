@@ -1,0 +1,39 @@
+{{- if .Values.mailhog.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "postfix.fullname" . }}-test
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: {{ .Chart.Name }}-test
+      image: php:7.2-alpine
+      env:
+      {{- if .Values.daemonset.enabled }}
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+      {{- end }}
+        - name: MAILHOG_HOST
+          value: {{ include "postfix.fullname" . }}-mailhog
+        - name: MAILHOG_HTTP_PORT
+          value: "8025"
+        - name: TO_EMAIL
+          value: {{ .Values.test.toEmail }}
+      command:
+        - /bin/sh
+        - -c
+        - |
+        {{- if .Values.daemonset.enabled }}
+          export SMTPHOST="${NODE_IP}:{{ .Values.daemonset.hostPort }}" \
+        {{- end }}
+        {{- if .Values.deployment.enabled }}
+          export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.deployment.service.port }}" \
+        {{- end }}
+          && /usr/local/bin/php -r "\$ret = mail(\"${TO_EMAIL}\", \"Hello\", \"Body\"); var_dump(\$ret);" | grep true \
+          && sleep 1 \
+          && curl http://${MAILHOG_HOST}:${MAILHOG_HTTP_PORT}/api/v2/messages | grep ${TO_EMAIL}
+  restartPolicy: Never
+{{- end }}
