@@ -1,0 +1,6 @@
+clusterName: cluster_name #same kube-aws cluster.yaml clusterName
+roleArn: role_arn
+
+test:
+  extraContainer: {}
+  target: target

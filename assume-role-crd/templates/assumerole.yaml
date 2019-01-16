@@ -1,0 +1,12 @@
+apiVersion: "aws.chatwork/v1alpha1"
+kind: AssumeRole
+metadata:
+  name: {{ template "assume-role-crd.fullname" . }}
+  labels:
+    app: {{ template "assume-role-crd.name" . }}
+    chart: {{ template "assume-role-crd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  cluster_name: {{ .Values.clusterName }}
+  role_arn: {{ .Values.roleArn }}
