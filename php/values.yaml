@@ -745,6 +745,7 @@ service:
 
 ingress:
   enabled: false
+  preferPaths: []
 
 # If you need it you can write raw Kubernetes Config
 # extras:
