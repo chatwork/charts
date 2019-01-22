@@ -9,3 +9,16 @@ image:
 
 rbac:
   create: true
+  rules:
+  - apiGroups:
+    - ""
+    - "batch"
+    - "extensions"
+    - "apps"
+    - "autoscaling"
+    - "rbac.authorization.k8s.io"
+    - "scheduling.k8s.io"
+    - "storage.k8s.io"
+    - "policy"
+    resources: ["*"]
+    verbs: ["*"]
