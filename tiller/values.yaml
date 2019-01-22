@@ -4,8 +4,8 @@
 
 image:
   repository: gcr.io/kubernetes-helm/tiller
-  tag: v2.10.0
+  tag: v2.12.2
   pullPolicy: IfNotPresent
 
-rback:
+rbac:
   create: true
