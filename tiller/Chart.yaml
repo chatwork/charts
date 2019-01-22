@@ -1,5 +1,9 @@
-apiVersion: v1
-appVersion: "1.0"
-description: Helm Charts for installing Helm Tiller.
 name: tiller
-version: 2.10.0
+version: 0.0.2
+appVersion: 2.12.2
+description: Helm Charts for installing Helm Tiller.
+maintainers:
+- name: cw-ozaki
+  email: ozaki@chatwork.com
+- name: cw-sakamoto
+  email: sakamoto@chatwork.com

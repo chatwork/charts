@@ -4,8 +4,21 @@
 
 image:
   repository: gcr.io/kubernetes-helm/tiller
-  tag: v2.10.0
+  tag: v2.12.2
   pullPolicy: IfNotPresent
 
-rback:
+rbac:
   create: true
+  rules:
+  - apiGroups:
+    - ""
+    - "batch"
+    - "extensions"
+    - "apps"
+    - "autoscaling"
+    - "rbac.authorization.k8s.io"
+    - "scheduling.k8s.io"
+    - "storage.k8s.io"
+    - "policy"
+    resources: ["*"]
+    verbs: ["*"]
