@@ -45,5 +45,5 @@ spec:
           timeoutSeconds: 1
         resources: {}
 {{- if .Values.rbac.create }}
-      serviceAccountName: tiller
+      serviceAccountName: {{ .Values.rbac.name }}
 {{- end }}

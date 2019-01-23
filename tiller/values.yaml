@@ -4,11 +4,12 @@
 
 image:
   repository: gcr.io/kubernetes-helm/tiller
-  tag: v2.12.2
+  tag: v2.12.3
   pullPolicy: IfNotPresent
 
 rbac:
   create: true
+  name: managed-tiller
   rules:
   - apiGroups:
     - ""
