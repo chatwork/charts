@@ -1,9 +1,9 @@
 apiVersion: v1
 entries:
   assume-role-crd:
-  - created: 2019-01-22T05:39:25.072001446Z
+  - created: 2019-01-23T05:09:13.297205571Z
     description: Assume Role CRD
-    digest: 37caec8e0e7f58385c898beabefed189156823bfb4eaa84688a34661e07ca3ef
+    digest: ba04949e7f10bf233a59e455e803472a9fffc03b0b192825a13650bc1cba579e
     maintainers:
     - email: sakamoto@chatwork.com
       name: cwsakamoto
@@ -13,9 +13,9 @@ entries:
     version: 0.0.1
   assume-role-operator:
   - appVersion: 0.0.1
-    created: 2019-01-22T05:39:25.072557654Z
+    created: 2019-01-23T05:09:13.298011974Z
     description: AWS Role assume policy modify for role using kiam
-    digest: dd2a53ec73aa775778e6927a5e184352112d0984a1146f6baa0b18d022e41ceb
+    digest: 2d30846cbdd08c98059d7e587d76b8a6f2db9dc3c70761998ac27248f75c34de
     maintainers:
     - email: sakamoto@chatwork.com
       name: cwsakamoto
@@ -26,7 +26,7 @@ entries:
   docker-registry:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-01-22T05:39:25.073001104Z
+    created: 2019-01-23T05:09:13.298649559Z
     description: Pull an Image from a Private Registry
     digest: dc6a6eac97769dcd4ecfd9ef06fbbc6f5c2b62382437d9581aa745916d3a9750
     name: docker-registry
@@ -36,17 +36,17 @@ entries:
   example:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-01-22T05:39:25.073538359Z
+    created: 2019-01-23T05:09:13.29922552Z
     description: A Helm chart for Kubernetes
-    digest: 89bf8555e9c5867e7eea90e34f8a5266c062af42b9358e936e90f0b49aefc261
+    digest: 939078bf297210a8604794e2749724e463340e6aadac00f3d9b67bd39ad5582b
     name: example
     urls:
     - https://chatwork.github.io/charts/example-0.1.0.tgz
     version: 0.1.0
   gcp-credentials:
-  - created: 2019-01-22T05:39:25.073950706Z
+  - created: 2019-01-23T05:09:13.299583368Z
     description: GCP credentials
-    digest: a92e263b2ae8917ff556550e6f45b4e4f6ad3c3ff3717413ce2c1d98ed10c154
+    digest: 20e7cf772e8054e87cec28bfa1c7c54cf3e4da7d9af7127e948184c91ba251ed
     name: gcp-credentials
     urls:
     - https://chatwork.github.io/charts/gcp-credentials-0.0.1.tgz
@@ -54,9 +54,9 @@ entries:
   guard:
   - apiVersion: v1
     appVersion: 0.2.1
-    created: 2019-01-22T05:39:25.075649214Z
+    created: 2019-01-23T05:09:13.301389035Z
     description: chart for Guard (https://appscode.com/products/guard)
-    digest: f473684923337189808391cbf86757ef6ce50f69022523066716dc4f75abb76d
+    digest: e3e58c3808eb52492218d338f96c10bebb961f75636fc14b6021eceead69cf99
     home: https://appscode.com/products/guard
     keywords:
     - webhook-authentication
@@ -71,7 +71,7 @@ entries:
     version: 0.0.2
   - apiVersion: v1
     appVersion: 0.2.1
-    created: 2019-01-22T05:39:25.074794069Z
+    created: 2019-01-23T05:09:13.300516711Z
     description: chart for Guard (https://appscode.com/products/guard)
     digest: 96904e9e6935e3b68f1c9d9a485f4a071cd9098605a32bc0db525e7244981679
     home: https://appscode.com/products/guard
@@ -88,16 +88,16 @@ entries:
     version: 0.0.1
   php:
   - apiVersion: v1
-    created: 2019-01-22T05:39:25.077895509Z
+    created: 2019-01-23T05:09:13.304601849Z
     description: PHP-FPM Web Application
-    digest: 9855b31cc138eaff6f9d9cd1785b80b30710b6c38d596a06b5fc1b7c267c5136
+    digest: fc7ba8f6652f451b24d0aa1f148bf1ea6dfb11bd2f9da16aa6bbc2ee892773dc
     icon: http://php.net/images/logos/php-logo-bigger.png
     name: php
     urls:
     - https://chatwork.github.io/charts/php-0.5.0.tgz
     version: 0.5.0
   - apiVersion: v1
-    created: 2019-01-22T05:39:25.07713461Z
+    created: 2019-01-23T05:09:13.303785235Z
     description: PHP-FPM Web Application
     digest: a59e58a833d86da9e9254ea058dd25ea2008e18b17bd6f3a83fb28b890b47efd
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -106,7 +106,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.4.0.tgz
     version: 0.4.0
   - apiVersion: v1
-    created: 2019-01-22T05:39:25.076396897Z
+    created: 2019-01-23T05:09:13.302840912Z
     description: PHP-FPM Web Application
     digest: 37a2b141a3e62ee51b2d1be92c1bbfda48a29d1d12ff1c70656f8c03e49a15f3
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -117,17 +117,31 @@ entries:
   postfix:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-01-22T05:39:25.07874871Z
+    created: 2019-01-23T05:09:13.305507178Z
     description: Postfix Helm Chart
-    digest: 38d438d81195e9c2b44868f3dda2a7ac672e6d11922d73b7a6885a62b03b5c67
+    digest: 8f874594a21a579a8bf3799dae8eeb935a0a1bdae61e476a366f0a8a1c239bcf
     name: postfix
     urls:
     - https://chatwork.github.io/charts/postfix-0.1.0.tgz
     version: 0.1.0
+  regcred:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2019-01-23T05:09:13.305755749Z
+    description: Pull an Image from a Private Registry
+    digest: 946cfd80b69cae2519b3b728361474a72fc037d6fab07ce63ca25b7e8b845030
+    maintainers:
+    - email: ozaki@chatwork.com
+      name: cw-ozaki
+      url: https://github.com/cw-ozaki
+    name: regcred
+    urls:
+    - https://chatwork.github.io/charts/regcred-0.1.0.tgz
+    version: 0.1.0
   tiller:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-01-22T05:39:25.0794052Z
+    created: 2019-01-23T05:09:13.306320009Z
     description: Helm Charts for installing Helm Tiller.
     digest: 371a0b0eb55639cc02e91ac0902d8c7236d97045301a0d5d355c8751620aca0f
     name: tiller
@@ -135,9 +149,9 @@ entries:
     - https://chatwork.github.io/charts/tiller-2.10.0.tgz
     version: 2.10.0
   - appVersion: 2.12.2
-    created: 2019-01-22T05:39:25.079121505Z
+    created: 2019-01-23T05:09:13.306046247Z
     description: Helm Charts for installing Helm Tiller.
-    digest: b40887cbc669d4d3393b802039eb9a9d26ab883c07440110f022c827ef0a4027
+    digest: 497f2bc8aec60d92f4d1a17b2fd8d303d3d5afb104aea1463c8a922e498ebf49
     maintainers:
     - email: ozaki@chatwork.com
       name: cw-ozaki
@@ -147,4 +161,4 @@ entries:
     urls:
     - https://chatwork.github.io/charts/tiller-0.0.2.tgz
     version: 0.0.2
-generated: 2019-01-22T05:39:25.071225676Z
+generated: 2019-01-23T05:09:13.296778647Z
