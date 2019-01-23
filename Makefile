@@ -52,7 +52,7 @@ ci\:diff\:to:
 
 .PHONY: ci\:diff
 ci\:diff:
-	@git --no-pager diff --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" | sed 's:^.*/compare/::g' | xargs -I{} dirname {} | sed 's/[.\/].*$$//' | sed '/^$$/d' | uniq;
+	@git --no-pager diff --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" | sed 's:^.*/compare/::g' | xargs -I{} dirname {} | sed 's/[.\/].*$$//' | xargs -I{} sh -c 'test -d {} && echo {} || true' | sed '/^$$/d' | uniq;
 
 .PHONY: ci\:changelog
 ci\:changelog:
