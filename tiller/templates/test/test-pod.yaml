@@ -15,7 +15,7 @@ metadata:
 spec:
   containers:
     - name: tiller-deploy-test
-      image: chatwork/helm:2.12.2
+      image: chatwork/helm:2.12.3
       imagePullPolicy: {{ .Values.image.pullPolicy }}
       args:
         - ls
