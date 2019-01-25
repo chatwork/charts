@@ -44,6 +44,4 @@ spec:
           initialDelaySeconds: 1
           timeoutSeconds: 1
         resources: {}
-{{- if .Values.rbac.create }}
-      serviceAccountName: {{ .Values.rbac.name }}
-{{- end }}
+      serviceAccountName: {{ if .Values.rbac.tiller.create }}{{ template "tiller.fullname" . }}{{ else }}"{{ .Values.rbac.tiller.serviceAccountName }}"{{ end }}
