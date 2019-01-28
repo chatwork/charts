@@ -7,19 +7,42 @@ image:
   tag: v2.12.3
   pullPolicy: IfNotPresent
 
+test:
+  image:
+    repository: chatwork/helm
+    tag: 2.12.3
+    pullPolicy: IfNotPresent
+
 rbac:
-  create: true
-  name: managed-tiller
-  rules:
-  - apiGroups:
-    - ""
-    - "batch"
-    - "extensions"
-    - "apps"
-    - "autoscaling"
-    - "rbac.authorization.k8s.io"
-    - "scheduling.k8s.io"
-    - "storage.k8s.io"
-    - "policy"
-    resources: ["*"]
-    verbs: ["*"]
+  tiller:
+    create: true
+    serviceAccountName: default
+    rules:
+    - apiGroups:
+      - ""
+      - "batch"
+      - "extensions"
+      - "apps"
+      - "autoscaling"
+      - "rbac.authorization.k8s.io"
+      - "scheduling.k8s.io"
+      - "storage.k8s.io"
+      - "policy"
+      resources: ["*"]
+      verbs: ["*"]
+  client:
+    create: true
+    serviceAccountName: default
+    rules:
+    - apiGroups:
+      - ""
+      resources:
+      - pods/portforward
+      verbs:
+      - create
+    - apiGroups:
+      - ""
+      resources:
+      - pods
+      verbs:
+      - list
