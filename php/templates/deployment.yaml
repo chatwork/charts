@@ -44,7 +44,7 @@ spec:
 {{- with .Values.fpm.secrets }}
         checksum/fpm-secret: {{ . | toYaml | sha256sum }}
 {{- end }}
-{{- with .Values.annotations }}
+{{- with .Values.deployment.podAnnotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
