@@ -739,6 +739,9 @@ fpm:
 
 extraVolume: []
 
+deployment:
+  podAnnotations: {}
+
 service:
   type: LoadBalancer
   port: 8888
