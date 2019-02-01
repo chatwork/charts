@@ -20,8 +20,11 @@ spec:
         app: {{ template "guard.fullname" . }}
         release: {{ .Release.Name }}
       name: {{ template "guard.fullname" . }}
-      {{- if .Values.podAnnotations }}
       annotations:
+        checksum/caCrt: {{ .Values.pki.caCrt | b64enc | sha256sum | quote }}
+        checksum/tlsCrt: {{ .Values.pki.tlsCrt | b64enc | sha256sum | quote }}
+        checksum/tlsKey: {{ .Values.pki.tlsKey | b64enc | sha256sum | quote }}
+      {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
