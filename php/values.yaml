@@ -9,7 +9,6 @@ strategy:
     maxUnavailable: 25%
 
 busybox:
-  name: busybox
   image:
     repository: busybox
     tag: latest
@@ -23,7 +22,6 @@ busybox:
 
 # NGINX
 nginx:
-  name: nginx
   image:
     repository: nginx
     tag: 1.15.1-alpine
@@ -132,7 +130,6 @@ nginx:
 
 # PHP-FPM
 fpm:
-  name: fpm
   image:
     repository: php
     tag: 7.1-fpm-alpine

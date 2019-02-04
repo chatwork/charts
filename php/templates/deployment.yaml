@@ -49,7 +49,7 @@ spec:
 {{- end }}
     spec:
       initContainers:
-      - name: "{{ .Chart.Name }}-{{ .Values.busybox.name }}"
+      - name: "{{ template "php.fullname" . }}-busybox"
         image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
         imagePullPolicy: {{ .Values.busybox.image.pullPolicy }}
         restartPolicy: Never
@@ -73,7 +73,7 @@ spec:
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
       containers:
-      - name: "{{ .Chart.Name }}-{{ .Values.nginx.name }}"
+      - name: "{{ template "php.fullname" . }}-nginx"
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
         imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
         ports:
@@ -126,7 +126,7 @@ spec:
 {{- with .Values.nginx.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
-      - name: "{{ .Chart.Name }}-{{ .Values.fpm.name }}"
+      - name: "{{ template "php.fullname" . }}-fpm"
         image: "{{ .Values.fpm.image.repository }}:{{ .Values.fpm.image.tag }}"
         imagePullPolicy: {{ .Values.fpm.image.pullPolicy }}
 {{- with .Values.fpm.extraPorts }}
