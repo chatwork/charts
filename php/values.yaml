@@ -38,9 +38,15 @@ busybox:
   #- secretRef:
   #    name: [release-name]-busybox-[template-name]
 
+  # `busybox.extraVolumes` is addition volumes.
+  extraVolumes: []
+  #- name: extra-volume
+  #  configMap:
+  #    name: configmap-name
+
   # `busybox.extraVolumeMounts` is addition volumeMounts.
   # specify the volume name created with `extraVolume`.
-  extraVolumeMounts: {}
+  extraVolumeMounts: []
   #- name: your-volume-name
   #  mountPath: /path/to/dir
 
@@ -134,6 +140,12 @@ nginx:
   #- name: extra-port
   #  containerPort: 9999
   #  protocol: TCP
+
+  # `nginx.extraVolumes` is addition volumes.
+  extraVolumes: []
+  #- name: extra-volume
+  #  configMap:
+  #    name: configmap-name
 
   # `nginx.extraVolumeMounts` is addition volumeMounts.
   # specify the volume name created with `extraVolume`.
@@ -285,13 +297,19 @@ fpm:
   #  containerPort: 9999
   #  protocol: TCP
 
+  # `fpm.extraVolumes` is addition volumes.
+  extraVolumes: []
+  #- name: extra-volume
+  #  configMap:
+  #    name: configmap-name
+
   # `fpm.extraVolumeMounts` is addition volumeMounts.
   # specify the volume name created with `extraVolume`.
   extraVolumeMounts: {}
   #- name: your-volume-name
   #  mountPath: /path/to/dir
 
-  # `nginx.secrets` is additional Secret as a string to be passed to the tpl function.
+  # `fpm.secrets` is additional Secret as a string to be passed to the tpl function.
   # Secret name created here is `[release-name]-nginx-[template-name]`.
   secrets: {}
   #  dirname:
@@ -876,8 +894,6 @@ fpm:
 
   # Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets`.
   annotations: {}
-
-extraVolume: []
 
 deployment:
   podAnnotations: {}

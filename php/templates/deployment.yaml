@@ -197,7 +197,13 @@ spec:
       - name: fpm-confd
         configMap:
           name: {{ template "php.fullname" . }}-fpm-confd
-{{- with .Values.extraVolume }}
+{{- with .Values.busybox.extraVolumes }}
+{{ tpl (toYaml .) $root | indent 6 }}
+{{- end }}
+{{- with .Values.nginx.extraVolumes }}
+{{ tpl (toYaml .) $root | indent 6 }}
+{{- end }}
+{{- with .Values.fpm.extraVolumes }}
 {{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
 {{- with .Values.imagePullSecrets}}
