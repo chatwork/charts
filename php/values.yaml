@@ -19,6 +19,8 @@ busybox:
   extraVolumeMounts: {}
   secrets: {}
   templates: {}
+  annotations: {}
+  # sharedPath: {{ .Values.sharedPath }}
 
 # NGINX
 nginx:
