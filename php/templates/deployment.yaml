@@ -42,8 +42,8 @@ spec:
 {{- range $name, $secret := .Values.nginx.secrets }}
         checksum/nginx-secret/{{ $name | replace "." "-" }}: {{ tpl (toYaml $secret) $root | sha256sum }}
 {{- end }}
-{{- with .Values.fpm.secrets }}
-        checksum/fpm-secret: {{ . | toYaml | sha256sum }}
+{{- range $name, $secret := .Values.fpm.secrets }}
+        checksum/fpm-secret/{{ $name | replace "." "-" }}: {{ tpl (toYaml $secret) $root | sha256sum }}
 {{- end }}
 {{- with .Values.deployment.podAnnotations }}
 {{ toYaml . | indent 8 }}

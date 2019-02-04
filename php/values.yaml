@@ -8,6 +8,7 @@ strategy:
     maxSurge: 10%
     maxUnavailable: 25%
 
+# BUSYBOX
 busybox:
   image:
     repository: busybox
@@ -48,13 +49,13 @@ busybox:
   secrets: {}
   #  dirname:
   #    file1.yaml: |
-  #     foo: 1
-  #     bar: 2
-  #     baz: 3
-  #   file2.yaml: |
-  #     foo: 1
-  #     bar: 2
-  #     baz: 3
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #    file2.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
   #  envname:
   #    FOO: 1
   #    BAR: 2
@@ -145,13 +146,13 @@ nginx:
   secrets: {}
   #  dirname:
   #    file1.yaml: |
-  #     foo: 1
-  #     bar: 2
-  #     baz: 3
-  #   file2.yaml: |
-  #     foo: 1
-  #     bar: 2
-  #     baz: 3
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #    file2.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
   #  envname:
   #    FOO: 1
   #    BAR: 2
@@ -229,15 +230,14 @@ nginx:
   # Grant annotations to ConfigMap of `nginx.templates`, Secrets of `nginx.secrets`.
   annotations: {}
 
-
 # PHP-FPM
 fpm:
   image:
     repository: php
     tag: 7.1-fpm-alpine
     pullPolicy: IfNotPresent
-  env: {}
-  envFrom: []
+  extraEnv: {}
+  extraEnvFrom: []
   livenessProbe: {}
   readinessProbe: {}
   resources: {}
