@@ -1,19 +1,23 @@
+{{- $root := . -}}
+{{- $busybox := .Values.busybox -}}
 {{- if .Values.busybox.templates }}
+{{- range $name, $tmpl := .Values.busybox.templates }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" . }}-busybox
+  name: {{ template "php.fullname" $root }}-busybox-{{ $name | replace "." "-" }}
   labels:
-    app: {{ template "php.name" . }}
-    chart: {{ template "php.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app: {{ template "php.name" $root }}
+    chart: {{ template "php.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
   annotations:
-    checksum/busybox: {{ tpl (toYaml .Values.busybox.templates) . | sha256sum }}
-{{- with .Values.busybox.annotations }}
+    checksum/busybox/{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
+{{- with $busybox.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 data:
-{{ tpl (toYaml .Values.busybox.templates) . | indent 2 }}
+{{ tpl (toYaml $tmpl) $root | indent 2 }}
+{{- end }}
 {{- end }}
