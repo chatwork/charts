@@ -9,7 +9,6 @@ strategy:
     maxUnavailable: 25%
 
 busybox:
-  # Specify the image to be treated as busybox
   image:
     repository: busybox
     tag: latest
@@ -61,18 +60,18 @@ busybox:
   #    BAR: 2
   #    BAZ: 3
 
-  # `buxybox.secrets` is additional ConfigMap as a string to be passed to the tpl function.
+  # `buxybox.templates` is additional ConfigMap as a string to be passed to the tpl function.
   # ConfigMap name created here is `[release-name]-busybox-[template-name]`.
   templates: {}
   #  dirname:
   #    file1.yaml: |
-  #     foo: 1
-  #     bar: 2
-  #     baz: 3
-  #   file2.yaml: |
-  #     foo: 1
-  #     bar: 2
-  #     baz: 3
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #    file2.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
   #  envname:
   #    FOO: 1
   #    BAR: 2
@@ -84,11 +83,13 @@ busybox:
 
 # NGINX
 nginx:
-
   image:
     repository: nginx
     tag: 1.15.1-alpine
     pullPolicy: IfNotPresent
+
+  # NGINX configuration
+  port: 80 # port using as containerPort
 
   livenessProbe:
     httpGet:
@@ -110,57 +111,86 @@ nginx:
     successThreshold: 1
     failureThreshold: 3
 
-  extraEnv: {}
-
-  extraEnvFrom: []
-
-  # extraPorts: []
-  # extraVolumeMounts: []
   resources: {}
 
-  # NGINX configuration
-  port: 80
-  user: nobody
-  errorLevel: warn
-  http:
-    keepaliveTimeout: 65
+  # `nginx.extraEnv` is additional environment variables.
+  extraEnv: {}
+  #  KEY1: VALUE1
+  #  KEY2: VALUE2
+  #  KEY3: VALUE3
 
-  # NGINX secrets values or files
+  # `nginx.extraEnvFrom` is addtional envFrom.
+  # Specify ConfigMap created in `nginx.templates` or Secret created in `nginx.secrets`.
+  extraEnvFrom: []
+  #- configMapRef:
+  #    name: [release-name]-nginx-[template-name]
+  #- secretRef:
+  #    name: [release-name]-nginx-[template-name]
+
+  # `nginx.extraPorts` is addtional ports.
+  # Please specify if you want to expose a non-default port.
+  extraPorts: []
+  #- name: extra-port
+  #  containerPort: 9999
+  #  protocol: TCP
+
+  # `busybox.extraVolumeMounts` is addition volumeMounts.
+  # specify the volume name created with `extraVolume`.
+  extraVolumeMounts: {}
+  #- name: your-volume-name
+  #  mountPath: /path/to/dir
+
+  # `nginx.secrets` is additional Secret as a string to be passed to the tpl function.
+  # Secret name created here is `[release-name]-nginx-[template-name]`.
   secrets: {}
+  #  dirname:
+  #    file1.yaml: |
+  #     foo: 1
+  #     bar: 2
+  #     baz: 3
+  #   file2.yaml: |
+  #     foo: 1
+  #     bar: 2
+  #     baz: 3
+  #  envname:
+  #    FOO: 1
+  #    BAR: 2
+  #    BAZ: 3
 
-  # configuration NGINX templates
+  # configuration NGINX templates.
   # If you can not be satisfied with the default settings you can change the template.
   templates:
     nginx.conf: |
-      user  {{ .Values.nginx.user }};
-      worker_processes  auto;
+      user nobody;
+      worker_processes auto;
 
-      error_log  /dev/stderr {{ .Values.nginx.error_level }};
+      error_log  /dev/stderr warn;
       pid        /var/run/nginx.pid;
 
       events {
-          worker_connections  1024;
+          worker_connections 1024;
       }
 
       http {
-          include       /etc/nginx/mime.types;
+          include /etc/nginx/mime.types;
+
           default_type  application/octet-stream;
 
-          access_log  /dev/stdout combined;
+          access_log /dev/stdout combined;
 
-          sendfile        on;
-          #tcp_nopush     on;
+          sendfile    on;
+          #tcp_nopush on;
 
-          keepalive_timeout  {{ .Values.nginx.http.keepaliveTimeout }};
+          keepalive_timeout 65;
 
-          #gzip  on;
+          #gzip on;
 
           include /etc/nginx/conf.d/*.conf;
       }
     conf.d:
       default.conf: |
         server {
-            listen       {{ .Values.nginx.port }};
+            listen {{ .Values.nginx.port }};
             root   {{ .Values.sharedPath }};
             index  index.php index.html index.htm;
 
@@ -170,7 +200,7 @@ nginx:
 
             location ~ \.php$ {
                 include fastcgi_params;
-                fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;
+                fastcgi_pass  unix:/var/run/php-fpm/php-fpm.sock;
                 fastcgi_index index.php;
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
             }
@@ -191,10 +221,14 @@ nginx:
 
             location /ping {
                 include fastcgi_params;
-                fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;
+                fastcgi_pass  unix:/var/run/php-fpm/php-fpm.sock;
                 fastcgi_param SCRIPT_FILENAME /ping;
             }
         }
+
+  # Grant annotations to ConfigMap of `nginx.templates`, Secrets of `nginx.secrets`.
+  annotations: {}
+
 
 # PHP-FPM
 fpm:
