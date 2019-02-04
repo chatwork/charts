@@ -31,8 +31,9 @@ spec:
 {{- range $name, $tmpl := .Values.busybox.templates }}
         checksum/busybox/{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
 {{- end }}
-        checksum/nginx-conf: {{ tpl (index .Values.nginx.templates "nginx.conf" | toYaml) . | sha256sum }}
-        checksum/nginx-confd: {{ tpl (index .Values.nginx.templates "conf.d" | toYaml) . | sha256sum }}
+{{- range $name, $tmpl := .Values.nginx.templates }}
+        checksum/busybox/{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
+{{- end }}
         checksum/fpm-conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf" | toYaml) . | sha256sum }}
         checksum/fpm-confd: {{ tpl (index .Values.fpm.templates "php-fpm.d" | toYaml) . | sha256sum }}
 {{- range $name, $secret := .Values.busybox.secrets }}
@@ -188,7 +189,7 @@ spec:
           name: {{ template "php.fullname" . }}-nginx-conf
       - name: nginx-confd
         configMap:
-          name: {{ template "php.fullname" . }}-nginx-confd
+          name: {{ template "php.fullname" . }}-nginx-conf-d
       - name: fpm-conf
         configMap:
           name: {{ template "php.fullname" . }}-fpm-conf

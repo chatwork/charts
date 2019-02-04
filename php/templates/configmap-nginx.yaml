@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    checksum/nginx-conf: {{ tpl (index .Values.nginx.templates "nginx.conf" | toYaml) . | sha256sum }}
+    checksum/nginx/conf: {{ tpl (index .Values.nginx.templates "nginx.conf" | toYaml) . | sha256sum }}
 {{- with .Values.nginx.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -21,14 +21,14 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" . }}-nginx-confd
+  name: {{ template "php.fullname" . }}-nginx-conf-d
   labels:
     app: {{ template "php.name" . }}
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    checksum/nginx-confd: {{ tpl (index .Values.nginx.templates "conf.d" | toYaml) . | sha256sum }}
+    checksum/nginx/conf-d: {{ tpl (index .Values.nginx.templates "conf.d" | toYaml) . | sha256sum }}
 {{- with .Values.nginx.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -37,4 +37,30 @@ data:
 {{- range $k, $v := (index .Values.nginx.templates "conf.d") }}
   {{ $k }}:
 {{- tpl $v $root | toYaml | indent 2 }}
+{{- end }}
+
+{{- $root := . -}}
+{{- $nginx := .Values.nginx -}}
+{{- if .Values.nginx.templates }}
+{{- range $name, $tmpl := .Values.nginx.templates }}
+{{- if and (ne $name "nginx.conf") (ne $name "conf.d") }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "php.fullname" $root }}-nginx-{{ $name | replace "." "-" }}
+  labels:
+    app: {{ template "php.name" $root }}
+    chart: {{ template "php.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+  annotations:
+    checksum/nginx/{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
+{{- with $nginx.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+data:
+{{ tpl (toYaml $tmpl) $root | indent 2 }}
+{{- end}}
+{{- end }}
 {{- end }}
