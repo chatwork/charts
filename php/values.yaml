@@ -120,7 +120,8 @@ nginx:
     pullPolicy: IfNotPresent
 
   # NGINX configuration
-  port: 80 # port using as containerPort
+  host: localhost # host using as Ingress host name
+  port: 80        # port using as Container port, Service port, Ingress port
 
   livenessProbe:
     httpGet:
@@ -227,9 +228,10 @@ nginx:
     conf.d:
       default.conf: |
         server {
-            listen {{ .Values.nginx.port }};
-            root   {{ .Values.sharedPath }};
-            index  index.php index.html index.htm;
+            listen      {{ .Values.nginx.port }};
+            server_name {{ .Values.nginx.host }};
+            root        {{ .Values.sharedPath }};
+            index       index.php index.html index.htm;
 
             location / {
                 try_files $uri $uri/ /index.php?$query_string;
