@@ -9,18 +9,78 @@ strategy:
     maxUnavailable: 25%
 
 busybox:
+  # Specify the image to be treated as busybox
   image:
     repository: busybox
     tag: latest
     pullPolicy: IfNotPresent
+
+  # `busybox.command` is initialize command.
+  # Copy the source code in busybox to `sharedPath` or `busybox.sharedPath`.
+  # e.g. sh -c "cp -av /path/to/sources/* /path/to/share-path"
   command: ["sh", "-c", "echo '<?php phpinfo();' > /var/www/html/index.php"]
+
+  # `busybox.sharedPath` is specifies the directory to mount.
+  # Default is `sharedPath`, but if it conflicts with the source code directory, please specify it.
+  #sharedPath: {{ .Values.sharedPath }}
+
+  # `busybox.extraEnv` is additional environment variables.
   extraEnv: {}
+  #  KEY1: VALUE1
+  #  KEY2: VALUE2
+  #  KEY3: VALUE3
+
+  # `busybox.extraEnvFrom` is addtional envFrom.
+  # Specify ConfigMap created in `busybox.templates` or Secret created in `busybox.secrets`.
   extraEnvFrom: []
+  #- configMapRef:
+  #    name: [release-name]-busybox-[template-name]
+  #- secretRef:
+  #    name: [release-name]-busybox-[template-name]
+
+  # `busybox.extraVolumeMounts` is addition volumeMounts.
+  # specify the volume name created with `extraVolume`.
   extraVolumeMounts: {}
+  #- name: your-volume-name
+  #  mountPath: /path/to/dir
+
+  # `buxybox.secrets` is additional Secret as a string to be passed to the tpl function.
+  # Secret name created here is `[release-name]-busybox-[template-name]`.
   secrets: {}
+  #  dirname:
+  #    file1.yaml: |
+  #     foo: 1
+  #     bar: 2
+  #     baz: 3
+  #   file2.yaml: |
+  #     foo: 1
+  #     bar: 2
+  #     baz: 3
+  #  envname:
+  #    FOO: 1
+  #    BAR: 2
+  #    BAZ: 3
+
+  # `buxybox.secrets` is additional ConfigMap as a string to be passed to the tpl function.
+  # ConfigMap name created here is `[release-name]-busybox-[template-name]`.
   templates: {}
+  #  dirname:
+  #    file1.yaml: |
+  #     foo: 1
+  #     bar: 2
+  #     baz: 3
+  #   file2.yaml: |
+  #     foo: 1
+  #     bar: 2
+  #     baz: 3
+  #  envname:
+  #    FOO: 1
+  #    BAR: 2
+  #    BAZ: 3
+
+  # Grant annotations to ConfigMap of `busybox.templates`, Secrets of `busybox.secrets`.
   annotations: {}
-  # sharedPath: {{ .Values.sharedPath }}
+
 
 # NGINX
 nginx:
