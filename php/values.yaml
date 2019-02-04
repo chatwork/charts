@@ -1,12 +1,36 @@
 # Default values for php.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+# GLOBAL
 sharedPath: /var/www/html
 
+# DEPLOYMENT
+replicaCount: 1
+
 strategy:
-  rollingUpdate:
-    maxSurge: 10%
-    maxUnavailable: 25%
+  type: RollingUpdate
+
+podAnnotations: {}
+
+imagePullSecrets: []
+
+tolerations: []
+
+affinity: {}
+
+# SERVICE
+service:
+  type: LoadBalancer
+  port: 80
+
+# INGRESS
+ingress:
+  enabled: false
+
+# PDB
+podDisruptionBudget:
+  enabled: false
 
 # BUSYBOX
 busybox:
@@ -895,42 +919,24 @@ fpm:
   # Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets`.
   annotations: {}
 
-deployment:
-  podAnnotations: {}
+# `extra` is additional Raw Kubernetes Config as a string to be passed to the tpl function.
+extras:
+  templates: []
+#    secret1: |
+#     apiVersion: v1
+#     kind: Secret
+#     metadata:
+#       name: {{ template "php.fullname" . }}
+#       labels:
+#         app: {{ template "php.name" . }}
+#         chart: {{ template "php.chart" . }}
+#         release: {{ .Release.Name }}
+#         heritage: {{ .Release.Service }}
+#     type: Opaque
+#     data:
+#       hoge: {{ .Values.extras.hoge }}
+#  hoge: 1
 
-service:
-  type: LoadBalancer
-  port: 8888
-
-ingress:
-  enabled: false
-  preferPaths: []
-
-# If you need it you can write raw Kubernetes Config
-# extras:
-#   hoge: 1
-#   templates:
-#     secret1: |
-#       apiVersion: v1
-#       kind: Secret
-#       metadata:
-#         name: {{ template "php.fullname" . }}
-#         labels:
-#           app: {{ template "php.name" . }}
-#           chart: {{ template "php.chart" . }}
-#           release: {{ .Release.Name }}
-#           heritage: {{ .Release.Service }}
-#       type: Opaque
-#       data:
-#         hoge: {{ .Values.extras.hoge }}
-
+# TEST
 test:
-  extraContainer: []
-
-tolerations: []
-
-affinity: {}
-
-podDisruptionBudget:
   enabled: true
-  minAvailable: 80%
