@@ -32,10 +32,11 @@ spec:
         checksum/busybox/{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
 {{- end }}
 {{- range $name, $tmpl := .Values.nginx.templates }}
-        checksum/busybox/{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
+        checksum/nginx/{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
 {{- end }}
-        checksum/fpm-conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf" | toYaml) . | sha256sum }}
-        checksum/fpm-confd: {{ tpl (index .Values.fpm.templates "php-fpm.d" | toYaml) . | sha256sum }}
+{{- range $name, $tmpl := .Values.fpm.templates }}
+        checksum/fpm/{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
+{{- end }}
 {{- range $name, $secret := .Values.busybox.secrets }}
         checksum/busybox-secret/{{ $name | replace "." "-" }}: {{ tpl (toYaml $secret) $root | sha256sum }}
 {{- end }}
