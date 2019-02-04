@@ -14,8 +14,8 @@ busybox:
     tag: latest
     pullPolicy: IfNotPresent
   command: ["sh", "-c", "echo '<?php phpinfo();' > /var/www/html/index.php"]
-  env: {}
-  envFrom: []
+  extraEnv: {}
+  extraEnvFrom: []
   extraVolumeMounts: {}
   secrets: {}
   templates: {}

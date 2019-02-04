@@ -55,14 +55,14 @@ spec:
         restartPolicy: Never
         command:
 {{ tpl (toYaml .Values.busybox.command) $root | indent 8 }}
-{{- with .Values.busybox.env }}
+{{- with .Values.busybox.extraEnv }}
         env:
 {{- range $k, $v := . }}
         - name: {{ $k }}
           value: {{ $v }}
 {{- end }}
 {{- end }}
-{{- with .Values.busybox.envFrom }}
+{{- with .Values.busybox.extraEnvFrom }}
         envFrom:
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
