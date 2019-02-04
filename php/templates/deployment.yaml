@@ -83,14 +83,14 @@ spec:
 {{- with .Values.nginx.extraPorts }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
-{{- with .Values.nginx.env }}
+{{- with .Values.nginx.extraEnv }}
         env:
 {{- range $k, $v := . }}
         - name: {{ $k }}
           value: {{ tpl $v $root }}
 {{- end }}
 {{- end }}
-{{- with .Values.nginx.envFrom }}
+{{- with .Values.nginx.extraEnvFrom }}
         envFrom:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}

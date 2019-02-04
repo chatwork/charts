@@ -84,12 +84,12 @@ busybox:
 
 # NGINX
 nginx:
+
   image:
     repository: nginx
     tag: 1.15.1-alpine
     pullPolicy: IfNotPresent
-  env: {}
-  envFrom: []
+
   livenessProbe:
     httpGet:
       path: /status
@@ -99,6 +99,7 @@ nginx:
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 3
+
   readinessProbe:
     httpGet:
       path: /ping
@@ -108,9 +109,14 @@ nginx:
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 3
-  resources: {}
+
+  extraEnv: {}
+
+  extraEnvFrom: []
+
   # extraPorts: []
   # extraVolumeMounts: []
+  resources: {}
 
   # NGINX configuration
   port: 80
