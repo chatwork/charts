@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" . }}-php-fpm-conf
+  name: {{ template "php.fullname" . }}-fpm-php-fpm-conf
   labels:
     app: {{ template "php.name" . }}
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    checksum/fpm/php-fpm-conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf" | toYaml) . | sha256sum }}
+    checksum/fpm-php-fpm-conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf" | toYaml) . | sha256sum }}
 {{- with .Values.fpm.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -20,14 +20,14 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" . }}-php-fpm-conf-d
+  name: {{ template "php.fullname" . }}-fpm-php-fpm-d
   labels:
     app: {{ template "php.name" . }}
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    checksum/fpm/php-fpm-d: {{ tpl (index .Values.fpm.templates "php-fpm.d" | toYaml) . | sha256sum }}
+    checksum/fpm-php-fpm-d: {{ tpl (index .Values.fpm.templates "php-fpm.d" | toYaml) . | sha256sum }}
 {{- with .Values.fpm.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -55,7 +55,7 @@ metadata:
     release: {{ $root.Release.Name }}
     heritage: {{ $root.Release.Service }}
   annotations:
-    checksum/fpm/{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
+    checksum/fpm-{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
 {{- with $fpm.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}

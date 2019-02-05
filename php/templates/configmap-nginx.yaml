@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" . }}-nginx-conf
+  name: {{ template "php.fullname" . }}-nginx-nginx-conf
   labels:
     app: {{ template "php.name" . }}
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    checksum/nginx/conf: {{ tpl (index .Values.nginx.templates "nginx.conf" | toYaml) . | sha256sum }}
+    checksum/nginx-nginx-conf: {{ tpl (index .Values.nginx.templates "nginx.conf" | toYaml) . | sha256sum }}
 {{- with .Values.nginx.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -28,7 +28,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    checksum/nginx/conf-d: {{ tpl (index .Values.nginx.templates "conf.d" | toYaml) . | sha256sum }}
+    checksum/nginx-conf-d: {{ tpl (index .Values.nginx.templates "conf.d" | toYaml) . | sha256sum }}
 {{- with .Values.nginx.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -55,7 +55,7 @@ metadata:
     release: {{ $root.Release.Name }}
     heritage: {{ $root.Release.Service }}
   annotations:
-    checksum/nginx/{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
+    checksum/nginx-{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
 {{- with $nginx.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
