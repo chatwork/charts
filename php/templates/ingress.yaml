@@ -27,7 +27,7 @@ spec:
     - host: {{ .Values.ingress.host | .Values.nginx.host }}
       http:
         paths:
-{{- with $ingressPreferPaths }}
+{{- with .Values.ingress.preferPaths }}
 {{ toYaml . | indent 10 }}
 {{- end }}
           - path: {{ .Values.ingress.path }}
