@@ -14,10 +14,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port | default .Values.nginx.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+  - port: {{ .Values.service.port | default .Values.nginx.port }}
+    targetPort: default
+    protocol: TCP
+    name: default
   selector:
     app: {{ template "php.name" . }}
     release: {{ .Release.Name }}
