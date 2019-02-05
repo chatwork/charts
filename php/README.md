@@ -79,8 +79,9 @@ We recommend that you embed the source code in your container and copy it to the
 |  `busybox.command` | Initialize command | `["sh", "-c", "echo '<?php phpinfo();' > /var/www/html/index.php"]` |
 |  `busybox.sharedPath` | Path of directory to mount | `sharePath` |
 |  `busybox.extraEnv` | Additional environment variables | `{}` |
-|  `busybox.extraEnvFrom` | Additional envFrom | `{}` |
-|  `busybox.extraVolumeMounts` | Additional volumeMounts | `{}` |
+|  `busybox.extraEnvFrom` | Additional envFrom | `[]` |
+|  `busybox.extraVolumes` | Additional volumes | `[]` |
+|  `busybox.extraVolumeMounts` | Additional volumeMounts | `[]` |
 |  `busybox.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
 |  `busybox.templates` | Additional ConfigMap as a string to be passed to the tpl function. | `{}` |
 |  `busybox.annotations` | Grant annotations to ConfigMap of `busybox.templates`, Secrets of `busybox.secrets` | `{}` |
@@ -97,9 +98,10 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.readinessProbe` | Overrides the default readness probe | HTTP `/ping` port `7777` |
 |  `nginx.resources` | Overrides the default resource | `{}` |
 |  `nginx.extraEnv` | Additional environment variables | `{}` |
-|  `nginx.extraEnvFrom` | Additional envFrom | `{}` |
-|  `nginx.extraPorts` | Additional ports | `{}` |
-|  `nginx.extraVolumeMounts` | Additional volumeMounts | `{}` |
+|  `nginx.extraEnvFrom` | Additional envFrom | `[]` |
+|  `nginx.extraPorts` | Additional ports | `[]` |
+|  `nginx.extraVolumes` | Additional volumes | `[]` |
+|  `nginx.extraVolumeMounts` | Additional volumeMounts | `[]` |
 |  `nginx.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
 |  `nginx.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `nginx.conf`, `conf.d/default.conf`, `conf.d/status.conf` |
 |  `nginx.annotations` | Grant annotations to ConfigMap of `nginx.templates`, Secrets of `nginx.secrets` | `{}` |
@@ -116,9 +118,10 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.readinessProbe` | Overrides the default readness probe | `{}` |
 |  `fpm.resources` | Overrides the default resource | `{}` |
 |  `fpm.extraEnv` | Additional environment variables | `{}` |
-|  `fpm.extraEnvFrom` | Additional envFrom | `{}` |
-|  `fpm.extraPorts` | Additional ports | `{}` |
-|  `fpm.extraVolumeMounts` | Additional volumeMounts | `{}` |
+|  `fpm.extraEnvFrom` | Additional envFrom | `[] |
+|  `fpm.extraPorts` | Additional ports | `[]` |
+|  `fpm.extraVolumes` | Additional volumes | `[]` |
+|  `fpm.extraVolumeMounts` | Additional volumeMounts | `[]` |
 |  `fpm.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
 |  `fpm.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `php-fpm.conf`、`php-fpm.d/www.conf` |
 |  `fpm.annotations` | Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets` | `{}` |

@@ -174,7 +174,7 @@ nginx:
 
   # `nginx.extraVolumeMounts` is addition volumeMounts.
   # specify the volume name created with `extraVolume`.
-  extraVolumeMounts: {}
+  extraVolumeMounts: []
   #- name: your-volume-name
   #  mountPath: /path/to/dir
 
@@ -331,7 +331,7 @@ fpm:
 
   # `fpm.extraVolumeMounts` is addition volumeMounts.
   # specify the volume name created with `extraVolume`.
-  extraVolumeMounts: {}
+  extraVolumeMounts: []
   #- name: your-volume-name
   #  mountPath: /path/to/dir
 
@@ -923,7 +923,7 @@ fpm:
 
 # `extra` is additional Raw Kubernetes Config as a string to be passed to the tpl function.
 extras:
-  templates: []
+  templates: {}
 #    secret1: |
 #     apiVersion: v1
 #     kind: Secret
