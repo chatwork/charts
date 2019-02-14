@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" . }}-fpm-conf
+  name: {{ template "php.fullname" . }}-fpm-php-fpm-conf
   labels:
     app: {{ template "php.name" . }}
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    checksum/fpm-conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf" | toYaml) . | sha256sum }}
+    checksum/fpm-php-fpm-conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf" | toYaml) . | sha256sum }}
 {{- with .Values.fpm.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -20,14 +20,14 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" . }}-fpm-confd
+  name: {{ template "php.fullname" . }}-fpm-php-fpm-d
   labels:
     app: {{ template "php.name" . }}
     chart: {{ template "php.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    checksum/fpm-confd: {{ tpl (index .Values.fpm.templates "php-fpm.d" | toYaml) . | sha256sum }}
+    checksum/fpm-php-fpm-d: {{ tpl (index .Values.fpm.templates "php-fpm.d" | toYaml) . | sha256sum }}
 {{- with .Values.fpm.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -36,4 +36,31 @@ data:
 {{- range $k, $v := (index .Values.fpm.templates "php-fpm.d") }}
   {{ $k }}:
 {{- tpl $v $root | toYaml | indent 2 }}
+{{- end }}
+
+
+{{- $root := . -}}
+{{- $fpm := .Values.fpm -}}
+{{- if .Values.fpm.templates }}
+{{- range $name, $tmpl := .Values.fpm.templates }}
+{{- if and (ne $name "php-fpm.conf") (ne $name "php-fpm.d") }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "php.fullname" $root }}-fpm-{{ $name | replace "." "-" }}
+  labels:
+    app: {{ template "php.name" $root }}
+    chart: {{ template "php.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+  annotations:
+    checksum/fpm-{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
+{{- with $fpm.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+  data:
+{{ tpl (toYaml $tmpl) $root | indent 2 }}
+{{- end}}
+{{- end }}
 {{- end }}

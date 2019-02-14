@@ -28,41 +28,43 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
       annotations:
-{{- with .Values.busybox.templates }}
-        checksum/busybox: {{ tpl (toYaml .) $root | sha256sum }}
+{{- range $name, $tmpl := .Values.busybox.templates }}
+        checksum/busybox-{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
 {{- end }}
-        checksum/nginx-conf: {{ tpl (index .Values.nginx.templates "nginx.conf" | toYaml) . | sha256sum }}
-        checksum/nginx-confd: {{ tpl (index .Values.nginx.templates "conf.d" | toYaml) . | sha256sum }}
-        checksum/fpm-conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf" | toYaml) . | sha256sum }}
-        checksum/fpm-confd: {{ tpl (index .Values.fpm.templates "php-fpm.d" | toYaml) . | sha256sum }}
-{{- with .Values.busybox.secrets }}
-        checksum/busybox-secret: {{ . | toYaml | sha256sum }}
+{{- range $name, $tmpl := .Values.nginx.templates }}
+        checksum/nginx-{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
 {{- end }}
-{{- with .Values.nginx.secrets }}
-        checksum/nginx-secret: {{ . | toYaml | sha256sum }}
+{{- range $name, $tmpl := .Values.fpm.templates }}
+        checksum/fpm-{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
 {{- end }}
-{{- with .Values.fpm.secrets }}
-        checksum/fpm-secret: {{ . | toYaml | sha256sum }}
+{{- range $name, $secret := .Values.busybox.secrets }}
+        checksum/busybox-secret-{{ $name | replace "." "-" }}: {{ tpl (toYaml $secret) $root | sha256sum }}
 {{- end }}
-{{- with .Values.deployment.podAnnotations }}
+{{- range $name, $secret := .Values.nginx.secrets }}
+        checksum/nginx-secret-{{ $name | replace "." "-" }}: {{ tpl (toYaml $secret) $root | sha256sum }}
+{{- end }}
+{{- range $name, $secret := .Values.fpm.secrets }}
+        checksum/fpm-secret-{{ $name | replace "." "-" }}: {{ tpl (toYaml $secret) $root | sha256sum }}
+{{- end }}
+{{- with .Values.podAnnotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
       initContainers:
-      - name: "{{ .Chart.Name }}-{{ .Values.busybox.name }}"
+      - name: "{{ template "php.fullname" . }}-busybox"
         image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
         imagePullPolicy: {{ .Values.busybox.image.pullPolicy }}
         restartPolicy: Never
         command:
 {{ tpl (toYaml .Values.busybox.command) $root | indent 8 }}
-{{- with .Values.busybox.env }}
+{{- with .Values.busybox.extraEnv }}
         env:
 {{- range $k, $v := . }}
         - name: {{ $k }}
           value: {{ $v }}
 {{- end }}
 {{- end }}
-{{- with .Values.busybox.envFrom }}
+{{- with .Values.busybox.extraEnvFrom }}
         envFrom:
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
@@ -73,7 +75,7 @@ spec:
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
       containers:
-      - name: "{{ .Chart.Name }}-{{ .Values.nginx.name }}"
+      - name: "{{ template "php.fullname" . }}-nginx"
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
         imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
         ports:
@@ -83,14 +85,14 @@ spec:
 {{- with .Values.nginx.extraPorts }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
-{{- with .Values.nginx.env }}
+{{- with .Values.nginx.extraEnv }}
         env:
 {{- range $k, $v := . }}
         - name: {{ $k }}
           value: {{ tpl $v $root }}
 {{- end }}
 {{- end }}
-{{- with .Values.nginx.envFrom }}
+{{- with .Values.nginx.extraEnvFrom }}
         envFrom:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
@@ -126,7 +128,7 @@ spec:
 {{- with .Values.nginx.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
-      - name: "{{ .Chart.Name }}-{{ .Values.fpm.name }}"
+      - name: "{{ template "php.fullname" . }}-fpm"
         image: "{{ .Values.fpm.image.repository }}:{{ .Values.fpm.image.tag }}"
         imagePullPolicy: {{ .Values.fpm.image.pullPolicy }}
 {{- with .Values.fpm.extraPorts }}
@@ -135,14 +137,14 @@ spec:
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
 {{- end }}
-{{- with .Values.fpm.env }}
+{{- with .Values.fpm.extraEnv }}
         env:
 {{- range $k, $v := . }}
         - name: {{ $k }}
           value: {{ $v }}
 {{- end }}
 {{- end }}
-{{- with .Values.fpm.envFrom }}
+{{- with .Values.fpm.extraEnvFrom }}
         envFrom:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
@@ -185,17 +187,23 @@ spec:
         emptyDir: {}
       - name: nginx-conf
         configMap:
-          name: {{ template "php.fullname" . }}-nginx-conf
+          name: {{ template "php.fullname" . }}-nginx-nginx-conf
       - name: nginx-confd
         configMap:
-          name: {{ template "php.fullname" . }}-nginx-confd
+          name: {{ template "php.fullname" . }}-nginx-conf-d
       - name: fpm-conf
         configMap:
-          name: {{ template "php.fullname" . }}-fpm-conf
+          name: {{ template "php.fullname" . }}-fpm-php-fpm-conf
       - name: fpm-confd
         configMap:
-          name: {{ template "php.fullname" . }}-fpm-confd
-{{- with .Values.extraVolume }}
+          name: {{ template "php.fullname" . }}-fpm-php-fpm-d
+{{- with .Values.busybox.extraVolumes }}
+{{ tpl (toYaml .) $root | indent 6 }}
+{{- end }}
+{{- with .Values.nginx.extraVolumes }}
+{{ tpl (toYaml .) $root | indent 6 }}
+{{- end }}
+{{- with .Values.fpm.extraVolumes }}
 {{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
 {{- with .Values.imagePullSecrets}}

@@ -1,35 +1,128 @@
 # Default values for php.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+# GLOBAL
 sharedPath: /var/www/html
 
-strategy:
-  rollingUpdate:
-    maxSurge: 10%
-    maxUnavailable: 25%
+# DEPLOYMENT
+replicaCount: 1
 
+strategy:
+  type: RollingUpdate
+
+podAnnotations: {}
+
+imagePullSecrets: []
+
+tolerations: []
+
+affinity: {}
+
+# SERVICE
+service:
+  type: LoadBalancer
+  port: 8080
+
+# INGRESS
+ingress:
+  enabled: false
+
+# PDB
+podDisruptionBudget:
+  enabled: false
+
+# BUSYBOX
 busybox:
-  name: busybox
   image:
     repository: busybox
     tag: latest
     pullPolicy: IfNotPresent
+
+  # `busybox.command` is initialize command.
+  # Copy the source code in busybox to `sharedPath` or `busybox.sharedPath`.
+  # e.g. sh -c "cp -av /path/to/sources/* /path/to/share-path"
   command: ["sh", "-c", "echo '<?php phpinfo();' > /var/www/html/index.php"]
-  env: {}
-  envFrom: []
-  extraVolumeMounts: {}
+
+  # `busybox.sharedPath` is specifies the directory to mount.
+  # Default is `sharedPath`, but if it conflicts with the source code directory, please specify it.
+  #sharedPath: {{ .Values.sharedPath }}
+
+  # `busybox.extraEnv` is additional environment variables.
+  extraEnv: {}
+  #  KEY1: VALUE1
+  #  KEY2: VALUE2
+  #  KEY3: VALUE3
+
+  # `busybox.extraEnvFrom` is addtional envFrom.
+  # Specify ConfigMap created in `busybox.templates` or Secret created in `busybox.secrets`.
+  extraEnvFrom: []
+  #- configMapRef:
+  #    name: [release-name]-busybox-[template-name]
+  #- secretRef:
+  #    name: [release-name]-busybox-[template-name]
+
+  # `busybox.extraVolumes` is addition volumes.
+  extraVolumes: []
+  #- name: extra-volume
+  #  configMap:
+  #    name: configmap-name
+
+  # `busybox.extraVolumeMounts` is addition volumeMounts.
+  # specify the volume name created with `extraVolume`.
+  extraVolumeMounts: []
+  #- name: your-volume-name
+  #  mountPath: /path/to/dir
+
+  # `buxybox.secrets` is additional Secret as a string to be passed to the tpl function.
+  # Secret name created here is `[release-name]-busybox-[template-name]`.
   secrets: {}
+  #  dirname:
+  #    file1.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #    file2.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #  envname:
+  #    FOO: 1
+  #    BAR: 2
+  #    BAZ: 3
+
+  # `buxybox.templates` is additional ConfigMap as a string to be passed to the tpl function.
+  # ConfigMap name created here is `[release-name]-busybox-[template-name]`.
   templates: {}
+  #  dirname:
+  #    file1.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #    file2.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #  envname:
+  #    FOO: 1
+  #    BAR: 2
+  #    BAZ: 3
+
+  # Grant annotations to ConfigMap of `busybox.templates`, Secrets of `busybox.secrets`.
+  annotations: {}
+
 
 # NGINX
 nginx:
-  name: nginx
   image:
     repository: nginx
     tag: 1.15.1-alpine
     pullPolicy: IfNotPresent
-  env: {}
-  envFrom: []
+
+  # NGINX configuration
+  host: localhost # host using as Ingress host name
+  port: 80        # port using as Container port, Service port, Ingress port
+
   livenessProbe:
     httpGet:
       path: /status
@@ -39,6 +132,7 @@ nginx:
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 3
+
   readinessProbe:
     httpGet:
       path: /ping
@@ -48,55 +142,96 @@ nginx:
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 3
+
   resources: {}
-  # extraPorts: []
-  # extraVolumeMounts: []
 
-  # NGINX configuration
-  port: 80
-  user: nobody
-  errorLevel: warn
-  http:
-    keepaliveTimeout: 65
+  # `nginx.extraEnv` is additional environment variables.
+  extraEnv: {}
+  #  KEY1: VALUE1
+  #  KEY2: VALUE2
+  #  KEY3: VALUE3
 
-  # NGINX secrets values or files
+  # `nginx.extraEnvFrom` is addtional envFrom.
+  # Specify ConfigMap created in `nginx.templates` or Secret created in `nginx.secrets`.
+  extraEnvFrom: []
+  #- configMapRef:
+  #    name: [release-name]-nginx-[template-name]
+  #- secretRef:
+  #    name: [release-name]-nginx-[template-name]
+
+  # `nginx.extraPorts` is addtional ports.
+  # Please specify if you want to expose a non-default port.
+  extraPorts: []
+  #- name: extra-port
+  #  containerPort: 9999
+  #  protocol: TCP
+
+  # `nginx.extraVolumes` is addition volumes.
+  extraVolumes: []
+  #- name: extra-volume
+  #  configMap:
+  #    name: configmap-name
+
+  # `nginx.extraVolumeMounts` is addition volumeMounts.
+  # specify the volume name created with `extraVolume`.
+  extraVolumeMounts: []
+  #- name: your-volume-name
+  #  mountPath: /path/to/dir
+
+  # `nginx.secrets` is additional Secret as a string to be passed to the tpl function.
+  # Secret name created here is `[release-name]-nginx-[template-name]`.
   secrets: {}
+  #  dirname:
+  #    file1.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #    file2.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #  envname:
+  #    FOO: 1
+  #    BAR: 2
+  #    BAZ: 3
 
-  # configuration NGINX templates
+  # configuration NGINX templates.
   # If you can not be satisfied with the default settings you can change the template.
   templates:
     nginx.conf: |
-      user  {{ .Values.nginx.user }};
-      worker_processes  auto;
+      user nobody;
+      worker_processes auto;
 
-      error_log  /dev/stderr {{ .Values.nginx.error_level }};
+      error_log  /dev/stderr warn;
       pid        /var/run/nginx.pid;
 
       events {
-          worker_connections  1024;
+          worker_connections 1024;
       }
 
       http {
-          include       /etc/nginx/mime.types;
+          include /etc/nginx/mime.types;
+
           default_type  application/octet-stream;
 
-          access_log  /dev/stdout combined;
+          access_log /dev/stdout combined;
 
-          sendfile        on;
-          #tcp_nopush     on;
+          sendfile    on;
+          #tcp_nopush on;
 
-          keepalive_timeout  {{ .Values.nginx.http.keepaliveTimeout }};
+          keepalive_timeout 65;
 
-          #gzip  on;
+          #gzip on;
 
           include /etc/nginx/conf.d/*.conf;
       }
     conf.d:
       default.conf: |
         server {
-            listen       {{ .Values.nginx.port }};
-            root   {{ .Values.sharedPath }};
-            index  index.php index.html index.htm;
+            listen      {{ .Values.nginx.port }};
+            server_name {{ .Values.nginx.host }};
+            root        {{ .Values.sharedPath }};
+            index       index.php index.html index.htm;
 
             location / {
                 try_files $uri $uri/ /index.php?$query_string;
@@ -104,7 +239,7 @@ nginx:
 
             location ~ \.php$ {
                 include fastcgi_params;
-                fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;
+                fastcgi_pass  unix:/var/run/php-fpm/php-fpm.sock;
                 fastcgi_index index.php;
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
             }
@@ -125,25 +260,20 @@ nginx:
 
             location /ping {
                 include fastcgi_params;
-                fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;
+                fastcgi_pass  unix:/var/run/php-fpm/php-fpm.sock;
                 fastcgi_param SCRIPT_FILENAME /ping;
             }
         }
 
+  # Grant annotations to ConfigMap of `nginx.templates`, Secrets of `nginx.secrets`.
+  annotations: {}
+
 # PHP-FPM
 fpm:
-  name: fpm
   image:
     repository: php
     tag: 7.1-fpm-alpine
     pullPolicy: IfNotPresent
-  env: {}
-  envFrom: []
-  livenessProbe: {}
-  readinessProbe: {}
-  resources: {}
-  # extraPorts: []
-  # extraVolumeMounts: []
 
   # PHP-FPM configuration
   # http://php.net/manual/en/install.fpm.configuration.php
@@ -168,8 +298,59 @@ fpm:
     errorReporting: E_ALL
     exposePhp: off
 
-  # PHP-FPM secrets values or files
+  livenessProbe: {}
+  readinessProbe: {}
+  resources: {}
+
+  # `fpm.extraEnv` is additional environment variables.
+  extraEnv: {}
+  #  KEY1: VALUE1
+  #  KEY2: VALUE2
+  #  KEY3: VALUE3
+
+  # `fpm.extraEnvFrom` is addtional envFrom.
+  # Specify ConfigMap created in `fpm.templates` or Secret created in `fpm.secrets`.
+  extraEnvFrom: []
+  #- configMapRef:
+  #    name: [release-name]-fpm-[template-name]
+  #- secretRef:
+  #    name: [release-name]-fpm-[template-name]
+
+  # `fpm.extraPorts` is addtional ports.
+  # Please specify if you want to expose a non-default port.
+  extraPorts: []
+  #- name: extra-port
+  #  containerPort: 9999
+  #  protocol: TCP
+
+  # `fpm.extraVolumes` is addition volumes.
+  extraVolumes: []
+  #- name: extra-volume
+  #  configMap:
+  #    name: configmap-name
+
+  # `fpm.extraVolumeMounts` is addition volumeMounts.
+  # specify the volume name created with `extraVolume`.
+  extraVolumeMounts: []
+  #- name: your-volume-name
+  #  mountPath: /path/to/dir
+
+  # `fpm.secrets` is additional Secret as a string to be passed to the tpl function.
+  # Secret name created here is `[release-name]-nginx-[template-name]`.
   secrets: {}
+  #  dirname:
+  #    file1.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #    file2.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #  envname:
+  #    FOO: 1
+  #    BAR: 2
+  #    BAZ: 3
 
   # configuration PHP-FPM templates
   # If you can not be satisfied with the default settings you can change the template.
@@ -737,44 +918,27 @@ fpm:
         {{- end }}
         {{- end }}
 
-extraVolume: []
+  # Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets`.
+  annotations: {}
 
-deployment:
-  podAnnotations: {}
+# `extra` is additional Raw Kubernetes Config as a string to be passed to the tpl function.
+extras:
+  templates: {}
+#    secret1: |
+#     apiVersion: v1
+#     kind: Secret
+#     metadata:
+#       name: {{ template "php.fullname" . }}
+#       labels:
+#         app: {{ template "php.name" . }}
+#         chart: {{ template "php.chart" . }}
+#         release: {{ .Release.Name }}
+#         heritage: {{ .Release.Service }}
+#     type: Opaque
+#     data:
+#       hoge: {{ .Values.extras.hoge }}
+#  hoge: 1
 
-service:
-  type: LoadBalancer
-  port: 8888
-
-ingress:
-  enabled: false
-  preferPaths: []
-
-# If you need it you can write raw Kubernetes Config
-# extras:
-#   hoge: 1
-#   templates:
-#     secret1: |
-#       apiVersion: v1
-#       kind: Secret
-#       metadata:
-#         name: {{ template "php.fullname" . }}
-#         labels:
-#           app: {{ template "php.name" . }}
-#           chart: {{ template "php.chart" . }}
-#           release: {{ .Release.Name }}
-#           heritage: {{ .Release.Service }}
-#       type: Opaque
-#       data:
-#         hoge: {{ .Values.extras.hoge }}
-
+# TEST
 test:
-  extraContainer: []
-
-tolerations: []
-
-affinity: {}
-
-podDisruptionBudget:
   enabled: true
-  minAvailable: 80%
