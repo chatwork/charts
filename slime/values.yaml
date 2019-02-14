@@ -1,0 +1,19 @@
+# Default values for example.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+configmaps: []
+#- metadata:
+#    name: slime
+#    annotations:
+#      foo: bar
+#  data:
+#    slime: '₍Ꙭ̂₎'
+
+secrets: []
+#- metadata:
+#    name: slime
+#    annotations:
+#      foo: bar
+#  data:
+#    slime: '₍Ꙭ̂₎'
