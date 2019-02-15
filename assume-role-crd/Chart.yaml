@@ -1,6 +1,6 @@
 description: Assume Role CRD
 name: assume-role-crd
-version: 0.0.1
+version: 0.0.2
 maintainers:
 - name: cwsakamoto
   email: sakamoto@chatwork.com
