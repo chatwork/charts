@@ -1,5 +1,5 @@
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
   labels:
     app: "{{ template "assume-role-crd.fullname" . }}"
@@ -27,7 +27,7 @@ metadata:
   name: {{ template "assume-role-crd.fullname" .}}-test
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
   labels:
     app: "{{ template "assume-role-crd.fullname" . }}"
@@ -40,7 +40,7 @@ subjects:
     name: {{ template "assume-role-crd.fullname" .}}-test
     namespace: {{ .Release.Namespace }}
 roleRef:
-  kind: ClusterRole
+  kind: Role
   name: {{ template "assume-role-crd.fullname" .}}-test
   apiGroup: rbac.authorization.k8s.io
 ---
@@ -64,7 +64,7 @@ spec:
         - /bin/sh
         - -c
         - |
-          kubectl get assumerole --all-namespaces | grep {{ .Values.test.target }}
+          kubectl get assumerole -n {{ .Release.Namespace }} | grep {{ .Values.test.target }}
 {{- with .Values.test.extraContainer }}
 {{ toYaml . | indent 8}}
 {{- end }}
