@@ -1,0 +1,70 @@
+{{- $root := . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "sendgrid2datadog.fullname" . }}
+  labels:
+    app: {{ template "sendgrid2datadog.name" . }}
+    chart: {{ template "sendgrid2datadog.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  minReadySeconds: 30
+{{- with .Values.replicaCount }}
+  replicas: {{ . }}
+{{- end }}
+{{- with .Values.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "sendgrid2datadog.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "sendgrid2datadog.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: api
+        image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+        imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.api.port }}
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: {{ .Values.api.port }}
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: {{ .Values.api.port }}
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+        envFrom:
+        - secretRef:
+            name: {{ template "sendgrid2datadog.api.fullname" . }}-secret
+      - name: dogstatsd
+        image: "{{ .Values.dogstatsd.image.repository }}:{{ .Values.dogstatsd.image.tag }}"
+        imagePullPolicy: {{ .Values.dogstatsd.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.dogstatsd.port }}
+          protocol: TCP
+        envFrom:
+        - secretRef:
+            name:  {{ template "sendgrid2datadog.dogstatsd.fullname" . }}-secret
+{{- with .Values.affinity }}
+      affinity:
+{{ tpl (toYaml .) $root | indent 6 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ tpl (toYaml .) $root | indent 6 }}
+{{- end }}

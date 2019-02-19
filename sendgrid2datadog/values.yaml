@@ -1,0 +1,39 @@
+replicaCount: 1
+
+strategy:
+  type: RollingUpdate
+
+service:
+  type: LoadBalancer
+  port: 8080
+
+ingress:
+  enabled: false
+
+podAnnotations: {}
+
+tolerations: []
+
+affinity: {}
+
+podDisruptionBudget:
+  enabled: false
+
+api:
+  image:
+    repository: quay.io/dtan4/sendgrid2datadog
+    tag: latest
+    pullPolicy: IfNotPresent
+  secret:
+    basicAuth:
+      username: ""
+      password: ""
+  port: 8080
+dogstatsd:
+  image:
+    repository: datadog/docker-dd-agent
+    tag: latest-dogstatsd
+    pullPolicy: IfNotPresent
+  secret:
+    apiKey: ""
+  port: 8125

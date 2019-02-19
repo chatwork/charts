@@ -1,0 +1,37 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "sendgrid2datadog.fullname" }}
+  labels:
+    app: {{ template "sendgrid2datadog.name" . }}
+    chart: {{ template "sendgrid2datadog.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  backend:
+    serviceName: {{ template "sendgrid2datadog.fullname" . }}
+    servicePort: {{ .Values.ingress.port | default .Values.service.port | default .Values.api.port }}
+{{- if .Values.ingress.tls }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host }}
+    secretName: {{ .Values.ingress.tls.secretName }}
+{{- end }}
+
+  rules:
+  - host: localhost
+    http:
+      paths:
+{{- with .Values.ingress.preferPaths }}
+{{ toYaml . | indent 10 }}
+{{- end }}
+      - path: {{ .Values.ingress.path }}
+        backend:
+          serviceName: {{ template "sendgrid2datadog.fullname" . }}
+            servicePort: {{ .Values.ingress.port | default .Values.service.port | default .Values.nginx.port }}
+{{- end }}
