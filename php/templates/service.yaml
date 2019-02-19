@@ -14,10 +14,20 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - port: {{ .Values.service.port | default .Values.nginx.port }}
-    targetPort: default
+  - name: default
+    port: {{ .Values.service.port | default .Values.nginx.port }}
     protocol: TCP
-    name: default
+    targetPort: default
+{{- if .Values.service.extraPorts }}
+{{ .Values.service.extraPorts | toYaml | indent 2}}
+{{- else }}
+{{- range .Values.nginx.extraPorts }}
+  - name: {{ .name }}
+    port: {{ .containerPort }}
+    {{- with .protocol }}protocol: {{ . }}{{ end }}
+    targetPort: {{ .name | default .containerPort }}
+{{- end }}
+{{- end }}
   selector:
     app: {{ template "php.name" . }}
     release: {{ .Release.Name }}

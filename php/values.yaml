@@ -22,7 +22,7 @@ affinity: {}
 # SERVICE
 service:
   type: LoadBalancer
-  port: 8080
+  extraPorts: []
 
 # INGRESS
 ingress:
