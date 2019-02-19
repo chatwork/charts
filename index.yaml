@@ -208,15 +208,6 @@ entries:
     - https://chatwork.github.io/charts/regcred-0.1.0.tgz
     version: 0.1.0
   tiller:
-  - apiVersion: v1
-    appVersion: "1.0"
-    created: 2019-02-15T05:18:23.631524761Z
-    description: Helm Charts for installing Helm Tiller.
-    digest: 371a0b0eb55639cc02e91ac0902d8c7236d97045301a0d5d355c8751620aca0f
-    name: tiller
-    urls:
-    - https://chatwork.github.io/charts/tiller-2.10.0.tgz
-    version: 2.10.0
   - appVersion: 2.12.3
     created: 2019-02-15T05:18:23.63129571Z
     description: Helm Charts for installing Helm Tiller.
