@@ -79,7 +79,7 @@ spec:
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
         imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
         ports:
-        - name: http
+        - name: default
           containerPort: {{ .Values.nginx.port }}
           protocol: TCP
 {{- with .Values.nginx.extraPorts }}
