@@ -1,0 +1,36 @@
+# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#configmap-v1-core
+{{- $root := . }}
+{{- range $index, $value := .Values.configmaps }}
+apiVersion: v1
+{{- with $value.binaryData }}
+binaryData:
+{{ . | toYaml | indent 2 }}
+{{- end }}
+{{- with $value.data }}
+data:
+{{ . | toYaml | indent 2 }}
+{{- end }}
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "slime.name" $root }}
+    chart: {{ template "slime.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+{{- range $key, $val := $value.metadata }}
+{{- if eq $key "labels" }}
+{{- range $k, $v := $value.metadata.labels }}
+{{- if not (regexMatch "^(app|chart|release|heritage)$" $k) }}
+    {{ $k }}: {{ $v }}
+{{- end }}
+{{- end }}
+{{- else }}
+{{- if regexMatch "^(string|bool|int|float64)$" (printf "%T" $val) }}
+  {{ $key }}: {{ $val }}
+{{- else }}
+  {{ $key }}:
+{{ toYaml $val | indent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
