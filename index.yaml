@@ -1,9 +1,9 @@
 apiVersion: v1
 entries:
   assume-role-crd:
-  - created: 2019-02-15T05:18:23.620544231Z
+  - created: 2019-02-20T02:57:39.606354313Z
     description: Assume Role CRD
-    digest: 248f2aca75c959a75dbc19327d15031708f01f38488010203eb65413e1fcc124
+    digest: 24c8200029de6e271dd7b84e57a458368eb85bbcd87d33df604155538917c7a7
     maintainers:
     - email: sakamoto@chatwork.com
       name: cwsakamoto
@@ -11,7 +11,7 @@ entries:
     urls:
     - https://chatwork.github.io/charts/assume-role-crd-0.0.2.tgz
     version: 0.0.2
-  - created: 2019-02-15T05:18:23.620048106Z
+  - created: 2019-02-20T02:57:39.60586037Z
     description: Assume Role CRD
     digest: 3e9647566198ec93b2871725b441b94077b16f2a8904ed6b5aa67e632aa7de06
     maintainers:
@@ -23,9 +23,9 @@ entries:
     version: 0.0.1
   assume-role-operator:
   - appVersion: 0.0.1
-    created: 2019-02-15T05:18:23.621615923Z
+    created: 2019-02-20T02:57:39.6074378Z
     description: AWS Role assume policy modify for role using kiam
-    digest: f9cf7a8a7044d03b85c0d877ad1a177822ff02291337eb500327f7de588cbf4a
+    digest: 29e3af56a42b6cd239701afda481aea6c41f60506538c0b587760fc2deab892e
     maintainers:
     - email: sakamoto@chatwork.com
       name: cwsakamoto
@@ -34,7 +34,7 @@ entries:
     - https://chatwork.github.io/charts/assume-role-operator-0.0.2.tgz
     version: 0.0.2
   - appVersion: 0.0.1
-    created: 2019-02-15T05:18:23.621096879Z
+    created: 2019-02-20T02:57:39.606926904Z
     description: AWS Role assume policy modify for role using kiam
     digest: 08d26bf66ed94001025ce46914d4636279ff65d1567835fabfc5c9f4acf3438e
     maintainers:
@@ -47,7 +47,7 @@ entries:
   docker-registry:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-15T05:18:23.622034209Z
+    created: 2019-02-20T02:57:39.607831778Z
     description: Pull an Image from a Private Registry
     digest: dc6a6eac97769dcd4ecfd9ef06fbbc6f5c2b62382437d9581aa745916d3a9750
     name: docker-registry
@@ -57,17 +57,17 @@ entries:
   example:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-15T05:18:23.622785219Z
+    created: 2019-02-20T02:57:39.608345794Z
     description: A Helm chart for Kubernetes
-    digest: ee3de5349b9079392a612f1ab63db15434b6fffff3155f9f98eedb28e54dbfe9
+    digest: e28ab94b091a4b18b5f7fd13d6bf8a59c217240f6e392d80d21a803b3902acee
     name: example
     urls:
     - https://chatwork.github.io/charts/example-0.1.0.tgz
     version: 0.1.0
   gcp-credentials:
-  - created: 2019-02-15T05:18:23.623146541Z
+  - created: 2019-02-20T02:57:39.608699559Z
     description: GCP credentials
-    digest: f9bc7f1ea124f1bd2ccb84c8bff35e1db1990ca12050b0221dfbcfb4f1685f7f
+    digest: 79bf998f858907fd5b6126a1afdaaf0dbcded90ef487c6fcd73ac08199e5335e
     name: gcp-credentials
     urls:
     - https://chatwork.github.io/charts/gcp-credentials-0.0.1.tgz
@@ -75,9 +75,9 @@ entries:
   guard:
   - apiVersion: v1
     appVersion: 0.2.1
-    created: 2019-02-15T05:18:23.625215318Z
+    created: 2019-02-20T02:57:39.61064424Z
     description: chart for Guard (https://appscode.com/products/guard)
-    digest: 69e95eab6a1e06b11e8a70d0646eb7c5a084cc7c129a1f89a3e64474cae6dacb
+    digest: 107b46504b5197ecba7e57e99fcaece18e8577283e8fa47390cb2330bf7aff34
     home: https://appscode.com/products/guard
     keywords:
     - webhook-authentication
@@ -92,7 +92,7 @@ entries:
     version: 0.0.3
   - apiVersion: v1
     appVersion: 0.2.1
-    created: 2019-02-15T05:18:23.624727455Z
+    created: 2019-02-20T02:57:39.610135347Z
     description: chart for Guard (https://appscode.com/products/guard)
     digest: d3c6e900b9c32a73d95b56186a9a27f054c49bb81f776b45d2655cf04408531a
     home: https://appscode.com/products/guard
@@ -109,7 +109,7 @@ entries:
     version: 0.0.2
   - apiVersion: v1
     appVersion: 0.2.1
-    created: 2019-02-15T05:18:23.624180125Z
+    created: 2019-02-20T02:57:39.609658143Z
     description: chart for Guard (https://appscode.com/products/guard)
     digest: 96904e9e6935e3b68f1c9d9a485f4a071cd9098605a32bc0db525e7244981679
     home: https://appscode.com/products/guard
@@ -126,16 +126,16 @@ entries:
     version: 0.0.1
   php:
   - apiVersion: v1
-    created: 2019-02-15T05:18:23.62921706Z
+    created: 2019-02-20T02:57:39.614996756Z
     description: PHP-FPM Web Application
-    digest: 13e67a90b71cdaeccaf40995cd38e6c54b63122a9c4972249de23fbfa87ab2a2
+    digest: 68c8c0395feaf4d69da6bcb05134a9606aec96a00646b7f26e8981bc2e6b4019
     icon: http://php.net/images/logos/php-logo-bigger.png
     name: php
     urls:
     - https://chatwork.github.io/charts/php-0.7.0.tgz
     version: 0.7.0
   - apiVersion: v1
-    created: 2019-02-15T05:18:23.628309373Z
+    created: 2019-02-20T02:57:39.613928099Z
     description: PHP-FPM Web Application
     digest: ebe7ace120307cbd9abf84098d5db97b6fcab7b699d1035d9efd6e772eb24d42
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -144,7 +144,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.6.0.tgz
     version: 0.6.0
   - apiVersion: v1
-    created: 2019-02-15T05:18:23.627476654Z
+    created: 2019-02-20T02:57:39.613122942Z
     description: PHP-FPM Web Application
     digest: e955b167b45b7230168307373f05685b1dd4cb0f3de36fd2ef2b6b88cdbbb7df
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -153,7 +153,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.5.0.tgz
     version: 0.5.0
   - apiVersion: v1
-    created: 2019-02-15T05:18:23.626711273Z
+    created: 2019-02-20T02:57:39.612333661Z
     description: PHP-FPM Web Application
     digest: a59e58a833d86da9e9254ea058dd25ea2008e18b17bd6f3a83fb28b890b47efd
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -162,7 +162,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.4.0.tgz
     version: 0.4.0
   - apiVersion: v1
-    created: 2019-02-15T05:18:23.625935743Z
+    created: 2019-02-20T02:57:39.611351337Z
     description: PHP-FPM Web Application
     digest: 37a2b141a3e62ee51b2d1be92c1bbfda48a29d1d12ff1c70656f8c03e49a15f3
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -173,9 +173,9 @@ entries:
   postfix:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-15T05:18:23.629983666Z
+    created: 2019-02-20T02:57:39.615793968Z
     description: Postfix Helm Chart
-    digest: 9f0bf9231dabe0633911c2b286d6c9a4e99a7819c06fb5416ea206609a860581
+    digest: 8a1d3ea03698f0523d98aa4b9bd1ccb617125af5fd4ca6139f75a8d2a9d8a8a2
     name: postfix
     urls:
     - https://chatwork.github.io/charts/postfix-0.1.0.tgz
@@ -183,9 +183,9 @@ entries:
   regcred:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-15T05:18:23.630436489Z
+    created: 2019-02-20T02:57:39.616271182Z
     description: Pull an Image from a Private Registry
-    digest: 0be058083c0a7354d6697e2793c2dfb912e02a3cea3784d855c43de45878832e
+    digest: 3418b5a3aacc2de4157447e69ad910170b670550b480f4c3b06ae72b17e40549
     maintainers:
     - email: ozaki@chatwork.com
       name: cw-ozaki
@@ -196,7 +196,7 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-15T05:18:23.630205276Z
+    created: 2019-02-20T02:57:39.616031899Z
     description: Pull an Image from a Private Registry
     digest: 18a573cb87120aadf1d7bda35b8c12af6c5d854d764759c1b9a0dba1945e3d60
     maintainers:
@@ -207,11 +207,24 @@ entries:
     urls:
     - https://chatwork.github.io/charts/regcred-0.1.0.tgz
     version: 0.1.0
+  slime:
+  - apiVersion: v1
+    created: 2019-02-20T02:57:39.616516192Z
+    description: ₍Ꙭ̂₎ < Not my bad slime
+    digest: b918d14cfa5e83c523a738140ca2950af8a001b31d3a7889db2cc2d2da113d5e
+    maintainers:
+    - email: ozaki@chatwork.com
+      name: cw-ozaki
+      url: https://github.com/cw-ozaki
+    name: slime
+    urls:
+    - https://chatwork.github.io/charts/slime-0.1.0.tgz
+    version: 0.1.0
   tiller:
   - appVersion: 2.12.3
-    created: 2019-02-15T05:18:23.63129571Z
+    created: 2019-02-20T02:57:39.617339346Z
     description: Helm Charts for installing Helm Tiller.
-    digest: e651619544387972d5088a57740ca4c18f80aba5a2c44389a60f448c68c592cc
+    digest: 04f54e639fd9985da1bb3426a23e9c70a3b183e65bb05c5a7189aec2f49faa8b
     maintainers:
     - email: ozaki@chatwork.com
       name: cw-ozaki
@@ -222,7 +235,7 @@ entries:
     - https://chatwork.github.io/charts/tiller-0.0.4.tgz
     version: 0.0.4
   - appVersion: 2.12.3
-    created: 2019-02-15T05:18:23.630974498Z
+    created: 2019-02-20T02:57:39.617061182Z
     description: Helm Charts for installing Helm Tiller.
     digest: 072089b46650657276650d999a64130f035a9cc037250ff219064a3ca26c7d6f
     maintainers:
@@ -235,7 +248,7 @@ entries:
     - https://chatwork.github.io/charts/tiller-0.0.3.tgz
     version: 0.0.3
   - appVersion: 2.12.2
-    created: 2019-02-15T05:18:23.630700505Z
+    created: 2019-02-20T02:57:39.616784481Z
     description: Helm Charts for installing Helm Tiller.
     digest: 497f2bc8aec60d92f4d1a17b2fd8d303d3d5afb104aea1463c8a922e498ebf49
     maintainers:
@@ -247,4 +260,4 @@ entries:
     urls:
     - https://chatwork.github.io/charts/tiller-0.0.2.tgz
     version: 0.0.2
-generated: 2019-02-15T05:18:23.618869571Z
+generated: 2019-02-20T02:57:39.605079285Z
