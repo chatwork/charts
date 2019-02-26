@@ -13,7 +13,7 @@ apply:
 		--set 'rbac.tiller.rules[0].resources[0]='"*"'' \
 		--set 'rbac.tiller.rules[0].verbs[0]='"*"''
 	sleep 10
-	helm init --tiller-namespace ${TILLER_NAMESPACE} --service-account tiller-per-ns-${TILLER_NAMESPACE} --upgrade
+	helm init --tiller-namespace ${TILLER_NAMESPACE} --service-account tiller-per-ns-${TILLER_NAMESPACE} --force-upgrade
 	@if [ -n "$${CI}" ]; then \
 		helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace kube-system upgrade --wait --install --namespace "${TILLER_NAMESPACE}" arop-for-ci chatwork/assume-role-operator --set image.repository="cwsakamoto/assume-role-operator"; \
 		sleep 5; \
