@@ -24,7 +24,7 @@ spec:
 {{- end }}
 
   rules:
-    - host: {{ .Values.ingress.host | .Values.nginx.host }}
+    - host: {{ .Values.ingress.host | default .Values.nginx.host }}
       http:
         paths:
 {{- with .Values.ingress.preferPaths }}
