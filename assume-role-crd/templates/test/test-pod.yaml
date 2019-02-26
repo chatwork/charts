@@ -11,7 +11,7 @@ rules:
 - apiGroups:
   - aws.chatwork
   resources:
-  - "*"
+  - "assumerole"
   verbs:
   - get
   - list
