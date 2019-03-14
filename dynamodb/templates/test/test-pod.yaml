@@ -26,5 +26,5 @@ spec:
         - /bin/sh
         - -c
         - |
-          aws dynamodb list-tables --endpoint-url http://{{ template "dynamodb.name" . }}:{{ .Values.service.port }} | grep "TableNames"
+          aws dynamodb list-tables --endpoint-url http://{{ template "dynamodb.fullname" . }}:{{ .Values.service.port }} | grep "TableNames"
   restartPolicy: Never
