@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "elasticmq.fullname" . }}
+  labels:
+    app: {{ template "elasticmq.name" . }}
+    chart: {{ template "elasticmq.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "elasticmq.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "elasticmq.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/elasticmq_conf: {{ tpl .Values.elasticmq.config . | sha256sum }}
+    spec:
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{- end }}
+{{- with .Values.initContainers }}
+      initContainers:
+{{ toYaml . | indent 6 }}
+{{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: elasticmq
+              containerPort: {{ .Values.elasticmq.port }}
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.elasticmq.port }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.elasticmq.port }}
+          volumeMounts:
+            - name: conf
+              subPath: elasticmq_conf
+              mountPath: /opt/elasticmq.conf
+{{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+{{- end }}
+      volumes:
+        - name: conf
+          configMap:
+            name: {{ template "elasticmq.fullname" . }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}

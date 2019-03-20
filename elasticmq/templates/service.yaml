@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "elasticmq.fullname" . }}
+  labels:
+    app: {{ template "elasticmq.name" . }}
+    chart: {{ template "elasticmq.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.elasticmq.port }}
+      protocol: TCP
+      name: elasticmq
+  selector:
+    app: {{ template "elasticmq.name" . }}
+    release: {{ .Release.Name }}
