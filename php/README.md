@@ -118,7 +118,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.livenessProbe` | Overrides the default liveness probe | `{}` |
 |  `fpm.readinessProbe` | Overrides the default readness probe | `{}` |
 |  `fpm.resources` | Overrides the default resource | `{}` |
-|  `fpm.extraEnv` | Additional environment variables | `{}` |
+|  `fpm.extraEnv` | Additional env | `[]` |
 |  `fpm.extraEnvFrom` | Additional envFrom | `[]` |
 |  `fpm.extraPorts` | Additional ports | `[]` |
 |  `fpm.extraVolumes` | Additional volumes | `[]` |

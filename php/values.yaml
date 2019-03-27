@@ -303,10 +303,13 @@ fpm:
   resources: {}
 
   # `fpm.extraEnv` is additional environment variables.
-  extraEnv: {}
-  #  KEY1: VALUE1
-  #  KEY2: VALUE2
-  #  KEY3: VALUE3
+  extraEnv: []
+  #- name: key1
+  #  value: value1
+  #- name: HOST_IP
+  #  valueFrom:
+  #    fieldRef:
+  #      fieldPath: status.hostIP
 
   # `fpm.extraEnvFrom` is addtional envFrom.
   # Specify ConfigMap created in `fpm.templates` or Secret created in `fpm.secrets`.
