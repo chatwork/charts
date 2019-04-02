@@ -139,10 +139,7 @@ spec:
 {{- end }}
 {{- with .Values.fpm.extraEnv }}
         env:
-{{- range $k, $v := . }}
-        - name: {{ $k }}
-          value: {{ $v }}
-{{- end }}
+{{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
 {{- with .Values.fpm.extraEnvFrom }}
         envFrom:
