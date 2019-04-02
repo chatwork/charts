@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dynamodb.fullname" . }}
+  labels:
+    app: {{ template "dynamodb.name" . }}
+    chart: {{ template "dynamodb.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.dynamodb.port }}
+      protocol: TCP
+      name: dynamodb
+  selector:
+    app: {{ template "dynamodb.name" . }}
+    release: {{ .Release.Name }}

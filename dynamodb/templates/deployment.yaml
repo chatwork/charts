@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dynamodb.fullname" . }}
+  labels:
+    app: {{ template "dynamodb.name" . }}
+    chart: {{ template "dynamodb.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "dynamodb.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dynamodb.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{- end }}
+{{- with .Values.initContainers }}
+      initContainers:
+{{ toYaml . | indent 6 }}
+{{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "-jar"
+            - "DynamoDBLocal.jar"
+            - "-port"
+            - "{{ .Values.dynamodb.port }}"
+{{- with .Values.dynamodb.cors }}
+            - "-cors"
+            - "{{- join "," . }}"
+{{- end }}
+{{- if .Values.dynamodb.dbPath }}
+            - "-dbPath"
+            - "{{ .Values.dynamodb.dbPath }}"
+{{- end }}
+{{- if .Values.dynamodb.delayTransientStatuses }}
+            - "-delayTransientStatuses"
+{{- end }}
+{{- if .Values.dynamodb.inMemory }}
+            - "-inMemory"
+{{- end }}
+{{- if .Values.dynamodb.optimizeDbBeforeStartup }}
+            - "-optimizeDbBeforeStartup"
+{{- end }}
+{{- if .Values.dynamodb.sharedDb }}
+            - "-sharedDb"
+{{- end }}
+          ports:
+            - name: dynamodb
+              containerPort: {{ .Values.dynamodb.port }}
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.dynamodb.port }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.dynamodb.port }}
+{{- with .Values.volumeMounts }}
+          volumeMounts:
+{{ toYaml . | indent 12 }}
+{{- end }}
+{{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+{{- end }}
+{{- with .Values.volumes }}
+      volumes:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}

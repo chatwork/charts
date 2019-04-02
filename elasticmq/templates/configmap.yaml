@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "elasticmq.fullname" . }}
+  labels:
+    app: {{ template "elasticmq.name" . }}
+    chart: {{ template "elasticmq.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    checksum/elasticmq_conf: {{ tpl .Values.elasticmq.config . | sha256sum }}
+data:
+  elasticmq_conf: |
+{{ tpl .Values.elasticmq.config . | indent 4 }}

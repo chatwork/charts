@@ -1,0 +1,51 @@
+# Default values for dynamodb.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: amazon/dynamodb-local
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+initContainers: []
+
+volumeMounts: []
+#  - name: data
+#    mountPath: /data
+
+volumes: []
+#  - name: data
+#    emptyDir: {}
+
+# DynamoDB local options
+# See: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.UsageNotes.html
+dynamodb:
+  port: 8000
+  cors: []
+  dbPath: ""
+  delayTransientStatuses: false
+  inMemory: true
+  optimizeDbBeforeStartup: false
+  sharedDb: true
+
+service:
+  type: ClusterIP
+  port: 8000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+tolerations: []
+
+affinity: {}
