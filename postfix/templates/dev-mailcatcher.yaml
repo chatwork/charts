@@ -1,53 +1,56 @@
-{{- if .Values.mailhog.enabled }}
+{{- $root := .Values.mailcatcher -}}
+{{- if $root.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "postfix.fullname" . }}-mailhog
+  name: {{ include "postfix.fullname" . }}-mailcatcher
   labels:
-    app: {{ include "postfix.name" . }}-mailhog
+    app: {{ include "postfix.name" . }}-mailcatcher
     chart: {{ include "postfix.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  type: NodePort
+  type: {{ $root.service.type }}
   ports:
     - port: 1025
+      targetPort: 1025
       protocol: TCP
       name: smtp
-    - port: 8025
-      nodePort: {{ .Values.mailhog.hostHttpPort }}
+    - port: {{ $root.service.httpPort }}
+      targetPort: 1080
       protocol: TCP
       name: http
   selector:
-    app: {{ include "postfix.name" . }}-mailhog
+    app: {{ include "postfix.name" . }}-mailcatcher
     release: {{ .Release.Name }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "postfix.fullname" . }}-mailhog
+  name: {{ include "postfix.fullname" . }}-mailcatcher
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "postfix.name" . }}-mailhog
+      app: {{ include "postfix.name" . }}-mailcatcher
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ include "postfix.name" . }}-mailhog
+        app: {{ include "postfix.name" . }}-mailcatcher
         chart: {{ template "postfix.chart" . }}
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}-mailhog
-          image: mailhog/mailhog
+        - name: {{ include "postfix.name" . }}-mailcatcher
+          image: "{{ $root.image.repository }}:{{ $root.image.tag }}"
+          imagePullPolicy: {{ $root.image.pullPolicy }}
           ports:
             - name: smtp
               containerPort: 1025
               protocol: TCP
             - name: http
-              containerPort: 8025
+              containerPort: 1080
               protocol: TCP
 {{- end }}

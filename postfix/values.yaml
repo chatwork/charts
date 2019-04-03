@@ -762,10 +762,10 @@ postfix:
       meta_directory = /etc/postfix
       shlib_directory = /usr/lib/postfix
 
-      {{- if .Values.mailhog.enabled }}
+      {{- if .Values.mailcatcher.enabled }}
       # Postfix の名前解決では、サービス名が引けないので native を指定
       smtp_host_lookup = native
-      relayhost = [{{ include "postfix.fullname" . }}-mailhog]:1025
+      relayhost = [{{ include "postfix.fullname" . }}-mailcatcher]:1025
       {{- else }}
       # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
       smtp_sasl_auth_enable = yes
@@ -777,7 +777,7 @@ postfix:
       relayhost = [smtp.sendgrid.net]:587
       {{- end }}
   secrets:
-    # duumy value
+    # dummy value
     # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
     sasl_passwd: |-
       [smtp.sendgrid.net]:587 yourSendGridUsername:yourSendGridPassword
@@ -788,14 +788,19 @@ test:
   toEmail: "a@example.com"
 
 # for dev
-# mailhog.enabled=true にすると以下が有効になる。
-# - MailHog サービス（templates/dev-mailhog.yaml）が起動する。
-# - 全てのメールが MailHog にリレーされる。
+# mailcatcher.enabled=true にすると以下が有効になる。
+# - MailCatcher サービス（templates/dev-mailcatcher.yaml）が起動する。
+# - 全てのメールが MailCatcher にリレーされる。
 #
 # 開発環境、helm test 用の機能なので、本番運用では false にしておく。
-mailhog:
+mailcatcher:
   enabled: false
-  # MailHog HTTP ポート
-  # Docker for Mac では http://localhost:30080/ でアクセスできる
-  hostHttpPort: 30080
-
+  image:
+    repository: chatwork/mailcatcher
+    tag: latest
+    pullPolicy: IfNotPresent
+  # MailCatcher HTTP ポート
+  # Docker for Mac では http://localhost:1080/ でアクセスできる
+  service:
+    type: LoadBalancer
+    httpPort: 1080
