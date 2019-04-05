@@ -1,0 +1,97 @@
+{{- if .Values.deployment.enabled -}}
+{{- $root := . }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ include "slime.fullname" $root }}
+{{- with .Values.deployment.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "slime.name" $root }}
+    chart: {{ template "slime.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+{{- with .Values.deployment.labels }}
+{{ toYaml .| indent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "slime.name" $root }}
+      release: {{ $root.Release.Name | quote }}
+{{- with .Values.deployment.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  revisionHistoryLimit: {{ .Values.deployment.revisionHistoryLimit }}
+  template:
+    metadata:
+      name: {{ include "slime.fullname" $root }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+{{- with .Values.deployment.pod.annotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "slime.name" $root }}
+        release: {{ $root.Release.Name | quote }}
+{{- with .Values.deployment.pod.labels }}
+{{ toYaml .| indent 8 }}
+{{- end }}
+    spec:
+{{- with .Values.deployment.pod.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      containers:
+      - name: {{ include "slime.name" $root }}
+        image: {{ required "image.repository is required!" .Values.image.repository }}:{{ required "image.tag is required!" .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.deployment.pod.command }}
+        command:
+{{ tpl (toYaml .Values.deployment.pod.command) $root | indent 8 }}
+        {{- end }}
+        {{- with .Values.deployment.pod.args }}
+        args:
+{{ tpl (toYaml .Values.deployment.pod.args) $root | indent 8 }}
+        {{- end }}
+{{- with .Values.deployment.pod.securityContext }}
+        securityContext:
+{{ toYaml . | indent 10 }}
+{{- end }}
+        ports:
+{{- range $name, $port := .Values.service.ports }}
+          - name: {{ $name }}
+            containerPort: {{ $port.internal }}
+            protocol: {{ default "TCP" $port.protocol  }}
+{{- end }}
+{{- with .Values.deployment.pod.volumeMounts }}
+        volumeMounts:
+{{ toYaml . | indent 10 }}
+{{- end }}
+{{- with .Values.probes }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+{{- end }}
+      priorityClassName: {{ .Values.deployment.pod.priorityClassName }}
+      imagePullSecrets:
+{{- if .Values.dockercfg.enabled }}
+        - name: {{ include "slime.fullname" . }}
+{{- end }}
+{{- with .Values.image.pullSecrets }}
+      {{- range . }}
+        - name: {{ . }}
+      {{- end }}
+{{- end }}
+{{- with .Values.deployment.pod.volumes }}
+      volumes:
+{{ toYaml . | indent 6 }}
+{{- end }}
+{{- end -}}

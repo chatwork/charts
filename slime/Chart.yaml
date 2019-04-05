@@ -1,8 +1,11 @@
 apiVersion: v1
 description: ₍Ꙭ̂₎ < Not my bad slime
 name: slime
-version: 0.1.0
+version: 0.2.0
 maintainers:
 - name: cw-ozaki
   email: ozaki@chatwork.com
+  url: https://github.com/cw-ozaki
+- name: cw-sakamoto
+  email: sakamoto@chatwork.com
   url: https://github.com/cw-ozaki

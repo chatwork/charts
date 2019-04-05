@@ -17,3 +17,40 @@ secrets: []
 #      foo: bar
 #  data:
 #    slime: '₍Ꙭ̂₎'
+
+image:
+  repository: buzybox
+  tag: latest
+  imagePullPolicy: Always
+
+#service:
+#  ports:
+#    name: http
+#    port: 80
+
+deployment:
+  enabled: false
+  ## Pods replace strategy
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  revisionHistoryLimit: 10
+  # annotations:
+  #   name: value
+  # labels:
+  #   name: value
+  strategy: {}
+  replicaCount: 1
+  pod:
+    # securityContext: {}
+    annotations: {}
+    ## https://github.com/uswitch/kiam
+    ## https://github.com/jtblin/kube2iam
+    #  iam.amazonaws.com/role: role-arn
+    labels: {}
+    command: []
+    args: []
+    affinity: {}
+    securityContext: {}
+    volumeMounts: []
+    resources: {}
+    priorityClassName: ""
+    volume: {}
