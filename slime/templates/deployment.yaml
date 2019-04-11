@@ -1,6 +1,6 @@
 {{- if .Values.deployment.enabled -}}
 {{- $root := . }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "slime.fullname" $root }}
@@ -48,20 +48,20 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       containers:
-      - name: {{ include "slime.name" $root }}
+      - name: {{ default (include "slime.name" $root) .Values.image.name }}
         image: {{ required "image.repository is required!" .Values.image.repository }}:{{ required "image.tag is required!" .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- with .Values.deployment.pod.command }}
+        {{- if .Values.deployment.pod.command }}
         command:
-{{ tpl (toYaml .Values.deployment.pod.command) $root | indent 8 }}
+{{ tpl (toYaml .Values.deployment.pod.command) $root | indent 8 -}}
         {{- end }}
-        {{- with .Values.deployment.pod.args }}
+        {{- if .Values.deployment.pod.args }}
         args:
-{{ tpl (toYaml .Values.deployment.pod.args) $root | indent 8 }}
+{{ tpl (toYaml .Values.deployment.pod.args) $root | indent 8 -}}
         {{- end }}
 {{- with .Values.deployment.pod.securityContext }}
         securityContext:
-{{ toYaml . | indent 10 }}
+{{ toYaml . | indent 10 -}}
 {{- end }}
         ports:
 {{- range $name, $port := .Values.service.ports }}
@@ -80,12 +80,11 @@ spec:
         resources:
 {{ toYaml . | indent 10 }}
 {{- end }}
-      priorityClassName: {{ .Values.deployment.pod.priorityClassName }}
-      imagePullSecrets:
-{{- if .Values.dockercfg.enabled }}
-        - name: {{ include "slime.fullname" . }}
+{{- with .Values.deployment.pod.priorityClassName }}
+      priorityClassName: {{ . }}
 {{- end }}
 {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
       {{- range . }}
         - name: {{ . }}
       {{- end }}

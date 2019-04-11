@@ -18,15 +18,20 @@ secrets: []
 #  data:
 #    slime: '₍Ꙭ̂₎'
 
-image:
-  repository: buzybox
-  tag: latest
-  imagePullPolicy: Always
+#image:
+#  name: nginx
+#  repository: nginx
+#  tag: latest
+#  pullPolicy: Always
 
-#service:
+service:
+  enabled: false
+#  type: LoadBalancer
 #  ports:
-#    name: http
-#    port: 80
+#    http:
+#      internal: 8080
+#      external: 80
+#      protocol: TCP
 
 deployment:
   enabled: false
