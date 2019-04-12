@@ -26,12 +26,12 @@ secrets: []
 
 service:
   enabled: false
-#  type: LoadBalancer
-#  ports:
-#    http:
-#      internal: 8080
-#      external: 80
-#      protocol: TCP
+  type: LoadBalancer
+  ports:
+    http:
+      internal: 8080
+      external: 80
+      protocol: TCP
 
 deployment:
   enabled: false
