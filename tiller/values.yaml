@@ -7,16 +7,24 @@ image:
   tag: v2.12.3
   pullPolicy: IfNotPresent
 
+# pod used in `helm test`.
 test:
   image:
     repository: chatwork/helm
     tag: 2.12.3
     pullPolicy: IfNotPresent
 
+
 rbac:
+  # Restrict access from tiller to others based on rbac.
+  # https://kubernetes.io/docs/reference/access-authn-authz/rbac/
   tiller:
+    # If `true`, create and use RBAC resources.
     create: true
+    # Service account to be used.
     serviceAccountName: default
+    # Rule to allow in rback.
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#policyrule-v1-rbac-authorization-k8s-io
     rules:
     - apiGroups:
       - ""
@@ -30,6 +38,7 @@ rbac:
       - "policy"
       resources: ["*"]
       verbs: ["*"]
+  # rbac used in `helm test`.
   client:
     create: true
     serviceAccountName: default
