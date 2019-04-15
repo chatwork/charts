@@ -48,6 +48,6 @@ The following table lists the configurable parameters of the slime chart and the
 |  `rbac.tiller.create` |  If `true`, create and use RBAC resources | `true` |
 |  `rbac.tiller.serviceAccountName` | Service account to be used | `default` |
 |  `rbac.tiller.rules` | [Rule](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#policyrule-v1-rbac-authorization-k8s-io) to allow in rback | `[{apiGroups:["","batch","extensions"      - "apps","autoscaling","rbac.authorization.k8s.io","scheduling.k8s.io","storage.k8s.io","policy"],resources:["*"],verbs:["*"]}]` |
-|  `rbac.client.create` | If true, create and use RBAC resources | `true` |
-|  `rbac.client.serviceAccountName` | Service account to be used | `default` |
+|  `rbac.client.create` | If true, create tiller client which have appropriate privileges and this client is used in test pod | `true` |
+|  `rbac.client.serviceAccountName` | Service account for test pod, if you have already created tiller client role and won't create new sa | `default` |
 |  `rbac.client.rules` | [Rule](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#policyrule-v1-rbac-authorization-k8s-io) to allow in rback | `[{apiGroups:[""],resources:["pods/portforward"],verbs:["create"],{apiGroups:[""],resources:["pods"],verbs:["list"]}]` |

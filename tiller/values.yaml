@@ -7,14 +7,6 @@ image:
   tag: v2.12.3
   pullPolicy: IfNotPresent
 
-# pod used in `helm test`.
-test:
-  image:
-    repository: chatwork/helm
-    tag: 2.12.3
-    pullPolicy: IfNotPresent
-
-
 rbac:
   # Restrict access from tiller to others based on rbac.
   # https://kubernetes.io/docs/reference/access-authn-authz/rbac/
@@ -55,3 +47,10 @@ rbac:
       - pods
       verbs:
       - list
+
+# pod used in `helm test`.
+test:
+  image:
+    repository: chatwork/helm
+    tag: 2.12.3
+    pullPolicy: IfNotPresent
