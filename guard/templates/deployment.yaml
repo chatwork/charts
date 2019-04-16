@@ -79,7 +79,7 @@ spec:
         operator: Exists
       {{- end }}
       {{- if .Values.tolerations }}
-{{ toYaml .Values.extraTolerations | indent 8 }}
+{{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.affinity }}
       affinity:
