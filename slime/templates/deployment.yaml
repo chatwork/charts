@@ -1,3 +1,4 @@
+# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#deployment-v1-apps
 {{- if .Values.deployment.enabled -}}
 {{- $root := . }}
 apiVersion: apps/v1
@@ -6,7 +7,7 @@ metadata:
   name: {{ include "slime.fullname" $root }}
 {{- with .Values.deployment.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
+{{ toYaml . | tpl | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "slime.name" $root }}
@@ -31,10 +32,8 @@ spec:
     metadata:
       name: {{ include "slime.fullname" $root }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- with .Values.deployment.pod.annotations }}
-{{ toYaml . | indent 8 }}
+{{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
       labels:
         app: {{ template "slime.name" $root }}
@@ -48,49 +47,8 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       containers:
-      - name: {{ default (include "slime.name" $root) .Values.image.name }}
-        image: {{ required "image.repository is required!" .Values.image.repository }}:{{ required "image.tag is required!" .Values.image.tag }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- if .Values.deployment.pod.command }}
-        command:
-{{ tpl (toYaml .Values.deployment.pod.command) $root | indent 8 -}}
-        {{- end }}
-        {{- if .Values.deployment.pod.args }}
-        args:
-{{ tpl (toYaml .Values.deployment.pod.args) $root | indent 8 -}}
-        {{- end }}
-{{- with .Values.deployment.pod.securityContext }}
-        securityContext:
-{{ toYaml . | indent 10 -}}
+{{ tpl (toYaml .Values.deployment.pod.container) $root | indent 6 }}
 {{- end }}
-        ports:
-{{- range $name, $port := .Values.service.ports }}
-          - name: {{ $name }}
-            containerPort: {{ $port.internal }}
-            protocol: {{ default "TCP" $port.protocol  }}
-{{- end }}
-{{- with .Values.deployment.pod.volumeMounts }}
-        volumeMounts:
-{{ toYaml . | indent 10 }}
-{{- end }}
-{{- with .Values.probes }}
-{{ toYaml . | indent 8 }}
-{{- end }}
-{{- with .Values.resources }}
-        resources:
-{{ toYaml . | indent 10 }}
-{{- end }}
-{{- with .Values.deployment.pod.priorityClassName }}
-      priorityClassName: {{ . }}
-{{- end }}
-{{- with .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range . }}
-        - name: {{ . }}
-      {{- end }}
-{{- end }}
-{{- with .Values.deployment.pod.volumes }}
-      volumes:
+{{- with .Values.deployment.pod.extraParameter }}
 {{ toYaml . | indent 6 }}
 {{- end }}
-{{- end -}}

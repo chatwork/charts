@@ -2,21 +2,28 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-configmaps: []
-#- metadata:
-#    name: slime
-#    annotations:
-#      foo: bar
-#  data:
-#    slime: '₍Ꙭ̂₎'
+configmaps:
+- metadata:
+    name: slime
+    annotations:
+      foo: bar
+  data:
+    slime: '₍Ꙭ̂₎'
 
-secrets: []
-#- metadata:
-#    name: slime
-#    annotations:
-#      foo: bar
-#  data:
-#    slime: '₍Ꙭ̂₎'
+- metadata:
+    name: slime2
+    annotations:
+      foo: bar2
+  data:
+    slime2: '₍Ꙭ̂₎'
+
+secrets:
+- metadata:
+    name: slime
+    annotations:
+      foo: bar
+  data:
+    slime: '₍Ꙭ̂₎'
 
 #image:
 #  name: nginx
@@ -49,9 +56,9 @@ deployment:
     ## https://github.com/uswitch/kiam
     ## https://github.com/jtblin/kube2iam
     #  iam.amazonaws.com/role: role-arn
-    annotations: {}
-    #  checksum/config: "{{ include (print $.Template.BasePath \"/configmap.yaml\") . | sha256sum }}"
-    #  checksum/secret: "{{ include (print $.Template.BasePath \"/secret.yaml\") . | sha256sum }}"
+    annotations:
+      checksum/config: "{{ include (print $.Template.BasePath \"/configmap.yaml\") . | sha256sum }}"
+      #checksum/secret: "{{ include (print $.Template.BasePath \"/secret.yaml\") . | sha256sum }}"
     labels: {}
     container:
     - image: k8s.gcr.io/pause:latest
