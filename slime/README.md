@@ -41,5 +41,14 @@ The following table lists the configurable parameters of the slime chart and the
 
 |  Parameter | Description | Default |
 | --- | --- | --- |
-|  `configmaps` | Transform ConfigMap's YAML. You can set `binaryData`, `data` and `metadata` | `[]` |
-|  `secret` | Transform Secret's YAML. You can set `data`, `metadata`, `stringData` and `type` | `[]` |
+|  `configmaps` | Transform ConfigMap manifest. You can set `binaryData`, `data` and `metadata` | `[]` |
+|  `secret` | Transform Secret's manifest. You can set `data`, `metadata`, `stringData` and `type` | `[]` |
+| `service.enabled` | Enable service | `false` |
+| `service.type` | Service type | `ClusterIP |
+| `service.ports` | Service port setting | `{} `|
+| `deployment.enabled` | Enable deployment | `faluse` |
+| `deployment.strategy` | Deployment pod update starategy | `{}` |
+| `deployment.annotations` | Deployment annotations | `{}` |
+| `deployment.labels` | Deployment labels | `{}` |
+| `deployment.replicaCount` | Deployment replicacount for pod | `1`|
+
