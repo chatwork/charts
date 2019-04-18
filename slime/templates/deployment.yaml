@@ -7,7 +7,9 @@ metadata:
   name: {{ include "slime.fullname" $root }}
 {{- with .Values.deployment.annotations }}
   annotations:
-{{ toYaml . | tpl | indent 4 }}
+{{- range $k, $v := . }}
+    {{ $k }}: {{ tpl $v $root | quote }}
+{{- end }}
 {{- end }}
   labels:
     app: {{ template "slime.name" $root }}
@@ -15,7 +17,7 @@ metadata:
     release: {{ $root.Release.Name }}
     heritage: {{ $root.Release.Service }}
 {{- with .Values.deployment.labels }}
-{{ toYaml .| indent 4 }}
+{{ toYaml . | indent 4 }}
 {{- end }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
@@ -43,7 +45,7 @@ spec:
         app: {{ template "slime.name" $root }}
         release: {{ $root.Release.Name | quote }}
 {{- with .Values.deployment.pod.labels }}
-{{ toYaml .| indent 8 }}
+{{ toYaml . | indent 8 }}
 {{- end }}
     spec:
 {{- with .Values.deployment.pod.affinity }}
