@@ -74,6 +74,7 @@ We recommend that you embed the source code in your container and copy it to the
 
 |  Parameter | Description | Default |
 | --- | --- | --- |
+|  `busybox.enabled` | Enables initial containers and share volume with busybox | `TRUE` |
 |  `busybox.image.repository` | The image repository to pull from | `busybox` |
 |  `busybox.image.tag` | The image tag to pull | `latest` |
 |  `busybox,image.pullPolicy` | Image pull policy | `IfNotPresent` |
