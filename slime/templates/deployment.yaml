@@ -27,13 +27,17 @@ spec:
   strategy:
 {{ toYaml . | indent 4 }}
 {{- end }}
-  revisionHistoryLimit: {{ .Values.deployment.revisionHistoryLimit }}
+{{- with .Values.deployment.extraField }}
+{{ toYaml . | indent 2 }}
+{{- end }}
   template:
     metadata:
       name: {{ include "slime.fullname" $root }}
-      annotations:
 {{- with .Values.deployment.pod.annotations }}
-{{ tpl (toYaml .) $root | indent 8 }}
+      annotations:
+{{- range $k, $v := . }}
+        {{ $k }}: {{ tpl $v $root | quote }}
+{{- end }}
 {{- end }}
       labels:
         app: {{ template "slime.name" $root }}
@@ -49,6 +53,6 @@ spec:
       containers:
 {{ tpl (toYaml .Values.deployment.pod.container) $root | indent 6 }}
 {{- end }}
-{{- with .Values.deployment.pod.extraParameter }}
+{{- with .Values.deployment.pod.extraField }}
 {{ toYaml . | indent 6 }}
 {{- end }}

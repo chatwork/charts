@@ -18,32 +18,25 @@ secrets: []
 #  data:
 #    slime: '₍Ꙭ̂₎'
 
-#image:
-#  name: nginx
-#  repository: nginx
-#  tag: latest
-#  pullPolicy: Always
-
 service:
   enabled: false
-  type: LoadBalancer
-  ports:
-    http:
-      internal: 8080
-      external: 80
-      protocol: TCP
+  type: ClusterIP
+  ports: {}
+  #  http:
+  #    internal: 8080
+  #    external: 80
+  #    protocol: TCP
 
 deployment:
-  enabled: true
-  ## Pods replace strategy
-  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
-  revisionHistoryLimit: 10
-  # annotations:
-  #   name: value
-  # labels:
-  #   name: value
+  enabled: false
   strategy: {}
+  annotations: {}
+  #   name: value
+  labels: {}
+  #   name: value
   replicaCount: 1
+  extraField: {}
+  #  revisionHistoryLimit: 10
   pod:
     # securityContext: {}
     ## https://github.com/uswitch/kiam
@@ -58,10 +51,8 @@ deployment:
       imagePullPolicy: Always
       name: pause
       resources: {}
-      env:
-      - name: HOGE
-        value: "{{ .Values.service.type }}"
-    extraParameter:
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
+      env: []
+      #- name: SAMPLE
+      #  value: "{{ .Values.service.type }}"
+    extraField: {}
+    # dnsPolicy: ClusterFirst
