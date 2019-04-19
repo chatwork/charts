@@ -51,9 +51,6 @@ spec:
         volumeMounts:
         - mountPath: {{ .Values.tlsFilesBase }}
           name: {{ template "guard.fullname" . }}
-        {{- if .Values.extractVolumeMounts }}
-{{ toYaml .Values.extractVolumeMounts | indent 8 }}
-        {{- end }}
         readinessProbe:
           httpGet:
             path: /healthz
@@ -82,7 +79,7 @@ spec:
         operator: Exists
       {{- end }}
       {{- if .Values.tolerations }}
-{{ toYaml .Values.extraTolerations | indent 8 }}
+{{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.affinity }}
       affinity:

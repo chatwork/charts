@@ -65,7 +65,4 @@ spec:
         - -c
         - |
           kubectl get assumerole -n {{ .Release.Namespace }} | grep {{ .Values.test.target }}
-{{- with .Values.test.extraContainer }}
-{{ toYaml . | indent 8}}
-{{- end }}
   restartPolicy: Never
