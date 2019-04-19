@@ -18,7 +18,4 @@ spec:
         - -c
         - |
           curl http://{{ template "guard.fullname" . }}:{{ .Values.service.port | default "443" }}
-{{- with .Values.test.extraContainer }}
-{{ toYaml . | indent 8}}
-{{- end }}
   restartPolicy: Never

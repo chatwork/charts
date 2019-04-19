@@ -8,8 +8,8 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "guard.fullname" . }}
-{{ if .Values.imagePullSecret }}
+{{ if .Values.image.pullSecrets }}
 imagePullSecrets:
-  - name: {{ .Values.imagePullSecret}}
+{{ toYaml .Values.image.pullSecrets | indent 2 }}
 {{end}}
 {{- end }}
