@@ -1,33 +1,38 @@
-nameOverride: ""
-fullNameOverride: ""
-
-podAnnotations: {}
+# Default values for php.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
 
 replicas: 1
+
 image:
-  pullSecrets: ""
   repository: appscode/guard
   tag: 0.2.1
+  pullPolicy: IfNotPresent
+  pullSecrets: []
 
-containerPort: 8443
+nameOverride: ""
+fullnameOverride: ""
 
-readinessProbe:
-  initialDelaySeconds: 25
 
-livenessProbe:
-  initialDelaySeconds: 25
-
+# Arguments to be delivered to container guard.
+# https://github.com/appscode/guard/blob/master/docs/reference/guard_run.md
 args:
+  # log level for V logs.
   verbose: 3
+  # name of providers for which guard will provide authentication service.
   authProvider: "github"
 
+# If true, runs Guard server on master instances.
 runOnMaster: true
 
-tlsFilesBase: "/etc/guard/pki"
+# Address of NTP serer used to check clock skew.
+# http://wiki.nothing.sh/page/NTP/%BF%E4%BE%A9%B8%F8%B3%AB%A5%B5%A1%BC%A5%D0#b262580b
+ntpServer: s2csntp.miz.nao.ac.jp
 
 pki:
+  # CA certificate.
   # $GUARD_DATA_DIR/pki/ca.crt
-  # sample
+  # sample 10.96.10.96
   caCrt: |
     -----BEGIN CERTIFICATE-----
     MIICuDCCAaCgAwIBAgIBADANBgkqhkiG9w0BAQsFADANMQswCQYDVQQDEwJjYTAe
@@ -47,8 +52,9 @@ pki:
     yGRcqgVmwbtg6ciyN1XTPyVLV4LK366GjVNbAQ==
     -----END CERTIFICATE-----
 
+  # Server TLS certificate.
   # $GUARD_DATA_DIR/pki/server.crt
-  # sample
+  # sample 10.96.10.96
   tlsCrt: |
     -----BEGIN CERTIFICATE-----
     MIIDGTCCAgGgAwIBAgIJAPY+Bf6Q4i+sMA0GCSqGSIb3DQEBCwUAMA0xCzAJBgNV
@@ -70,8 +76,9 @@ pki:
     4RL9cqxr7LH6+oAO6V6STjfuh2bzcI1VTePuGls=
     -----END CERTIFICATE-----
 
+  # Server TLS private key.
   # $GUARD_DATA_DIR/pki/server.key
-  # sample
+  # sample 10.96.10.96
   tlsKey: |
     -----BEGIN RSA PRIVATE KEY-----
     MIIEpQIBAAKCAQEArPNXEKa/nA/zMsIBimGODsMM7cuWoyQ8Ej1fa54OQ/Q8H6xS
@@ -101,20 +108,46 @@ pki:
     VAYPj48ASfPxzh7u82NzitD+q2c8tYBdDeOZ26J5cozeONe0tvnbCdU=
     -----END RSA PRIVATE KEY-----
 
+# TLS file location.
+tlsFilesBase: "/etc/guard/pki"
+
+# Port of guard container.
+containerPort: 8443
+
+# Annotations to add to the deployment pods.
+podAnnotations: {}
+
+# Allow the deployment to schedule on tainted nodes.
+tolerations: {}
+
+# Allow the deployment to schedule ussing affinity rules.
+affinity: {}
+
+livenessProbe:
+  # The number of seconds to delay the first probe in the deployment pod's liveness prove.
+  initialDelaySeconds: 25
+
+readinessProbe:
+  # The number of seconds to delay the first probe in the deployment pod's readiness prove.
+  initialDelaySeconds: 25
+
+# Deployment pod resources.
+resources: {}
+
+
 service:
-  # fixed clusterIP for crt
+  # Cluster IP matching server TLS.
+  # The sample PKI is created to match the default `10.96.10.96`
   clusterIP: 10.96.10.96
+
+  # Service port
   port: 443
 
-# http://wiki.nothing.sh/page/NTP/%BF%E4%BE%A9%B8%F8%B3%AB%A5%B5%A1%BC%A5%D0#b262580b
-ntpServer: s2csntp.miz.nao.ac.jp
-
-test:
-  extraContainer: {}
 
 rbac:
-  ## If true, create & use RBAC resources
+  # If true, create & use RBAC resources.
   create: true
 
-  ## Ignored if rbac.create is true
+  # Ignored if rbac.create is true.
+  # Name of already existing service account associated with deployment
   serviceAccountName: default
