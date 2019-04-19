@@ -44,11 +44,15 @@ The following table lists the configurable parameters of the slime chart and the
 |  `configmaps` | Transform ConfigMap manifest. You can set `binaryData`, `data` and `metadata` | `[]` |
 |  `secret` | Transform Secret's manifest. You can set `data`, `metadata`, `stringData` and `type` | `[]` |
 | `service.enabled` | Enable service | `false` |
-| `service.type` | Service type | `ClusterIP |
+| `service.type` | Service type | `ClusterIP` |
 | `service.ports` | Service port setting | `{} `|
-| `deployment.enabled` | Enable deployment | `faluse` |
+| `deployment.enabled` | Enable deployment | `false` |
 | `deployment.strategy` | Deployment pod update starategy | `{}` |
 | `deployment.annotations` | Deployment annotations | `{}` |
 | `deployment.labels` | Deployment labels | `{}` |
 | `deployment.replicaCount` | Deployment replicacount for pod | `1`|
-
+| `deployment.extraField` | Deployment extra field (ex. revisionHistoryLimit) | `{}`|
+| `deployment.pod.annotations` | Deployment pod annotations | `{}`|
+| `deployment.pod.labels` | Deployment pod labels | `{}`|
+| `deployment.pod.extraField` | Deployment pod extra field (ex. dnsPolicy) | `{}`|
+| `deployment.pod.container` | Deployment pod container spec (ex. dnsPolicy) | `[]`|
