@@ -55,4 +55,4 @@ The following table lists the configurable parameters of the slime chart and the
 | `deployment.pod.annotations` | Deployment pod annotations | `{}`|
 | `deployment.pod.labels` | Deployment pod labels | `{}`|
 | `deployment.pod.extraField` | Deployment pod extra field (ex. dnsPolicy) | `{}`|
-| `deployment.pod.container` | Deployment pod container spec (ex. dnsPolicy) | `[]`|
+| `deployment.pod.container` | Deployment pod container spec | `[]`|
