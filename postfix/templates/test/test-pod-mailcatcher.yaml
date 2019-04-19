@@ -1,4 +1,4 @@
-{{- if .Values.mailhog.enabled }}
+{{- if .Values.mailcatcher.enabled }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -16,10 +16,10 @@ spec:
             fieldRef:
               fieldPath: status.hostIP
       {{- end }}
-        - name: MAILHOG_HOST
-          value: {{ include "postfix.fullname" . }}-mailhog
-        - name: MAILHOG_HTTP_PORT
-          value: "8025"
+        - name: MAILCATCHER_HOST
+          value: {{ include "postfix.fullname" . }}-mailcatcher
+        - name: MAILCATCHER_HTTP_PORT
+          value: "{{ .Values.mailcatcher.service.httpPort }}"
         - name: TO_EMAIL
           value: {{ .Values.test.toEmail }}
       command:
@@ -34,6 +34,6 @@ spec:
         {{- end }}
           && /usr/local/bin/php -r "\$ret = mail(\"${TO_EMAIL}\", \"Hello\", \"Body\"); var_dump(\$ret);" | grep true \
           && sleep 1 \
-          && curl http://${MAILHOG_HOST}:${MAILHOG_HTTP_PORT}/api/v2/messages | grep ${TO_EMAIL}
+          && curl http://${MAILCATCHER_HOST}:${MAILCATCHER_HTTP_PORT}/messages | grep ${TO_EMAIL}
   restartPolicy: Never
 {{- end }}
