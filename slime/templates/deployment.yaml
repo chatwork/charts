@@ -1,0 +1,60 @@
+# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#deployment-v1-apps
+{{- if .Values.deployment.enabled -}}
+{{- $root := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "slime.fullname" $root }}
+{{- with .Values.deployment.annotations }}
+  annotations:
+{{- range $k, $v := . }}
+    {{ $k }}: {{ tpl $v $root | quote }}
+{{- end }}
+{{- end }}
+  labels:
+    app: {{ template "slime.name" $root }}
+    chart: {{ template "slime.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+{{- with .Values.deployment.labels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "slime.name" $root }}
+      release: {{ $root.Release.Name | quote }}
+{{- with .Values.deployment.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- with .Values.deployment.extraField }}
+{{ toYaml . | indent 2 }}
+{{- end }}
+  template:
+    metadata:
+      name: {{ include "slime.fullname" $root }}
+{{- with .Values.deployment.pod.annotations }}
+      annotations:
+{{- range $k, $v := . }}
+        {{ $k }}: {{ tpl $v $root | quote }}
+{{- end }}
+{{- end }}
+      labels:
+        app: {{ template "slime.name" $root }}
+        release: {{ $root.Release.Name | quote }}
+{{- with .Values.deployment.pod.labels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+    spec:
+{{- with .Values.deployment.pod.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      containers:
+{{ tpl (toYaml .Values.deployment.pod.container) $root | indent 6 }}
+{{- end }}
+{{- with .Values.deployment.pod.extraField }}
+{{ toYaml . | indent 6 }}
+{{- end }}
