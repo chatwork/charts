@@ -1,0 +1,26 @@
+{{- $root := . }}
+{{- range $app := .Values.applications }}
+{{- if eq "string" (printf "%T" $app.namespace) }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $app.namespace }}
+{{- else }}
+---
+apiVersion: v1
+kind: Namespace
+{{- with $app.namespace.metadata }}
+metadata:
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- with $app.namespace.spec }}
+spec:
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- with $app.namespace.status }}
+status:
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- end }}
+{{- end }}
