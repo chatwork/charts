@@ -55,3 +55,15 @@ Create chart name and version as used by the chart label.
 {{ if ne $index 0 }},{{ end -}}{{- $app.repoURL }}
 {{- end -}}
 {{- end -}}
+
+{{- define "argoproj-crd.namespaces" -}}
+namespaces:
+{{- range $index, $app := .Values.applications }}
+{{- if eq "string" (printf "%T" $app.namespace) }}
+- metadata:
+    name: {{ $app.namespace }}
+{{ else }}
+- {{ toYaml $app.namespace }}
+{{- end }}
+{{- end }}
+{{- end -}}

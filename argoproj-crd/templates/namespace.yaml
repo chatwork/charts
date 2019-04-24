@@ -1,26 +1,19 @@
-{{- $root := . }}
-{{- range $app := .Values.applications }}
-{{- if eq "string" (printf "%T" $app.namespace) }}
+{{- $root := . -}}
+{{- $map := fromYaml (include "argoproj-crd.namespaces" .) -}}
+{{- range $namespace := $map.namespaces | uniq }}
 ---
 apiVersion: v1
 kind: Namespace
-metadata:
-  name: {{ $app.namespace }}
-{{- else }}
----
-apiVersion: v1
-kind: Namespace
-{{- with $app.namespace.metadata }}
+{{- with $namespace.metadata }}
 metadata:
 {{ toYaml . | indent 2 }}
 {{- end }}
-{{- with $app.namespace.spec }}
+{{- with $namespace.spec }}
 spec:
 {{ toYaml . | indent 2 }}
 {{- end }}
-{{- with $app.namespace.status }}
+{{- with $namespace.status }}
 status:
 {{ toYaml . | indent 2 }}
-{{- end }}
 {{- end }}
 {{- end }}
