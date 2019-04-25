@@ -53,7 +53,7 @@ applications: []
 
   # plugin specific config.
   # plugin:
-  # - name: helmfile
+  #  name: helmfile
 
   # Destination cluster to deploy the application.
   # server: https://kubernetes.default.svc
