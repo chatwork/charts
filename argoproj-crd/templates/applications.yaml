@@ -56,7 +56,7 @@ spec:
     automated: {}
 {{- end }}
 
-{{- if $app.syncPolicy }}
+{{- if $app.ignoreDifferences }}
   ignoreDifferences:
 {{ toYaml $app.ignoreDifferences | indent 4 }}
 {{- else }}
