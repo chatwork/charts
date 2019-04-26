@@ -47,8 +47,8 @@ spec:
         ports:
         - name: smtp
           containerPort: 25
-          {{- if .Values.daemonset.hostPort }}
-          hostPort: {{ .Values.daemonset.hostPort }}
+          {{- if .Values.daemonset.useHostPort }}
+          hostPort: 25
           {{- end }}
           protocol: TCP
         livenessProbe:
