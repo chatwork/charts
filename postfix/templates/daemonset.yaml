@@ -84,6 +84,8 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
+{{- if .Values.daemonset.updateStrategy }}
   updateStrategy:
     type: {{ .Values.daemonset.updateStrategy }}
+{{- end }}
 {{- end }}

@@ -47,9 +47,6 @@ daemonset:
   useHostNetwork: false
   useHostPort: true
 
-  ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
-  #updateStrategy: RollingUpdate
-
   podAnnotations: {}
   affinity: {}
   tolerations: []
@@ -57,7 +54,7 @@ daemonset:
 
 deployment:
   enabled: false
-  replicaCount: 1
+  replicaCount: 2
 
   service:
     type: LoadBalancer
@@ -76,7 +73,7 @@ deployment:
   podDisruptionBudget:
     enabled: false
     minAvailable: 1
-    maxUnavailable:
+    maxUnavailable: 1
 
 postfix:
   templates:
