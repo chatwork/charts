@@ -13,9 +13,10 @@ spec:
   sourceRepos:
 {{ include "argoproj-crd.repositories" . | splitList "," | uniq | toYaml | indent 4}}
 
-{{- if .Values.applications }}
+{{- $map := fromYaml (include "argoproj-crd.applications" .) -}}
+{{- if $map.applications }}
   destinations:
-{{- range $app := .Values.applications }}
+{{- range $app := $map.applications | uniq }}
   - server: {{ $app.server }}
 {{- if eq "string" (printf "%T" $app.namespace) }}
     namespace: {{ $app.namespace }}

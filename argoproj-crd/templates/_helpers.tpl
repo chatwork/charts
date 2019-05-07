@@ -56,6 +56,18 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 {{- end -}}
 
+{{- define "argoproj-crd.applications" -}}
+applications:
+{{- range $index, $app := .Values.applications }}
+- server: {{ $app.server }}
+{{- if eq "string" (printf "%T" $app.namespace) }}
+  namespace: {{ $app.namespace }}
+{{ else }}
+  namespace: {{ $app.namespace.metadata.name }}
+{{- end }}
+{{- end }}
+{{- end -}}
+
 {{- define "argoproj-crd.namespaces" -}}
 namespaces:
 {{- range $index, $app := .Values.applications }}
