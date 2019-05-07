@@ -17,3 +17,38 @@ secrets: []
 #      foo: bar
 #  data:
 #    slime: '₍Ꙭ̂₎'
+
+service:
+  enabled: false
+  type: ClusterIP
+  ports: {}
+  #  http:
+  #    internal: 8080
+  #    external: 80
+  #    protocol: TCP
+
+deployment:
+  enabled: false
+  strategy: {}
+  annotations: {}
+  #   name: value
+  labels: {}
+  #   name: value
+  replicaCount: 1
+  extraField: {}
+  #  revisionHistoryLimit: 10
+  pod:
+    annotations: {}
+    #  checksum/config: "{{ include (print $.Template.BasePath \"/configmap.yaml\") . | sha256sum }}"
+    #  checksum/secret: "{{ include (print $.Template.BasePath \"/secret.yaml\") . | sha256sum }}"
+    labels: {}
+    extraField: {}
+    # dnsPolicy: ClusterFirst
+    container: []
+    #- image: k8s.gcr.io/pause:latest
+    #  imagePullPolicy: Always
+    #  name: pause
+    #  resources: {}
+    #  env: []
+    #  #- name: SAMPLE
+    #  #  value: "{{ .Values.service.type }}"

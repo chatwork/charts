@@ -1,0 +1,28 @@
+{{- if .Values.service.enabled -}}
+{{- $root := . }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "slime.fullname" $root }}
+{{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "slime.name" $root }}
+    chart: {{ template "slime.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+{{- range $name, $port := .Values.service.ports }}
+  - port: {{ $port.external }}
+    targetPort: {{ $name }}
+    protocol: {{ default "TCP" $port.protocol  }}
+    name: {{ $name }}
+{{- end }}
+  selector:
+    app: {{ include "slime.name" $root }}
+    release: {{ .Release.Name }}
+{{- end -}}
