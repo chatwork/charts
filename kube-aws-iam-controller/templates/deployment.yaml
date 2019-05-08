@@ -17,14 +17,17 @@ spec:
     metadata:
       labels:
         app: {{ template "kube-aws-iam-controller.fullname" $root }}
-        {{- if .Values.deployment.podLabels}}
+        {{- if .Values.deployment.podLabels }}
 {{ toYaml .Values.deployment.podLabelss | indent 8 }}
         {{- end }}
-        {{- if .Values.deployment.podAnnotations}}
+        {{- if .Values.deployment.podAnnotations }}
       annotations:
 {{ toYaml .Values.deployment.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.deployment.priorityClassName }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}
+      {{- end }}
       {{- if .Values.deployment.useHostNetwork }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet

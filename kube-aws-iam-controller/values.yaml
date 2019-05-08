@@ -10,6 +10,7 @@ deployment:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  priorityClassName: ""
   args: []
   #--debug                        Enable debug logging.
   #--interval=10s                 Interval between syncing secrets.
