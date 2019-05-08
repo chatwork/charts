@@ -23,13 +23,13 @@ deployment:
   env: []
   volumeMounts: []
   volumes: []
-  resources:
-    limits:
-      cpu: 100m
-      memory: 256Mi
-    requests:
-      cpu: 25m
-      memory: 100Mi
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 25m
+  #    memory: 64Mi
 
 rbac:
   create: true
