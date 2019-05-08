@@ -1,31 +1,72 @@
+{{ $root := . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "assume-role-operator.fullname" . }}
+  name: {{ template "assume-role-operator.fullname" $root }}
   labels:
-    app: "{{ template "assume-role-operator.fullname" . }}"
+    app: {{ template "assume-role-operator.fullname" $root }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 spec:
-  replicas: {{ .Values.deployment.replicas }}
+  replicas: 1
   selector:
     matchLabels:
-      app: "{{ template "assume-role-operator.fullname" . }}"
+      app: {{ template "assume-role-operator.fullname" $root }}
   template:
     metadata:
       labels:
-        app: {{ template "assume-role-operator.fullname" . }}
+        app: {{ template "assume-role-operator.fullname" $root }}
+        {{- with .Values.deployment.podLabels }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+      {{- with .Values.deployment.podAnnotations }}
       annotations:
-        iam.amazonaws.com/role: {{ .Values.awsRoleArn }}
-      {{- if .Values.PodAnnotations}}
-{{ toYaml .Values.podAnnotations | indent 8 }}
+{{ tpl (toYaml .) $root| indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.deployment.priorityClassName }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}
+      {{- end }}
+      nodeSelector:
+      {{- if .Values.deployment.onMaster }}
+        node-role.kubernetes.io/master: ""
+      {{- end }}
+      {{- with .Values.deployment.nodeSelector }}
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.affinity }}
+      affinity:
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      tolerations:
+      {{- if .Values.deployment.onMaster }}
+      - effect: NoSchedule
+        operator: Exists
+      - effect: NoExecute
+        operator: Exists
+      - key: CriticalAddonsOnly
+        operator: Exists
+      {{- end }}
+      {{- with .Values.deployment.tolerations }}
+{{ tpl (toYaml .) | indent 8 }}
+      {{- end }}
       containers:
-        - name: assume-role-operator
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.imagePullPolicy }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+      - name: assume-role-operator
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        resources:
+{{ toYaml .Values.deployment.resources | indent 10 }}
+        {{- with .Values.deployment.env }}
+        env:
+{{ tpl (toYaml .) $root | indent 8 }}
+        {{- end }}
+        volumeMounts:
+        {{- with .Values.deployment.volumeMounts }}
+{{ tpl (toYaml .) $root | indent 8 }}
+        {{- end }}
+      {{- with .Values.deployment.volumes }}
+      volumes:
+{{ tpl (toYaml .) $root | indent 6 }}
+      {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "assume-role-operator.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
