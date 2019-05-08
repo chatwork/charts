@@ -1,0 +1,9 @@
+name: kube-aws-iam-controller
+version: 0.0.1
+appVersion: 0.0.5
+description: kube-aws-iam-controler chart
+sources:
+  - https://github.com/mikkeloscar/kube-aws-iam-controller
+maintainers:
+- name: cwsakamoto
+  email: sakamoto@chatwork.com
