@@ -1,0 +1,33 @@
+image:
+   repository: "mikkeloscar/kube-aws-iam-controller"
+   tag: "v0.0.5"
+   imagePullPolicy: "Always"
+
+deployment:
+  replicas: 1
+  useHostNetwork: false
+  onMaster: false
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  args: []
+  #--debug                        Enable debug logging.
+  #--interval=10s                 Interval between syncing secrets.
+  #--refresh-limit=15m            Time limit when AWS IAM credentials should be refreshed. I.e. 15 min. before they expire.
+  #--event-queue-size=10          Size of the pod event queue.
+  #--base-role-arn=BASE-ROLE-ARN  Base Role ARN. If not defined it will be autodiscovered from EC2 Metadata.
+  #--namespace=""                 Limit the controller to a certain namespace.
+  #--apiserver=APISERVER          API server url.
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 25m
+      memory: 100Mi
+
+rbac:
+  create: true
+
+test:
+  extraContainer: []

@@ -1,0 +1,67 @@
+{{ $root := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kube-aws-iam-controller.fullname" $root }}
+  labels:
+    app: {{ template "kube-aws-iam-controller.fullname" $root }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "kube-aws-iam-controller.fullname" $root }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kube-aws-iam-controller.fullname" $root }}
+        {{- if .Values.deployment.podLabels}}
+{{ toYaml .Values.deployment.podLabelss | indent 8 }}
+        {{- end }}
+        {{- if .Values.deployment.podAnnotations}}
+      annotations:
+{{ toYaml .Values.deployment.podAnnotations | indent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.deployment.useHostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      nodeSelector:
+      {{- if .Values.deployment.onMaster }}
+        node-role.kubernetes.io/master: ""
+      {{- end }}
+      {{- with .Values.deployment.nodeSelector }}
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.affinity }}
+      affinity:
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      tolerations:
+      {{- if .Values.deployment.onMaster }}
+      - effect: NoSchedule
+        operator: Exists
+      - effect: NoExecute
+        operator: Exists
+      - key: CriticalAddonsOnly
+        operator: Exists
+      {{- end }}
+      {{- if .Values.deployment.tolerations }}
+{{ toYaml .Values.deployment.tolerations | indent 8 }}
+      {{- end }}
+      containers:
+      - name: kube-aws-iam-controller
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        command:
+        - /kube-aws-iam-controller
+        {{- if .Values.deployment.args }}
+        args:
+{{ toYaml .Values.deployment.args | indent 10 }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.deployment.resources | indent 10 }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-aws-iam-controller.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
