@@ -67,7 +67,4 @@ spec:
         - |
           sleep 10
           kubectl get crd "awsiamroles.amazonaws.com"
-{{- with .Values.test.extraContainer }}
-{{ toYaml . | indent 8}}
-{{- end }}
   restartPolicy: Never

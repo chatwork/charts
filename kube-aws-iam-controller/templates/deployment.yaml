@@ -75,7 +75,8 @@ spec:
         volumeMounts:
 {{ tpl (toYaml .) $root | indent 8 }}
         {{- end }}
+      {{- with .Values.deployment.volumes }}
       volumes:
 {{ tpl (toYaml .) $root | indent 6 }}
-        {{- end }}
+      {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-aws-iam-controller.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
