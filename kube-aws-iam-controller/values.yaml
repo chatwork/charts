@@ -1,14 +1,15 @@
 image:
    repository: "mikkeloscar/kube-aws-iam-controller"
    tag: "v0.0.5"
-   imagePullPolicy: "Always"
+   imagePullPolicy: "IfNotPresent"
 
 deployment:
-  replicas: 1
   useHostNetwork: false
   onMaster: false
   nodeSelector: {}
   affinity: {}
+  podLabels: {}
+  podAnnotations: {}
   tolerations: []
   priorityClassName: ""
   args: []
@@ -19,6 +20,9 @@ deployment:
   #--base-role-arn=BASE-ROLE-ARN  Base Role ARN. If not defined it will be autodiscovered from EC2 Metadata.
   #--namespace=""                 Limit the controller to a certain namespace.
   #--apiserver=APISERVER          API server url.
+  env: []
+  volumeMounts: []
+  volumes: []
   resources:
     limits:
       cpu: 100m
@@ -29,6 +33,3 @@ deployment:
 
 rbac:
   create: true
-
-test:
-  extraContainer: []

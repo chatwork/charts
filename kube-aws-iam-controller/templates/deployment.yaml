@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 spec:
-  replicas: {{ .Values.deployment.replicas }}
+  replicas: 1
   selector:
     matchLabels:
       app: {{ template "kube-aws-iam-controller.fullname" $root }}
@@ -17,12 +17,12 @@ spec:
     metadata:
       labels:
         app: {{ template "kube-aws-iam-controller.fullname" $root }}
-        {{- if .Values.deployment.podLabels }}
-{{ toYaml .Values.deployment.podLabelss | indent 8 }}
+        {{- with .Values.deployment.podLabels }}
+{{ toYaml . | indent 8 }}
         {{- end }}
-        {{- if .Values.deployment.podAnnotations }}
+        {{- with .Values.deployment.podAnnotations }}
       annotations:
-{{ toYaml .Values.deployment.podAnnotations | indent 8 }}
+{{ toYaml .| indent 8 }}
         {{- end }}
     spec:
       {{- if .Values.deployment.priorityClassName }}
@@ -52,8 +52,8 @@ spec:
       - key: CriticalAddonsOnly
         operator: Exists
       {{- end }}
-      {{- if .Values.deployment.tolerations }}
-{{ toYaml .Values.deployment.tolerations | indent 8 }}
+      {{- with .Values.deployment.tolerations }}
+{{ tpl (toYaml .) | indent 8 }}
       {{- end }}
       containers:
       - name: kube-aws-iam-controller
@@ -61,10 +61,21 @@ spec:
         imagePullPolicy: {{ .Values.image.imagePullPolicy }}
         command:
         - /kube-aws-iam-controller
-        {{- if .Values.deployment.args }}
+        {{- with .Values.deployment.args }}
         args:
-{{ toYaml .Values.deployment.args | indent 10 }}
+{{ tpl (toYaml .) $root | indent 10 }}
         {{- end }}
         resources:
 {{ toYaml .Values.deployment.resources | indent 10 }}
+        {{- with .Values.deployment.env }}
+        env:
+{{ tpl (toYaml .) $root | indent 8 }}
+        {{- end }}
+        {{- with .Values.deployment.volumeMounts }}
+        volumeMounts:
+{{ tpl (toYaml .) $root | indent 8 }}
+        {{- end }}
+      volumes:
+{{ tpl (toYaml .) $root | indent 6 }}
+        {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-aws-iam-controller.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
