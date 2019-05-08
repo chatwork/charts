@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    app: {{ template "argoproj-crd.name" . }}
+    chart: {{ template "argoproj-crd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  description: {{ .Values.description }}
+
+  sourceRepos:
+{{ include "argoproj-crd.repositories" . | splitList "," | uniq | toYaml | indent 4}}
+
+{{- $map := fromYaml (include "argoproj-crd.applications" .) -}}
+{{- if $map.applications }}
+  destinations:
+{{- range $app := $map.applications | uniq }}
+  - server: {{ $app.server }}
+{{- if eq "string" (printf "%T" $app.namespace) }}
+    namespace: {{ $app.namespace }}
+{{- else }}
+    namespace: {{ $app.namespace.metadata.name }}
+{{- end }}
+{{- end }}
+{{- else }}
+  destinations: []
+{{- end }}
+  clusterResourceWhitelist:
+{{ toYaml .Values.clusterResourceWhitelist | indent 4}}
+
+  namespaceResourceBlacklist:
+{{ toYaml .Values.namespaceResourceBlacklist | indent 4}}
+
+  roles:
+{{ toYaml .Values.roles | indent 4}}
