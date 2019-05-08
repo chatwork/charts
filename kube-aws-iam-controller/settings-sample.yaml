@@ -1,0 +1,13 @@
+image:
+   repository: "cwsakamoto/kube-aws-iam-controller"
+   tag: "v0.0.5-1-g451af42-dirty"
+   imagePullPolicy: "Always"
+
+deployment:
+  onMaster: true
+  priorityClassName: system-cluster-critical
+  args:
+    - --interval=10s
+    - --refresh-limit=5m
+rbac:
+  create: true
