@@ -9,9 +9,10 @@ metadata:
   name: {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
 rules:
 - apiGroups:
-  - amazonaws.com/v1
+  - "amazonaws.com"
   resources:
-  - "awsiamrole"
+  - awsiamroles
+  - awsiamroles/status
   verbs:
   - get
   - list
@@ -64,5 +65,5 @@ spec:
         - /bin/sh
         - -c
         - |
-          kubectl get awsiamrole -n {{ .Release.Namespace }} | grep {{ tpl .Values.test.target . }}
+          kubectl get awsiamroles -n {{ .Release.Namespace }} | grep {{ tpl .Values.test.target . }}
   restartPolicy: Never
