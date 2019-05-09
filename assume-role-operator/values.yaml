@@ -1,15 +1,29 @@
-awsRoleArn: "arn:aws:iam::XXXXXXXX:role/assume-role-operator_role"
-
 image:
-   repository: "cwsakamoto/assume-role-operator"
+   repository: "chatwork/assume-role-operator"
    tag: "latest"
    imagePullPolicy: "Always"
-
-deployment:
-  replicas: 1
 
 rbac:
   create: true
 
-test:
-  extraContainer: {}
+deployment:
+  onMaster: false
+  nodeSelector: {}
+  affinity: {}
+  podLabels: {}
+  podAnnotations: {}
+  tolerations: []
+  priorityClassName: ""
+  env: []
+  volumeMounts: []
+  volumes: []
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 25m
+  #    memory: 64Mi
+
+rbac:
+  create: true
