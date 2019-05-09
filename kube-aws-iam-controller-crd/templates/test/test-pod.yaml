@@ -1,0 +1,69 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: "{{ template "kube-aws-iam-controller-crd.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  name: {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
+rules:
+- apiGroups:
+  - "amazonaws.com"
+  resources:
+  - awsiamroles
+  - awsiamroles/status
+  verbs:
+  - get
+  - list
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: "{{ template "kube-aws-iam-controller-crd.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  name: {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: "{{ template "kube-aws-iam-controller-crd.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  name: {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "kube-aws-iam-controller-crd.fullname" . }}-test
+  labels:
+    app: {{ template "kube-aws-iam-controller-crd.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  serviceAccountName:  {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
+  containers:
+    - name: {{ .Chart.Name }}-test
+      image: chatwork/kubectl
+      command:
+        - /bin/sh
+        - -c
+        - |
+          kubectl get awsiamroles -n {{ .Release.Namespace }} | grep {{ tpl .Values.test.target . }}
+  restartPolicy: Never
