@@ -22,7 +22,6 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release chatwork/kube-aws-iam-controller-crd \
     --set roleReference=arn:aws:iam::<account-id>:role/aws-iam-role-name
 ```
-```
 
 The command deploys the kube-aws-iam-controller-crd chart on the Kubernetes cluster with `roleReference` value. The [configuration](https://github.com/chatwork/charts/tree/master/kube-aws-iam-controller-crd#configuration) section lists the parameters that can be configured during installation.
 
