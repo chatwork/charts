@@ -1,6 +1,6 @@
 image:
    repository: "mikkeloscar/kube-aws-iam-controller"
-   tag: "v0.0.5"
+   tag: "v0.0.6"
    imagePullPolicy: "IfNotPresent"
 
 deployment:
