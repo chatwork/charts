@@ -1,0 +1,25 @@
+{{- $root := . -}}
+{{- $map := fromYaml (include "argoproj-crd.namespaces" .) -}}
+{{- range $namespace := $map.namespaces | uniq }}
+{{- if ne $namespace.metadata.name "kube-system" }}
+{{- if ne $namespace.metadata.name "kube-public" }}
+{{- if ne $namespace.metadata.name "default" }}
+---
+apiVersion: v1
+kind: Namespace
+{{- with $namespace.metadata }}
+metadata:
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- with $namespace.spec }}
+spec:
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- with $namespace.status }}
+status:
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

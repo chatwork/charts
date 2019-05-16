@@ -1,0 +1,9 @@
+name: guestbook
+description: Example project
+applications:
+- name: guestbook
+  repoURL: https://github.com/argoproj/argocd-example-apps.git
+  targetRevision: master
+  path: guestbook/
+  server: https://kubernetes.default.svc
+  namespace: guestbook

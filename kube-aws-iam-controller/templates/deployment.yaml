@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "assume-role-operator.fullname" $root }}
+  name: {{ template "kube-aws-iam-controller.fullname" $root }}
   labels:
-    app: {{ template "assume-role-operator.fullname" $root }}
+    app: {{ template "kube-aws-iam-controller.fullname" $root }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -12,21 +12,25 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "assume-role-operator.fullname" $root }}
+      app: {{ template "kube-aws-iam-controller.fullname" $root }}
   template:
     metadata:
       labels:
-        app: {{ template "assume-role-operator.fullname" $root }}
+        app: {{ template "kube-aws-iam-controller.fullname" $root }}
         {{- with .Values.deployment.podLabels }}
 {{ toYaml . | indent 8 }}
         {{- end }}
-      {{- with .Values.deployment.podAnnotations }}
+        {{- with .Values.deployment.podAnnotations }}
       annotations:
-{{ tpl (toYaml .) $root| indent 8 }}
-      {{- end }}
+{{ toYaml .| indent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.deployment.priorityClassName }}
       priorityClassName: {{ .Values.deployment.priorityClassName }}
+      {{- end }}
+      {{- if .Values.deployment.useHostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       nodeSelector:
       {{- if .Values.deployment.onMaster }}
@@ -52,21 +56,27 @@ spec:
 {{ tpl (toYaml .) | indent 8 }}
       {{- end }}
       containers:
-      - name: assume-role-operator
+      - name: kube-aws-iam-controller
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        command:
+        - /kube-aws-iam-controller
+        {{- with .Values.deployment.args }}
+        args:
+{{ tpl (toYaml .) $root | indent 10 }}
+        {{- end }}
         resources:
 {{ toYaml .Values.deployment.resources | indent 10 }}
         {{- with .Values.deployment.env }}
         env:
 {{ tpl (toYaml .) $root | indent 8 }}
         {{- end }}
-        volumeMounts:
         {{- with .Values.deployment.volumeMounts }}
+        volumeMounts:
 {{ tpl (toYaml .) $root | indent 8 }}
         {{- end }}
       {{- with .Values.deployment.volumes }}
       volumes:
 {{ tpl (toYaml .) $root | indent 6 }}
       {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "assume-role-operator.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-aws-iam-controller.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

@@ -1,0 +1,65 @@
+{{- $root := . }}
+{{- range $app := .Values.applications }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $app.name }}
+  labels:
+    app: {{ template "argoproj-crd.name" $root }}
+    chart: {{ template "argoproj-crd.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $root.Values.name }}
+
+  source:
+    repoURL: {{ $app.repoURL }}
+    targetRevision: {{ $app.targetRevision }}
+    path: {{ $app.path }}
+
+{{- if $app.helm }}
+    helm:
+{{ toYaml $app.helm | indent 6 }}
+{{- end }}
+
+{{- if $app.kustomize }}
+    kustomize:
+{{ toYaml $app.kustomize | indent 6 }}
+{{- end }}
+
+{{- if $app.directory }}
+    directory:
+{{ toYaml $app.directory | indent 6 }}
+{{- end }}
+
+{{- if $app.plugin }}
+    plugin:
+{{ toYaml $app.plugin | indent 6 }}
+{{- end }}
+
+  destination:
+    server: {{ $app.server }}
+{{- if eq "string" (printf "%T" $app.namespace) }}
+    namespace: {{ $app.namespace }}
+{{- else }}
+    namespace: {{ $app.namespace.metadata.name }}
+{{- end }}
+
+{{- if $app.syncPolicy }}
+  syncPolicy:
+{{ toYaml $app.syncPolicy | indent 4 }}
+{{- else }}
+  syncPolicy:
+    automated: {}
+{{- end }}
+
+{{- if $app.ignoreDifferences }}
+  ignoreDifferences:
+{{ toYaml $app.ignoreDifferences | indent 4 }}
+{{- else }}
+  ignoreDifferences: []
+{{- end }}
+{{- end }}

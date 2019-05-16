@@ -1,6 +1,5 @@
-clusterName: cluster_name #same kube-aws cluster.yaml clusterName
-roleArn: role_arn
+# Same clusterName in kube-aws cluster.yaml.
+# clusterName: ""
 
-test:
-  extraContainer: {}
-  target: target
+# ARN of IAM Role to assume.
+# roleArn: ""

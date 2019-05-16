@@ -1,63 +1,63 @@
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
   labels:
-    app: "{{ template "assume-role-operator.fullname" . }}"
+    app: "{{ template "kube-aws-iam-controller-crd.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-  name: {{ template "assume-role-operator.fullname" .}}-test
+  name: {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
 rules:
 - apiGroups:
-  - apiextensions.k8s.io
+  - "amazonaws.com"
   resources:
-  - customresourcedefinitions
+  - awsiamroles
+  - awsiamroles/status
   verbs:
   - get
   - list
-  - watch
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-    app: "{{ template "assume-role-operator.fullname" . }}"
+    app: "{{ template "kube-aws-iam-controller-crd.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-  name: {{ template "assume-role-operator.fullname" .}}-test
+  name: {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
   labels:
-    app: "{{ template "assume-role-operator.fullname" . }}"
+    app: "{{ template "kube-aws-iam-controller-crd.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-  name: {{ template "assume-role-operator.fullname" .}}-test
+  name: {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
 subjects:
   - kind: ServiceAccount
-    name: {{ template "assume-role-operator.fullname" .}}-test
+    name: {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
     namespace: {{ .Release.Namespace }}
 roleRef:
-  kind: ClusterRole
-  name: {{ template "assume-role-operator.fullname" .}}-test
+  kind: Role
+  name: {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ template "assume-role-operator.fullname" . }}-test
+  name: {{ template "kube-aws-iam-controller-crd.fullname" . }}-test
   labels:
-    app: {{ template "assume-role-operator.fullname" . }}
+    app: {{ template "kube-aws-iam-controller-crd.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
     "helm.sh/hook": test-success
 spec:
-  serviceAccountName:  {{ template "assume-role-operator.fullname" .}}-test
+  serviceAccountName:  {{ template "kube-aws-iam-controller-crd.fullname" .}}-test
   containers:
     - name: {{ .Chart.Name }}-test
       image: chatwork/kubectl
@@ -65,6 +65,5 @@ spec:
         - /bin/sh
         - -c
         - |
-          sleep 10
-          kubectl get crd "assumerole.aws.chatwork"
+          kubectl get awsiamroles -n {{ .Release.Namespace }} | grep {{ tpl .Values.test.target . }}
   restartPolicy: Never
