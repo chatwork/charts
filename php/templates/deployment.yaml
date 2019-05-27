@@ -75,6 +75,9 @@ spec:
 {{- with .Values.busybox.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
+{{- with .Values.extraVolumeMounts }}
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
 {{- end }}
       containers:
       - name: "{{ template "php.fullname" . }}-nginx"
@@ -132,6 +135,9 @@ spec:
 {{- with .Values.nginx.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
+{{- with .Values.extraVolumeMounts }}
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
       - name: "{{ template "php.fullname" . }}-fpm"
         image: "{{ .Values.fpm.image.repository }}:{{ .Values.fpm.image.tag }}"
         imagePullPolicy: {{ .Values.fpm.image.pullPolicy }}
@@ -183,6 +189,9 @@ spec:
 {{- with .Values.fpm.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
+{{- with .Values.extraVolumeMounts }}
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
       volumes:
 {{- if .Values.busybox.enabled }}
       - name: share
@@ -209,6 +218,9 @@ spec:
 {{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
 {{- with .Values.fpm.extraVolumes }}
+{{ tpl (toYaml .) $root | indent 6 }}
+{{- end }}
+{{- with .Values.extraVolumes }}
 {{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
 {{- with .Values.imagePullSecrets}}
