@@ -1,3 +1,4 @@
+{{- $root := . -}}
 {{- if .Values.ingress.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -18,20 +19,19 @@ spec:
     servicePort: {{ .Values.ingress.port | default .Values.service.port | default .Values.nginx.port }}
 {{- if .Values.ingress.tls }}
   tls:
-    - hosts:
-        - {{ .Values.ingress.host }}
-      secretName: {{ .Values.ingress.tls.secretName }}
+{{ toYaml .Values.ingress.tls | indent 4 }}
 {{- end }}
-
   rules:
-    - host: {{ .Values.ingress.host | default .Values.nginx.host }}
-      http:
-        paths:
-{{- with .Values.ingress.preferPaths }}
-{{ toYaml . | indent 10 }}
+{{- range $k, $host := .Values.ingress.hosts }}
+  - host: {{ $host }}
+    http:
+      paths:
+{{- with $root.Values.ingress.preferPaths }}
+{{ toYaml . | indent 6 }}
 {{- end }}
-          - path: {{ .Values.ingress.path }}
-            backend:
-              serviceName: {{ template "php.fullname" . }}
-              servicePort: {{ .Values.ingress.port | default .Values.service.port | default .Values.nginx.port }}
+      - path: /*
+        backend:
+          serviceName: {{ template "php.fullname" $root }}
+          servicePort: {{ $root.Values.service.port | default $root.Values.nginx.port }}
+{{- end }}
 {{- end }}
