@@ -54,11 +54,10 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `service.extraPorts` | Additional ports | `8080` |
 |  `ingress.enabled` | Enables Ingress | `FALSE` |
 |  `ingress.annotation` | Ingress annotations |  |
-|  `ingress.host` | Ingress accepted hostname | nginx.host |
+|  `ingress.hosts` | Ingress accepted hostname | `[]` |
 |  `ingress.port` | Ingress port | service.port or nginx.port |
-|  `ingress.path` | Ingress path |  |
 |  `ingress.preferPaths` | Paths that takes precedence over the ingress.path |  |
-|  `ingress.tls.secretName` | TLS Secret (certificates) name  |  |
+|  `ingress.tls` | TLS Secret (certificates)  |  |
 |  `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `FALSE` |
 |  `podDisruptionBudget.minAvailabled` | Minimum number / percentage of pods that should remain scheduled |  |
 |  `podDisruptionBudget.maxAvailabled` | Minimum number / percentage of pods that should remain scheduled |  |
