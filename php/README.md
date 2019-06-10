@@ -2,7 +2,7 @@
 
 ![image](https://user-images.githubusercontent.com/7764002/52184551-166d3680-2858-11e9-8824-5ecd3b11efcc.png)
 
-PHP is a chart for creating PHP web applications. 
+PHP is a chart for creating PHP web applications.
 
 ## TL;DR;
 
@@ -47,6 +47,8 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `strategy` | Update strategy of pod in deployment | `type`: `RollingUpdate` |
 |  `podAnnotation` | Annotation specified for pod in deployment | {} |
 |  `imagePullSecrets` | Name of Secret resource containing private registry credentials | `[]` |
+|  `extraVolumes` | Additional volumes to all container | `[]` |
+|  `extraVolumeMounts` | Additional volumeMounts to all container | `[]` |
 |  `tolerations` | Pod taint tolerations for deployment | `[]` |
 |  `affinity` | Node / Pod affinities | `{}` |
 |  `service.type` | Changes to ClusterIP automatically if ingress enabled | `LoadBalancer` |
@@ -155,5 +157,3 @@ For details of each value, please see [here](http://php.net/manual/en/install.fp
 |  `fpm.pm.maxRequests` | `500` |
 |  `fpm.pm.status` | `/status.php` |
 |  `fpm.requestTerminateTimeout` | `0` |
-
-
