@@ -116,6 +116,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.image.repository` | The image repository to pull from | `php` |
 |  `fpm.image.tag` | The image tag to pull | `7.1-fpm-alpine` |
 |  `fpm.image.pullPolicy` | Image pull policy | `IfNotPresent` |
+|  `fpm.command` | Overrides the default command | `[]` |
 |  `fpm.ini` | Override the default php.ini. Please specify the parameter name with Lower Camel Case |  |
 |  `fpm.livenessProbe` | Overrides the default liveness probe | `{}` |
 |  `fpm.readinessProbe` | Overrides the default readness probe | `{}` |
