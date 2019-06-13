@@ -141,6 +141,10 @@ spec:
       - name: "{{ template "php.fullname" . }}-fpm"
         image: "{{ .Values.fpm.image.repository }}:{{ .Values.fpm.image.tag }}"
         imagePullPolicy: {{ .Values.fpm.image.pullPolicy }}
+{{- with .Values.fpm.command }}
+        command:
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
 {{- with .Values.fpm.extraPorts }}
         ports:
 {{- range $v := . }}
