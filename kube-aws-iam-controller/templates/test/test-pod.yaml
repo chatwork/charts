@@ -60,7 +60,7 @@ spec:
   serviceAccountName:  {{ template "kube-aws-iam-controller.fullname" .}}-test
   containers:
     - name: {{ .Chart.Name }}-test
-      image: chatwork/kubectl
+      image: chatwork/kubectl:1.11.7
       command:
         - /bin/sh
         - -c
