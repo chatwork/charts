@@ -66,5 +66,5 @@ spec:
         - -c
         - |
           sleep 10
-          kubectl get crd "awsiamroles.amazonaws.com"
+          kubectl get crd "awsiamroles.zalando.org"
   restartPolicy: Never

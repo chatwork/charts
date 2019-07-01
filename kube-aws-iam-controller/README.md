@@ -58,7 +58,7 @@ The roles that will be assumed with node which running kube-aws-iam-controller(i
 # Quick start
 
 ```
-$ kubectl apply -f crd.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/mikkeloscar/kube-aws-iam-controller/v0.1.0/docs/aws_iam_role_crd.yaml
 $ helm install --name <RELEASE_NAME> \ chatwork/kube-aws-iam-controller
 ```
 
