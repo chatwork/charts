@@ -50,6 +50,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.busybox.enabled }}
       initContainers:
       - name: "{{ template "php.fullname" . }}-busybox"
         image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
@@ -73,6 +74,10 @@ spec:
           mountPath: {{ .Values.busybox.sharedPath | default .Values.sharedPath }}
 {{- with .Values.busybox.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
+{{- with .Values.extraVolumeMounts }}
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
 {{- end }}
       containers:
       - name: "{{ template "php.fullname" . }}-nginx"
@@ -116,8 +121,10 @@ spec:
         terminationGracePeriodSeconds: {{ add . 10 }}
         {{- end }}
         volumeMounts:
+{{- if .Values.busybox.enabled }}
         - name: share
           mountPath: {{ .Values.sharedPath }}
+{{- end }}
         - name: php-fpm-sock
           mountPath: /var/run/php-fpm
         - name: nginx-conf
@@ -128,9 +135,16 @@ spec:
 {{- with .Values.nginx.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
+{{- with .Values.extraVolumeMounts }}
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
       - name: "{{ template "php.fullname" . }}-fpm"
         image: "{{ .Values.fpm.image.repository }}:{{ .Values.fpm.image.tag }}"
         imagePullPolicy: {{ .Values.fpm.image.pullPolicy }}
+{{- with .Values.fpm.command }}
+        command:
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
 {{- with .Values.fpm.extraPorts }}
         ports:
 {{- range $v := . }}
@@ -165,8 +179,10 @@ spec:
         terminationGracePeriodSeconds: {{ add . 10 }}
         {{- end }}
         volumeMounts:
+{{- if .Values.busybox.enabled }}
         - name: share
           mountPath: {{ .Values.sharedPath }}
+{{- end }}
         - name: php-fpm-sock
           mountPath: /var/run/php-fpm
         - name: fpm-conf
@@ -177,9 +193,14 @@ spec:
 {{- with .Values.fpm.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
+{{- with .Values.extraVolumeMounts }}
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
       volumes:
+{{- if .Values.busybox.enabled }}
       - name: share
         emptyDir: {}
+{{- end }}
       - name: php-fpm-sock
         emptyDir: {}
       - name: nginx-conf
@@ -201,6 +222,9 @@ spec:
 {{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
 {{- with .Values.fpm.extraVolumes }}
+{{ tpl (toYaml .) $root | indent 6 }}
+{{- end }}
+{{- with .Values.extraVolumes }}
 {{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
 {{- with .Values.imagePullSecrets}}

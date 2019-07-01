@@ -2,7 +2,7 @@
 
 ![image](https://user-images.githubusercontent.com/7764002/52184551-166d3680-2858-11e9-8824-5ecd3b11efcc.png)
 
-PHP is a chart for creating PHP web applications. 
+PHP is a chart for creating PHP web applications.
 
 ## TL;DR;
 
@@ -47,6 +47,8 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `strategy` | Update strategy of pod in deployment | `type`: `RollingUpdate` |
 |  `podAnnotation` | Annotation specified for pod in deployment | {} |
 |  `imagePullSecrets` | Name of Secret resource containing private registry credentials | `[]` |
+|  `extraVolumes` | Additional volumes to all container | `[]` |
+|  `extraVolumeMounts` | Additional volumeMounts to all container | `[]` |
 |  `tolerations` | Pod taint tolerations for deployment | `[]` |
 |  `affinity` | Node / Pod affinities | `{}` |
 |  `service.type` | Changes to ClusterIP automatically if ingress enabled | `LoadBalancer` |
@@ -54,11 +56,10 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `service.extraPorts` | Additional ports | `8080` |
 |  `ingress.enabled` | Enables Ingress | `FALSE` |
 |  `ingress.annotation` | Ingress annotations |  |
-|  `ingress.host` | Ingress accepted hostname | nginx.host |
+|  `ingress.hosts` | Ingress accepted hostname | `[]` |
 |  `ingress.port` | Ingress port | service.port or nginx.port |
-|  `ingress.path` | Ingress path |  |
 |  `ingress.preferPaths` | Paths that takes precedence over the ingress.path |  |
-|  `ingress.tls.secretName` | TLS Secret (certificates) name  |  |
+|  `ingress.tls` | TLS Secret (certificates)  |  |
 |  `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `FALSE` |
 |  `podDisruptionBudget.minAvailabled` | Minimum number / percentage of pods that should remain scheduled |  |
 |  `podDisruptionBudget.maxAvailabled` | Minimum number / percentage of pods that should remain scheduled |  |
@@ -74,6 +75,7 @@ We recommend that you embed the source code in your container and copy it to the
 
 |  Parameter | Description | Default |
 | --- | --- | --- |
+|  `busybox.enabled` | Enables initial containers and share volume with busybox | `TRUE` |
 |  `busybox.image.repository` | The image repository to pull from | `busybox` |
 |  `busybox.image.tag` | The image tag to pull | `latest` |
 |  `busybox,image.pullPolicy` | Image pull policy | `IfNotPresent` |
@@ -114,6 +116,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.image.repository` | The image repository to pull from | `php` |
 |  `fpm.image.tag` | The image tag to pull | `7.1-fpm-alpine` |
 |  `fpm.image.pullPolicy` | Image pull policy | `IfNotPresent` |
+|  `fpm.command` | Overrides the default command | `[]` |
 |  `fpm.ini` | Override the default php.ini. Please specify the parameter name with Lower Camel Case |  |
 |  `fpm.livenessProbe` | Overrides the default liveness probe | `{}` |
 |  `fpm.readinessProbe` | Overrides the default readness probe | `{}` |
@@ -155,5 +158,3 @@ For details of each value, please see [here](http://php.net/manual/en/install.fp
 |  `fpm.pm.maxRequests` | `500` |
 |  `fpm.pm.status` | `/status.php` |
 |  `fpm.requestTerminateTimeout` | `0` |
-
-
