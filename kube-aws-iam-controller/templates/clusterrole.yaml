@@ -10,7 +10,7 @@ metadata:
   name: {{ template "kube-aws-iam-controller.fullname" .}}
 rules:
 - apiGroups:
-  - "amazonaws.com"
+  - "zalando.org"
   resources:
   - awsiamroles
   - awsiamroles/status
