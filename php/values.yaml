@@ -15,6 +15,10 @@ podAnnotations: {}
 
 imagePullSecrets: []
 
+extraVolumes: []
+
+extraVolumeMounts: []
+
 tolerations: []
 
 affinity: {}
@@ -34,6 +38,7 @@ podDisruptionBudget:
 
 # BUSYBOX
 busybox:
+  enabled: true
   image:
     repository: busybox
     tag: latest
@@ -274,6 +279,12 @@ fpm:
     repository: php
     tag: 7.1-fpm-alpine
     pullPolicy: IfNotPresent
+
+  # custom command for php-fpm image execution
+  command: []
+  # command:
+  # - php-fpm
+  # - -d zend_extension=xdebug.so
 
   # PHP-FPM configuration
   # http://php.net/manual/en/install.fpm.configuration.php
