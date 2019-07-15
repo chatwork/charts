@@ -54,14 +54,21 @@ spec:
           - name: default
             containerPort: {{ .Values.scala.port }}
             protocol: TCP
+          {{- if .Values.scala.jmx.enabled }}
+          - name: jmx
+            containerPort: {{ .Values.scala.jmx.port }}
+            protocol: TCP
+          {{- end }}
           {{- with .Values.scala.extraPorts }}
 {{ tpl (toYaml .) $root | indent 10 }}
           {{- end }}
-        {{- if or .Values.scala.env .Values.scala.javaOptions }}
+        {{- if or .Values.scala.env ( or .Values.scala.javaOptions .Values.scala.jmx.enabled ) }}
         env:
 {{ tpl (toYaml .Values.scala.env) . | indent 10 }}
+          {{- if or .Values.scala.javaOptions .Values.scala.jmx.enabled }}
           - name: JAVA_OPTS
-            value: {{ join " " .Values.scala.javaOptions }}
+            value: '{{ tpl (join " " .Values.scala.javaOptions) . }} {{tpl (join " " .Values.scala.jmx.options) . }}'
+          {{- end }}
         {{- end }}
         {{- with .Values.scala.envFrom }}
         envFrom:

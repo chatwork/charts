@@ -57,6 +57,8 @@ The following table lists the configurable parameters of the Scala chart and the
 | scala.env | list | [] |  |
 | scala.envFrom | list | [] |  |
 | scala.javaOptions | list | [] |  |
+| scala.jmx.enabled | bool | false |  |
+| scala.jmx.port | int | 7199 |  |
 | scala.port | int | 8080 |  |
 | scala.requestTimeout | int | 30 |  |
 | scala.secrets | object | {} |  |

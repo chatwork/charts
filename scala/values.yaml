@@ -118,6 +118,21 @@ scala:
   #     cpu: 200m
   #     memory: 256Mi
 
+  jmx:
+    # If you want to enable JMX, please specify true.
+    enabled: false
+
+    # JMX port.
+    port: 7199
+
+    # JVM_OPTS to enable JMX.
+    # The value set here is integrated into `scala.javaOptions`.
+    options:
+      - -Dcom.sun.management.jmxremote
+      - -Dcom.sun.management.jmxremote.port={{ .Values.scala.jmx.port }}
+      - -Dcom.sun.management.jmxremote.authenticate=false
+      - -Dcom.sun.management.jmxremote.ssl=false
+
 replicaCount: 1
 
 strategy:
