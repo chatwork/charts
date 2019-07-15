@@ -1,0 +1,17 @@
+{{- $root := . -}}
+{{- range $name, $tmpl := .Values.scala.configmaps }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "scala.fullname" $root }}-{{ $name | replace "." "-" }}
+  labels:
+    app: {{ template "scala.name" $root }}
+    chart: {{ template "scala.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+  annotations:
+    checksum/configmap-{{ replace "." "-" $name }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
+data:
+{{ tpl (toYaml $tmpl) $root | indent 2 }}
+{{- end }}

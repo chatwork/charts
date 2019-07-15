@@ -1,0 +1,34 @@
+{{- $root := . -}}
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "scala.fullname" . }}
+  labels:
+    app: {{ template "scala.name" . }}
+    chart: {{ template "scala.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+  {{- toYaml . | indent 4 }}
+  {{- end }}
+spec:
+  backend:
+    serviceName: {{ template "scala.fullname" . }}
+    servicePort: {{ .Values.ingress.port | default .Values.service.port }}
+  {{- if .Values.ingress.tls }}
+  tls:
+{{- toYaml .Values.ingress.tls | indent 4 }}
+  {{- end }}
+  rules:
+    {{- range $k, $host := .Values.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+        - path: /*
+          backend:
+            serviceName: {{ template "scala.fullname" $root }}
+            servicePort: {{ $root.Values.service.port }}
+    {{- end }}
+  {{- end }}

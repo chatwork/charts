@@ -1,0 +1,181 @@
+# Default values for scala.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: cwozaki/scala-example
+
+  tag: latest
+
+  pullPolicy: IfNotPresent
+
+  # It is possible to specify docker registry credentials
+  # See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  pullSecrets: []
+
+fullnameOverride: ""
+nameOverride: ""
+
+scala:
+  # Container start command.
+  # If you are using sbt-native-packager, you do not need to specify basically.
+  # command: []
+
+  # If not empty, create JAVA_OPTS environment variable.
+  # This is a setting for containers corresponding to the `sbt-native-packager` or `JAVA_OPTS` environment variable.
+  javaOptions: []
+
+  # Maximum seconds to timeout request.
+  requestTimeout: 30
+
+  # Default port.
+  # It is a common port among container, service, and ingress.
+  # If you want to change the service and ingress port, please change the setting there.
+  port: 8080
+
+  # Add an expose port other than `scala.port` to `scala.extraPort`.
+  # See https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/#exposing-the-service
+  # extraPorts: []
+
+  # Environment variable added to container.
+  # See https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
+  env: []
+  # - name: NAME
+  #   value: "VALUE"
+
+  # Environment variable added to container via ConfigMap/Secrets.
+  # When reading `scala.configmap`/`scala.secrets`, specify as shown in the example.
+  # See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables
+  envFrom: []
+  #- configMapRef:
+  #    name: '{{`{{template "scala.fullname" . }}`}}-[template-name]'
+  #- secretRef:
+  #    name: '{{`{{template "scala.fullname" . }}`}}-[template-name]'
+
+  # The volume to add to the container.
+  # When reading `scala.configmap`/`scala.secrets`, specify as shown in the example.
+  # See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#add-configmap-data-to-a-volume
+  volumes: []
+  #- name: extra-volume
+  #  configMap:
+  #    name: '{{`{{template "scala.fullname" . }}`}}-[template-name]'
+
+
+  # The volume mount to add to the container.
+  # specify the volume name created with `extraVolume`.
+  # See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#add-configmap-data-to-a-specific-path-in-the-volume
+  volumeMounts: []
+  #- name: extra-volume
+  #  mountPath: /path/to/dir
+
+  # `scala.configmaps` is additional ConfigMap as a string to be passed to the tpl function.
+  # ConfigMap name created here is `[release-name]-[template-name]`.
+  configmaps: {}
+  #  dirname:
+  #    file1.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #    file2.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #  envname:
+  #    FOO: 1
+  #    BAR: 2
+  #    BAZ: 3
+
+  # `scala.secrets` is additional Secret as a string to be passed to the tpl function.
+  # Secret name created here is `[release-name]-[template-name]`.
+  secrets: {}
+  #  dirname:
+  #    file1.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #    file2.yaml: |
+  #      foo: 1
+  #      bar: 2
+  #      baz: 3
+  #  envname:
+  #    FOO: 1
+  #    BAR: 2
+  #    BAZ: 3
+
+  # livenessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
+
+  # readinessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
+
+  # resources: {}
+  #   requests:
+  #     cpu: 200m
+  #     memory: 256Mi
+  #   limits:
+  #     cpu: 200m
+  #     memory: 256Mi
+
+replicaCount: 1
+
+strategy:
+  type: RollingUpdate
+
+affinity: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+podAnnotations: {}
+
+autoscaling:
+  # If you want to enable HPA, please specify true.
+  # See https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
+  enabled: false
+
+  # minReplicas: 3
+
+  # maxReplicas: 12
+
+  # targetCPUUtilizationPercentage: 70
+
+service:
+  type: LoadBalancer
+
+  # Service port.
+  # The default is to use the `scala.port`.
+  # port: 8080
+
+  # annotations: {}
+
+ingress:
+  # If you want to enable ingress, please specify true.
+  # See https://kubernetes.io/docs/concepts/services-networking/ingress/
+  enabled: false
+
+  # Ingress port.
+  # The default is to use the `scala.port` or `service.port`.
+  # port: 8080
+
+  # tls:
+  # - secretName: testsecret-tls
+
+  # hosts:
+  # - example.com
+
+  # annotations: {}
+
+podDisruptionBudget:
+  # If you want to enable PDB, please specify true.
+  # See https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
+  enabled: false
+
+  # minAvailable: 1
+
+  # maxUnavailable: 1
+
+test:
+  enabled: true

@@ -1,0 +1,110 @@
+{{- $root := . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "scala.fullname" . }}
+  labels:
+    app: {{ template "scala.name" . }}
+    chart: {{ template "scala.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  {{- with .Values.replicaCount }}
+  replicas: {{ . }}
+  {{- end }}
+  {{- with .Values.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "scala.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "scala.name" . }}
+        chart: {{ template "scala.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+      annotations:
+        {{- range $name, $tmpl := .Values.scala.configmaps }}
+        checksum/configmap-{{ replace "." "-" $name }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
+        {{- end }}
+        {{- range $name, $secret := .Values.scala.secrets }}
+        checksum/secret-{{ replace "." "-" $name }}: {{ tpl (toYaml $secret) $root | sha256sum }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | indent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ template "scala.fullname" . }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.scala.command }}
+        command:
+{{ tpl (toYaml .) $root | indent 10 }}
+        {{- end }}
+        ports:
+          - name: default
+            containerPort: {{ .Values.scala.port }}
+            protocol: TCP
+          {{- with .Values.scala.extraPorts }}
+{{ tpl (toYaml .) $root | indent 10 }}
+          {{- end }}
+        {{- if or .Values.scala.env .Values.scala.javaOptions }}
+        env:
+{{ tpl (toYaml .Values.scala.env) . | indent 10 }}
+          - name: JAVA_OPTS
+            value: {{ join " " .Values.scala.javaOptions }}
+        {{- end }}
+        {{- with .Values.scala.envFrom }}
+        envFrom:
+{{ tpl (toYaml .) $root | indent 10 }}
+        {{- end }}
+        {{- with .Values.scala.livenessProbe }}
+        livenessProbe:
+{{ tpl (toYaml .) $root | indent 10 }}
+        {{- end }}
+        {{- with .Values.scala.readinessProbe }}
+        readinessProbe:
+{{ tpl (toYaml .) $root | indent 10 }}
+        {{- end }}
+        {{- with .Values.scala.resources }}
+        resources:
+{{ tpl (toYaml .) $root | indent 10 }}
+        {{- end }}
+        {{- with .Values.scala.requestTimeout }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sh", "-c", "sleep 3; kill 1; {{ . }}"]
+        {{- end }}
+        {{- with .Values.scala.volumeMounts }}
+        volumeMounts:
+{{- tpl (toYaml .) $root | indent 10 }}
+        {{- end }}
+      {{- with .Values.scala.requestTimeout }}
+      terminationGracePeriodSeconds: {{ add . 10 }}
+      {{- end }}
+      {{- with .Values.scala.volumes }}
+      volumes:
+{{- tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}

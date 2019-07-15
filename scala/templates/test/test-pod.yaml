@@ -1,0 +1,24 @@
+{{- if .Values.test.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "scala.fullname" . }}-test
+  labels:
+    app: {{ template "scala.name" . }}
+    chart: {{ template "scala.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    role: test
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: {{ .Chart.Name }}-test
+      image: appropriate/curl
+      command:
+        - /bin/sh
+        - -c
+        - |
+          curl http://{{ template "scala.fullname" . }}:{{ .Values.service.port | default .Values.scala.port }} -I
+  restartPolicy: Never
+{{- end }}

@@ -1,0 +1,4 @@
+apiVersion: v1
+name: scala
+version: 0.0.0
+description: Scala Web Application
