@@ -59,7 +59,7 @@ metadata:
 {{- with $fpm.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
-  data:
+data:
 {{ tpl (toYaml $tmpl) $root | indent 2 }}
 {{- end}}
 {{- end }}
