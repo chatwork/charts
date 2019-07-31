@@ -8,14 +8,14 @@ test:
 
 .PHONY: ci\:enable\:k8s
 ci\:enable\:k8s:
-	wget https://cdn.rawgit.com/kubernetes-sigs/kubeadm-dind-cluster/master/fixed/dind-cluster-v1.11.sh;
-	chmod +x dind-cluster-v1.11.sh;
-	./dind-cluster-v1.11.sh up;
+	wget https://cdn.rawgit.com/kubernetes-sigs/kubeadm-dind-cluster/master/fixed/dind-cluster-v1.14.sh;
+	chmod +x dind-cluster-v1.14.sh;
+	./dind-cluster-v1.14.sh up;
 	echo 'export PATH=$$HOME/.kubeadm-dind-cluster:$$PATH' >> $${BASH_ENV:-"/home/circleci/.bashrc"}
 
 .PHONY: ci\:dump
 ci\:dump:
-	./dind-cluster-v1.11.sh dump | ./dind-cluster-v1.11.sh split-dump;
+	./dind-cluster-v1.14.sh dump | ./dind-cluster-v1.14.sh split-dump;
 	echo "\n\n@@@ kubectl-all @@@";
 	cat cluster-dump/kubectl-all.txt;
 	echo "\n\n@@@ describe-all @@@";
