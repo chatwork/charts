@@ -25,7 +25,7 @@ ci\:dump:
 
 .PHONY: ci\:enable\:helm
 ci\:enable\:helm:
-	wget -O - https://storage.googleapis.com/kubernetes-helm/helm-v2.14.1-linux-amd64.tar.gz | tar zxvf - -O linux-amd64/helm > helm;
+	wget -O - https://storage.googleapis.com/kubernetes-helm/helm-v2.14.3-linux-amd64.tar.gz | tar zxvf - -O linux-amd64/helm > helm;
 	chmod +x helm;
 	if [ -n "$${HELM_CLIENT_ONLY}" ]; then \
 		./helm init --client-only; \

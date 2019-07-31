@@ -4,7 +4,7 @@
 
 image:
   repository: gcr.io/kubernetes-helm/tiller
-  tag: v2.14.1
+  tag: v2.14.3
   pullPolicy: IfNotPresent
 
 rbac:
@@ -52,5 +52,5 @@ rbac:
 test:
   image:
     repository: chatwork/helm
-    tag: 2.14.1
+    tag: 2.14.3
     pullPolicy: IfNotPresent
