@@ -1,9 +1,11 @@
 name: tiller
-version: 0.0.5
-appVersion: 2.14.1
+version: 0.0.6
+appVersion: 2.14.3
 description: Helm Charts for installing Helm Tiller.
 maintainers:
 - name: cw-ozaki
   email: ozaki@chatwork.com
 - name: cw-sakamoto
   email: sakamoto@chatwork.com
+- name: cw-ogura
+  email: ogura@chatwork.com

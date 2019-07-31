@@ -40,10 +40,10 @@ The following table lists the configurable parameters of the slime chart and the
 |  Parameter | Description | Default |
 | --- | --- | --- |
 |  `image.repository` | The image repository to pull from | `gcr.io/kubernetes-helm/tiller` |
-|  `image.tag` | 	The image tag to pull | `v2.14.1` |
+|  `image.tag` | 	The image tag to pull | `v2.14.3` |
 |  `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 |  `test.image.repository` | The test image repository to pull from | `chatwork/helm` |
-|  `test.image.tag` | The test image tag to pull | `2.14.1` |
+|  `test.image.tag` | The test image tag to pull | `2.14.3` |
 |  `test.image.pullPolicy` | Test image pull policy | `IfNotPresent` |
 |  `rbac.tiller.create` |  If `true`, create and use RBAC resources | `true` |
 |  `rbac.tiller.serviceAccountName` | Service account to be used | `default` |
