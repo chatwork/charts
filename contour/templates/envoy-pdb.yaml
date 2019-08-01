@@ -1,0 +1,17 @@
+{{- if gt .Values.deployment.envoy.replicas 1.0 }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app: {{ template "envoy.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  name: {{ template "envoy.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "envoy.fullname" . }}
+      release: {{ .Release.Name | quote }}
+  minAvailable: {{ .Values.deployment.envoy.minAvailable }}
+{{- end }}

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "envoy.fullname" . }}
+    {{- if .Values.service.envoy.annotations }}
+  annotations:
+{{ toYaml .Values.service.envoy.annotations | indent 4}}
+    {{- end }}
+  name: {{ template "envoy.fullname" . }}
+spec:
+  type: {{ .Values.service.envoy.type }}
+  ports:
+  - port: {{ .Values.service.envoy.port.http }}
+    name: http
+    protocol: TCP
+    targetPort: {{ .Values.deployment.envoy.port.http }}
+{{- if and (eq "NodePort" .Values.service.envoy.type) .Values.service.envoy.nodePort.http }}
+    nodePort: {{ .Values.service.envoy.nodePort.http }}
+{{- end }}
+  - port: {{ .Values.service.envoy.port.https }}
+    name: https
+    protocol: TCP
+    targetPort: {{ .Values.deployment.envoy.port.https }}
+{{- if and (eq "NodePort" .Values.service.envoy.type) .Values.service.envoy.nodePort.https }}
+    nodePort: {{ .Values.service.envoy.nodePort.https }}
+{{- end }}
+  selector:
+    app: {{ template "envoy.fullname" . }}

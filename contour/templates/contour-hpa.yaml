@@ -1,0 +1,22 @@
+{{- if .Values.deployment.contour.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: {{ template "contour.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  name: {{ template "contour.fullname" . }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "contour.fullname" . }}
+  minReplicas: {{ .Values.deployment.contour.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.deployment.contour.autoscaling.maxReplicas }}
+  metrics:
+  {{- with .Values.deployment.envoy.autoscaling.metrics }}
+{{ toYaml . | indent 2 }}
+  {{- end }}
+{{- end }}

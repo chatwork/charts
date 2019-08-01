@@ -1,0 +1,113 @@
+{{ $root := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "envoy.fullname" $root }}
+  labels:
+    app: {{ template "envoy.fullname" $root }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+spec:
+  replicas: {{ .Values.deployment.envoy.replicas }}
+  selector:
+    matchLabels:
+       app: {{ include "envoy.fullname" $root }}
+       release: {{ .Release.Name }}
+  {{- with .Values.deployment.envoy.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "envoy.fullname" $root }}
+        release: {{ .Release.Name }}
+      name: {{ template "envoy.fullname" $root }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.deployment.envoy.port.healthz }}"
+        prometheus.io/path: "/stats/prometheus"
+      {{- with .Values.deployment.envoy.podAnnotations }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.deployment.envoy.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      containers:
+      - name: envoy
+        image: "{{ .Values.deployment.envoy.image.repository }}:{{ .Values.deployment.envoy.image.tag }}"
+        imagePullPolicy: "{{ .Values.deployment.envoy.image.imagePullPolicy }}"
+        command:
+        - "envoy"
+        args:
+        - "-c"
+        - "/config/contour.json"
+        - "--service-cluster $(CONTOUR_NAMESPACE)"
+        - "--service-node $(NODE_NAME)"
+        - "--log-level"
+        - "{{ .Values.deployment.envoy.logLevel }}"
+        {{- with .Values.deployment.envoy.extraArgs }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+        env:
+        - name: CONTOUR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.deployment.envoy.port.healthz }}
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        volumeMounts:
+        - name: contour-config
+          mountPath: /config
+        lifecycle:
+          preStop:
+            exec:
+              command: ["wget", "-qO-", "--post-data=''", "http://localhost:9001/healthcheck/fail"]
+        ports:
+        - containerPort: {{ .Values.deployment.envoy.port.http }}
+          name: http
+        - containerPort: {{ .Values.deployment.envoy.port.https }}
+          name: https
+      initContainers:
+      - name: {{ template "contour.fullname" . }}-initconfig
+        image: "{{ .Values.deployment.contour.image.repository }}:{{ .Values.deployment.contour.image.tag }}"
+        imagePullPolicy: "{{ .Values.deployment.contour.image.imagePullPolicy }}"
+        command:
+        - "contour"
+        args:
+        - "bootstrap"
+        - "/config/contour.json"
+        - "--xds-address={{ template "contour.fullname" . }}"
+        - "--xds-port={{ .Values.deployment.contour.port.xds }}"
+        volumeMounts:
+        - name: contour-config
+          mountPath: /config
+        env:
+        - name: CONTOUR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+      volumes:
+      - name: contour-config
+        emptyDir: {}
+      {{- with .Values.deployment.envoy.affinity }}
+      affinity:
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      tolerations:
+      {{- with .Values.deployment.envoy.tolerations }}
+{{ tpl (toYaml .) | indent 8 }}
+      {{- end }}
+
