@@ -18,7 +18,7 @@ spec:
         - -c
         - |
           sleep 30
-          curl http://{{ template "envoy.fullname" . }}.$(NAMESPACE).svc.cluster.local:{{ .Values.service.envoy.port.http }}
+          curl -v http://{{ template "envoy.fullname" . }}.$(NAMESPACE).svc.cluster.local:{{ .Values.service.envoy.port.http }}
       env:
         - name: NAMESPACE
           valueFrom:
