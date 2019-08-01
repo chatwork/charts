@@ -109,7 +109,7 @@ service:
     annotations: {}
       #service.beta.kubernetes.io/aws-load-balancer-extra-security-groups: sg-12234
       #service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
-    type: NodePort
+    type: ClusterIP
     port:
       http: 80
       https: 443
