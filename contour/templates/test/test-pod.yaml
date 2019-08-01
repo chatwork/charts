@@ -18,7 +18,8 @@ spec:
         - -c
         - |
           sleep 30
-          curl -v http://{{ template "envoy.fullname" . }}.$(NAMESPACE).svc.cluster.local:{{ .Values.service.envoy.port.http }}
+          #curl -v http://{{ template "envoy.fullname" . }}.$(NAMESPACE).svc.cluster.local:{{ .Values.service.envoy.port.http }}
+          echo "no test"
       env:
         - name: NAMESPACE
           valueFrom:
