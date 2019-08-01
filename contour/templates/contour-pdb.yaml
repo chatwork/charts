@@ -13,5 +13,5 @@ spec:
     matchLabels:
       app: {{ template "contour.fullname" . }}
       release: {{ .Release.Name | quote }}
-  minAvailable: {{ .Values.deployment.contour.minAvailable }}
+  minAvailable: {{ .Values.pdb.contour.minAvailable }}
 {{- end }}

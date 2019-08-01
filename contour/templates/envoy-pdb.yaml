@@ -13,5 +13,5 @@ spec:
     matchLabels:
       app: {{ template "envoy.fullname" . }}
       release: {{ .Release.Name | quote }}
-  minAvailable: {{ .Values.deployment.envoy.minAvailable }}
+  minAvailable: {{ .Values.pdb.envoy.minAvailable }}
 {{- end }}
