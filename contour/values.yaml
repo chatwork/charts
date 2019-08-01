@@ -111,8 +111,8 @@ service:
       #service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
     type: ClusterIP
     port:
-      http: 80
-      https: 443
+      http: 8080
+      https: 8443
 
     nodePort:
       http: "0"
