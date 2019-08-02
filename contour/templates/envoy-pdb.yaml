@@ -1,4 +1,4 @@
-{{- if gt .Values.deployment.envoy.replicas 1.0 }}
+{{- if and (gt .Values.envoy.deployment.replicas 1.0) .Values.envoy.deployment.enabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -13,5 +13,5 @@ spec:
     matchLabels:
       app: {{ template "envoy.fullname" . }}
       release: {{ .Release.Name | quote }}
-  minAvailable: {{ .Values.pdb.envoy.minAvailable }}
+{{ toYaml .Values.envoy.deployment.pdb | indent 2 }}
 {{- end }}

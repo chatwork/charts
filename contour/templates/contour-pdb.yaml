@@ -1,4 +1,4 @@
-{{- if gt .Values.deployment.contour.replicas 1.0 }}
+{{- if gt .Values.contour.deployment.replicas 1.0 }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -13,5 +13,5 @@ spec:
     matchLabels:
       app: {{ template "contour.fullname" . }}
       release: {{ .Release.Name | quote }}
-  minAvailable: {{ .Values.pdb.contour.minAvailable }}
+{{ toYaml .Values.contour.deployment.pdb | indent 2 }}
 {{- end }}

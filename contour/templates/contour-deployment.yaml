@@ -9,12 +9,12 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 spec:
-  replicas: {{ .Values.deployment.contour.replicas }}
+  replicas: {{ .Values.contour.deployment.replicas }}
   selector:
     matchLabels:
        app: {{ include "contour.fullname" $root }}
        release: {{ .Release.Name }}
-  {{- with .Values.deployment.contour.strategy }}
+  {{- with .Values.contour.deployment.strategy }}
   strategy:
 {{ toYaml . | indent 4 }}
   {{- end }}
@@ -26,54 +26,60 @@ spec:
       name: {{ template "contour.fullname" $root }}
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "{{ .Values.deployment.contour.port.healthz }}"
-      {{- with .Values.deployment.contour.podAnnotations }}
+        prometheus.io/port: "{{ .Values.contour.port.healthz }}"
+      {{- with .Values.contour.podAnnotations }}
 {{ toYaml . | indent 8 }}
       {{- end }}
     spec:
-      {{- with .Values.deployment.contour.imagePullSecrets }}
+      {{- with .Values.contour.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml . | indent 8 }}
       {{- end }}
       containers:
       - name: contour
-        image: "{{ .Values.deployment.contour.image.repository }}:{{ .Values.deployment.contour.image.tag }}"
-        imagePullPolicy: "{{ .Values.deployment.contour.image.imagePullPolicy }}"
+        image: "{{ .Values.contour.image.repository }}:{{ .Values.contour.image.tag }}"
+        imagePullPolicy: "{{ .Values.contour.image.imagePullPolicy }}"
         command:
         - "contour"
         args:
         - "serve"
         - "--incluster"
-        - "--xds-address={{ .Values.deployment.contour.xdsAddress }}"
-        - "--xds-port={{ .Values.deployment.contour.port.xds }}"
-        - "--envoy-service-http-port={{ .Values.service.envoy.port.http }}"
-        - "--envoy-service-https-port={{ .Values.service.envoy.port.https }}"
-        {{- with .Values.deployment.contour.extraArgs }}
+        - "--xds-address={{ .Values.contour.xdsAddress }}"
+        - "--xds-port={{ .Values.contour.port.xds }}"
+        - "--envoy-service-http-port={{ .Values.envoy.service.port.http }}"
+        - "--envoy-service-https-port={{ .Values.envoy.service.port.https }}"
+        {{- with .Values.contour.extraArgs }}
 {{ toYaml . | indent 8 }}
         {{- end }}
         resources:
-{{ toYaml .Values.deployment.contour.resources | indent 12 }}
+{{ toYaml .Values.contour.resources | indent 12 }}
         ports:
-        - containerPort: {{ .Values.deployment.contour.port.xds }}
+        - containerPort: {{ .Values.contour.port.xds }}
           name: xds
           protocol: TCP
-        - containerPort: {{ .Values.deployment.contour.port.healthz }}
+        - containerPort: {{ .Values.contour.port.healthz }}
           name: debug
           protocol: TCP
         livenessProbe:
           httpGet:
             path: /healthz
-            port: {{ .Values.deployment.contour.port.healthz }}
+            port: {{ .Values.contour.port.healthz }}
+          {{- if .Values.contour.initialDelaySeconds.livenessProbe }}
+          initialDelaySeconds: {{ .Values.contour.initialDelaySeconds.livenessProbe }}
+          {{- end }}
         readinessProbe:
           httpGet:
             path: /healthz
-            port: {{ .Values.deployment.contour.port.healthz }}
-      {{- with .Values.deployment.contour.affinity }}
+            port: {{ .Values.contour.port.healthz }}
+          {{- if .Values.contour.initialDelaySeconds.readinessProbe }}
+          initialDelaySeconds: {{ .Values.contour.initialDelaySeconds.readinessProbe }}
+          {{- end }}
+      {{- with .Values.contour.affinity }}
       affinity:
 {{ tpl (toYaml .) $root | indent 8 }}
       {{- end }}
       tolerations:
-      {{- with .Values.deployment.contour.tolerations }}
+      {{- with .Values.contour.tolerations }}
 {{ tpl (toYaml .) | indent 8 }}
       {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "contour.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.contour.rbac.create }}{{ template "contour.fullname" . }}{{ else }}"{{ .Values.contour.rbac.serviceAccountName }}"{{ end }}

@@ -1,4 +1,4 @@
-{{- if .Values.deployment.contour.autoscaling.enabled }}
+{{- if .Values.contour.deployment.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -13,10 +13,10 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ template "contour.fullname" . }}
-  minReplicas: {{ .Values.deployment.contour.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.deployment.contour.autoscaling.maxReplicas }}
+  minReplicas: {{ .Values.contour.deployment.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.contour.deployment.autoscaling.maxReplicas }}
   metrics:
-  {{- with .Values.deployment.envoy.autoscaling.metrics }}
+  {{- with .Values.contour.deployment.autoscaling.metrics }}
 {{ toYaml . | indent 2 }}
   {{- end }}
 {{- end }}

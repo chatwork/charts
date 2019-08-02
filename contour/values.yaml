@@ -6,12 +6,35 @@ contour:
   nameOverride: ""
   fullnameOverride: ""
 
-envoy:
-  nameOverride: ""
-  fullnameOverride: ""
+  imagePullSecrets: []
 
-deployment:
-  contour:
+  image:
+    repository: "gcr.io/heptio-images/contour"
+    tag: "v0.14.0"
+    imagePullPolicy: "IfNotPresent"
+
+  extraArgs: []
+
+  resources: {}
+  #  memory: "64Mi"
+  #  cpu: "250m"
+  #limits:
+  #  memory: "128Mi"
+  #  cpu: "500m"
+
+  port:
+    healthz: 8000
+    xds: 8001
+
+  initialDelaySeconds:
+    livenessProbe: 5
+    readinessProbe: 5
+
+  podAnnotations: {}
+  tolerations: {}
+  affinity: {}
+
+  deployment:
     autoscaling:
       enabled: false
       minReplicas: 2
@@ -27,36 +50,58 @@ deployment:
     #  rollingUpdate:
     #    maxUnavailable: 1
 
-    imagePullSecrets: []
+    pdb:
+      minAvailable: 1
+
+    replicas: 1
+
+  service:
+    annotations: {}
+
+  rbac:
+    create: true
+    serviceAccountName: default
+
+envoy:
+  nameOverride: ""
+  fullnameOverride: ""
+
+  imagePullSecrets: []
+
+  image:
+    repository: "docker.io/envoyproxy/envoy"
+    tag: "v1.11.0"
+    imagePullPolicy: "IfNotPresent"
+
+  logLevel: "info"
+
+  extraArgs: []
+
+  port:
+    http: 8080
+    https: 8443
+    healthz: 8002
+
+  initialDelaySeconds:
+    livenessProbe: 5
+    readinessProbe: 5
+
+  resources:
+    memory: "64Mi"
+    cpu: "250m"
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
+
+  podAnnotations: {}
+  tolerations: {}
+  affinity: {}
+
+  deployment:
+    enabled: true
+
     replicas: 2
 
-    image:
-      repository: "gcr.io/heptio-images/contour"
-      tag: "v0.14.0"
-      imagePullPolicy: "IfNotPresent"
-
-    extraArgs: []
-
-    resources: {}
-    #  memory: "64Mi"
-    #  cpu: "250m"
-    #limits:
-    #  memory: "128Mi"
-    #  cpu: "500m"
-
-    port:
-      healthz: 8000
-      xds: 8001
-
-    initialDelaySeconds:
-      livenessProbe: 5
-      readinessProbe: 5
-
-    podAnnotations: {}
-    tolerations: {}
-    affinity: {}
-
-  envoy:
     autoscaling:
       enabled: false
       minReplicas: 2
@@ -67,61 +112,37 @@ deployment:
           name: cpu
           targetAverageUtilization: 50
 
-    imagePullSecrets: []
-    replicas: 2
+    strategy: {}
+    #  type: RollingUpdate
+    #  rollingUpdate:
+    #    maxUnavailable: 1
 
-    strategy:
-      type: RollingUpdate
-      rollingUpdate:
-        maxUnavailable: 1
+    pdb:
+      minAvailable: 1
 
-    image:
-      repository: "docker.io/envoyproxy/envoy"
-      tag: "v1.11.0"
-      imagePullPolicy: "IfNotPresent"
+  daemonset:
+    enabled: false
 
-    logLevel: "info"
+    hostNetwork: false
 
-    extraArgs: []
+    updateStrategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #  maxUnavailable: 10%
 
-    port:
-      http: 8080
-      https: 8443
-      healthz: 8002
-
-    resources:
-      memory: "64Mi"
-      cpu: "250m"
-    limits:
-      memory: "128Mi"
-      cpu: "500m"
-
-    podAnnotations: {}
-    tolerations: {}
-    affinity: {}
-
-service:
-  contour:
-    annotations: {}
-
-  envoy:
-    annotations: {}
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
       #service.beta.kubernetes.io/aws-load-balancer-extra-security-groups: sg-12234
-      #service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
-    type: ClusterIP
+      #
+    type: "LoadBalancer"
+
+    externalTrafficPolicy: "Cluster"
+
     port:
       http: 8080
       https: 8443
 
     nodePort:
-      http: "0"
-      https: "0"
-
-pdb:
-  contour:
-    minAvailable: 1
-  envoy:
-    minAvailable: 1
-
-rbac:
-  create: true
+      http: "30000"
+      https: "30001"

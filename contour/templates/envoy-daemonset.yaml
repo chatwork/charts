@@ -1,7 +1,7 @@
-{{- if .Values.envoy.deployment.enabled }}
+{{- if and .Values.envoy.daemonset.enabled }}
 {{ $root := . }}
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: {{ template "envoy.fullname" $root }}
   labels:
@@ -10,13 +10,12 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 spec:
-  replicas: {{ .Values.envoy.deployment.replicas }}
   selector:
     matchLabels:
        app: {{ include "envoy.fullname" $root }}
        release: {{ .Release.Name }}
-  {{- with .Values.envoy.deployment.strategy }}
-  strategy:
+  {{- with .Values.envoy.daemonset.updateStrategy }}
+  updateStrategy:
 {{ toYaml . | indent 4 }}
   {{- end }}
   template:
@@ -37,6 +36,10 @@ spec:
       imagePullSecrets:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- if .Values.envoy.daemonset.hostNetwork }}
+      hostNetwork: {{ .Values.envoy.daemonset.hostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       containers:
       - name: envoy
         image: "{{ .Values.envoy.image.repository }}:{{ .Values.envoy.image.tag }}"
@@ -49,7 +52,7 @@ spec:
         - "--service-cluster $(CONTOUR_NAMESPACE)"
         - "--service-node $(NODE_NAME)"
         - "--log-level"
-        - "{{ .Values.envoy.deployment.logLevel }}"
+        - "{{ .Values.envoy.logLevel }}"
         {{- with .Values.envoy.extraArgs }}
 {{ toYaml . | indent 8 }}
         {{- end }}
