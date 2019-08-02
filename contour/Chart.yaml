@@ -1,0 +1,11 @@
+apiVersion: v1
+name: contour
+version: 0.0.1
+appVersion: 0.14.0
+description: Chart for Contour
+home: https://github.com/heptio/contour
+sources:
+  - https://github.com/heptio/contour
+maintainers:
+  - name: Ryo Sakamoto
+    email: sakamoto@chatwork.com

@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "envoy.fullname" . }}
+    {{- if .Values.envoy.service.annotations }}
+  annotations:
+{{ toYaml .Values.envoy.service.annotations | indent 4}}
+    {{- end }}
+  name: {{ template "envoy.fullname" . }}
+spec:
+  type: {{ .Values.envoy.service.type }}
+{{- if and (.Values.envoy.daemonset.enabled) (.Values.envoy.service.externalTrafficPolicy) }}
+  externalTrafficPolicy: "{{ .Values.envoy.service.externalTrafficPolicy }}"
+{{- end }}
+  ports:
+  - port: {{ .Values.envoy.service.port.http }}
+    name: http
+    protocol: TCP
+    targetPort: {{ .Values.envoy.port.http }}
+{{- if and (eq "NodePort" .Values.envoy.service.type) .Values.envoy.service.nodePort.http }}
+    nodePort: {{ .Values.envoy.service.nodePort.http }}
+{{- end }}
+  - port: {{ .Values.envoy.service.port.https }}
+    name: https
+    protocol: TCP
+    targetPort: {{ .Values.envoy.port.https }}
+{{- if and (eq "NodePort" .Values.envoy.service.type) .Values.envoy.service.nodePort.https }}
+    nodePort: {{ .Values.envoy.service.nodePort.https }}
+{{- end }}
+  selector:
+    app: {{ template "envoy.fullname" . }}

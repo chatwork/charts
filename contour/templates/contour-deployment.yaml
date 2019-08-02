@@ -1,0 +1,85 @@
+{{ $root := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "contour.fullname" $root }}
+  labels:
+    app: {{ template "contour.fullname" $root }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+spec:
+  replicas: {{ .Values.contour.deployment.replicas }}
+  selector:
+    matchLabels:
+       app: {{ include "contour.fullname" $root }}
+       release: {{ .Release.Name }}
+  {{- with .Values.contour.deployment.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "contour.fullname" $root }}
+        release: {{ .Release.Name }}
+      name: {{ template "contour.fullname" $root }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.contour.port.healthz }}"
+      {{- with .Values.contour.podAnnotations }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.contour.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      containers:
+      - name: contour
+        image: "{{ .Values.contour.image.repository }}:{{ .Values.contour.image.tag }}"
+        imagePullPolicy: "{{ .Values.contour.image.imagePullPolicy }}"
+        command:
+        - "contour"
+        args:
+        - "serve"
+        - "--incluster"
+        - "--xds-address={{ .Values.contour.xdsAddress }}"
+        - "--xds-port={{ .Values.contour.port.xds }}"
+        - "--envoy-service-http-port={{ .Values.envoy.service.port.http }}"
+        - "--envoy-service-https-port={{ .Values.envoy.service.port.https }}"
+        {{- with .Values.contour.extraArgs }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.contour.resources | indent 12 }}
+        ports:
+        - containerPort: {{ .Values.contour.port.xds }}
+          name: xds
+          protocol: TCP
+        - containerPort: {{ .Values.contour.port.healthz }}
+          name: debug
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.contour.port.healthz }}
+          {{- if .Values.contour.initialDelaySeconds.livenessProbe }}
+          initialDelaySeconds: {{ .Values.contour.initialDelaySeconds.livenessProbe }}
+          {{- end }}
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.contour.port.healthz }}
+          {{- if .Values.contour.initialDelaySeconds.readinessProbe }}
+          initialDelaySeconds: {{ .Values.contour.initialDelaySeconds.readinessProbe }}
+          {{- end }}
+      {{- with .Values.contour.affinity }}
+      affinity:
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      tolerations:
+      {{- with .Values.contour.tolerations }}
+{{ tpl (toYaml .) | indent 8 }}
+      {{- end }}
+      serviceAccountName: {{ if .Values.contour.rbac.create }}{{ template "contour.fullname" . }}{{ else }}"{{ .Values.contour.rbac.serviceAccountName }}"{{ end }}
