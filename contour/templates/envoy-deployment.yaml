@@ -93,8 +93,6 @@ spec:
           name: http
         - containerPort: {{ .Values.envoy.port.https }}
           name: https
-        - containerPort: {{ .Values.envoy.port.healthz }}
-          name: healthz
       initContainers:
       - name: {{ template "contour.fullname" . }}-initconfig
         image: "{{ .Values.contour.image.repository }}:{{ .Values.contour.image.tag }}"
