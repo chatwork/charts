@@ -51,6 +51,8 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `contour.initialDelaySeconds.readinessProbe` | contour initial delay seconds for readinessProbe| `"5"` |
 |  `contour.podAnnotations` | contour pod annotations| `"{}"` |
 |  `contour.tolerations` | contour tolerations | `"{}"` |
+|  `contour.extraVolumeMounts` | contour volumemounts | `"[]"` |
+|  `contour.extraVolumes` | contour volumes | `"[]"` |
 |  `contour.affinity` | contour affinity| `"{}"` |
 |  `contour.deployment.autoscaling.enabled` | Use hpa for contour deployment | `"false"` |
 |  `contour.deployment.autoscaling.minReplicas` | HPA minReplicas for contour deployment | `"2"` |
@@ -77,6 +79,8 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `envoy.podAnnotations` | envoy pod annotations| `"{}"` |
 |  `envoy.tolerations` | envoy tolerations | `"{}"` |
 |  `envoy.affinity` | envoy affinity| `"{}"` |
+|  `envoy.extraVolumeMounts` | contour volumemounts | `"[]"` |
+|  `envoy.extraVolumes` | contour volumes | `"[]"` |
 |  `envoy.deployment.autoscaling.enabled` | Use hpa for envoy deployment | `"false"` |
 |  `envoy.deployment.autoscaling.minReplicas` | HPA minReplicas for envoy deployment | `"2"` |
 |  `envoy.deployment.autoscaling.maxReplicas` | HPA maxReplicas for envoy deployment | `"5"` |

@@ -49,7 +49,7 @@ spec:
         - "--service-cluster $(CONTOUR_NAMESPACE)"
         - "--service-node $(NODE_NAME)"
         - "--log-level"
-        - "{{ .Values.envoy.deployment.logLevel }}"
+        - "{{ .Values.envoy.logLevel }}"
         {{- with .Values.envoy.extraArgs }}
 {{ toYaml . | indent 8 }}
         {{- end }}
@@ -81,6 +81,9 @@ spec:
         volumeMounts:
         - name: contour-config
           mountPath: /config
+        {{- with .Values.envoy.extraVolumeMounts }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
         lifecycle:
           preStop:
             exec:
@@ -90,6 +93,8 @@ spec:
           name: http
         - containerPort: {{ .Values.envoy.port.https }}
           name: https
+        - containerPort: {{ .Values.envoy.port.healthz }}
+          name: healthz
       initContainers:
       - name: {{ template "contour.fullname" . }}-initconfig
         image: "{{ .Values.contour.image.repository }}:{{ .Values.contour.image.tag }}"
@@ -112,6 +117,9 @@ spec:
       volumes:
       - name: contour-config
         emptyDir: {}
+      {{- with .Values.envoy.extraVolumes }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
       {{- with .Values.envoy.affinity }}
       affinity:
 {{ tpl (toYaml .) $root | indent 8 }}

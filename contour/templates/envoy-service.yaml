@@ -14,6 +14,13 @@ spec:
   externalTrafficPolicy: "{{ .Values.envoy.service.externalTrafficPolicy }}"
 {{- end }}
   ports:
+  - port: {{ .Values.envoy.service.port.healthz }}
+    name: healthz
+    protocol: TCP
+    targetPort: {{ .Values.envoy.port.healthz }}
+{{- if and (eq "NodePort" .Values.envoy.service.type) .Values.envoy.service.nodePort.healthz }}
+    nodePort: {{ .Values.envoy.service.nodePort.healthz }}
+{{- end }}
   - port: {{ .Values.envoy.service.port.http }}
     name: http
     protocol: TCP
