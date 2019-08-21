@@ -32,28 +32,13 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-      nodeSelector:
-      {{- if .Values.deployment.onMaster }}
-        node-role.kubernetes.io/master: ""
-      {{- end }}
-      {{- with .Values.deployment.nodeSelector }}
-{{ tpl (toYaml .) $root | indent 8 }}
-      {{- end }}
       {{- with .Values.deployment.affinity }}
       affinity:
 {{ tpl (toYaml .) $root | indent 8 }}
       {{- end }}
       tolerations:
-      {{- if .Values.deployment.onMaster }}
-      - effect: NoSchedule
-        operator: Exists
-      - effect: NoExecute
-        operator: Exists
-      - key: CriticalAddonsOnly
-        operator: Exists
-      {{- end }}
       {{- with .Values.deployment.tolerations }}
-{{ tpl (toYaml .) | indent 8 }}
+{{ tpl (toYaml .) $root | indent 8 }}
       {{- end }}
       containers:
       - name: kube-aws-iam-controller

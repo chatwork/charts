@@ -72,8 +72,6 @@ If `useHostNetwork` is true, pod use the host's network, that's because of    ru
 | `image.tag` | The image tag to pull | `v0.0.5`|
 | `image.imagePullPolicy` | Image pull policy | `IfNotPresent` |
 | `deployment.useHostNetwork` | If true, use the host's network | `false` |
-| `deployment.onMaster` | If true, pod running on master | `false`|
-| `deployment.nodeSelector` | Set nodeSelector | `{}`|
 | `deployment.affinity` | Set Affinity | `{}` |
 | `deployment.podLabels` | Set Pod labels | `{}` |
 | `deployment.podAnnotations` | Set Pod annotations | `{}`|
