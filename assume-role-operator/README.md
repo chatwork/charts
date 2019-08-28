@@ -79,8 +79,6 @@ If `useHostNetwork` is true, pod use the host's network, that's because of    ru
 | `image.repository` | The image repository to pull from | `chatwork/assume-role-operator`|
 | `image.tag` | The image tag to pull | `latest`|
 | `image.imagePullPolicy` | Image pull policy | `IfNotPresent` |
-| `deployment.onMaster` | If true, pod running on master | `false`|
-| `deployment.nodeSelector` | Set nodeSelector | `{}`|
 | `deployment.affinity` | Set Affinity | `{}` |
 | `deployment.podLabels` | Set Pod labels | `{}` |
 | `deployment.podAnnotations` | Set Pod annotations | `{}`|
