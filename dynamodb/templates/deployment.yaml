@@ -66,6 +66,10 @@ spec:
           readinessProbe:
             tcpSocket:
               port: {{ .Values.dynamodb.port }}
+{{- with .Values.envFrom }}
+          envFrom:
+{{ toYaml . | indent 12 }}
+{{- end }}
 {{- with .Values.volumeMounts }}
           volumeMounts:
 {{ toYaml . | indent 12 }}
