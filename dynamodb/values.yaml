@@ -19,6 +19,10 @@ volumes: []
 #  - name: data
 #    emptyDir: {}
 
+envFrom: []
+#  - secretRef:
+#      name: secret-name
+
 # DynamoDB local options
 # See: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.UsageNotes.html
 dynamodb:
