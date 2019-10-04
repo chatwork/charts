@@ -958,3 +958,6 @@ extras:
 # TEST
 test:
   enabled: true
+
+newrelic:
+  enabled: true

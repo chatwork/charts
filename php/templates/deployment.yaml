@@ -190,6 +190,10 @@ spec:
           mountPath: /usr/local/etc/php-fpm.conf
         - name: fpm-confd
           mountPath: /usr/local/etc/php-fpm.d
+{{- if .Values.newrelic.enabled }}
+        - name: newrelic
+          mountPath: /tmp
+{{- end }}
 {{- with .Values.fpm.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
@@ -215,6 +219,11 @@ spec:
       - name: fpm-confd
         configMap:
           name: {{ template "php.fullname" . }}-fpm-php-fpm-d
+{{- if .Values.newrelic.enabled }}
+      - name: newrelic
+        hostPath:
+          path: /var/run/newrelic
+{{- end }}
 {{- with .Values.busybox.extraVolumes }}
 {{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
