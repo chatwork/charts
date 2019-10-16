@@ -8,6 +8,10 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
+  {{- range $key, $value := .Values.contour.deployment.annotations }}
+  annotations:
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   replicas: {{ .Values.contour.deployment.replicas }}
   selector:
@@ -27,9 +31,10 @@ spec:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.contour.port.healthz }}"
-      {{- with .Values.contour.podAnnotations }}
-{{ toYaml . | indent 8 }}
-      {{- end }}
+        checksum/contour-config: {{ tpl (toYaml .Values.contour.config) . | sha256sum | quote }}
+        {{- range $key, $value := .Values.contour.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
     spec:
       {{- with .Values.contour.imagePullSecrets }}
       imagePullSecrets:
@@ -44,17 +49,25 @@ spec:
         args:
         - "serve"
         - "--incluster"
+        - "--use-extensions-v1beta1-ingress"
         - "--xds-address={{ .Values.contour.xdsAddress }}"
         - "--xds-port={{ .Values.contour.port.xds }}"
         - "--envoy-service-http-port={{ .Values.envoy.service.port.http }}"
         - "--envoy-service-https-port={{ .Values.envoy.service.port.https }}"
+        - "--config-path=/config/contour.yaml"
+        {{- if .Values.contour.insecure }}
+        - "--insecure"
+        {{- end }}
         {{- with .Values.contour.extraArgs }}
 {{ toYaml . | indent 8 }}
         {{- end }}
         resources:
 {{ toYaml .Values.contour.resources | indent 12 }}
-        {{- with .Values.contour.extraVolumeMounts }}
         volumeMounts:
+        - name: contour-config
+          mountPath: /config
+          readOnly: true
+        {{- with .Values.contour.extraVolumeMounts }}
 {{ toYaml . | indent 8 }}
         {{- end }}
         ports:
@@ -68,19 +81,27 @@ spec:
           httpGet:
             path: /healthz
             port: {{ .Values.contour.port.healthz }}
-          {{- if .Values.contour.initialDelaySeconds.livenessProbe }}
-          initialDelaySeconds: {{ .Values.contour.initialDelaySeconds.livenessProbe }}
+          {{- if .Values.contour.livenessProbe.initialDelaySeconds }}
+          initialDelaySeconds: {{ .Values.contour.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.contour.livenessProbe.periodSeconds}}
           {{- end }}
         readinessProbe:
-          httpGet:
-            path: /healthz
-            port: {{ .Values.contour.port.healthz }}
-          {{- if .Values.contour.initialDelaySeconds.readinessProbe }}
-          initialDelaySeconds: {{ .Values.contour.initialDelaySeconds.readinessProbe }}
+          tcpSocket:
+            port: {{ .Values.contour.port.xds }}
+          {{- if .Values.contour.readinessProbe }}
+          initialDelaySeconds: {{ .Values.contour.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.contour.readinessProbe.periodSeconds }}
           {{- end }}
-      {{- with .Values.contour.extraVolumes }}
       volumes:
-{{ toYaml . | indent 8 }}
+      - name: contour-config
+        configMap:
+          name: {{ template "contour.fullname" $root }}-config
+          defaultMode: 0644
+          items:
+          - key: contour.yaml
+            path: contour.yaml
+      {{- with .Values.contour.extraVolumes }}
+{{ toYaml . | indent 6 }}
       {{- end }}
       {{- with .Values.contour.affinity }}
       affinity:

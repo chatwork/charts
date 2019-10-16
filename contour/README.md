@@ -1,6 +1,6 @@
 ## contour
 
-This chart for contour https://github.com/heptio/contour.
+This chart for contour https://github.com/projectcontour/contour
 
 ## TL;DR;
 
@@ -33,6 +33,16 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## TLS for contour <-> envoy
+
+If you use tls for contour <-> envoy, you set `contour.insecure` to `false` and you need create ca files.
+
+- if you use `contour certgen`
+  - https://github.com/projectcontour/contour/blob/master/examples/contour/02-job-certgen.yaml
+
+- if you use `cert-manager`
+  - tls/contour-tls.yaml
+
 ## Configuration
 
 The following table lists the configurable parameters of the gaurd chart and their default values.
@@ -40,20 +50,26 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  Parameter | Description | Default |
 | --- | --- | --- |
 |  `contour.imagePullSecrets` | contour imagePullSecrets | `"[]"` |
-|  `contour.image.repository` | contour image repository | `"gcr.io/heptio-Image/contour"` |
-|  `contour.image.tag` | contour Image tag | `"v0.14.0"` |
+|  `contour.image.repository` | contour image repository | `"docker.io/projectcontour/contour"` |
+|  `contour.image.tag` | contour Image tag | `"v1.0.0-rc.2"` |
 |  `contour.image.imagePullPolicy` | contour Image pullpolicy  | `"IfNotPresent"` |
 |  `contour.extraArgs` | contour command extra arguments | `"[]"` |
+|  `contour.insecure` | contour <-> envoy no tls | `true` |
 |  `contour.resources` | contour pod resources| `"{}"` |
 |  `contour.port.healthz` | contour health check port | `"8000"` |
 |  `contour.port.xds` | contour xds port | `"8001"` |
-|  `contour.initialDelaySeconds.livenessProbe` | contour initial delay seconds for livenessProbe | `"5"` |
-|  `contour.initialDelaySeconds.readinessProbe` | contour initial delay seconds for readinessProbe| `"5"` |
+|  `contour.xdsAddress` | contour xds address | `"0.0.0.0"` |
+|  `contour.livenessProbe.initialDelaySeconds` | contour initial delay seconds for livenessProbe | `"5"` |
+|  `contour.livenessProbe.periodSeconds` | contour period seconds for livenessProbe | `"5"` |
+|  `contour.readinessProbe.initialDelaySeconds` | contour initial delay seconds for readinessProbe| `"15"` |
+|  `contour.readinessProbe.periodSeconds` | contour period seconds for readinessProbe| `"10"` |
 |  `contour.podAnnotations` | contour pod annotations| `"{}"` |
 |  `contour.tolerations` | contour tolerations | `"{}"` |
 |  `contour.extraVolumeMounts` | contour volumemounts | `"[]"` |
 |  `contour.extraVolumes` | contour volumes | `"[]"` |
 |  `contour.affinity` | contour affinity| `"{}"` |
+|  `contour.config` | contour config | `"..."` |
+|  `contour.deployment.annotations` | contour deployment annotation(not `spec.template.annotations`)| `"{}"` |
 |  `contour.deployment.autoscaling.enabled` | Use hpa for contour deployment | `"false"` |
 |  `contour.deployment.autoscaling.minReplicas` | HPA minReplicas for contour deployment | `"2"` |
 |  `contour.deployment.autoscaling.maxReplicas` | HPA maxReplicas for contour deployment | `"5"` |
@@ -64,23 +80,29 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `contour.service.annotations` | contour service annotations | `"{}"` |
 |  `contour.rbac.create` | contour application service aacount create | `"true"` |
 |  `contour.rbac.serviceAccountName` | contour application use serviceAccount which you have created | `"default"` |
-|  `envoy.imagePullSecrets` | envoy imagePullSecrets | `"[]"` |
-|  `envoy.image.repository` | envoy image repository | `"docker.io/envoyproxy/envoy"` |
-|  `envoy.image.tag` | envoy Image tag | `"v1.11.0"` |
-|  `envoy.image.imagePullPolicy` | envoy Image pullpolicy  | `"IfNotPresent"` |
-|  `envoy.logLevel` | envoy log level | `"info"` |
-|  `envoy.extraArgs` | envoy command extra arguments | `"[]"` |
-|  `envoy.resources` | envoy pod resources| `"{}"` |
 |  `envoy.port.healthz` | envoy health check port | `"8002"` |
 |  `envoy.port.http` | envoy http port | `"8080"` |
 |  `envoy.port.https` | envoy https port | `"8443"` |
+|  `envoy.imagePullSecrets` | envoy imagePullSecrets | `"[]"` |
 |  `envoy.initialDelaySeconds.livenessProbe` | envoy initial delay seconds for livenessProbe | `"3"` |
 |  `envoy.initialDelaySeconds.readinessProbe` | envoy initial delay seconds for readinessProbe| `"3"` |
 |  `envoy.podAnnotations` | envoy pod annotations| `"{}"` |
 |  `envoy.tolerations` | envoy tolerations | `"{}"` |
 |  `envoy.affinity` | envoy affinity| `"{}"` |
-|  `envoy.extraVolumeMounts` | contour volumemounts | `"[]"` |
-|  `envoy.extraVolumes` | contour volumes | `"[]"` |
+|  `envoy.extraVolumes` | envoy volumes | `"[]"` |
+|  `envoy.initContainers.image.repository` | envoy init container image repository | `"docker.io/projectcontour/contour"` |
+|  `envoy.initContainers.image.tag` | envoy init contour image tag | `"v1.0.0-rc.2"` |
+|  `envoy.initContainers..image.imagePullPolicy` | envoy init image pullpolicy  | `"IfNotPresent"` |
+|  `envoy.initContainers.extraArgs` | envoy command extra arguments | `"[]"` |
+|  `envoy.initContainers.resources` | envoy pod resources| `"{}"` |
+|  `envoy.envoy.image.repository` | envoy image repository | `"docker.io/envoyproxy/envoy"` |
+|  `envoy.envoy.image.tag` | envoy Image tag | `"v1.11.0"` |
+|  `envoy.envoy.image.imagePullPolicy` | envoy Image pullpolicy  | `"IfNotPresent"` |
+|  `envoy.envoy.logLevel` | envoy log level | `"info"` |
+|  `envoy.envoy.extraArgs` | envoy command extra arguments | `"[]"` |
+|  `envoy.envoy.resources` | envoy pod resources| `"{}"` |
+|  `envoy.envoy.extraVolumeMounts` | envoy volumemounts | `"[]"` |
+|  `envoy.deployment.enabled` | envoy pod deploy using deployment | `false` |
 |  `envoy.deployment.autoscaling.enabled` | Use hpa for envoy deployment | `"false"` |
 |  `envoy.deployment.autoscaling.minReplicas` | HPA minReplicas for envoy deployment | `"2"` |
 |  `envoy.deployment.autoscaling.maxReplicas` | HPA maxReplicas for envoy deployment | `"5"` |
@@ -88,12 +110,13 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `envoy.deployment.strategy` | envoy deployment strategy| `"{}"` |
 |  `envoy.deployment.replicas` | envoy deployment replicas | `"1"` |
 |  `envoy.deployment.pdb` | envoy pod disruption budget rule | `"minAvailable: 1"` |
-|  `envoy.daemonset.enabled` | envoy pod deploy with daemonset | `"false"` |
+|  `envoy.daemonset.enabled` | envoy pod deploy using daemonset | `true` |
+|  `envoy.daemonset.annotations` | envoy daemonset annotations | `true` |
 |  `envoy.daemonset.hostNetwork` | envoy daemonset use hostNetwork| `"false"` |
 |  `envoy.daemonset.updateStrategy` | envoy daemonset updateStrategy | `"{}"` |
 |  `envoy.service.annotations` | envoy service annotations | `"service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp"` |
 |  `envoy.service.type` | envoy service type | `"LoadBalancer"` |
-|  `envoy.service.externalTrafficPolicy` | envoy service externalTrafficPolicy | `"Cluster"` |
+|  `envoy.service.externalTrafficPolicy` | envoy service externalTrafficPolicy | `""` |
 |  `envoy.service.port.http` | envoy service http port | `"8080"` |
 |  `envoy.service.port.https` | envoy service https port | `"8443"` |
 |  `envoy.service.nodePort.http` | if you use specific nodeport for http | `"30000"` |

@@ -43,10 +43,30 @@ rules:
   - list
   - watch
 - apiGroups:
-  - contour.heptio.com
+  - "networking.k8s.io"
   resources:
-  - ingressroutes
-  - tlscertificatedelegations
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - "contour.heptio.com"
+  resources:
+    - "ingressroutes"
+    - "tlscertificatedelegations"
+  verbs:
+  - get
+  - list
+  - watch
+  - put
+  - post
+  - patch
+- apiGroups:
+  - "projectcontour.io"
+  resources:
+  - "httpproxies"
+  - "tlscertificatedelegations"
   verbs:
   - get
   - list
