@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "contour.fullname" . }}-config
+data:
+  contour.yaml: |
+{{ (tpl (toYaml .Values.contour.config) .) | indent 4 }}

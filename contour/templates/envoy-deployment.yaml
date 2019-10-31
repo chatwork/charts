@@ -9,6 +9,10 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
+  {{- range $key, $value := .Values.envoy.deployment.annotations }}
+  annotations:
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   replicas: {{ .Values.envoy.deployment.replicas }}
   selector:
@@ -29,28 +33,28 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.envoy.port.healthz }}"
         prometheus.io/path: "/stats/prometheus"
-      {{- with .Values.envoy.podAnnotations }}
-{{ toYaml . | indent 8 }}
-      {{- end }}
+        {{- range $key, $value := .Values.envoy.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
     spec:
-      {{- with .Values.envoy.imagePullSecrets }}
+      {{- with .Values.envoy.envoy.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml . | indent 8 }}
       {{- end }}
       containers:
       - name: envoy
-        image: "{{ .Values.envoy.image.repository }}:{{ .Values.envoy.image.tag }}"
-        imagePullPolicy: "{{ .Values.envoy.image.imagePullPolicy }}"
+        image: "{{ .Values.envoy.envoy.image.repository }}:{{ .Values.envoy.envoy.image.tag }}"
+        imagePullPolicy: "{{ .Values.envoy.envoy.image.imagePullPolicy }}"
         command:
         - "envoy"
         args:
         - "-c"
-        - "/config/contour.json"
+        - "/config/envoy.json"
         - "--service-cluster $(CONTOUR_NAMESPACE)"
-        - "--service-node $(NODE_NAME)"
+        - "--service-node $(ENVOY_POD_NAME)"
         - "--log-level"
-        - "{{ .Values.envoy.logLevel }}"
-        {{- with .Values.envoy.extraArgs }}
+        - "{{ .Values.envoy.envoy.logLevel }}"
+        {{- with .Values.envoy.envoy.extraArgs }}
 {{ toYaml . | indent 8 }}
         {{- end }}
         env:
@@ -58,72 +62,88 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: NODE_NAME
+        - name: ENVOY_POD_NAME
           valueFrom:
             fieldRef:
               apiVersion: v1
-              fieldPath: spec.nodeName
+              fieldPath: metadata.name
         livenessProbe:
           httpGet:
-            path: /healthz
+            path: /ready
             port: {{ .Values.envoy.port.healthz }}
-          {{- if .Values.envoy.initialDelaySeconds.livenessProbe }}
-          initialDelaySeconds: {{ .Values.envoy.initialDelaySeconds.livenessProbe }}
+          {{- if .Values.envoy.livenessProbe.initialDelaySeconds }}
+          initialDelaySeconds: {{ .Values.envoy.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.envoy.livenessProbe.periodSeconds}}
           {{- end }}
         readinessProbe:
           httpGet:
-            path: /healthz
+            path: /ready
             port: {{ .Values.envoy.port.healthz }}
-          {{- if .Values.envoy.initialDelaySeconds.readinessProbe }}
-          initialDelaySeconds: {{ .Values.envoy.initialDelaySeconds.readinessProbe }}
+          {{- if .Values.envoy.readinessProbe.initialDelaySeconds }}
+          initialDelaySeconds: {{ .Values.envoy.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.envoy.readinessProbe.periodSeconds}}
           {{- end }}
-          periodSeconds: 3
+        resources:
+{{ toYaml .Values.envoy.envoy.resources | indent 10 }}
         volumeMounts:
-        - name: contour-config
+        - name: envoy-config
           mountPath: /config
-        {{- with .Values.envoy.extraVolumeMounts }}
+        {{- with .Values.envoy.envoy.extraVolumeMounts }}
 {{ toYaml . | indent 8 }}
         {{- end }}
-        lifecycle:
-          preStop:
-            exec:
-              command: ["wget", "-qO-", "--post-data=''", "http://localhost:9001/healthcheck/fail"]
         ports:
         - containerPort: {{ .Values.envoy.port.http }}
           name: http
         - containerPort: {{ .Values.envoy.port.https }}
           name: https
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - bash
+              - -c
+              - --
+              - echo
+              - -ne
+              - "POST /healthcheck/fail HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n"
+              - '>/dev/tcp/localhost/9001'
       initContainers:
       - name: {{ template "contour.fullname" . }}-initconfig
-        image: "{{ .Values.contour.image.repository }}:{{ .Values.contour.image.tag }}"
-        imagePullPolicy: "{{ .Values.contour.image.imagePullPolicy }}"
+        image: "{{ .Values.envoy.initContainers.image.repository }}:{{ .Values.envoy.initContainers.image.tag }}"
+        imagePullPolicy: "{{ .Values.envoy.initContainers.image.imagePullPolicy }}"
         command:
         - "contour"
         args:
         - "bootstrap"
-        - "/config/contour.json"
+        - "/config/envoy.json"
         - "--xds-address={{ template "contour.fullname" . }}"
         - "--xds-port={{ .Values.contour.port.xds }}"
+        {{- with .Values.envoy.initContainers.extraArgs }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
         volumeMounts:
-        - name: contour-config
+        - name: envoy-config
           mountPath: /config
+        {{- with .Values.envoy.initContainers.extraVolumeMounts }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
         env:
         - name: CONTOUR_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
       volumes:
-      - name: contour-config
+      - name: envoy-config
         emptyDir: {}
-      {{- with .Values.envoy.extraVolumes }}
-{{ toYaml . | indent 8 }}
-      {{- end }}
+        {{- with .Values.envoy.extraVolumes }}
+{{ toYaml . | indent 6 }}
+        {{- end }}
       {{- with .Values.envoy.affinity }}
       affinity:
 {{ tpl (toYaml .) $root | indent 8 }}
       {{- end }}
-      tolerations:
       {{- with .Values.envoy.tolerations }}
+      tolerations:
 {{ tpl (toYaml .) | indent 8 }}
       {{- end }}
 {{- end }}

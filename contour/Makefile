@@ -5,7 +5,7 @@ apply:
 	fi
 	@if [ -n "$${CI}" ]; then \
 		kubectl apply -f ./crd.yaml ; \
-		kubectl apply -f https://j.hept.io/contour-kuard-example ; \
+		kubectl apply -f https://projectcontour.io/examples/kuard.yaml ; \
 		helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} upgrade --debug --wait --install --namespace "$$(basename $$PWD)$$(git rev-parse --short HEAD)" $$(basename $$PWD)-$$(git rev-parse --short HEAD) --set envoy.service.type=ClusterIP .; \
 	else \
 		helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} upgrade --wait --install --namespace "$$(basename $$PWD)$$(git rev-parse --short HEAD)" $$(basename $$PWD)-$$(git rev-parse --short HEAD) .; \

@@ -1,3 +1,4 @@
+# https://github.com/projectcontour/contour/blob/master/examples/contour/02-rbac.yaml
 {{- if .Values.contour.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -43,10 +44,30 @@ rules:
   - list
   - watch
 - apiGroups:
-  - contour.heptio.com
+  - "networking.k8s.io"
   resources:
-  - ingressroutes
-  - tlscertificatedelegations
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - "contour.heptio.com"
+  resources:
+    - "ingressroutes"
+    - "tlscertificatedelegations"
+  verbs:
+  - get
+  - list
+  - watch
+  - put
+  - post
+  - patch
+- apiGroups:
+  - "projectcontour.io"
+  resources:
+  - "httpproxies"
+  - "tlscertificatedelegations"
   verbs:
   - get
   - list
