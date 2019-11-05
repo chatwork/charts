@@ -127,6 +127,7 @@ nginx:
   # NGINX configuration
   host: localhost # host using as Ingress host name
   port: 80        # port using as Container port, Service port, Ingress port
+  port: 80 # port using as Container port, Service port, Ingress port
 
   livenessProbe:
     httpGet:
@@ -296,7 +297,7 @@ fpm:
   ## pool configuration
   user: nobody
   group: nobody
-  mode: "0600"
+  mode: "0660"
   pm:
     maxChildren: 5
     maxRequests: 500
