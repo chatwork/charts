@@ -128,6 +128,10 @@ nginx:
   host: localhost # host using as Ingress host name
   port: 80        # port using as Container port, Service port, Ingress port
 
+  lifecycle:
+    postStart: []
+    # postStart: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
+
   livenessProbe:
     httpGet:
       path: /status
@@ -285,6 +289,10 @@ fpm:
   # command:
   # - php-fpm
   # - -d zend_extension=xdebug.so
+
+  lifecycle:
+    postStart: []
+    # postStart: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
 
   # PHP-FPM configuration
   # http://php.net/manual/en/install.fpm.configuration.php
