@@ -190,6 +190,9 @@ spec:
           mountPath: /usr/local/etc/php-fpm.conf
         - name: fpm-confd
           mountPath: /usr/local/etc/php-fpm.d
+        - name: fpm-php-ini
+          subPath: php.ini
+          mountPath: /usr/local/etc/php/php.ini
 {{- if .Values.newrelic.enabled }}
         - name: newrelic
           mountPath: /tmp
@@ -219,6 +222,9 @@ spec:
       - name: fpm-confd
         configMap:
           name: {{ template "php.fullname" . }}-fpm-php-fpm-d
+      - name: fpm-php-ini
+        configMap:
+          name: {{ template "php.fullname" . }}-fpm-phpini
 {{- if .Values.newrelic.enabled }}
       - name: newrelic
         hostPath:

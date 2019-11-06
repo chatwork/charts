@@ -126,7 +126,6 @@ nginx:
 
   # NGINX configuration
   host: localhost # host using as Ingress host name
-  port: 80        # port using as Container port, Service port, Ingress port
   port: 80 # port using as Container port, Service port, Ingress port
 
   livenessProbe:
@@ -306,9 +305,24 @@ fpm:
   # php.ini configuration
   # http://php.net/manual/en/errorfunc.configuration.php
   ini:
-    displayErrors: off
+    displayErrors: false
+    exposePhp: false
+    displayStartupErrors: false
+    htmlErrors: false
+    maxInputVars: 10000
+    mysqlnd.collectMemoryStatistics: true
+    mysqlnd.netReadTimeout: 10
+    requestOrder: GP
+    serializePrecisiOn: 17
+    sessiOn.gcMaxlifetime: 7200
+    shortOpenTag: false
+    trackErrors: false
+    variablesOrder: GPCS
+    zend.assertiOns: 0
     errorReporting: E_ALL
-    exposePhp: off
+    memoryLimit: 256M
+    postMaxSize: 200M
+    uploadMaxFilesize: 200M
 
   livenessProbe: {}
   readinessProbe: {}
@@ -370,6 +384,27 @@ fpm:
   # configuration PHP-FPM templates
   # If you can not be satisfied with the default settings you can change the template.
   templates:
+  php.ini: |
+      [PHP]
+
+      ;;;;;;;;;;;;;;;;;;;
+      ; About php.ini   ;
+      ;;;;;;;;;;;;;;;;;;;
+      ; PHP's initialization file, generally called php.ini, is responsible for
+      ; configuring many of the aspects of PHP's behavior.
+      {{- range $k, $v := .Values.fpm.ini }}
+      {{- if eq (printf "%t" $v) "true" }}
+      {{ snakecase $k }} = On
+      {{- else if eq (printf "%t" $v) "false" }}
+      {{ snakecase $k }} = Off
+      {{- else if eq (printf "%T" $v) "string" }}
+      {{ snakecase $k }} = "{{ $v }}"
+      {{- else if eq (printf "%T" $v) "int" }}
+      {{ snakecase $k }} = {{ $v }}
+      {{- else }}
+      {{ snakecase $k }} = {{ $v }}
+      {{- end }}
+      {{- end }}
     php-fpm.conf: |
       ;;;;;;;;;;;;;;;;;;;;;
       ; FPM Configuration ;
@@ -923,17 +958,6 @@ fpm:
         ;php_admin_value[memory_limit] = 32M
         php_admin_value[error_log] = /dev/stderr
         php_admin_flag[log_errors] = on
-        {{- range $k, $v := .Values.fpm.ini }}
-        {{- if eq (printf "%t" $v) "true" }}
-        php_flag[{{ snakecase $k }}] = on
-        {{- else if eq (printf "%t" $v) "false" }}
-        php_flag[{{ snakecase $k }}] = off
-        {{- else if eq (printf "%T" $v) "string" }}
-        php_value[{{ snakecase $k }}] = "{{ $v }}"
-        {{- else }}
-        php_value[{{ snakecase $k }}] = {{ $v }}
-        {{- end }}
-        {{- end }}
 
   # Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets`.
   annotations: {}
