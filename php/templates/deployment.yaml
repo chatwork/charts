@@ -114,6 +114,12 @@ spec:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
         lifecycle:
+{{- with .Values.nginx.lifecycle.postStart }}
+          postStart:
+            exec:
+              command:
+{{ tpl (toYaml .) $root | indent 14 }}
+{{- end }}
           preStop:
             exec:
               command: ["sh", "-c", "sleep {{ .Values.fpm.processControlTimeout | default 0 }}; nginx -s quit; sleep 5"]
@@ -172,6 +178,12 @@ spec:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
         lifecycle:
+{{- with .Values.fpm.lifecycle.postStart }}
+          postStart:
+            exec:
+              command:
+{{ tpl (toYaml .) $root | indent 14 }}
+{{- end }}
           preStop:
             exec:
               command: ["sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ .Values.fpm.processControlTimeout | default 0 }}"]
