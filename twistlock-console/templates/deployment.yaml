@@ -76,11 +76,11 @@ spec:
         volumeMounts:
         - name: twistlock-config-volume
           mountPath: "/data/config/"
-        - name: console-volume
+        - name: persistent-volume
           mountPath: "{{ .Values.volumeMounts.data.mountPath }}"
           subPath: "{{ .Values.volumeMounts.data.subpath }}"
         {{- if .Values.config.backup.enabled }}
-        - name: console-volume
+        - name: persistent-volume
           mountPath: "{{ .Values.volumeMounts.backup.mountPath }}"
           subPath: "{{ .Values.volumeMounts.backup.subpath }}"
         {{- end}}
@@ -103,7 +103,7 @@ spec:
 {{ tpl (toYaml .) | indent 8 }}
       {{- end }}
       volumes:
-      - name: console-volume
+      - name: persistent-volume
         persistentVolumeClaim:
           claimName: {{ template "twistlock-console.fullname" $root }}
       - name: syslog-socket
