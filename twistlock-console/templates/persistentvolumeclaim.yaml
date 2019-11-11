@@ -1,0 +1,16 @@
+{{ $root := . }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "twistlock-console.fullname" $root }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolumeClaim.storage.size }}
+  storageClassName: {{ .Values.persistentVolumeClaim.storage.className }}
+  {{- with .Values.persistentVolumeClaim.selector }}
+  selector:
+{{ tpl (toYaml .) $root | indent 4 }}
+  {{- end }}

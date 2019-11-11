@@ -1,0 +1,7 @@
+{{ $root := . }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "twistlock-console.fullname" . }}
+data:
+{{ tpl (toYaml .Values.configmap) $root | indent 2 }}
