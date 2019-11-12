@@ -1,13 +1,13 @@
-# This is a sample file for creating a certificate with cert-manager.
+# This is a sample file for creating a certificate with cert-manager(>= 0.11.0)
 ---
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
 metadata:
   name: contour-selfsigning-issuer
 spec:
   selfSigned: {}
 ---
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: contour-ca
@@ -20,7 +20,7 @@ spec:
   issuerRef:
     name: contour-selfsigning-issuer
 ---
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
 metadata:
   name: contour-ca-issuer
@@ -28,7 +28,7 @@ spec:
   ca:
     secretName: contour-ca-tls
 ---
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: contour
@@ -43,7 +43,7 @@ spec:
     name: contour-ca-issuer
   secretName: contour-tls
 ---
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: envoy
