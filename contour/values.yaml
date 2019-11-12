@@ -155,7 +155,7 @@ envoy:
     imagePullSecrets: []
     image:
       repository: "docker.io/projectcontour/contour"
-      tag: "v1.0.0-rc.2"
+      tag: "v1.0.0"
       imagePullPolicy: "IfNotPresent"
     extraArgs: []
     extraVolumeMounts: []

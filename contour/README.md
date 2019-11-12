@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the gaurd chart and the
 | --- | --- | --- |
 |  `contour.imagePullSecrets` | contour imagePullSecrets | `"[]"` |
 |  `contour.image.repository` | contour image repository | `"docker.io/projectcontour/contour"` |
-|  `contour.image.tag` | contour Image tag | `"v1.0.0-rc.2"` |
+|  `contour.image.tag` | contour Image tag | `"v1.0.0"` |
 |  `contour.image.imagePullPolicy` | contour Image pullpolicy  | `"IfNotPresent"` |
 |  `contour.extraArgs` | contour command extra arguments | `"[]"` |
 |  `contour.insecure` | contour <-> envoy no tls | `true` |
@@ -91,7 +91,7 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `envoy.affinity` | envoy affinity| `"{}"` |
 |  `envoy.extraVolumes` | envoy volumes | `"[]"` |
 |  `envoy.initContainers.image.repository` | envoy init container image repository | `"docker.io/projectcontour/contour"` |
-|  `envoy.initContainers.image.tag` | envoy init contour image tag | `"v1.0.0-rc.2"` |
+|  `envoy.initContainers.image.tag` | envoy init contour image tag | `"v1.0.0"` |
 |  `envoy.initContainers..image.imagePullPolicy` | envoy init image pullpolicy  | `"IfNotPresent"` |
 |  `envoy.initContainers.extraArgs` | envoy command extra arguments | `"[]"` |
 |  `envoy.initContainers.resources` | envoy pod resources| `"{}"` |
