@@ -313,9 +313,9 @@ fpm:
   # php.ini configuration
   # http://php.net/manual/en/errorfunc.configuration.php
   ini:
-    displayErrors: off
+    displayErrors: false
     errorReporting: E_ALL
-    exposePhp: off
+    exposePhp: false
 
   livenessProbe: {}
   readinessProbe: {}
