@@ -18,6 +18,14 @@ port:
     https: "8083"
   highAvailability: "8086"
 
+resources:
+  limits:
+    cpu: 500m
+    memory: 1024Mi
+  requests:
+    cpu: 250m
+    memory: 1024Mi
+
 config:
   console:
     # common name
@@ -62,14 +70,16 @@ podAnnotations: {}
 tolerations: []
 extraEnv: []
 extraVolumeMounts: []
+extraVolumes: []
 
 volumeMounts:
   data:
-    mountPath: "/var/lib/twistlock/console/data"
-    subpath: "data"
+    mountPath: "/var/lib/twistlock"
+    subpath: "twistlock"
   backup:
-    mountPath: "/var/lib/twistlock/console/backup"
-    subpath: "backup"
+    # This value is default value, but backup path seems buggy and cannot be changed(@ 19_07)
+    mountPath: "/var/lib/twistlock-backup"
+    subpath: "twistlock-backup"
 
 persistentVolumeClaim:
   storage:

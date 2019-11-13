@@ -55,6 +55,8 @@ spec:
         - name: ha
           containerPort: {{ .Values.port.highAvailability }}
         {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 8 }}
         env:
         - name: CONFIG_PATH
           value: /data/config/twistlock.cfg
