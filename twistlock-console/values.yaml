@@ -3,10 +3,6 @@ nameOverride: ""
 
 accessToken: "accessToken"
 
-service:
-  clusterIP: ""
-  type: "LoadBalancer"
-
 image:
   repository: registry-auth.twistlock.com/tw_{{ .Values.accessToken }}/twistlock/console
   tag: console{{ .Values.config.docker.tag }}
@@ -20,26 +16,28 @@ port:
     https: "8083"
   highAvailability: "8086"
 
-resources:
-  limits:
-    cpu: 500m
-    memory: 1024Mi
-  requests:
-    cpu: 250m
-    memory: 1024Mi
+volumeMounts:
+  data:
+    mountPath: "/var/lib/twistlock"
+    subpath: "twistlock"
+  backup:
+    # This value is default value, but backup path seems buggy and cannot be changed(@ 19_07)
+    mountPath: "/var/lib/twistlock-backup"
+    subpath: "twistlock-backup"
 
 config:
   console:
     # common name
     cn: ""
     # Subject Alternative Name
+    #san: "{{ .Release.Name }}"
     san: ""
     portalServer:
       cert: ""
       key: ""
   defender:
     cn: ""
-    listenerType: "NONE"
+    listenerType: "none"
   readOnlyFs:
     enabled: true
   runConsoleAsRoot:
@@ -55,33 +53,29 @@ config:
   highAvailability:
     enabled: false
     state: "PRIMARY"
-  readOnlyFs:
-    enabled: true
-  runConsoleAsRoot:
-    enabled: false
   scap:
     enabled: false
   selinux:
     label: "disable"
 
+resources:
+  limits:
+    cpu: 500m
+    memory: 1024Mi
+  requests:
+    cpu: 250m
+    memory: 1024Mi
+
 deployment:
   annotations: {}
   replicas: 1
+  strategy: {}
 
 podAnnotations: {}
 tolerations: []
 extraEnv: []
 extraVolumeMounts: []
 extraVolumes: []
-
-volumeMounts:
-  data:
-    mountPath: "/var/lib/twistlock"
-    subpath: "twistlock"
-  backup:
-    # This value is default value, but backup path seems buggy and cannot be changed(@ 19_07)
-    mountPath: "/var/lib/twistlock-backup"
-    subpath: "twistlock-backup"
 
 persistentVolumeClaim:
   storage:
@@ -90,7 +84,8 @@ persistentVolumeClaim:
   selector: {}
 
 service:
-  type: LoadBalancer
+  clusterIP: ""
+  type: "LoadBalancer"
 
 secrets: {}
 
@@ -129,7 +124,7 @@ configmap:
     # Determines how to construct the CN in the Console's certificate
     # This value should not be modified unless instructed to by Twistlock Support
     {{- if .Values.config.console.cn }}
-    CONSOLE_CN={{ .Values.config.console.cn }}
+    CONSOLE_CN={{ tpl .Values.config.console.cn . }}
     {{- else }}
     CONSOLE_CN=$(hostname --fqdn 2>/dev/null); if [[ $? == 1 ]]; then CONSOLE_CN=$(hostname); fi
     {{- end }}
@@ -137,14 +132,12 @@ configmap:
     # Each Defender authenticates to the Console with this certificate and each cert must have a unique CN
     # These values should not be modified unless instructed to by Twistlock Support
     {{- if .Values.config.defender.cn }}
-    DEFENDER_CN={{ .Values.config.defender.cn }}
+    DEFENDER_CN={{ tpl .Values.config.defender.cn . }}
     {{- end }}
 
-    #{{- if .Values.config.console.cn }}
-    #CONSOLE_SAN={{ .Values.config.console.san }}
-    #{{- else }}
-    #CONSOLE_SAN={{ template "twistlock-console.fullname" . }}
-    #{{- end }}
+    {{- if .Values.config.console.san }}
+    CONSOLE_SAN={{ tpl .Values.config.console.san . }}
+    {{- end }}
 
     #############################################
     #     Twistlock system configuration
