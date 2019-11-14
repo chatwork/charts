@@ -61,7 +61,7 @@ data:
 {{- $fpm := .Values.fpm -}}
 {{- if .Values.fpm.templates }}
 {{- range $name, $tmpl := .Values.fpm.templates }}
-{{- if and (ne $name "php-fpm.conf") (ne $name "php-fpm.d") }}
+{{- if and (ne $name "php-fpm.conf") (and (ne $name "php-fpm.d") (ne $name "php.ini")) }}
 ---
 apiVersion: v1
 kind: ConfigMap
