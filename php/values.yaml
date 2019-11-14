@@ -312,7 +312,10 @@ fpm:
 
   # php.ini configuration
   # http://php.net/manual/en/errorfunc.configuration.php
-  ini: {}
+  ini:
+    displayErrors: false
+    errorReporting: E_ALL
+    exposePhp: false
 
   livenessProbe: {}
   readinessProbe: {}
@@ -462,9 +465,17 @@ fpm:
 
       ; This is php.ini-production INI file.
 
-      display_errors = Off
-      error_reporting = E_ALL
-      expose_php = Off
+      {{- range $k, $v := .Values.fpm.ini }}
+      {{- if eq (printf "%t" $v) "true" }}
+      {{ snakecase $k }} = On
+      {{- else if eq (printf "%t" $v) "false" }}
+      {{ snakecase $k }} = Off
+      {{- else if eq (printf "%T" $v) "string" }}
+      {{ snakecase $k }} = "{{ $v }}"
+      {{- else }}
+      {{ snakecase $k }} = {{ $v }}
+      {{- end }}
+      {{- end }}
     php-fpm.conf: |
       ;;;;;;;;;;;;;;;;;;;;;
       ; FPM Configuration ;

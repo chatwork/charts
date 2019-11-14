@@ -197,7 +197,7 @@ spec:
 {{- end }}
         - name: php-fpm-sock
           mountPath: /var/run/php-fpm
-        - name: phpini
+        - name: php-ini
           subPath: php.ini
           mountPath: /usr/local/etc/php/php.ini
         - name: fpm-conf
@@ -224,9 +224,9 @@ spec:
       - name: nginx-confd
         configMap:
           name: {{ template "php.fullname" . }}-nginx-conf-d
-      - name: phpini
+      - name: php-ini
         configMap:
-          name: {{ template "php.fullname" . }}-fpm-phpini
+          name: {{ template "php.fullname" . }}-fpm-php-ini
       - name: fpm-conf
         configMap:
           name: {{ template "php.fullname" . }}-fpm-php-fpm-conf
