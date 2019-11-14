@@ -376,7 +376,6 @@ fpm:
   templates:
     php.ini: |
       [PHP]
-
       ;;;;;;;;;;;;;;;;;;;
       ; About php.ini   ;
       ;;;;;;;;;;;;;;;;;;;

@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    checksum/fpm-php-fpm-conf: {{ tpl (index .Values.fpm.templates "php.ini" | toYaml) . | sha256sum }}
+    checksum/fpm-phpini: {{ tpl (index .Values.fpm.templates "php.ini" | toYaml) . | sha256sum }}
 {{- with .Values.fpm.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
