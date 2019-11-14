@@ -41,7 +41,8 @@ spec:
       serviceAccountName: {{ template "twistlock-console.fullname" $root }}
       containers:
       - name: twistlock-console
-        image: "{{ tpl .Values.image.repository $root }}:{{ tpl .Values.image.tag $root }}"
+        image: {{ tpl .Values.image.repository $root }}:{{ tpl .Values.image.tag $root }}
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
         ports:
         - name: mgmt-https
           containerPort: {{ .Values.port.management.https }}
@@ -62,6 +63,12 @@ spec:
           value: /data/config/twistlock.cfg
         - name: LOG_PROD
           value: "true"
+        - name: CONSOLE_SAN
+        {{- if .Values.config.console.san }}
+          value: {{ .Values.config.console.san }}
+        {{- else }}
+          value: {{ template "twistlock-console.fullname" . }}
+        {{- end }}
         {{- if .Values.config.console.portalServer.key }}
         - name: CONSOLE_PORTAL_SERVER_CERT
           value: "{{ .Values.config.console.portalServer.cert }}"

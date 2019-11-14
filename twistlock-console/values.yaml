@@ -10,6 +10,8 @@ service:
 image:
   repository: registry-auth.twistlock.com/tw_{{ .Values.accessToken }}/twistlock/console
   tag: console{{ .Values.config.docker.tag }}
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
 
 port:
   communication: "8084"
@@ -137,6 +139,12 @@ configmap:
     {{- if .Values.config.defender.cn }}
     DEFENDER_CN={{ .Values.config.defender.cn }}
     {{- end }}
+
+    #{{- if .Values.config.console.cn }}
+    #CONSOLE_SAN={{ .Values.config.console.san }}
+    #{{- else }}
+    #CONSOLE_SAN={{ template "twistlock-console.fullname" . }}
+    #{{- end }}
 
     #############################################
     #     Twistlock system configuration
