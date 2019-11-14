@@ -375,7 +375,6 @@ fpm:
   # If you can not be satisfied with the default settings you can change the template.
   templates:
     php.ini: |
-      [PHP]
       ;;;;;;;;;;;;;;;;;;;
       ; About php.ini   ;
       ;;;;;;;;;;;;;;;;;;;
