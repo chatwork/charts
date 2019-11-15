@@ -1029,17 +1029,6 @@ fpm:
         ;php_admin_value[memory_limit] = 32M
         php_admin_value[error_log] = /dev/stderr
         php_admin_flag[log_errors] = on
-        {{- range $k, $v := .Values.fpm.ini }}
-        {{- if eq (printf "%t" $v) "true" }}
-        php_flag[{{ snakecase $k }}] = on
-        {{- else if eq (printf "%t" $v) "false" }}
-        php_flag[{{ snakecase $k }}] = off
-        {{- else if eq (printf "%T" $v) "string" }}
-        php_value[{{ snakecase $k }}] = "{{ $v }}"
-        {{- else }}
-        php_value[{{ snakecase $k }}] = {{ $v }}
-        {{- end }}
-        {{- end }}
 
   # Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets`.
   annotations: {}
