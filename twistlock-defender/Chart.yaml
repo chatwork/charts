@@ -1,0 +1,9 @@
+apiVersion: v1
+name: twistlock-defender
+version: 0.0.1
+appVersion: "19.07.363"
+description: Chart for Twistlock Defender
+home: https://www.twistlock.com/
+maintainers:
+  - name: Ryo Sakamoto
+    email: sakamoto@chatwork.com
