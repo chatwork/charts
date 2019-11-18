@@ -1,0 +1,126 @@
+{{ $root := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "twistlock-console.fullname" $root }}
+  labels:
+    app: {{ template "twistlock-console.fullname" $root }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  {{- range $key, $value := .Values.deployment.annotations }}
+  annotations:
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+       app: {{ include "twistlock-console.fullname" $root }}
+       release: {{ .Release.Name }}
+  {{- with .Values.deployment.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "twistlock-console.fullname" $root }}
+        release: {{ .Release.Name }}
+      name: {{ template "twistlock-console.fullname" $root }}
+      annotations:
+        checksum/config: {{ tpl (toYaml .Values.configmap) . | sha256sum | quote }}
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      {{- with .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      serviceAccountName: {{ template "twistlock-console.fullname" $root }}
+      containers:
+      - name: twistlock-console
+        image: {{ tpl .Values.image.repository $root }}:{{ tpl .Values.image.tag $root }}
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        ports:
+        - name: mgmt-https
+          containerPort: {{ .Values.port.management.https }}
+        {{- if .Values.config.management.http.enabled }}
+        - name: mgmt-http
+          containerPort: {{ .Values.port.management.http }}
+        {{- end }}
+        - name: communication
+          containerPort: {{ .Values.port.communication }}
+        {{- if .Values.config.highAvailability.enabled }}
+        - name: ha
+          containerPort: {{ .Values.port.highAvailability }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 8 }}
+        env:
+        - name: CONFIG_PATH
+          value: /data/config/twistlock.cfg
+        - name: LOG_PROD
+          value: "true"
+        {{- if .Values.config.console.portalServer.key }}
+        - name: CONSOLE_PORTAL_SERVER_CERT
+          value: "{{ .Values.config.console.portalServer.cert }}"
+        - name: CONSOLE_PORTAL_SERVER_KEY
+          value: "{{ .Values.config.console.portalServer.key }}"
+        {{- end }}
+        {{- with .Values.extraEnv }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+        {{- with .Values.securityContext }}
+        securityContext:
+{{ toYaml . | indent 8 }}
+        {{- end }}
+        volumeMounts:
+        - name: twistlock-config-volume
+          mountPath: "/data/config/"
+        - name: persistent-volume
+          mountPath: "{{ .Values.volumeMounts.data.mountPath }}"
+          subPath: "{{ .Values.volumeMounts.data.subpath }}"
+        {{- if .Values.config.backup.enabled }}
+        - name: persistent-volume
+          mountPath: "{{ .Values.volumeMounts.backup.mountPath }}"
+          subPath: "{{ .Values.volumeMounts.backup.subpath }}"
+        {{- end}}
+        {{- if .Values.secrets }}
+        - name: portal-secrets-volume
+          mountPath: "/var/lib/twistlock/secrets"
+          readOnly: true
+        {{- end}}
+        - name: syslog-socket
+          mountPath: "/dev/log"
+        {{- with .Values.extraVolumeMounts }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      tolerations:
+      {{- with .Values.tolerations }}
+{{ tpl (toYaml .) | indent 8 }}
+      {{- end }}
+      volumes:
+      - name: persistent-volume
+        persistentVolumeClaim:
+          claimName: {{ template "twistlock-console.fullname" $root }}
+      - name: syslog-socket
+        hostPath:
+          path: "/dev/log"
+      - name: twistlock-config-volume
+        configMap:
+          name: {{ template "twistlock-console.fullname" $root }}
+      {{- if .Values.secrets }}
+      - name: portal-secrets-volume
+        secret:
+          secretName: {{ template "twistlock-console.fullname" $root }}
+          defaultMode: 256
+      {{- end}}
+      {{- with .Values.extraVolumes }}
+{{ toYaml . | indent 6 }}
+      {{- end }}

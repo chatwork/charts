@@ -1,0 +1,200 @@
+fullnameOverride: ""
+nameOverride: ""
+
+accessToken: "accessToken"
+
+image:
+  repository: registry-auth.twistlock.com/tw_{{ .Values.accessToken }}/twistlock/console
+  tag: console{{ .Values.config.docker.tag }}
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+
+port:
+  communication: "8084"
+  management:
+    http: "8081"
+    https: "8083"
+  highAvailability: "8086"
+
+volumeMounts:
+  data:
+    mountPath: "/var/lib/twistlock"
+    subpath: "twistlock"
+  backup:
+    # This value is default value, but backup path seems buggy and cannot be changed(@ 19_07)
+    mountPath: "/var/lib/twistlock-backup"
+    subpath: "twistlock-backup"
+
+config:
+  console:
+    # common name
+    cn: ""
+    # Subject Alternative Name
+    #san: "{{ .Release.Name }}"
+    san: ""
+    portalServer:
+      cert: ""
+      key: ""
+  defender:
+    cn: ""
+    listenerType: "none"
+  readOnlyFs:
+    enabled: true
+  runConsoleAsRoot:
+    enabled: false
+  docker:
+    tag: "_19_07_363"
+    socket: "/var/run/docker.sock"
+  backup:
+    enabled: true
+  management:
+    http:
+      enabled: true
+  highAvailability:
+    enabled: false
+    state: "PRIMARY"
+  scap:
+    enabled: false
+  selinux:
+    label: "disable"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1024Mi
+  requests:
+    cpu: 250m
+    memory: 1024Mi
+
+deployment:
+  annotations: {}
+  replicas: 1
+  strategy: {}
+
+podAnnotations: {}
+tolerations: []
+extraEnv: []
+extraVolumeMounts: []
+extraVolumes: []
+
+persistentVolumeClaim:
+  storage:
+    size: 100Gi
+    className: "gp2" # for AWS
+  selector: {}
+
+service:
+  clusterIP: ""
+  type: "LoadBalancer"
+
+secrets: {}
+
+configmap:
+  twistlock.cfg: |
+    #  _____          _     _   _            _
+    # |_   _|_      _(_)___| |_| | ___   ___| | __
+    #   | | \ \ /\ / / / __| __| |/ _ \ / __| |/ /
+    #   | |  \ V  V /| \__ \ |_| | (_) | (__|   <
+    #   |_|   \_/\_/ |_|___/\__|_|\___/ \___|_|\_\\
+
+    # This configuration file contains the setup parameters for Twistlock
+    # This file is typically stored in the same directory as the installation script (twistlock.sh)
+    # To reconfigure settings, update this configuration file and re-run twistlock.sh; state and unchanged settings will persist
+
+
+
+    #############################################
+    #     Network configuration
+    #############################################
+    # Each port must be set to a unique value (multiple services cannot share the same port)
+    ###### Management Console ports #####
+    # Sets the ports that the Twistlock management website listens on
+    # The system that you use to configure Twistlock must be able to connect to the Twistlock Console on these ports
+    # To disable the HTTP listener, leave the value empty (e.g. MANAGEMENT_PORT_HTTP=)
+    {{- if .Values.config.management.http.enabled }}
+    MANAGEMENT_PORT_HTTP={{ .Values.port.management.http }}
+    {{- end }}
+    MANAGEMENT_PORT_HTTPS={{ .Values.port.management.https }}
+
+    ##### Inter-system communication port #####
+    # Sets the port for communication between the Defender(s) and the Console
+    COMMUNICATION_PORT={{ .Values.port.communication }}
+
+    ##### Certificate common names (optional) #####
+    # Determines how to construct the CN in the Console's certificate
+    # This value should not be modified unless instructed to by Twistlock Support
+    {{- if .Values.config.console.cn }}
+    CONSOLE_CN={{ tpl .Values.config.console.cn . }}
+    {{- else }}
+    CONSOLE_CN=$(hostname --fqdn 2>/dev/null); if [[ $? == 1 ]]; then CONSOLE_CN=$(hostname); fi
+    {{- end }}
+    # Determines how to construct the CN in the Defenders' certificates
+    # Each Defender authenticates to the Console with this certificate and each cert must have a unique CN
+    # These values should not be modified unless instructed to by Twistlock Support
+    {{- if .Values.config.defender.cn }}
+    DEFENDER_CN={{ tpl .Values.config.defender.cn . }}
+    {{- end }}
+
+    {{- if .Values.config.console.san }}
+    CONSOLE_SAN={{ tpl .Values.config.console.san . }}
+    {{- end }}
+
+    #############################################
+    #     Twistlock system configuration
+    #############################################
+    ###### Data recovery #####
+    # Data recovery automatically exports the full Twistlock configuration to the specified path every 24 hours
+    # Daily, weekly, and monthly snapshots are retained
+    # The exported configuration can be stored on durable storage or backed up remotely with other tools
+    # Sets data recovery state (enabled or disabled)
+    DATA_RECOVERY_ENABLED={{ .Values.config.backup.enabled }}
+    # Sets the directory to which Twistlock data is exported
+    DATA_RECOVERY_VOLUME={{ .Values.volumeMounts.backup.mountPath }}
+
+    ##### Read only containers #####
+    # Sets Twistlock containers' file-systems to read-only
+    READ_ONLY_FS={{ .Values.config.readOnlyFs.enabled }}
+
+    ##### Storage paths #####
+    # Sets the base directory to store Twistlock local data (db and log files)
+    DATA_FOLDER={{ .Values.volumeMounts.data.mountPath }}
+
+    ##### Docker socket #####
+    # Sets the location of the Docker socket file
+    DOCKER_SOCKET={{ .Values.config.docker.socket }}
+    # Sets the type of the Docker listener (TCP or NONE)
+    DEFENDER_LISTENER_TYPE={{ .Values.config.defender.listenerType }}
+
+    #### SCAP (XCCDF) configuration ####
+    # Sets SCAP state (true or false)
+    SCAP_ENABLED={{ .Values.config.scap.enabled }}
+
+    #### systemd configuration ####
+    # Installs Twistlock as systemd service
+    SYSTEMD_ENABLED=false
+
+    #### userid configuration ####
+    # Run Twistlock Console processes as root (default, twistlock user account)
+    # Typically used to run Console on standard (tcp/443) privileged port for TLS
+    RUN_CONSOLE_AS_ROOT={{ .Values.config.runConsoleAsRoot.enabled }}
+
+    #### SELinux configuration ####
+    # If SELinux is enabled in dockerd, enable running Twistlock Console and Defender with a dedicated SELinux label
+    # See https://docs.docker.com/engine/reference/run/#security-configuration
+    SELINUX_LABEL={{ .Values.config.selinux.label }}
+
+    #############################################
+    #      High availability settings
+    #############################################
+    # Only to be used when the Console is deployed outside of a Kubernetes cluster
+    # This native HA capability uses Mongo clustering and requires 3 or more instances
+    HIGH_AVAILABILITY_ENABLED={{ .Values.config.highAvailability.enabled }}
+    HIGH_AVAILABILITY_STATE={{ .Values.config.highAvailability.state }}
+    HIGH_AVAILABILITY_PORT={{ .Values.port.highAvailability }}
+
+    #############################################
+    #      Twistlock repository configuration
+    #############################################
+    # Sets the version tag of the Twistlock containers
+    # Do not modify unless instructed to by Twistlock Support
+    DOCKER_TWISTLOCK_TAG={{ .Values.config.docker.tag }}
