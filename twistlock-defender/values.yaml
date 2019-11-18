@@ -37,7 +37,7 @@ config:
   defender:
     type: "daemonset"
     listenerType: "none"
-  clusterId: "%CLUSTERID%"
+  clusterId: "CLUSTERID"
   monitor:
     serviceAccounts: "true"
     istio: "false"
@@ -66,10 +66,10 @@ securityContext:
     - AUDIT_CONTROL
 
 secret:
-  ca_cert: "%CA_CERT%"
-  client_cert: "%CLIENT_CERT%"
-  client_key: "%CLIENT_KEY%"
-  service_parameter: "%SERVICE_PARAMETER%"
+  ca_cert: "CA_CERT"
+  client_cert: "CLIENT_CERT"
+  client_key: "CLIENT_KEY"
+  service_parameter: "SERVICE_PARAMETER"
 
 useHostNetwork: true
 useHostPID: true

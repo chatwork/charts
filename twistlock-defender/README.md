@@ -9,7 +9,7 @@ You need follow parameters.
 
 - accessToken
   - payout from twistlock
-- config.clusterId 
+- config.clusterId
   - generate by twistcli export
 - secret.ca_cert
   - generate by twistcli export
@@ -64,7 +64,7 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `config.console.wsAddress` | Configuration twistlock-console web socket address | `"wss://{{ .Values.console.dnsName }}:{{ .Values.console.port }}"` |
 |  `config.defender.type` | Configuration defender type | `"daemonset"` |
 |  `config.defender.listenerType` | Configuration defender listener type | `"none"` |
-|  `config.clusterId` | Configuration defender clusterId which generate by console | `"%%CLUSTERID%%"` |
+|  `config.clusterId` | Configuration defender clusterId which generate by console | `"CLUSTERID"` |
 |  `config.monitor.serviceAccounts` | Configuration monitor service accounts | `"true"` |
 |  `config.monitor.istio` | Configuration monitor istio | `"false"` |
 |  `config.installBundle` | Configuration installBundle for rasp | `""` |
@@ -77,10 +77,10 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `securityContext.readOnlyRootFileSystem` | Security Context for read only root | `"true"` |
 |  `securityContext.privileged` | Security Context for read privileged | `"true"` |
 |  `securityContext.capabilities.add` | Security Context for capabilities | `"[NET_ADMIN, SYS_ADMIN, SYS_PTRACE, AUDIT_CONTROL]"` |
-|  `secret.ca_cert` | ca cert for defender | `"%%CA_CERT%%"` |
-|  `secret.client_cert` | client cert for defender | `"%%CLIENT_CERT%%"` |
-|  `secret.client_key` | client key for defender | `"%%CLIENT_KEY%%"` |
-|  `secret.service_parameter` | service parameter which genrated by console for defender | `"%%SERVICE_PARAMETER%%"` |
+|  `secret.ca_cert` | ca cert for defender | `"CA_CERT"` |
+|  `secret.client_cert` | client cert for defender | `"CLIENT_CERT"` |
+|  `secret.client_key` | client key for defender | `"CLIENT_KEY"` |
+|  `secret.service_parameter` | service parameter which genrated by console for defender | `"SERVICE_PARAMETER"` |
 |  `useHostNetwork` | Pod using hostNetwork | `true`|
 |  `useHostPID` | Pod using hostPID | `true`|
 |  `deployment.enabled` | Enable defender deployment | `false`|
