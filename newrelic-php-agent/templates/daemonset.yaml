@@ -1,3 +1,4 @@
+{{- if .Values.daemonset.enabled }}
 {{- $root := . -}}
 apiVersion: apps/v1
 kind: DaemonSet
@@ -21,16 +22,21 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{- with .Values.image.command }}
+          image: "{{ .Values.newrelic.image.repository }}:{{ .Values.newrelic.image.tag }}"
+          imagePullPolicy: {{ .Values.newrelic.image.pullPolicy }}
+{{- with .Values.newrelic.image.command }}
           command:
 {{ tpl (toYaml .) $root | indent 12 }}
 {{- end }}
+{{- if .Values.newrelic.socketfile.enabled }}
           volumeMounts:
             - mountPath: /tmp
               name: newrelic
+{{- end }}
+{{- if .Values.newrelic.socketfile.enabled }}
       volumes:
         - name: newrelic
           hostPath:
             path: /var/run/newrelic
+{{- end }}
+{{ end }}

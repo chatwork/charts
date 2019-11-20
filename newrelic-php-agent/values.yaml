@@ -1,11 +1,41 @@
-# Default values for simple-echo.
+# Default values for newrelic-php-agent.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-image:
-  repository: chatwork/newrelic-php-agent
-  tag: latest
-  pullPolicy: IfNotPresent
-  command: []
+newrelic:
+  image:
+    repository: chatwork/newrelic-php-agent
+    tag: 0.0.1
+    pullPolicy: IfNotPresent
+    command: []
 
-nameOverride: ""
-fullnameOverride: ""
+  livenessProbe:
+    tcpSocket:
+      port: 31339
+    failureThreshold: 2
+    initialDelaySeconds: 10
+    periodSeconds: 60
+
+  readinessProbe:
+    tcpSocket:
+      port: 31339
+    failureThreshold: 2
+    periodSeconds: 5
+
+  socketfile:
+    enabled: false
+
+daemonset:
+  enabled: true
+
+deployment:
+  enabled: true
+  replicaCount: 1
+
+  extraPorts: []
+  extraEnv: []
+  extraEnvFrom: []
+  extraVolumes: []
+  extraVolumeMounts: []
+
+  nameOverride: ""
+  fullnameOverride: ""
