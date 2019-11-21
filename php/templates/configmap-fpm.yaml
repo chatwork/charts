@@ -9,13 +9,13 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    checksum/fpm-php-ini: {{ tpl (index .Values.fpm.templates "php.ini" | toYaml) . | sha256sum }}
+    checksum/fpm-php-ini: {{ tpl (index .Values.fpm.ini | toYaml) . | sha256sum }}
 {{- with .Values.fpm.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 data:
-  php.ini:
-{{- tpl (index .Values.fpm.templates "php.ini") . | toYaml | indent 2 }}
+  php.ini: |
+{{ .Values.fpm.ini  | indent 4 }}
 ---
 apiVersion: v1
 kind: ConfigMap
