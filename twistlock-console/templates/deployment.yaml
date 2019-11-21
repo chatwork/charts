@@ -10,7 +10,7 @@ metadata:
     release: {{ .Release.Name | quote }}
   {{- range $key, $value := .Values.deployment.annotations }}
   annotations:
-    {{ $key }}: {{ $value | quote }}
+    {{ $key }}: {{ tpl $value $root | quote }}
   {{- end }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
@@ -31,7 +31,7 @@ spec:
       annotations:
         checksum/config: {{ tpl (toYaml .Values.configmap) . | sha256sum | quote }}
         {{- range $key, $value := .Values.podAnnotations }}
-        {{ $key }}: {{ $value | quote }}
+        {{ $key }}: {{ tpl $value $root | quote }}
         {{- end }}
     spec:
       {{- with .Values.image.imagePullSecrets }}
@@ -82,10 +82,10 @@ spec:
         - name: persistent-volume
           mountPath: "{{ .Values.volumeMounts.data.mountPath }}"
           subPath: "{{ .Values.volumeMounts.data.subpath }}"
-        {{- if .Values.config.backup.enabled }}
+        {{- if .Values.config.recovery.enabled }}
         - name: persistent-volume
-          mountPath: "{{ .Values.volumeMounts.backup.mountPath }}"
-          subPath: "{{ .Values.volumeMounts.backup.subpath }}"
+          mountPath: "{{ .Values.volumeMounts.recovery.mountPath }}"
+          subPath: "{{ .Values.volumeMounts.recovery.subpath }}"
         {{- end}}
         {{- if .Values.secrets }}
         - name: portal-secrets-volume

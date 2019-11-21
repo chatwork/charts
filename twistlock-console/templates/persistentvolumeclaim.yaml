@@ -3,6 +3,11 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "twistlock-console.fullname" $root }}
+  labels:
+    app: {{ template "twistlock-console.fullname" $root }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
 spec:
   accessModes:
   - ReadWriteOnce
