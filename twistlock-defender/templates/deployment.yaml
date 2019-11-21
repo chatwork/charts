@@ -31,6 +31,7 @@ spec:
       name: {{ template "twistlock-defender.fullname" $root }}
       annotations:
         checksum/config: {{ tpl (toYaml .Values.config) . | sha256sum | quote }}
+        checksum/secret: {{ tpl (toYaml .Values.secret) . | sha256sum | quote }}
         {{- range $key, $value := .Values.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
