@@ -96,7 +96,6 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.image.repository` | The image repository to pull from | `nginx` |
 |  `nginx.image.tag` | The image tag to pull | `1.15.1-alpine` |
 |  `nginx.image.pullPolicy` | Image pull policy | `IfNotPresent` |
-|  `nginx.port` | Default public port of NGINX | `80` |
 |  `nginx.livenessProbe` | Overrides the default liveness probe | HTTP `/status` port `7777` |
 |  `nginx.readinessProbe` | Overrides the default readness probe | HTTP `/ping` port `7777` |
 |  `nginx.resources` | Overrides the default resource | `{}` |
@@ -129,32 +128,3 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
 |  `fpm.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `php-fpm.conf`、`php-fpm.d/www.conf` |
 |  `fpm.annotations` | Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets` | `{}` |
-
-### Default PHP-FPM Configuration
-
-
-In the PHP container, you can make some settings by default.
-If you want to set other values​​, please overwrite `fpm.templates`.
-
-For details of each value, please see [here](http://php.net/manual/en/install.fpm.configuration.php).
-
-
-#### Global Configuration
-
-|  Parameter | Default |
-| --- | --- |
-|  `fpm.logLevel` | `notice` |
-|  `fpm.emergencyRestartThreshold`  | `0` |
-|  `fpm.emergencyRestartInterval` | `0` |
-|  `fpm.processControlTimeout` | `0` |
-
-#### Pool Configuration
-|  Parameter | Default |
-| --- | --- |
-|  `fpm.user` | `nobody` |
-|  `fpm.group` | `nobody` |
-|  `fpm.mode` | `600` |
-|  `fpm.pm.maxChildren` | `5` |
-|  `fpm.pm.maxRequests` | `500` |
-|  `fpm.pm.status` | `/status.php` |
-|  `fpm.requestTerminateTimeout` | `0` |
