@@ -143,25 +143,19 @@ change `host` and `port` of `templates.conf.d.default.conf`.
 ```
 
 ### Manage Request Timeout Setting
-Change each value to perform graceful shutdown safely according to your requirements.
-#### Nginx
-change the following items.
-`.Values.nginx.lifecycle.preStop`
+Inject preStop commands to safely perform a graceful shutdown according to your requirements.
 
-default value is `sleep 0`
+Set this value as needed.
+Inject Nginx and FPM preStop commands.
+default value is `processControlTimeout: 0`
 ```
+nginx:
   lifecycle:
     postStart: []
-    preStop: ["/bin/sh", "-c", "sleep 0; nginx -s quit; sleep 5"]
-```
+    preStop: ["/bin/sh", "-c", "sleep {{ .Values.fpm.processControlTimeout | default 0 }}; nginx -s quit; sleep 5"]
 
-#### PHP-FPM
-change the following items.
-`.Values.fpm.lifecycle.preStop`
-
-default value is `sleep 0`
-```
+fpm:
   lifecycle:
     postStart: []
-    preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep 0"]
+    preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ .Values.fpm.processControlTimeout | default 0 }}"]
 ```
