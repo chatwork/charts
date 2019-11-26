@@ -131,8 +131,7 @@ nginx:
   lifecycle:
     postStart: []
     # postStart: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
-    # sleep 0 <= processControlTimeout
-    preStop: ["/bin/sh", "-c", "sleep 0; nginx -s quit; sleep 5"]
+    preStop: []
 
   livenessProbe:
     httpGet:
@@ -295,8 +294,9 @@ fpm:
   lifecycle:
     postStart: []
     # postStart: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
-    # sleep 0 <= processControlTimeout
-    preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep 0"]
+    preStop: []
+
+  processControlTimeout: 0
 
   pm:
     maxChildren: 5
