@@ -128,3 +128,40 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
 |  `fpm.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `php-fpm.conf`、`php-fpm.d/www.conf` |
 |  `fpm.annotations` | Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets` | `{}` |
+
+### Manage Nginx host and port
+When changing `host` and `port` of `nginx.conf`,
+change `host` and `port` of `templates.conf.d.default.conf`.
+
+```
+  templates:
+    conf.d:
+      default.conf: |
+        server {
+            listen      80;
+            server_name localhost;
+```
+
+### Manage Request Timeout Setting
+Change each value to perform graceful shutdown safely according to your requirements.
+#### Nginx
+change the following items.
+`.Values.nginx.lifecycle.preStop`
+
+default value is `sleep 0`
+```
+  lifecycle:
+    postStart: []
+    preStop: ["/bin/sh", "-c", "sleep 0; nginx -s quit; sleep 5"]
+```
+
+#### PHP-FPM
+change the following items.
+`.Values.fpm.lifecycle.preStop`
+
+default value is `sleep 0`
+```
+  lifecycle:
+    postStart: []
+    preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep 0"]
+```
