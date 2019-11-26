@@ -32,6 +32,6 @@ spec:
       - path: /*
         backend:
           serviceName: {{ template "php.fullname" $root }}
-          servicePort: 80
+          servicePort: {{ .Values.ingress.port | default .Values.service.port | default .Values.nginx.port }}
 {{- end }}
 {{- end }}
