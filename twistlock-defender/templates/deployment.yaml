@@ -1,0 +1,166 @@
+{{- if and .Values.deployment.enabled (not .Values.daemonset.enabled) }}
+{{ $root := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "twistlock-defender.fullname" $root }}
+  labels:
+    app: {{ template "twistlock-defender.fullname" $root }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  {{- range $key, $value := .Values.daemonset.annotations }}
+  annotations:
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+       app: {{ template "twistlock-defender.fullname" $root }}
+       release: {{ .Release.Name }}
+  {{- with .Values.deployment.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "twistlock-defender.fullname" $root }}
+        release: {{ .Release.Name }}
+      name: {{ template "twistlock-defender.fullname" $root }}
+      annotations:
+        checksum/config: {{ tpl (toYaml .Values.config) . | sha256sum | quote }}
+        checksum/secret: {{ tpl (toYaml .Values.secret) . | sha256sum | quote }}
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      {{- if or .Values.config.monitor.istio .Values.config.monitor.serviceAccounts }}
+      serviceAccountName: {{ template "twistlock-defender.fullname" $root }}
+      {{- end }}
+      {{- with .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      containers:
+      - name: twistlock-defender
+        image: {{ tpl .Values.image.repository $root }}:{{ tpl .Values.image.tag $root }}
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        volumeMounts:
+        - name: host-root
+          mountPath: "/host"
+        - name: data-path
+          mountPath: "{{ .Values.volumeMounts.data }}"
+        - name: certificates
+          mountPath: "{{ .Values.volumeMounts.certificates }}"
+        - name: docker-sock-path
+          mountPath: "{{ .Values.volumeMounts.docker.sockPath }}"
+        - name: passwd
+          mountPath: "/etc/passwd"
+          readOnly: true
+        - name: docker-netns
+          mountPath: "{{ .Values.volumeMounts.docker.netns }}"
+          readOnly: true
+        - name: syslog-socket
+          mountPath: "/dev/log"
+        - name: auditd-log
+          mountPath: "/var/log/audit"
+        {{- if and .Values.volumes.iptablesFlockPath .Values.volumeMounts.iptablesFlockPath }}
+        - name: iptables-lock
+          mountPath: "{{ .Values.volumeMounts.iptablesFlockPath }}"
+        {{- end }}
+        {{- with .Values.extraVolumeMounts }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+        env:
+        - name: LOG_PROD
+          value: "true"
+        - name: SYSTEMD_ENABLED
+          value: "false"
+        - name: WS_ADDRESS
+          value: "{{ tpl .Values.config.console.wsAddress $root }}"
+        # Fixed in daemonset even in deployment. Both pods are the same, but only daemonset as twistlock.
+        - name: DEFENDER_TYPE
+          value: "daemonset"
+        - name: DEFENDER_LISTENER_TYPE
+          value: "{{ .Values.config.defender.listenerType }}"
+        - name: DOCKER_CLIENT_ADDRESS
+          value: "{{ .Values.config.docker.clientAddress }}"
+        - name: DEFENDER_CLUSTER_ID
+          value: "{{ .Values.config.clusterId }}"
+        - name: MONITOR_SERVICE_ACCOUNTS
+          value: "{{ .Values.config.monitor.serviceAccounts }}"
+        - name: MONITOR_ISTIO
+          value: "{{ .Values.config.monitor.istio }}"
+        # https://docs.twistlock.com/docs/19.07/install/install_defender/install_rasp_defender.html#embed-rasp-defender-manually
+        - name: INSTALL_BUNDLE
+          value: "{{ .Values.config.installBundle }}"
+        {{- with .Values.extraEnv }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+        {{- with .Values.securityContext }}
+        securityContext:
+{{ toYaml . | indent 10 }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: tier
+                operator: In
+                values:
+                - "{{ template "twistlock-defender.fullname" . }}"
+            topologyKey: kubernetes.io/hostname
+      {{- with .Values.deployment.affinity }}
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      tolerations:
+      {{- with .Values.tolerations }}
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      volumes:
+      - name: certificates
+        secret:
+          secretName: {{ template "twistlock-defender.fullname" . }}
+          defaultMode: 256
+      - name: syslog-socket
+        hostPath:
+          path: "/dev/log"
+      - name: host-root
+        hostPath:
+          path: "/"
+      - name: data-path
+        hostPath:
+          path: "{{ .Values.volumes.data }}"
+      - name: docker-sock-path
+        hostPath:
+          path: "{{ .Values.volumes.docker.sockPath }}"
+      - name: docker-netns
+        hostPath:
+          path: "{{ .Values.volumes.docker.netns }}"
+      - name: passwd
+        hostPath:
+          path: "/etc/passwd"
+      - name: auditd-log
+        hostPath:
+          path: "/var/log/audit"
+      {{- if and .Values.volumes.iptablesFlockPath .Values.volumeMounts.iptablesFlockPath }}
+      - name: iptables-lock
+        hostPath:
+          path: "{{ .Values.volumes.iptablesFlockPath }}"
+      {{- end }}
+      {{- with .Values.extraVolumes }}
+{{ toYaml . | indent 6 }}
+      {{- end }}
+      {{- if .Values.useHostPID }}
+      hostPID: true
+      {{- end }}
+      {{- if .Values.useHostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+{{- end }}

@@ -1,0 +1,39 @@
+{{ $root := . }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "twistlock-console.fullname" $root }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  name: {{ template "twistlock-console.fullname" $root }}
+  {{- range $key, $value := .Values.service.annotations }}
+  annotations:
+    {{ $key }}: {{ tpl $value $root | quote }}
+  {{- end }}
+spec:
+  {{- with .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml . | indent 2 }}
+  {{- end }}
+  {{- if and .Values.service.clusterIP (eq "ClusterIP" .Values.service.type) }}
+  clusterIP: {{ .Values.service.clusterIP }}
+  {{- end}}
+  type: {{ .Values.service.type }}
+  ports:
+  - name: communication
+    port: {{ .Values.port.communication }}
+  - name: mgmt-https
+    port: {{ .Values.port.management.https }}
+  {{- if .Values.config.management.http.enabled }}
+  - name: mgmt-http
+    port: {{ .Values.port.management.http }}
+  {{- end}}
+  {{- if .Values.config.highAvailability.enabled }}
+  - name: ha
+    port: {{ .Values.port.highAvailability }}
+  {{- end}}
+  selector:
+    app: {{ template "twistlock-console.fullname" $root }}
+    release: {{ .Release.Name }}
