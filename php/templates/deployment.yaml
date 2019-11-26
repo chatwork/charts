@@ -85,7 +85,7 @@ spec:
         imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
         ports:
         - name: default
-          containerPort: 80
+          containerPort: {{ .Values.nginx.port }}
           protocol: TCP
 {{- with .Values.nginx.extraPorts }}
 {{ tpl (toYaml .) $root | indent 8 }}
@@ -120,10 +120,15 @@ spec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
+{{- with .Values.nginx.lifecycle.preStop }}
           preStop:
             exec:
-              command: ["sh", "-c", "sleep 0; nginx -s quit; sleep 5"]
+              command:
+{{ tpl (toYaml .) $root | indent 14 }}
+{{- end }}
+        {{- with .Values.fpm.processControlTimeout }}
         terminationGracePeriodSeconds: {{ add . 10 }}
+        {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
@@ -182,10 +187,15 @@ spec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
+{{- with .Values.fpm.lifecycle.preStop }}
           preStop:
             exec:
-              command: ["sh", "-c", "sleep 1; kill -QUIT 1; sleep 0"]
+              command:
+{{ tpl (toYaml .) $root | indent 14 }}
+{{- end }}
+        {{- with .Values.fpm.processControlTimeout }}
         terminationGracePeriodSeconds: {{ add . 10 }}
+        {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
