@@ -126,9 +126,7 @@ spec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
-        {{- with .Values.fpm.processControlTimeout }}
         terminationGracePeriodSeconds: {{ add . 10 }}
-        {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
@@ -193,9 +191,7 @@ spec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
-        {{- with .Values.fpm.processControlTimeout }}
         terminationGracePeriodSeconds: {{ add . 10 }}
-        {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
