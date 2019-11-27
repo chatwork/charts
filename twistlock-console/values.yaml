@@ -75,6 +75,7 @@ resources:
 
 deployment:
   annotations: {}
+  replicas: 1
   strategy:
     rollingUpdate: null
     type: Recreate
