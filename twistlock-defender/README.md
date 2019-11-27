@@ -95,3 +95,5 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `extraEnv` | Pod extra environment value | `[]`|
 |  `extraVolumeMounts` | Pod extra volumeMounts | `[]`|
 |  `extraVolume` | Pod extra volume | `[]`|
+|  `livenessProve` | Pod livenessProve | `{}`|
+|  `readinessProve` | Pod readinessProve | `{}`|
