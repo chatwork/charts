@@ -56,6 +56,14 @@ spec:
         - name: ha
           containerPort: {{ .Values.port.highAvailability }}
         {{- end }}
+        {{- with .Values.livenssProbe }}
+        livenssProbe:
+{{ tpl (toYaml .) $root | indent 8 }}
+        {{- end }}
+        {{- with .Values.readinessProbe }}
+        readinessProbe:
+{{ tpl (toYaml .) $root | indent 8 }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 8 }}
         env:
