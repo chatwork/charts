@@ -69,6 +69,14 @@ spec:
         {{- with .Values.extraEnv }}
 {{ toYaml . | indent 8 }}
         {{- end }}
+        {{- with .Values.livenssProbe }}
+        livenssProbe:
+{{ tpl (toYaml .) $root | indent 10 }}
+        {{- end }}
+        {{- with .Values.readinessProbe }}
+        readinessProbe:
+{{ tpl (toYaml .) $root | indent 10 }}
+        {{- end }}
         volumeMounts:
         - name: host-root
           mountPath: "/host"

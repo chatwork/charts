@@ -56,8 +56,16 @@ spec:
         - name: ha
           containerPort: {{ .Values.port.highAvailability }}
         {{- end }}
+        {{- with .Values.livenssProbe }}
+        livenssProbe:
+{{ tpl (toYaml .) $root | indent 10 }}
+        {{- end }}
+        {{- with .Values.readinessProbe }}
+        readinessProbe:
+{{ tpl (toYaml .) $root | indent 10 }}
+        {{- end }}
         resources:
-{{ toYaml .Values.resources | indent 8 }}
+{{ toYaml .Values.resources | indent 10 }}
         env:
         - name: CONFIG_PATH
           value: /data/config/twistlock.cfg

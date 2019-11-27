@@ -97,6 +97,14 @@ ingress:
 
 secrets: {}
 
+livenssProbe:
+  tcpSocket:
+    port: "{{ .Values.port.management.https }}"
+
+readinessProbe:
+  tcpSocket:
+    port: "{{ .Values.port.management.https }}"
+
 serviceAccount:
   annotations: {}
 

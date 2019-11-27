@@ -67,6 +67,8 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `deployment.strategy` | Deployment update strategy | `"{}"`|
 |  `podAnnotations` | Pod annotations | `{}`|
 |  `tolerations` | Pod tolerations | `[]`|
+|  `livenessProve` | Pod livenessProve | `tcpSocket.port: {{ .Values.port.management.https }}`|
+|  `readinessProve` | Pod readinessProve | `tcpSocket.port: {{ .Values.port.management.https }}`|
 |  `extraEnv` | Pod extra environment value | `[]`|
 |  `extraVolumeMounts` | Pod extra volumeMounts | `[]`|
 |  `extraVolume` | Pod extra volume | `[]`|

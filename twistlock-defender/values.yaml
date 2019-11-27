@@ -92,3 +92,6 @@ tolerations: []
 extraEnv: []
 extraVolumeMounts: []
 extraVolumes: []
+
+livenssProbe: {}
+readinessProbe: {}
