@@ -4,17 +4,25 @@ nameOverride: ""
 accessToken: "accessToken"
 
 image:
-  repository: registry-auth.twistlock.com/tw_{{ .Values.accessToken }}/twistlock/console
-  tag: console{{ .Values.config.docker.tag }}
-  imagePullPolicy: IfNotPresent
+  repository: "registry-auth.twistlock.com/tw_{{ .Values.accessToken }}/twistlock/console"
+  tag: "console{{ .Values.config.docker.tag }}"
+  imagePullPolicy: "IfNotPresent"
   imagePullSecrets: []
 
 port:
-  communication: "8084"
+  communication:
+    name: "communication"
+    port: 8084
   management:
-    http: "8081"
-    https: "8083"
-  highAvailability: "8086"
+    http:
+      name: "mgmt-http"
+      port: 8081
+    https:
+      name: "mgmt-https"
+      port: 8083
+  highAvailability:
+    name: "ha"
+    port: 8086
 
 volumeMounts:
   data:
@@ -30,7 +38,6 @@ config:
     # common name
     cn: ""
     # Subject Alternative Name
-    #san: "{{ .Release.Name }}"
     san: ""
     portalServer:
       cert: ""
@@ -69,7 +76,9 @@ resources:
 deployment:
   annotations: {}
   replicas: 1
-  strategy: {}
+  strategy:
+    rollingUpdate: null
+    type: Recreate
 
 podAnnotations: {}
 tolerations: []
@@ -97,13 +106,13 @@ ingress:
 
 secrets: {}
 
-livenssProbe:
+livenessProbe:
   tcpSocket:
-    port: "{{ .Values.port.management.https }}"
+    port: "{{ .Values.port.management.https.name }}"
 
 readinessProbe:
   tcpSocket:
-    port: "{{ .Values.port.management.https }}"
+    port: "{{ .Values.port.management.https.name }}"
 
 serviceAccount:
   annotations: {}
@@ -131,13 +140,13 @@ configmap:
     # The system that you use to configure Twistlock must be able to connect to the Twistlock Console on these ports
     # To disable the HTTP listener, leave the value empty (e.g. MANAGEMENT_PORT_HTTP=)
     {{- if .Values.config.management.http.enabled }}
-    MANAGEMENT_PORT_HTTP={{ .Values.port.management.http }}
+    MANAGEMENT_PORT_HTTP={{ .Values.port.management.http.port }}
     {{- end }}
-    MANAGEMENT_PORT_HTTPS={{ .Values.port.management.https }}
+    MANAGEMENT_PORT_HTTPS={{ .Values.port.management.https.port }}
 
     ##### Inter-system communication port #####
     # Sets the port for communication between the Defender(s) and the Console
-    COMMUNICATION_PORT={{ .Values.port.communication }}
+    COMMUNICATION_PORT={{ .Values.port.communication.port }}
 
     ##### Certificate common names (optional) #####
     # Determines how to construct the CN in the Console's certificate
@@ -209,7 +218,7 @@ configmap:
     # This native HA capability uses Mongo clustering and requires 3 or more instances
     HIGH_AVAILABILITY_ENABLED={{ .Values.config.highAvailability.enabled }}
     HIGH_AVAILABILITY_STATE={{ .Values.config.highAvailability.state }}
-    HIGH_AVAILABILITY_PORT={{ .Values.port.highAvailability }}
+    HIGH_AVAILABILITY_PORT={{ .Values.port.highAvailability.port }}
 
     #############################################
     #      Twistlock repository configuration

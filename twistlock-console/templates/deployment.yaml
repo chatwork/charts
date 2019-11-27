@@ -44,20 +44,20 @@ spec:
         image: {{ tpl .Values.image.repository $root }}:{{ tpl .Values.image.tag $root }}
         imagePullPolicy: {{ .Values.image.imagePullPolicy }}
         ports:
-        - name: mgmt-https
-          containerPort: {{ .Values.port.management.https }}
+        - name: {{ .Values.port.management.https.name }}
+          containerPort: {{ .Values.port.management.https.port }}
         {{- if .Values.config.management.http.enabled }}
-        - name: mgmt-http
-          containerPort: {{ .Values.port.management.http }}
+        - name: {{ .Values.port.management.http.name }}
+          containerPort: {{ .Values.port.management.http.port }}
         {{- end }}
-        - name: communication
-          containerPort: {{ .Values.port.communication }}
+        - name: {{ .Values.port.communication.name }}
+          containerPort: {{ .Values.port.communication.port }}
         {{- if .Values.config.highAvailability.enabled }}
         - name: ha
-          containerPort: {{ .Values.port.highAvailability }}
+          containerPort: {{ .Values.port.highAvailability.port }}
         {{- end }}
-        {{- with .Values.livenssProbe }}
-        livenssProbe:
+        {{- with .Values.livenessProbe }}
+        livenessProbe:
 {{ tpl (toYaml .) $root | indent 10 }}
         {{- end }}
         {{- with .Values.readinessProbe }}

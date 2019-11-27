@@ -5,7 +5,7 @@ accessToken: "accessToken"
 
 console:
   dnsName: twistlock-console
-  port: "8084"
+  port: 8084
 
 image:
   repository: "registry-auth.twistlock.com/tw_{{ .Values.accessToken }}/twistlock/defender"
@@ -93,5 +93,5 @@ extraEnv: []
 extraVolumeMounts: []
 extraVolumes: []
 
-livenssProbe: {}
+livenessProbe: {}
 readinessProbe: {}
