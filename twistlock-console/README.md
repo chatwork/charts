@@ -34,10 +34,14 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `image.repository` | Defender image repository | `"registry-auth.twistlock.com/tw_{{ .Values.accessToken }}/twistlock/defender"` |
 |  `image.tag` | Defender image tag | `"defender{{ .Values.config.docker.tag }}"` |
 |  `image.imagePullPolicy` | Image pullpolicy  | `"IfNotPresent"` |
-|  `port.communication` | Console <-> Defener commutation port  | `"8084"` |
-|  `port.management.http` | Console management http port  | `"8081"` |
-|  `port.management.https` | Console management https port  | `"8083"` |
-|  `port.highAvailability` | Console high availability port  | `"8086"` |
+|  `port.communication.name` | Console <-> Defener commutation port name | `"commutation"` |
+|  `port.communication.port` | Console <-> Defener commutation port  | `"8084"` |
+|  `port.management.http.name` | Console management http port name  | `"mgmt-http"` |
+|  `port.management.http.port` | Console management http port  | `"8081"` |
+|  `port.management.https.name` | Console management https port name  | `"mgmt-https"` |
+|  `port.management.https.port` | Console management https port  | `"8083"` |
+|  `port.highAvailability.name` | Console high availability port name | `"ha"` |
+|  `port.highAvailability.port` | Console high availability port  | `"8086"` |
 |  `volumeMounts.data.mountPath` | VolumeMounts path for data directory | `"/var/lib/twistlock"` |
 |  `volumeMounts.data.subPath` | VolumeMounts subPath for data directory | `"twistlock"` |
 |  `volumeMounts.backup.mountPath` | VolumeMounts path for backup directory | `"/var/lib/twistlock-backup"` |
@@ -67,8 +71,8 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `deployment.strategy` | Deployment update strategy | `"{}"`|
 |  `podAnnotations` | Pod annotations | `{}`|
 |  `tolerations` | Pod tolerations | `[]`|
-|  `livenessProve` | Pod livenessProve | `tcpSocket.port: {{ .Values.port.management.https }}`|
-|  `readinessProve` | Pod readinessProve | `tcpSocket.port: {{ .Values.port.management.https }}`|
+|  `livenessProve` | Pod livenessProve | `tcpSocket.port: {{ .Values.port.management.https.name }}`|
+|  `readinessProve` | Pod readinessProve | `tcpSocket.port: {{ .Values.port.management.https.name }}`|
 |  `extraEnv` | Pod extra environment value | `[]`|
 |  `extraVolumeMounts` | Pod extra volumeMounts | `[]`|
 |  `extraVolume` | Pod extra volume | `[]`|

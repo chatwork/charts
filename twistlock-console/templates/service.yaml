@@ -22,17 +22,17 @@ spec:
   {{- end}}
   type: {{ .Values.service.type }}
   ports:
-  - name: communication
-    port: {{ .Values.port.communication }}
-  - name: mgmt-https
-    port: {{ .Values.port.management.https }}
+  - name: {{ .Values.port.communication.name }}
+    port: {{ .Values.port.communication.port }}
+  - name: {{ .Values.port.management.https.name }}
+    port: {{ .Values.port.management.https.port }}
   {{- if .Values.config.management.http.enabled }}
-  - name: mgmt-http
-    port: {{ .Values.port.management.http }}
+  - name: {{ .Values.port.management.http.name }}
+    port: {{ .Values.port.management.http.port }}
   {{- end}}
   {{- if .Values.config.highAvailability.enabled }}
-  - name: ha
-    port: {{ .Values.port.highAvailability }}
+  - name: {{ .Values.port.highAvailability.name }}
+    port: {{ .Values.port.highAvailability.port }}
   {{- end}}
   selector:
     app: {{ template "twistlock-console.fullname" $root }}

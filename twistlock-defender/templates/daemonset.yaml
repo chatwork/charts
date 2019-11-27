@@ -69,8 +69,8 @@ spec:
         {{- with .Values.extraEnv }}
 {{ toYaml . | indent 8 }}
         {{- end }}
-        {{- with .Values.livenssProbe }}
-        livenssProbe:
+        {{- with .Values.livenessProbe }}
+        livenessProbe:
 {{ tpl (toYaml .) $root | indent 10 }}
         {{- end }}
         {{- with .Values.readinessProbe }}
