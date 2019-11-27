@@ -133,6 +133,8 @@ nginx:
     # postStart: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
     preStop: []
 
+  terminationGracePeriodSeconds:
+
   livenessProbe:
     httpGet:
       path: /status
@@ -296,7 +298,7 @@ fpm:
     # postStart: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
     preStop: []
 
-  processControlTimeout: 0
+  terminationGracePeriodSeconds:
 
   pm:
     maxChildren: 5

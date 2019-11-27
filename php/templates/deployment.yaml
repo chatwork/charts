@@ -126,7 +126,9 @@ spec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
-        terminationGracePeriodSeconds: {{ add . 10 }}
+{{- if .Values.nginx.terminationGracePeriodSeconds }}
+        terminationGracePeriodSeconds: {{ .Values.nginx.terminationGracePeriodSeconds }}
+{{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
@@ -191,7 +193,9 @@ spec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
-        terminationGracePeriodSeconds: {{ add . 10 }}
+{{- if .Values.fpm.terminationGracePeriodSeconds }}
+        terminationGracePeriodSeconds: {{ .Values.fpm.terminationGracePeriodSeconds }}
+{{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share

@@ -96,6 +96,11 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.image.repository` | The image repository to pull from | `nginx` |
 |  `nginx.image.tag` | The image tag to pull | `1.15.1-alpine` |
 |  `nginx.image.pullPolicy` | Image pull policy | `IfNotPresent` |
+|  `nginx.host` | Default host of NGINX | `localhost` |
+|  `nginx.port` | Default public port of NGINX | `80` |
+|  `nginx.lifecycle.postStart` | Default PostStart of NGINX'S Pod | `[]` |
+|  `nginx.lifecycle.preStop` | Default PreStop of NGINX'S Pod | `[]` |
+|  `nginx.lifecycle.terminationGracePeriodSeconds` | Default terminationGracePeriodSeconds of NGINX's Pod |  |
 |  `nginx.livenessProbe` | Overrides the default liveness probe | HTTP `/status` port `7777` |
 |  `nginx.readinessProbe` | Overrides the default readness probe | HTTP `/ping` port `7777` |
 |  `nginx.resources` | Overrides the default resource | `{}` |
@@ -116,7 +121,9 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.image.tag` | The image tag to pull | `7.1-fpm-alpine` |
 |  `fpm.image.pullPolicy` | Image pull policy | `IfNotPresent` |
 |  `fpm.command` | Overrides the default command | `[]` |
-|  `fpm.ini` | Override the default php.ini. Please specify the parameter name with Lower Camel Case |  |
+|  `fpm.lifecycle.postStart` | Default PostStart of FPM'S Pod | `[]` |
+|  `fpm.lifecycle.preStop` | Default PreStop of FPM'S Pod | `[]` |
+|  `fpm.lifecycle.terminationGracePeriodSeconds` | Default terminationGracePeriodSeconds of FPM's Pod |  |
 |  `fpm.livenessProbe` | Overrides the default liveness probe | `{}` |
 |  `fpm.readinessProbe` | Overrides the default readness probe | `{}` |
 |  `fpm.resources` | Overrides the default resource | `{}` |
@@ -146,16 +153,15 @@ change `host` and `port` of `templates.conf.d.default.conf`.
 Inject preStop commands to safely perform a graceful shutdown according to your requirements.
 
 Set this value as needed.
-Inject Nginx and FPM preStop commands.
-default value is `processControlTimeout: 0`
+Inject **Nginx** and **FPM** preStop commands.
 ```
 nginx:
   lifecycle:
     postStart: []
-    preStop: ["/bin/sh", "-c", "sleep {{ .Values.fpm.processControlTimeout | default 0 }}; nginx -s quit; sleep 5"]
+    preStop: ["/bin/sh", "-c", "sleep {{ .Values.nginx.terminationGracePeriodSeconds | default 0 }}; nginx -s quit; sleep 5"]
 
 fpm:
   lifecycle:
     postStart: []
-    preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ .Values.fpm.processControlTimeout | default 0 }}"]
+    preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ .Values.fpm.terminationGracePeriodSeconds | default 0 }}"]
 ```
