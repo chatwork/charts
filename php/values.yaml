@@ -125,8 +125,8 @@ nginx:
     pullPolicy: IfNotPresent
 
   # NGINX configuration
-  host: localhost # host using as Ingress host name
-  port: 80        # port using as Container port, Service port, Ingress port
+  # port using as Container port, Service port, Ingress port
+  port: 80
 
   lifecycle:
     postStart: []
