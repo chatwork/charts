@@ -52,20 +52,11 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `tolerations` | Pod taint tolerations for deployment | `[]` |
 |  `affinity` | Node / Pod affinities | `{}` |
 |  `service.type` | Changes to ClusterIP automatically if ingress enabled | `LoadBalancer` |
-|  `service.port` | Port to advertise the main web service in LoadBalancer mode | `8080` |
-|  `service.extraPorts` | Additional ports | `8080` |
-|  `ingress.enabled` | Enables Ingress | `FALSE` |
-|  `ingress.annotation` | Ingress annotations |  |
-|  `ingress.hosts` | Ingress accepted hostname | `[]` |
-|  `ingress.port` | Ingress port | service.port or nginx.port |
-|  `ingress.preferPaths` | Paths that takes precedence over the ingress.path |  |
-|  `ingress.tls` | TLS Secret (certificates)  |  |
-|  `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `FALSE` |
-|  `podDisruptionBudget.minAvailabled` | Minimum number / percentage of pods that should remain scheduled |  |
-|  `podDisruptionBudget.maxAvailabled` | Minimum number / percentage of pods that should remain scheduled |  |
+|  `service.extraPorts` | Additional ports | `[]` |
+|  `ingress.enabled` | Enables Ingress | `false` |
+|  `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
 |  `extras.templates` | Additional raw Kubernetes resources | `{}` |
-|  `test.enabled` | Enables helm test | `TRUE` |
-|  `test.extraContainers` | Additional containers |  |
+|  `test.enabled` | Enables helm test | `true` |
 
 ### Init Containers
 
@@ -80,7 +71,6 @@ We recommend that you embed the source code in your container and copy it to the
 |  `busybox.image.tag` | The image tag to pull | `latest` |
 |  `busybox,image.pullPolicy` | Image pull policy | `IfNotPresent` |
 |  `busybox.command` | Initialize command | `["sh", "-c", "echo '<?php phpinfo();' > /var/www/html/index.php"]` |
-|  `busybox.sharedPath` | Path of directory to mount | `sharePath` |
 |  `busybox.extraEnv` | Additional environment variables | `{}` |
 |  `busybox.extraEnvFrom` | Additional envFrom | `[]` |
 |  `busybox.extraVolumes` | Additional volumes | `[]` |
@@ -96,13 +86,24 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.image.repository` | The image repository to pull from | `nginx` |
 |  `nginx.image.tag` | The image tag to pull | `1.15.1-alpine` |
 |  `nginx.image.pullPolicy` | Image pull policy | `IfNotPresent` |
-|  `nginx.host` | Default host of NGINX | `localhost` |
 |  `nginx.port` | Default public port of NGINX | `80` |
-|  `nginx.lifecycle.postStart` | Default PostStart of NGINX'S Pod | `[]` |
-|  `nginx.lifecycle.preStop` | Default PreStop of NGINX'S Pod | `[]` |
-|  `nginx.lifecycle.terminationGracePeriodSeconds` | Default terminationGracePeriodSeconds of NGINX's Pod |  |
-|  `nginx.livenessProbe` | Overrides the default liveness probe | HTTP `/status` port `7777` |
-|  `nginx.readinessProbe` | Overrides the default readness probe | HTTP `/ping` port `7777` |
+|  `nginx.lifecycle.postStart` | PostStart of NGINX | `[]` |
+|  `nginx.lifecycle.preStop` | PreStop of NGINX | `[]` |
+|  `nginx.lifecycle.terminationGracePeriodSeconds` | terminationGracePeriodSeconds of NGINX | `nil` |
+|  `nginx.livenessProbe.httpGet.path` | Overrides the default liveness probe httGet path | `/status` |
+|  `nginx.livenessProbe.httpGet.port` | Overrides the default liveness probe httGet port | `7777` |
+|  `nginx.livenessProbe.initialDelaySeconds` | Overrides the default liveness probe initialDelaySeconds | `15` |
+|  `nginx.livenessProbe.periodSeconds` | Overrides the default liveness probe periodSeconds | `5` |
+|  `nginx.livenessProbe.timeoutSeconds` | Overrides the default liveness probe timeoutSeconds | `1` |
+|  `nginx.livenessProbe.successThreshold` | Overrides the default liveness probe successThreshold | `1` |
+|  `nginx.livenessProbe.failureThreshold` | Overrides the default liveness probe failureThreshold | `3` |
+|  `nginx.readinessProbe.httpGet.path` | Overrides the default readiness probe httGet path | `/ping` |
+|  `nginx.readinessProbe.httpGet.port` | Overrides the default readiness probe httGet port | `7777` |
+|  `nginx.readinessProbe.initialDelaySeconds` | Overrides the default readiness probe initialDelaySeconds | `15` |
+|  `nginx.readinessProbe.periodSeconds` | Overrides the default readiness probe periodSeconds | `5` |
+|  `nginx.readinessProbe.timeoutSeconds` | Overrides the default readiness probe timeoutSeconds | `1` |
+|  `nginx.readinessProbe.successThreshold` | Overrides the default readiness probe successThreshold | `1` |
+|  `nginx.readinessProbe.failureThreshold` | Overrides the default readiness probe failureThreshold | `3` |
 |  `nginx.resources` | Overrides the default resource | `{}` |
 |  `nginx.extraEnv` | Additional environment variables | `{}` |
 |  `nginx.extraEnvFrom` | Additional envFrom | `[]` |
@@ -121,9 +122,9 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.image.tag` | The image tag to pull | `7.1-fpm-alpine` |
 |  `fpm.image.pullPolicy` | Image pull policy | `IfNotPresent` |
 |  `fpm.command` | Overrides the default command | `[]` |
-|  `fpm.lifecycle.postStart` | Default PostStart of FPM'S Pod | `[]` |
-|  `fpm.lifecycle.preStop` | Default PreStop of FPM'S Pod | `[]` |
-|  `fpm.lifecycle.terminationGracePeriodSeconds` | Default terminationGracePeriodSeconds of FPM's Pod |  |
+|  `fpm.lifecycle.postStart` | PostStart of FPM | `[]` |
+|  `fpm.lifecycle.preStop` | PreStop of FPM | `[]` |
+|  `fpm.lifecycle.terminationGracePeriodSeconds` | terminationGracePeriodSeconds of FPM | `nil` |
 |  `fpm.livenessProbe` | Overrides the default liveness probe | `{}` |
 |  `fpm.readinessProbe` | Overrides the default readness probe | `{}` |
 |  `fpm.resources` | Overrides the default resource | `{}` |
@@ -133,7 +134,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.extraVolumes` | Additional volumes | `[]` |
 |  `fpm.extraVolumeMounts` | Additional volumeMounts | `[]` |
 |  `fpm.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
-|  `fpm.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `php-fpm.conf`、`php-fpm.d/www.conf` |
+|  `fpm.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `php.ini`,`php-fpm.conf`,`php-fpm.d/www.conf` |
 |  `fpm.annotations` | Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets` | `{}` |
 
 ### Manage Nginx host and port
@@ -150,10 +151,13 @@ change `host` and `port` of `templates.conf.d.default.conf`.
 ```
 
 ### Manage Request Timeout Setting
-Inject preStop commands to safely perform a graceful shutdown according to your requirements.
+Inject preStop commands to safely perform a graceful shutdown according to your requirements.and Enter a value for `terminationGracePeriodSeconds` to control the time to graceful shutdown for each pod.
 
-Set this value as needed.
-Inject **Nginx** and **FPM** preStop commands.
+Follow the steps below to set preStop.
+1. set a value for `terminationGracePeriodSeconds`
+   1. For nginx, `.Values.nginx.terminationGracePeriodSeconds`
+   2. For fpm, `.Values.fpm.terminationGracePeriodSeconds`
+2. set a command for `lifecycle.preStop`.Please refer to the following.
 ```
 nginx:
   lifecycle:
