@@ -52,9 +52,17 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `tolerations` | Pod taint tolerations for deployment | `[]` |
 |  `affinity` | Node / Pod affinities | `{}` |
 |  `service.type` | Changes to ClusterIP automatically if ingress enabled | `LoadBalancer` |
-|  `service.extraPorts` | Additional ports | `[]` |
+|  `service.port` | Port to advertise the main web service in LoadBalancer mode | `8080` |
+|  `service.extraPorts` | Additional ports | `8080` |
 |  `ingress.enabled` | Enables Ingress | `false` |
+|  `ingress.annotation` | Ingress annotations |  |
+|  `ingress.hosts` | Ingress accepted hostname | `[]` |
+|  `ingress.port` | Ingress port | service.port or nginx.port |
+|  `ingress.preferPaths` | Paths that takes precedence over the ingress.path |  |
+|  `ingress.tls` | TLS Secret (certificates)  |  |
 |  `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
+|  `podDisruptionBudget.minAvailabled` | Minimum number / percentage of pods that should remain scheduled |  |
+|  `podDisruptionBudget.maxAvailabled` | Minimum number / percentage of pods that should remain scheduled |  |
 |  `extras.templates` | Additional raw Kubernetes resources | `{}` |
 |  `test.enabled` | Enables helm test | `true` |
 
@@ -71,6 +79,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `busybox.image.tag` | The image tag to pull | `latest` |
 |  `busybox,image.pullPolicy` | Image pull policy | `IfNotPresent` |
 |  `busybox.command` | Initialize command | `["sh", "-c", "echo '<?php phpinfo();' > /var/www/html/index.php"]` |
+|  `busybox.sharedPath` | Path of directory to mount | `sharePath` |
 |  `busybox.extraEnv` | Additional environment variables | `{}` |
 |  `busybox.extraEnvFrom` | Additional envFrom | `[]` |
 |  `busybox.extraVolumes` | Additional volumes | `[]` |
@@ -151,21 +160,46 @@ change `host` and `port` of `templates.conf.d.default.conf`.
 ```
 
 ### Manage Request Timeout Setting
-Inject preStop commands to safely perform a graceful shutdown according to your requirements.and Enter a value for `terminationGracePeriodSeconds` to control the time to graceful shutdown for each pod.
+This chart sets `lifecycle.preStop` command and `terminationGracePeriodSeconds` to perform a graceful shutdown safely according to requirements.
 
-Follow the steps below to set preStop.
-1. set a value for `terminationGracePeriodSeconds`
-   1. For nginx, `.Values.nginx.terminationGracePeriodSeconds`
-   2. For fpm, `.Values.fpm.terminationGracePeriodSeconds`
-2. set a command for `lifecycle.preStop`.Please refer to the following.
+Therefore, the next item is the point.
+#### nginx
+- proxy_connect_timeout
+- proxy_send_timeout
+- proxy_read_timeout
+- fastcgi_connect_timeout
+- fastcgi_send_timeout
+- fastcgi_read_timeout
+
+setting sleep value larger than the value of each nginx item.
+
+##### fpm
+- process_control_timeout
+- request_terminate_timeout
+
+setting sleep value larger than the value of each fpm item.
+
+To change the value of `process_control_timeout`, change the value of template `php-fpm.conf` directly. And to change the value of `request_terminate_timeout`, change the value of template `www.conf` directly.
+
+For your reference, calculation method of sleep value by preStop command of each pod and calculation method of `terminationGracePeriodSeconds`.
 ```
+# nginx_settig_value >= nginx conf( proxy_connect_timeout, proxy_send_timeout, proxy_read_timeout, fastcgi_connect_timeout,fastcgi_send_timeout, fastcgi_read_timeout)
+# nginx.terminationGracePeriodSeconds = fpm_settig_value + nginx_settig_value + α
 nginx:
   lifecycle:
     postStart: []
-    preStop: ["/bin/sh", "-c", "sleep {{ .Values.nginx.terminationGracePeriodSeconds | default 0 }}; nginx -s quit; sleep 5"]
+    preStop: ["/bin/sh", "-c", "sleep 【fpm_settig_value】; nginx -s quit; sleep 【nginx_settig_value】"]
+  terminationGracePeriodSeconds: 【nginx.terminationGracePeriodSeconds】
 
+# fpm_settig_value >= fpm.process_control_timeout >= fpm.request_terminate_timeout
+# fpm.terminationGracePeriodSeconds = fpm_settig_value + α
 fpm:
   lifecycle:
     postStart: []
-    preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ .Values.fpm.terminationGracePeriodSeconds | default 0 }}"]
+    preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep 【fpm_settig_value】 "]
+  terminationGracePeriodSeconds: 【fpm.terminationGracePeriodSeconds】
+  
+  templates:
+    php-fpm.conf: |
+    	process_control_timeout =【fpm_settig_value】
 ```
