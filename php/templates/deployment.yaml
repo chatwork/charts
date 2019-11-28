@@ -126,8 +126,8 @@ spec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
-{{- if .Values.nginx.terminationGracePeriodSeconds }}
-        terminationGracePeriodSeconds: {{ .Values.nginx.terminationGracePeriodSeconds }}
+{{- with .Values.nginx.terminationGracePeriodSeconds }}
+        terminationGracePeriodSeconds: {{ $.Values.nginx.terminationGracePeriodSeconds }}
 {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
@@ -193,8 +193,8 @@ spec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
-{{- if .Values.fpm.terminationGracePeriodSeconds }}
-        terminationGracePeriodSeconds: {{ .Values.fpm.terminationGracePeriodSeconds }}
+{{- with .Values.fpm.terminationGracePeriodSeconds }}
+        terminationGracePeriodSeconds: {{ $.Values.fpm.terminationGracePeriodSeconds }}
 {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
