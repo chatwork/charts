@@ -45,7 +45,7 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `sharedPath` | Path shared by busybox/nginx/fpm | `/var/www/html` |
 |  `replicaCount` | Number of pods to start with deployment | `1` |
 |  `strategy` | Update strategy of pod in deployment | `type`: `RollingUpdate` |
-|  `podAnnotation` | Annotation specified for pod in deployment | {} |
+|  `podAnnotation` | Annotation specified for pod in deployment | `{}` |
 |  `imagePullSecrets` | Name of Secret resource containing private registry credentials | `[]` |
 |  `extraVolumes` | Additional volumes to all container | `[]` |
 |  `extraVolumeMounts` | Additional volumeMounts to all container | `[]` |
@@ -53,16 +53,16 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `affinity` | Node / Pod affinities | `{}` |
 |  `service.type` | Changes to ClusterIP automatically if ingress enabled | `LoadBalancer` |
 |  `service.port` | Port to advertise the main web service in LoadBalancer mode | `8080` |
-|  `service.extraPorts` | Additional ports | `8080` |
+|  `service.extraPorts` | Additional ports | `[]` |
 |  `ingress.enabled` | Enables Ingress | `false` |
-|  `ingress.annotation` | Ingress annotations |  |
+|  `ingress.annotation` | Ingress annotations | `{}` |
 |  `ingress.hosts` | Ingress accepted hostname | `[]` |
-|  `ingress.port` | Ingress port | service.port or nginx.port |
-|  `ingress.preferPaths` | Paths that takes precedence over the ingress.path |  |
-|  `ingress.tls` | TLS Secret (certificates)  |  |
+|  `ingress.port` | Ingress port | `service.port or nginx.port` |
+|  `ingress.preferPaths` | Paths that takes precedence over the ingress.path | `nil` |
+|  `ingress.tls` | TLS Secret (certificates)  | `false` |
 |  `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
-|  `podDisruptionBudget.minAvailabled` | Minimum number / percentage of pods that should remain scheduled |  |
-|  `podDisruptionBudget.maxAvailabled` | Minimum number / percentage of pods that should remain scheduled |  |
+|  `podDisruptionBudget.minAvailabled` | Minimum number / percentage of pods that should remain scheduled | `nil` |
+|  `podDisruptionBudget.maxAvailabled` | Minimum number / percentage of pods that should remain scheduled | `nil` |
 |  `extras.templates` | Additional raw Kubernetes resources | `{}` |
 |  `test.enabled` | Enables helm test | `true` |
 
@@ -74,7 +74,7 @@ We recommend that you embed the source code in your container and copy it to the
 
 |  Parameter | Description | Default |
 | --- | --- | --- |
-|  `busybox.enabled` | Enables initial containers and share volume with busybox | `TRUE` |
+|  `busybox.enabled` | Enables initial containers and share volume with busybox | `true` |
 |  `busybox.image.repository` | The image repository to pull from | `busybox` |
 |  `busybox.image.tag` | The image tag to pull | `latest` |
 |  `busybox,image.pullPolicy` | Image pull policy | `IfNotPresent` |
@@ -183,23 +183,23 @@ To change the value of `process_control_timeout`, change the value of template `
 
 For your reference, calculation method of sleep value by preStop command of each pod and calculation method of `terminationGracePeriodSeconds`.
 ```
-# nginx_settig_value >= nginx conf( proxy_connect_timeout, proxy_send_timeout, proxy_read_timeout, fastcgi_connect_timeout,fastcgi_send_timeout, fastcgi_read_timeout)
-# nginx.terminationGracePeriodSeconds = fpm_settig_value + nginx_settig_value + α
+{{ $fpm_request_timeout := max your_fpm_process_control_timeout your_fpm_request_terminate_timeout }}
+{{ $fpm_termination_grace_period_seconds := add $fpm_request_timeout 10 }}
+{{ $nginx_request_timeout := max your_proxy_connect_timeout  your_proxy_send_timeout  your_proxy_read_timeout your fastcgi_connect_timeout your fastcgi_send_timeout, fastcgi_read_timeout }}
+{{ $nginx_termination_grace_period_seconds := add (add $fpm_terminationGracePeriodSeconds + $nginx_request_timeout) 10 }}
 nginx:
   lifecycle:
     postStart: []
-    preStop: ["/bin/sh", "-c", "sleep 【fpm_settig_value】; nginx -s quit; sleep 【nginx_settig_value】"]
-  terminationGracePeriodSeconds: 【nginx.terminationGracePeriodSeconds】
+    preStop: ["/bin/sh", "-c", "sleep {{ $fpm_request_timeout }}; nginx -s quit; sleep {{ $nginx_request_timeout }}"]
+  terminationGracePeriodSeconds:  {{ $nginx_termination_grace_period_seconds }}
 
-# fpm_settig_value >= fpm.process_control_timeout >= fpm.request_terminate_timeout
-# fpm.terminationGracePeriodSeconds = fpm_settig_value + α
 fpm:
   lifecycle:
     postStart: []
-    preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep 【fpm_settig_value】 "]
-  terminationGracePeriodSeconds: 【fpm.terminationGracePeriodSeconds】
+    preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ $fpm_request_timeout }} "]
+  terminationGracePeriodSeconds: {{ $fpm_termination_grace_period_seconds }}
   
   templates:
     php-fpm.conf: |
-    	process_control_timeout =【fpm_settig_value】
+    	process_control_timeout = {{ your_fpm_process_control_timeout }}
 ```
