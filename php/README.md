@@ -183,10 +183,22 @@ To change the value of `process_control_timeout`, change the value of template `
 
 For your reference, calculation method of sleep value by preStop command of each pod and calculation method of `terminationGracePeriodSeconds`.
 ```
+# calculation method
 {{ $fpm_request_timeout := max your_fpm_process_control_timeout your_fpm_request_terminate_timeout }}
 {{ $fpm_termination_grace_period_seconds := add $fpm_request_timeout 10 }}
 {{ $nginx_request_timeout := max your_proxy_connect_timeout  your_proxy_send_timeout  your_proxy_read_timeout your fastcgi_connect_timeout your fastcgi_send_timeout, fastcgi_read_timeout }}
 {{ $nginx_termination_grace_period_seconds := add (add $fpm_terminationGracePeriodSeconds + $nginx_request_timeout) 10 }}
+
+# values.yaml
+.Values.nginx.terminationGracePeriodSeconds = $nginx_termination_grace_period_seconds
+.Values.fpm.terminationGracePeriodSeconds =  $fpm_termination_grace_period_seconds
+
+templates:
+  php-fpm.conf: |
+    process_control_timeout = {{ your_fpm_process_control_timeout }}
+
+
+# deployment.yaml
 nginx:
   lifecycle:
     postStart: []
@@ -198,8 +210,4 @@ fpm:
     postStart: []
     preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ $fpm_request_timeout }} "]
   terminationGracePeriodSeconds: {{ $fpm_termination_grace_period_seconds }}
-  
-  templates:
-    php-fpm.conf: |
-    	process_control_timeout = {{ your_fpm_process_control_timeout }}
 ```
