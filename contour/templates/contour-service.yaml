@@ -1,13 +1,18 @@
+{{ $root := . }}
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: {{ template "contour.fullname" . }}
-    {{- if .Values.contour.service.annotations }}
+    app: {{ template "contour.fullname" $root }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  name: {{ template "contour.fullname" $root }}
+  {{- range $key, $value := .Values.contour.service.annotations }}
   annotations:
-{{ toYaml .Values.contour.service.annotations | indent 4 }}
-    {{- end }}
-  name: {{ template "contour.fullname" . }}
+    {{ $key }}: {{ tpl $value $root | quote }}
+  {{- end }}
+  name: {{ template "contour.fullname" $root }}
 spec:
   type: ClusterIP
   ports:
@@ -16,4 +21,4 @@ spec:
     protocol: TCP
     targetPort: {{ .Values.contour.port.xds }}
   selector:
-    app: {{ template "contour.fullname" . }}
+    app: {{ template "contour.fullname" $root }}
