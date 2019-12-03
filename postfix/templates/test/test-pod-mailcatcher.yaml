@@ -27,7 +27,7 @@ spec:
         - -c
         - |
         {{- if .Values.daemonset.enabled }}
-          export SMTPHOST="${NODE_IP}:{{ .Values.daemonset.hostPort }}" \
+          export SMTPHOST="${NODE_IP}:{{ .Values.daemonset.hostPort | default 25 }}" \
         {{- end }}
         {{- if .Values.deployment.enabled }}
           export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.deployment.service.port }}" \
