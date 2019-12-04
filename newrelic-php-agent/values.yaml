@@ -24,12 +24,12 @@ newrelic:
   socketfile:
     enabled: false
 
-daemonset:
-  enabled: true
+  daemonset:
+    enabled: false
 
-deployment:
-  enabled: true
-  replicaCount: 1
+  deployment:
+    enabled: true
+    replicaCount: 1
 
   extraPorts: []
   extraEnv: []

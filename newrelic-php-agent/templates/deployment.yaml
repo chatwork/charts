@@ -1,4 +1,4 @@
-{{- if .Values.deployment.enabled }}
+{{- if .Values.newrelic.deployment.enabled }}
 {{- $root := . -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -10,8 +10,8 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.deployment.replicaCount }}
-{{- with .Values.strategy }}
+  replicas: {{ .Values.newrelic.deployment.replicaCount }}
+{{- with .Values.newrelic.strategy }}
   strategy:
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -25,10 +25,11 @@ spec:
         app.kubernetes.io/name: {{ include "newrelic-php-agent.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      - name: {{ include "newrelic-php-agent.fullname" . }}
+      containers:
+      - name: "{{ include "newrelic-php-agent.fullname" . }}"
         image: "{{ .Values.newrelic.image.repository }}:{{ .Values.newrelic.image.tag }}"
         imagePullPolicy: {{ .Values.newrelic.image.pullPolicy }}
-{{- with .Values.newrelic.command }}
+{{- with .Values.newrelic.image.command }}
         command:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
