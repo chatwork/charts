@@ -52,7 +52,7 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `tolerations` | Pod taint tolerations for deployment | `[]` |
 |  `affinity` | Node / Pod affinities | `{}` |
 |  `service.type` | Changes to ClusterIP automatically if ingress enabled | `LoadBalancer` |
-|  `service.port` | Port to advertise the main web service in LoadBalancer mode | `8080` |
+|  `service.port` | Port to advertise the main web service in LoadBalancer mode | `nil` |
 |  `service.extraPorts` | Additional ports | `[]` |
 |  `ingress.enabled` | Enables Ingress | `false` |
 |  `ingress.annotation` | Ingress annotations | `{}` |
