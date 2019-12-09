@@ -249,6 +249,9 @@ spec:
       imagePullSecrets:
 {{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
+{{- with .Values.serviceAccountName }}
+      serviceAccountName: {{ . }}
+{{- end }}
 {{- with .Values.affinity }}
       affinity:
 {{ tpl (toYaml .) $root | indent 6 }}
