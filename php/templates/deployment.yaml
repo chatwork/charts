@@ -122,8 +122,6 @@ spec:
           preStop:
             exec:
               command: ["sh", "-c", "sleep {{ .Values.fpm.processControlTimeout | default 0 }}; nginx -s quit; sleep 5"]
-        {{- with .Values.fpm.processControlTimeout }}
-        {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
@@ -185,8 +183,6 @@ spec:
           preStop:
             exec:
               command: ["sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ .Values.fpm.processControlTimeout | default 0 }}"]
-        {{- with .Values.fpm.processControlTimeout }}
-        {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
@@ -252,7 +248,9 @@ spec:
 {{- with .Values.serviceAccountName }}
       serviceAccountName: {{ . }}
 {{- end }}
+{{- with .Values.fpm.processControlTimeout }}
       terminationGracePeriodSeconds: {{ add . 10 }}
+{{- end }}
 {{- with .Values.affinity }}
       affinity:
 {{ tpl (toYaml .) $root | indent 6 }}
