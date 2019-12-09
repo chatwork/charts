@@ -124,7 +124,6 @@ spec:
             exec:
               command: ["sh", "-c", "sleep {{ .Values.fpm.processControlTimeout | default 0 }}; nginx -s quit; sleep 5"]
         {{- with .Values.fpm.processControlTimeout }}
-        terminationGracePeriodSeconds: {{ add . 10 }}
         {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
@@ -188,7 +187,6 @@ spec:
             exec:
               command: ["sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ .Values.fpm.processControlTimeout | default 0 }}"]
         {{- with .Values.fpm.processControlTimeout }}
-        terminationGracePeriodSeconds: {{ add . 10 }}
         {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
@@ -252,6 +250,7 @@ spec:
 {{- with .Values.serviceAccountName }}
       serviceAccountName: {{ . }}
 {{- end }}
+      terminationGracePeriodSeconds: {{ add . 10 }}
 {{- with .Values.affinity }}
       affinity:
 {{ tpl (toYaml .) $root | indent 6 }}
