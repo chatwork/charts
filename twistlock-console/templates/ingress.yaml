@@ -1,0 +1,25 @@
+{{- $root := . -}}
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "twistlock-console.fullname" $root }}
+  labels:
+    app: {{ template "twistlock-console.fullname" $root }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  {{- range $key, $value := .Values.ingress.annotations }}
+  annotations:
+    {{ $key }}: {{ tpl $value $root | quote }}
+  {{- end }}
+spec:
+{{- with .Values.ingress.tls }}
+  tls:
+{{ tpl (toYaml .) $root | indent 2 }}
+{{- end }}
+  rules:
+{{- with .Values.ingress.rules }}
+{{ tpl (toYaml .) $root | indent 2 }}
+{{- end }}
+{{- end }}

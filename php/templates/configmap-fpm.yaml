@@ -2,6 +2,24 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: {{ template "php.fullname" . }}-fpm-php-ini
+  labels:
+    app: {{ template "php.name" . }}
+    chart: {{ template "php.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    checksum/fpm-php-ini: {{ tpl (index .Values.fpm.templates "php.ini" | toYaml) . | sha256sum }}
+{{- with .Values.fpm.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+data:
+  php.ini:
+{{- tpl (index .Values.fpm.templates "php.ini") . | toYaml | indent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: {{ template "php.fullname" . }}-fpm-php-fpm-conf
   labels:
     app: {{ template "php.name" . }}
@@ -43,7 +61,7 @@ data:
 {{- $fpm := .Values.fpm -}}
 {{- if .Values.fpm.templates }}
 {{- range $name, $tmpl := .Values.fpm.templates }}
-{{- if and (ne $name "php-fpm.conf") (ne $name "php-fpm.d") }}
+{{- if and (ne $name "php-fpm.conf") (and (ne $name "php-fpm.d") (ne $name "php.ini")) }}
 ---
 apiVersion: v1
 kind: ConfigMap
