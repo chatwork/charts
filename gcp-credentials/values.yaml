@@ -1,7 +1,7 @@
-# private_key needs base64 encoding
 type: service_account
 projectId: projectid
 privateKeyId: privateKeyId
+# private_key needs base64 encoding
 privateKey: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tXG4NCnRlc3Rcbg0KLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS1cbg"
 clientEmail: "test@example.com"
 clientId: "clientId"
@@ -15,7 +15,7 @@ credentialsJson: |
     "type": "{{ .Values.type }}",
     "project_id": "{{ .Values.projectId }}",
     "private_key_id": "{{ .Values.privateKeyId }}",
-    "private_key": "{{ .Values.privateKey | default "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tXG4NCnRlc3Rcbg0KLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS1cbg==" | b64dec }}",
+    "private_key": "{{ .Values.privateKey | b64dec }}",
     "client_email": "{{ .Values.clientEmail }}",
     "client_id": "{{ .Values.clientId }}",
     "auth_uri": "{{ .Values.authUri }}",
