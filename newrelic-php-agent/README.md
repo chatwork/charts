@@ -20,6 +20,6 @@ The following table lists the configurable parameters of the newrelic-php-agent 
 |  Parameter | Description | Default |
 | --- | --- | --- |
 | `image.repository` | The image repository to pull from | `chatwork/newrelic-php-agent`|
-| `image.tag` | The image tag to pull | `latest`|
+| `image.tag` | The image tag to pull | `0.0.1`|
 | `image.imagePullPolicy` | Image pull policy | `IfNotPresent` |
 | `image.command` | Image Entrypoint | `[]` |
