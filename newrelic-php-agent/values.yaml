@@ -22,7 +22,7 @@ newrelic:
     periodSeconds: 5
 
   socketfile:
-    enabled: false
+    enabled: true
 
   daemonset:
     enabled: false
