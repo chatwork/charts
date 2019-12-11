@@ -245,6 +245,9 @@ spec:
       imagePullSecrets:
 {{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
+{{- with .Values.securityContext }}
+      securityContext: {{ . }}
+{{- end }}
 {{- with .Values.serviceAccountName }}
       serviceAccountName: {{ . }}
 {{- end }}
