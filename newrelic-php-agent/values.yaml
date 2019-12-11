@@ -25,10 +25,10 @@ newrelic:
     enabled: true
 
   daemonset:
-    enabled: false
+    enabled: true
 
   deployment:
-    enabled: true
+    enabled: false
     replicaCount: 1
 
   extraPorts: []
