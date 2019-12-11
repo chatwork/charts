@@ -247,7 +247,7 @@ spec:
 {{- end }}
 {{- with .Values.securityContext }}
       securityContext:
-{{ tpl (toYaml .) $root | indent 6 }}
+{{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
 {{- with .Values.serviceAccountName }}
       serviceAccountName: {{ . }}
