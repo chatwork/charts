@@ -17,6 +17,8 @@ imagePullSecrets: []
 
 restartPolicy: ""
 
+securityContext: {}
+
 serviceAccountName: ""
 
 extraVolumes: []
