@@ -111,7 +111,7 @@ spec:
       {{- end }}
       tolerations:
       {{- with .Values.tolerations }}
-{{ tpl (toYaml .) | indent 8 }}
+{{ tpl (toYaml .) $root | indent 8 }}
       {{- end }}
       volumes:
       - name: persistent-volume
