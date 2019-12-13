@@ -50,7 +50,7 @@ config:
   runConsoleAsRoot:
     enabled: false
   docker:
-    tag: "_19_07_363"
+    tag: "_19_11_480"
     socket: "/var/run/docker.sock"
   recovery:
     enabled: true
