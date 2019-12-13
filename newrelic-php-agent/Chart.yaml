@@ -2,3 +2,4 @@ apiVersion: v1
 description: Newrelic PHP Agent
 name: newrelic-php-agent
 version: 0.1.1
+appVersion: "9.4.0.249"
