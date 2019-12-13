@@ -33,6 +33,28 @@ spec:
         command:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
+{{- with .Values.newrelic.deployment.extraPorts }}
+        ports:
+{{- range $v := . }}
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
+{{- end }}
+{{- with .Values.newrelic.deployment.extraEnv }}
+        env:
+{{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
+{{- with .Values.newrelic.deployment.extraEnvFrom }}
+        envFrom:
+{{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
+{{- with .Values.newrelic.livenessProbe }}
+        livenessProbe:
+{{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
+{{- with .Values.newrelic.readinessProbe }}
+        readinessProbe:
+{{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
 {{ $use_daemon_address := isAbs .Values.newrelic.address }}
 {{- if $use_daemon_address }}
         volumeMounts:
@@ -44,10 +66,16 @@ spec:
           containerPort: 31339
           protocol: TCP
 {{- end }}
+{{- with .Values.newrelic.deployment.extraVolumeMounts }}
+{{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
 {{- if $use_daemon_address }}
       volumes:
         - name: newrelic
           hostPath:
             path: /var/run/newrelic
+{{- end }}
+{{- with .Values.newrelic.deployment.extraVolumes }}
+{{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
 {{ end }}

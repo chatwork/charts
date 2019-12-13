@@ -25,10 +25,20 @@ newrelic:
 
   daemonset:
     enabled: true
+    extraPorts: []
+    extraEnv: []
+    extraEnvFrom: []
+    extraVolumes: []
+    extraVolumeMounts: []
 
   deployment:
     enabled: false
     replicaCount: 1
+    extraPorts: []
+    extraEnv: []
+    extraEnvFrom: []
+    extraVolumes: []
+    extraVolumeMounts: []
 
   ingress:
     enabled: false
