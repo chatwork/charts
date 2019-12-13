@@ -21,8 +21,7 @@ newrelic:
     failureThreshold: 2
     periodSeconds: 5
 
-  socketfile:
-    enabled: true
+  address: /tmp/.newrelic.sock
 
   daemonset:
     enabled: true
@@ -30,12 +29,6 @@ newrelic:
   deployment:
     enabled: false
     replicaCount: 1
-
-  extraPorts: []
-  extraEnv: []
-  extraEnvFrom: []
-  extraVolumes: []
-  extraVolumeMounts: []
 
   nameOverride: ""
   fullnameOverride: ""

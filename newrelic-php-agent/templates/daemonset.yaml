@@ -21,17 +21,25 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.newrelic.image.repository }}:{{ .Values.newrelic.image.tag }}"
-          imagePullPolicy: {{ .Values.newrelic.image.pullPolicy }}
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.newrelic.image.repository }}:{{ .Values.newrelic.image.tag }}"
+        imagePullPolicy: {{ .Values.newrelic.image.pullPolicy }}
 {{- with .Values.newrelic.image.command }}
-          command:
-{{ tpl (toYaml .) $root | indent 12 }}
+        command:
+{{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
-{{- if .Values.newrelic.socketfile.enabled }}
-          volumeMounts:
-            - mountPath: /tmp
-              name: newrelic
+{{ $use_daemon_address := isAbs .Values.newrelic.address }}
+{{- if $use_daemon_address }}
+        volumeMounts:
+          - mountPath: /tmp
+            name: newrelic
+{{- else }}
+        ports:
+        - name: newrelic_daemon_port
+          containerPort: 31339
+          protocol: TCP
+{{- end }}
+{{- if $use_daemon_address }}
       volumes:
         - name: newrelic
           hostPath:
