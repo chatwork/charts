@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "newrelic-php-agent.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "newrelic-php-agent.name" . }}
+    helm.sh/chart: {{ include "newrelic-php-agent.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.newrelic.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.newrelic.service.type }}
+  ports:
+  - name: default
+    port: {{ .Values.newrelic.service.port }}
+    protocol: TCP
+    targetPort: default
+  selector:
+    app.kubernetes.io/name: {{ include "newrelic-php-agent.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

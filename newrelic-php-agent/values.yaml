@@ -30,5 +30,12 @@ newrelic:
     enabled: false
     replicaCount: 1
 
+  ingress:
+    enabled: false
+
+  service:
+    type: ClusterIP
+    port: 31339
+
   nameOverride: ""
   fullnameOverride: ""
