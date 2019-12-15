@@ -1,4 +1,4 @@
----
+{{- $root := . -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,5 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  main_cf: |
-{{ tpl .Values.postfix.templates.main_cf . | indent 4 }}
+{{- range $k, $v := .Values.postfix.templates }}
+  {{ $k }}: |
+{{ tpl $v $root | indent 4 }}
+{{- end }}
