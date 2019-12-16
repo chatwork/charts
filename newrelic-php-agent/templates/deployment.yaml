@@ -1,6 +1,6 @@
 {{- if .Values.newrelic.deployment.enabled }}
 {{- $root := . -}}
-{{ $use_daemon_address := isAbs .Values.newrelic.address }}
+{{ $use_daemon_address := isAbs $.Values.newrelic.address.dir }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,7 +50,7 @@ spec:
             - /bin/sh
             - -c
             - ls -al
-            - /tmp/.newrelic.sock
+            - {{ $.Values.newrelic.address.dir }}{{ $.Values.newrelic.address.file }}
           {{- else }}
           tcpSocket:
             port: {{ $.Values.newrelic.port }}
@@ -65,7 +65,7 @@ spec:
             - /bin/sh
             - -c
             - ls -al
-            - /tmp/.newrelic.sock
+            - {{ $.Values.newrelic.address.dir }}{{ $.Values.newrelic.address.file }}
           {{- else }}
           tcpSocket:
             port: {{ $.Values.newrelic.port }}
@@ -74,7 +74,8 @@ spec:
 {{- end }}
 {{- if $use_daemon_address }}
         volumeMounts:
-          - mountPath: /tmp
+          - mountPath: {{ $.Values.newrelic.address.dir }}
+            subPath: {{ $.Values.newrelic.address.file }}
             name: newrelic
 {{- else }}
         ports:
@@ -95,8 +96,8 @@ spec:
         - name: newrelic
           hostPath:
             path: /var/run/newrelic
-{{- end }}
-{{- with .Values.newrelic.deployment.extraVolumes }}
+{{- with .Values.newrelic.daemonset.extraVolumes }}
 {{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
 {{- end }}
 {{ end }}
