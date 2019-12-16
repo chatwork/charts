@@ -8,9 +8,7 @@ newrelic:
     pullPolicy: IfNotPresent
     command: []
 
-  address:
-    dir: /tmp/
-    file: .newrelic.sock
+  address: /tmp/.newrelic.sock
 
   port: 31339
 

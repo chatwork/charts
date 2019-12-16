@@ -1,6 +1,6 @@
 {{- if .Values.newrelic.deployment.enabled }}
 {{- $root := . -}}
-{{ $use_daemon_address := isAbs $.Values.newrelic.address.dir }}
+{{ $use_daemon_address := isAbs $.Values.newrelic.address }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,7 +50,7 @@ spec:
             - /bin/sh
             - -c
             - ls -al
-            - {{ $.Values.newrelic.address.dir }}{{ $.Values.newrelic.address.file }}
+            - {{ dir $.Values.newrelic.address }}/{{ base $.Values.newrelic.address }}
           {{- else }}
           tcpSocket:
             port: {{ $.Values.newrelic.port }}
@@ -65,7 +65,7 @@ spec:
             - /bin/sh
             - -c
             - ls -al
-            - {{ $.Values.newrelic.address.dir }}{{ $.Values.newrelic.address.file }}
+            - {{ dir $.Values.newrelic.address }}/{{ base $.Values.newrelic.address }}
           {{- else }}
           tcpSocket:
             port: {{ $.Values.newrelic.port }}

@@ -1,6 +1,6 @@
 {{- if .Values.newrelic.daemonset.enabled }}
 {{- $root := . -}}
-{{ $use_daemon_address := isAbs $.Values.newrelic.address.dir }}
+{{ $use_daemon_address := isAbs $.Values.newrelic.address }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -45,7 +45,7 @@ spec:
             - /bin/sh
             - -c
             - ls -al
-            - {{ $.Values.newrelic.address.dir }}{{ $.Values.newrelic.address.file }}
+            - {{ dir $.Values.newrelic.address }}/{{ base $.Values.newrelic.address }}
           {{- else }}
           tcpSocket:
             port: {{ $.Values.newrelic.port }}
@@ -60,7 +60,7 @@ spec:
             - /bin/sh
             - -c
             - ls -al
-            - {{ $.Values.newrelic.address.dir }}{{ $.Values.newrelic.address.file }}
+            - {{ dir $.Values.newrelic.address }}/{{ base $.Values.newrelic.address }}
           {{- else }}
           tcpSocket:
             port: {{ $.Values.newrelic.port }}
@@ -69,8 +69,8 @@ spec:
 {{- end }}
 {{- if $use_daemon_address }}
         volumeMounts:
-          - mountPath: {{ $.Values.newrelic.address.dir }}
-            subPath: {{ $.Values.newrelic.address.file }}
+          - mountPath: {{ dir $.Values.newrelic.address }}
+            subPath: {{ base $.Values.newrelic.address }}
             name: newrelic
 {{- with .Values.newrelic.daemonset.extraPorts }}
         ports:
