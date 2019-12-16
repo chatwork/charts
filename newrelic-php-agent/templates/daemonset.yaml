@@ -1,5 +1,6 @@
 {{- if .Values.newrelic.daemonset.enabled }}
 {{- $root := . -}}
+{{ $use_daemon_address := isAbs .Values.newrelic.address }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -28,12 +29,6 @@ spec:
         command:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
-{{- with .Values.newrelic.daemonset.extraPorts }}
-        ports:
-{{- range $v := . }}
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
-{{- end }}
 {{- with .Values.newrelic.daemonset.extraEnv }}
         env:
 {{ tpl (toYaml .) $root | indent 10 }}
@@ -44,22 +39,54 @@ spec:
 {{- end }}
 {{- with .Values.newrelic.livenessProbe }}
         livenessProbe:
+          {{- if $use_daemon_address }}
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - ls -al
+            - /tmp/.newrelic.sock
+          {{- else }}
+          tcpSocket:
+            port: {{ $.Values.newrelic.port }}
+          {{- end }}
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
 {{- with .Values.newrelic.readinessProbe }}
         readinessProbe:
+          {{- if $use_daemon_address }}
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - ls -al
+            - /tmp/.newrelic.sock
+          {{- else }}
+          tcpSocket:
+            port: {{ $.Values.newrelic.port }}
+          {{- end }}
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
-{{ $use_daemon_address := isAbs .Values.newrelic.address }}
 {{- if $use_daemon_address }}
         volumeMounts:
           - mountPath: /tmp
             name: newrelic
+{{- with .Values.newrelic.daemonset.extraPorts }}
+        ports:
+{{- range $v := . }}
+{{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
+{{- end }}
 {{- else }}
         ports:
-        - name: newrelic_daemon_port
-          containerPort: 31339
-          protocol: TCP
+          - name: nw-daemon-port
+            containerPort: {{ $.Values.newrelic.port }}
+            protocol: TCP
+{{- with .Values.newrelic.deployment.extraPorts }}
+{{- range $v := . }}
+{{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- with .Values.newrelic.daemonset.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 10 }}

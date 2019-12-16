@@ -8,20 +8,18 @@ newrelic:
     pullPolicy: IfNotPresent
     command: []
 
+  address: /tmp/.newrelic.sock
+
+  port: 31339
+
   livenessProbe:
-    tcpSocket:
-      port: 31339
     failureThreshold: 2
     initialDelaySeconds: 10
     periodSeconds: 60
 
   readinessProbe:
-    tcpSocket:
-      port: 31339
     failureThreshold: 2
     periodSeconds: 5
-
-  address: /tmp/.newrelic.sock
 
   daemonset:
     enabled: true
@@ -45,7 +43,6 @@ newrelic:
 
   service:
     type: ClusterIP
-    port: 31339
 
   nameOverride: ""
   fullnameOverride: ""

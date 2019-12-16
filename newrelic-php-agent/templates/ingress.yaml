@@ -1,4 +1,4 @@
-{{- if .Values.newrelic.ingress.enabled -}}
+{{- if .Values.newrelic.ingress.enabled }}
 {{- $root := . -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -16,7 +16,7 @@ metadata:
 spec:
   backend:
     serviceName: {{ include "newrelic-php-agent.name" . }}
-    servicePort: {{ .Values.newrelic.ingress.port | default .Values.newrelic.service.port }}
+    servicePort: {{ $.Values.newrelic.port }}
 {{- if .Values.newrelic.ingress.tls }}
   tls:
 {{ toYaml .Values.newrelic.ingress.tls | indent 4 }}
@@ -32,6 +32,6 @@ spec:
       - path: /*
         backend:
           serviceName: {{ include "newrelic-php-agent.name" . }}
-          servicePort: {{ .Values.newrelic.ingress.port | default .Values.newrelic.service.port }}
+          servicePort: {{ $.Values.newrelic.port }}
 {{- end }}
 {{- end }}

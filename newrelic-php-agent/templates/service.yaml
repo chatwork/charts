@@ -14,10 +14,10 @@ metadata:
 spec:
   type: {{ .Values.newrelic.service.type }}
   ports:
-  - name: default
-    port: {{ .Values.newrelic.service.port }}
+  - name: nw-daemon-port
+    port: {{ $.Values.newrelic.port }}
     protocol: TCP
-    targetPort: default
+    targetPort: nw-daemon-port
   selector:
     app.kubernetes.io/name: {{ include "newrelic-php-agent.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
