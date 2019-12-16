@@ -1,4 +1,4 @@
-{{- if .Values.newrelic.daemonset.enabled }}
+{{- if and .Values.newrelic.daemonset.enabled (not .Values.newrelic.deployment.enabled) }}
 {{- $root := . -}}
 apiVersion: apps/v1
 kind: DaemonSet
@@ -24,9 +24,17 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.newrelic.image.repository }}:{{ .Values.newrelic.image.tag }}"
         imagePullPolicy: {{ .Values.newrelic.image.pullPolicy }}
+{{- if isAbs $.Values.newrelic.address }}
 {{- with .Values.newrelic.image.command }}
         command:
 {{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
+{{- else }}
+        command:
+          - --address={{ $.Values.newrelic.address }} --watchdog-foreground
+{{- with .Values.newrelic.image.command }}
+{{ tpl (toYaml .) $root | indent 10 }}
+{{- end }} 
 {{- end }}
 {{- with .Values.newrelic.daemonset.extraEnv }}
         env:

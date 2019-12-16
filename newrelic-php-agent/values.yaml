@@ -7,10 +7,11 @@ newrelic:
     tag: 0.0.1
     pullPolicy: IfNotPresent
     command: []
-
+  
+  # ref. https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-configuration#inivar-daemon-settings
   address: /tmp/.newrelic.sock
 
-  port: 31339
+  port:
 
   livenessProbe:
     failureThreshold: 2
