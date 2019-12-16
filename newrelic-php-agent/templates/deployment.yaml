@@ -1,6 +1,5 @@
 {{- if .Values.newrelic.deployment.enabled }}
 {{- $root := . -}}
-{{ $use_daemon_address := isAbs $.Values.newrelic.address }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,7 +43,7 @@ spec:
 {{- end }}
 {{- with .Values.newrelic.livenessProbe }}
         livenessProbe:
-          {{- if $use_daemon_address }}
+          {{- if isAbs $.Values.newrelic.address }}
           exec:
             command:
             - /bin/sh
@@ -59,7 +58,7 @@ spec:
 {{- end }}
 {{- with .Values.newrelic.readinessProbe }}
         readinessProbe:
-          {{- if $use_daemon_address }}
+          {{- if isAbs $.Values.newrelic.address }}
           exec:
             command:
             - /bin/sh
@@ -72,10 +71,10 @@ spec:
           {{- end }}
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
-{{- if $use_daemon_address }}
+{{- if isAbs $.Values.newrelic.address }}
         volumeMounts:
-          - mountPath: {{ $.Values.newrelic.address.dir }}
-            subPath: {{ $.Values.newrelic.address.file }}
+          - mountPath: {{ dir $.Values.newrelic.address }}
+            subPath: {{ base $.Values.newrelic.address }}
             name: newrelic
 {{- else }}
         ports:
@@ -91,7 +90,7 @@ spec:
 {{- with .Values.newrelic.deployment.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
-{{- if $use_daemon_address }}
+{{- if isAbs $.Values.newrelic.address }}
       volumes:
         - name: newrelic
           hostPath:
