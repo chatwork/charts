@@ -81,10 +81,6 @@ deployment:
 
 postfix:
   templates:
-    auth_info: |
-      aaa
-      bbb
-      ccc
     main.cf: |
       # Global Postfix configuration file. This file lists only a subset
       # of all parameters. For the syntax, and for a complete parameter
