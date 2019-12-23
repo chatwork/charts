@@ -7,6 +7,7 @@ newrelic:
     tag: 0.0.1
     pullPolicy: IfNotPresent
     command: []
+    pullSecrets: []
   
   # ref. https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-configuration#inivar-daemon-settings
   address: /tmp/.newrelic.sock
@@ -24,26 +25,34 @@ newrelic:
 
   daemonset:
     enabled: true
+    useHostNetwork: false
     extraPorts: []
     extraEnv: []
     extraEnvFrom: []
     extraVolumes: []
     extraVolumeMounts: []
+    tolerations: []
+    affinity: []
+    nodeSelector: []
 
   deployment:
     enabled: false
+    useHostNetwork: false
     replicaCount: 1
     extraPorts: []
     extraEnv: []
     extraEnvFrom: []
     extraVolumes: []
     extraVolumeMounts: []
+    tolerations: []
+    affinity: []
+    nodeSelector: []
 
   ingress:
     enabled: false
 
   service:
     type: ClusterIP
-
+  
   nameOverride: ""
   fullnameOverride: ""
