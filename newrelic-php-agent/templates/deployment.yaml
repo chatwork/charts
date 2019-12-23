@@ -1,5 +1,5 @@
-{{- if and .Values.newrelic.deployment.enabled (not .Values.newrelic.daemonset.enabled) }}
 {{- $root := . -}}
+{{- if and .Values.newrelic.deployment.enabled (not .Values.newrelic.daemonset.enabled) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,6 +25,10 @@ spec:
         app.kubernetes.io/name: {{ include "newrelic-php-agent.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- if .Values.deployment.useHostNetwork }}
+      hostNetwork: {{ .Values.deployment.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       containers:
       - name: "{{ include "newrelic-php-agent.fullname" . }}"
         image: "{{ .Values.newrelic.image.repository }}:{{ .Values.newrelic.image.tag }}"
@@ -84,6 +88,15 @@ spec:
           - mountPath: {{ dir $.Values.newrelic.address }}
             subPath: {{ base $.Values.newrelic.address }}
             name: newrelic
+{{- with .Values.newrelic.deployment.extraVolumeMounts }}
+{{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
+{{- with .Values.newrelic.deployment.extraPorts }}
+        ports:
+{{- range $v := . }}
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
+{{- end }}
 {{- else }}
         ports:
           - name: nw-daemon-port
@@ -94,16 +107,17 @@ spec:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
 {{- end }}
-{{- end }}
 {{- with .Values.newrelic.deployment.extraVolumeMounts }}
+        volumeMounts:
 {{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
 {{- end }}
 {{- if isAbs $.Values.newrelic.address }}
       volumes:
         - name: newrelic
           hostPath:
             path: /var/run/newrelic
-{{- with .Values.newrelic.daemonset.extraVolumes }}
+{{- with .Values.newrelic.deployment.extraVolumes }}
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
 {{- end }}
