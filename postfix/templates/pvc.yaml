@@ -3,16 +3,10 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "postfix.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  labels: {{ include "postfix.labels" . | nindent 4 }}
   {{- with .Values.persistence.annotations  }}
-  annotations:
-{{ toYaml . | indent 4 }}
+  annotations: {{ toYaml . | nindent 4 }}
   {{- end }}
-  labels:
-    app: {{ template "postfix.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}

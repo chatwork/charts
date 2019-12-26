@@ -3,31 +3,21 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ include "postfix.fullname" . }}
-  labels:
-    app: {{ include "postfix.name" . }}
-    chart: {{ include "postfix.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  labels: {{ include "postfix.labels" . | nindent 4 }}
 spec:
   selector:
-    matchLabels:
-      app: {{ include "postfix.name" . }}
-      release: {{ .Release.Name }}
+    matchLabels: {{ include "postfix.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        app: {{ include "postfix.name" . }}
-        chart: {{ template "postfix.chart" . }}
-        release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
+      labels: {{ include "postfix.selectorLabels" . | nindent 8 }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.postfix.secrets.sasl_passwd }}
         checksum/sasl_passwd: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
-{{- with .Values.daemonset.podAnnotations }}
-{{ toYaml . | indent 8 }}
-{{- end }}
+        {{- with .Values.daemonset.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: {{ .Values.daemonset.useHostNetwork }}
@@ -38,72 +28,67 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{- with .Values.resources }}
-        resources:
-{{ toYaml . | indent 12 }}
-{{- end }}
+        {{- with .Values.resources }}
+        resources: {{ toYaml . | nindent 12 }}
+        {{- end }}
         lifecycle:
           preStop:
             exec:
               command: ["/usr/sbin/postfix", "flush"]
         ports:
-        - name: smtp
-          containerPort: 25
-          {{- if .Values.daemonset.hostPort }}
-          hostPort: {{ .Values.daemonset.hostPort }}
-          {{- end }}
-          protocol: TCP
-        livenessProbe:
-{{ toYaml .Values.livenessProbe | indent 10 }}
-        readinessProbe:
-{{ toYaml .Values.readinessProbe | indent 10 }}
+          - name: smtp
+            containerPort: 25
+            {{- with .Values.daemonset.hostPort }}
+            hostPort: {{ . }}
+            {{- end }}
+            protocol: TCP
+        livenessProbe: {{ toYaml .Values.livenessProbe | nindent 10 }}
+        readinessProbe: {{ toYaml .Values.readinessProbe | nindent 10 }}
         volumeMounts:
-{{- range $k, $v := .Values.postfix.templates }}
+          - name: spool
+            mountPath: /var/spool/postfix
+            {{- if .Values.persistence.subPath }}
+            subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
+          {{- range $k, $v := .Values.postfix.templates }}
+          - name: configmap
+            subPath: {{ $k }}
+            mountPath: /etc/postfix/{{ $k }}
+          {{- end }}
+          {{- if .Values.postfix.secrets.sasl_passwd }}
+          - name: secret
+            subPath: sasl_passwd
+            mountPath: /etc/postfix/sasl_passwd
+            readOnly: true
+          {{- end }}
+          {{- if .Values.extraVolumeMounts }}
+          {{ toYaml .Values.extraVolumeMounts | nindent 10 }}
+          {{- end }}
+      volumes:
+        - name: spool
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "postfix.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
         - name: configmap
-          subPath: {{ $k }}
-          mountPath: /etc/postfix/{{ $k }}
-{{- end }}
+          configMap:
+            name: {{ template "postfix.fullname" . }}-configmap
         {{- if .Values.postfix.secrets.sasl_passwd }}
         - name: secret
-          subPath: sasl_passwd
-          mountPath: /etc/postfix/sasl_passwd
-          readOnly: true
+          secret:
+            secretName: {{ template "postfix.fullname" . }}-secret
         {{- end }}
-        - name: spool
-          mountPath: /var/spool/postfix
-          {{- if .Values.persistence.subPath }}
-          subPath: {{ .Values.persistence.subPath }}
-          {{- end }}
-{{- if .Values.extraVolumeMounts }}
-{{ toYaml .Values.extraVolumeMounts | indent 8 }}
-{{- end }}
-      volumes:
-      - name: configmap
-        configMap:
-          name: {{ template "postfix.fullname" . }}-configmap
-      {{- if .Values.postfix.secrets.sasl_passwd }}
-      - name: secret
-        secret:
-          secretName: {{ template "postfix.fullname" . }}-secret
+        {{- if .Values.extraVolumes }}
+        {{ toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
+      {{- with .Values.daemonset.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
       {{- end }}
-      - name: spool
-        {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "postfix.fullname" .) }}
-        {{- else }}
-        emptyDir: {}
-        {{- end -}}
-{{- if .Values.extraVolumes }}
-{{ toYaml .Values.extraVolumes | indent 6 }}
-{{- end }}
-{{- with .Values.daemonset.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-{{- end }}
-{{- with .Values.daemonset.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-{{- end }}
+      {{- with .Values.daemonset.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
   updateStrategy:
     type: {{ .Values.daemonset.updateStrategy }}
 {{- end }}
