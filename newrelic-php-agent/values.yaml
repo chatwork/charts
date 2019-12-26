@@ -10,8 +10,7 @@ newrelic:
     pullSecrets: []
   
   # ref. https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-configuration#inivar-daemon-settings
-  #address: /tmp/.newrelic.sock
-  address: 192.168.0.1:31339
+  address: /tmp/.newrelic.sock
   port: 31339
 
   livenessProbe:
