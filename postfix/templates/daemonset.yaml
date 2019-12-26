@@ -22,7 +22,9 @@ spec:
         heritage: {{ .Release.Service }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.postfix.secrets.sasl_passwd }}
         checksum/sasl_passwd: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- end }}
 {{- with .Values.daemonset.podAnnotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
@@ -61,10 +63,12 @@ spec:
           subPath: {{ $k }}
           mountPath: /etc/postfix/{{ $k }}
 {{- end }}
+        {{- if .Values.postfix.secrets.sasl_passwd }}
         - name: secret
           subPath: sasl_passwd
           mountPath: /etc/postfix/sasl_passwd
           readOnly: true
+        {{- end }}
         - name: spool
           mountPath: /var/spool/postfix
           {{- if .Values.persistence.subPath }}
@@ -77,9 +81,11 @@ spec:
       - name: configmap
         configMap:
           name: {{ template "postfix.fullname" . }}-configmap
+      {{- if .Values.postfix.secrets.sasl_passwd }}
       - name: secret
         secret:
           secretName: {{ template "postfix.fullname" . }}-secret
+      {{- end }}
       - name: spool
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
