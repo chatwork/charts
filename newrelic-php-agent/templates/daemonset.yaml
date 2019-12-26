@@ -32,17 +32,13 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.newrelic.image.repository }}:{{ .Values.newrelic.image.tag }}"
         imagePullPolicy: {{ .Values.newrelic.image.pullPolicy }}
+{{- with .Values.newrelic.image.command }}
+        command:
+{{ tpl (toYaml .) $root | indent 10 }}
+{{- end }}
 {{- if isAbs $.Values.newrelic.address }}
-{{- with .Values.newrelic.image.command }}
-        command:
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
 {{- else }}
-        command:
-          - --address={{ $.Values.newrelic.address }} --watchdog-foreground
-{{- with .Values.newrelic.image.command }}
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
+        args: ["--address={{ $.Values.newrelic.address }}", "--watchdog-foreground"]
 {{- end }}
 {{- with .Values.newrelic.daemonset.extraEnv }}
         env:
