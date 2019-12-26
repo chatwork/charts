@@ -67,10 +67,6 @@ deployment:
   enabled: false
   replicaCount: 1
 
-  service:
-    type: LoadBalancer
-    port: 25
-
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -85,6 +81,20 @@ deployment:
     enabled: false
     minAvailable: 1
     maxUnavailable:
+
+statefulSet:
+  enabled: false
+
+  replicas: 1
+
+  podAnnotations: {}
+  affinity: {}
+  tolerations: []
+  updateStrategy: "RollingUpdate"
+
+service:
+  type: ClusterIP
+  port: 25
 
 postfix:
   templates:

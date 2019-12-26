@@ -1,14 +1,17 @@
-{{- if .Values.deployment.enabled }}
+{{- if or .Values.deployment.enabled .Values.statefulSet.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "postfix.fullname" . }}
   labels: {{ include "postfix.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.deployment.service.type }}
+  type: {{ .Values.service.type }}
+  {{- if .Values.statefulSet.enabled }}
+  clusterIP: None
+  {{- end }}
   ports:
-    - port: {{ .Values.deployment.service.port }}
-      targetPort: 25
+    - port: {{ .Values.service.port }}
+      targetPort: smtp
       protocol: TCP
       name: smtp
   selector: {{ include "postfix.selectorLabels" . | nindent 4 }}
