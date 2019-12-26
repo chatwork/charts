@@ -14,7 +14,7 @@ apply:
 		kubectl create namespace $(namespace); \
 	fi
 	# enable daemonset
-	helm $(helmContext) upgrade $(helmInstallOptions) -f templates/test/test-hostPath-values.yaml $(releaseName) .;
+	helm $(helmContext) upgrade $(helmInstallOptions) $(releaseName) .;
 
 .PHONY: test
 test: test-daemonset test-daemonset-mailcatcher test-deployment test-deployment-mailcatcher
@@ -24,7 +24,7 @@ test-daemonset:
 	-$(deleteTestPod)
 	-$(deleteChart)
 
-	helm $(helmContext) upgrade $(helmInstallOptions) -f templates/test/test-hostPath-values.yaml $(releaseName) .;
+	helm $(helmContext) upgrade $(helmInstallOptions) $(releaseName) .;
 
 	$(helmTest)
 
@@ -33,7 +33,7 @@ test-daemonset-mailcatcher:
 	-$(deleteTestPod)
 	-$(deleteChart)
 
-	helm $(helmContext) upgrade $(helmInstallOptions) -f templates/test/test-hostPath-values.yaml $(mailcatcher) $(releaseName) .;
+	helm $(helmContext) upgrade $(helmInstallOptions) $(mailcatcher) $(releaseName) .;
 	$(helmTest)
 
 .PHONY: test-deployment
