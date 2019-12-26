@@ -4,15 +4,15 @@
 newrelic:
   image:
     repository: chatwork/newrelic-php-agent
-    tag: 0.0.1
+    tag: 0.1.1
     pullPolicy: IfNotPresent
     command: []
     pullSecrets: []
   
   # ref. https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-configuration#inivar-daemon-settings
-  address: /tmp/.newrelic.sock
-
-  port:
+  #address: /tmp/.newrelic.sock
+  address: 192.168.0.1:31339
+  port: 31339
 
   livenessProbe:
     failureThreshold: 2
