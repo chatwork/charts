@@ -1,0 +1,100 @@
+{{- if .Values.statefulSet.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "postfix.fullname" . }}
+  labels: {{ include "postfix.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels: {{ include "postfix.selectorLabels" . | nindent 6 }}
+  serviceName: "nginx"
+  replicas: {{ .Values.statefulSet.replicas }}
+  template:
+    metadata:
+      labels: {{ include "postfix.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.postfix.secrets.sasl_passwd }}
+        checksum/sasl_passwd: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- end }}
+        {{- with .Values.statefulSet.podAnnotations }}
+        {{ toYaml . | indent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/usr/sbin/postfix", "flush"]
+          ports:
+            - name: smtp
+              containerPort: 25
+              hostPort: 25
+              protocol: TCP
+          livenessProbe: {{ toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe: {{ toYaml .Values.readinessProbe | nindent 12 }}
+          volumeMounts:
+            - name: {{ template "postfix.fullname" . }}-spool
+              mountPath: /var/spool/postfix
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+              {{- end }}
+            {{- range $k, $v := .Values.postfix.templates }}
+            - name: configmap
+              subPath: {{ $k }}
+              mountPath: /etc/postfix/{{ $k }}
+            {{- end }}
+            {{- if .Values.postfix.secrets.sasl_passwd }}
+            - name: secret
+              subPath: sasl_passwd
+              mountPath: /etc/postfix/sasl_passwd
+              readOnly: true
+            {{- end }}
+            {{- if .Values.extraVolumeMounts }}
+            {{ toYaml .Values.extraVolumeMounts . | nindent 10 }}
+            {{- end }}
+      volumes:
+        - name: configmap
+          configMap:
+            name: {{ template "postfix.fullname" . }}-configmap
+        {{- if .Values.postfix.secrets.sasl_passwd }}
+        - name: secret
+          secret:
+            secretName: {{ template "postfix.fullname" . }}-secret
+        {{- end }}
+        {{- if .Values.extraVolumes }}
+        {{ toYaml .Values.extraVolumes . | indent 6 }}
+        {{- end }}
+      {{- with .Values.statefulSet.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.statefulSet.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
+  updateStrategy:
+    type: {{ .Values.statefulSet.updateStrategy }}
+  {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ template "postfix.fullname" . }}-spool
+        labels: {{ include "postfix.labels" . | nindent 10 }}
+        {{- with .Values.persistence.annotations  }}
+        annotations: {{ toYaml . | nindent 4 }}
+        {{- end }}
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+        {{- with .Values.persistence.storageClass }}
+        storageClassName: "{{ . }}"
+        {{- end }}
+  {{- end }}
+{{- end }}
