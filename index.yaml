@@ -2,9 +2,9 @@ apiVersion: v1
 entries:
   argoproj-crd:
   - appVersion: 0.12.2
-    created: "2019-12-25T04:13:47.837611683Z"
+    created: "2019-12-27T00:35:40.100612239Z"
     description: Manage AppProject and Application that you define for Argo CD.
-    digest: 866b51cbab0fbaf5bb80eab20f34d6d44767249286732fef7900030d87c228b0
+    digest: c795740e171efce86b05b8c92f061f0446c25cadd8adeae0f55e18ec56d46f88
     maintainers:
     - email: ozaki@chatwork.com
       name: cw-ozaki
@@ -13,9 +13,9 @@ entries:
     - https://chatwork.github.io/charts/argoproj-crd-0.0.1.tgz
     version: 0.0.1
   assume-role-crd:
-  - created: "2019-12-25T04:13:47.839959088Z"
+  - created: "2019-12-27T00:35:40.102557133Z"
     description: Assume Role CRD
-    digest: 40b6e2a6d1a07e1d801b09252892c47fd8c80998f17e4e6b728e9bedda9e32fe
+    digest: 76a1af1ccd190f6846fbc8b82c043b28aa8e3e4189632543832c224a94de09dc
     maintainers:
     - email: sakamoto@chatwork.com
       name: cwsakamoto
@@ -23,7 +23,7 @@ entries:
     urls:
     - https://chatwork.github.io/charts/assume-role-crd-0.0.4.tgz
     version: 0.0.4
-  - created: "2019-12-25T04:13:47.839388646Z"
+  - created: "2019-12-27T00:35:40.10206324Z"
     description: Assume Role CRD
     digest: 3412be31a526a872a90e435b668b0fabca0bef42ae6d0f97e7c595ba86ec89e1
     maintainers:
@@ -33,7 +33,7 @@ entries:
     urls:
     - https://chatwork.github.io/charts/assume-role-crd-0.0.3.tgz
     version: 0.0.3
-  - created: "2019-12-25T04:13:47.838746609Z"
+  - created: "2019-12-27T00:35:40.101596794Z"
     description: Assume Role CRD
     digest: 5e149b10c70e5f2c9815501e8f6d6858e8542ef96bb412215d764538296a7cd4
     maintainers:
@@ -43,7 +43,7 @@ entries:
     urls:
     - https://chatwork.github.io/charts/assume-role-crd-0.0.2.tgz
     version: 0.0.2
-  - created: "2019-12-25T04:13:47.838117144Z"
+  - created: "2019-12-27T00:35:40.101128658Z"
     description: Assume Role CRD
     digest: 3e9647566198ec93b2871725b441b94077b16f2a8904ed6b5aa67e632aa7de06
     maintainers:
@@ -55,9 +55,9 @@ entries:
     version: 0.0.1
   assume-role-operator:
   - appVersion: 0.0.3
-    created: "2019-12-25T04:13:47.843182711Z"
+    created: "2019-12-27T00:35:40.104569051Z"
     description: AWS Role assume policy modify
-    digest: 5a5585336c6de153342e6764208dfb229132fd56dc3696717571016da72e012f
+    digest: 269d005739f63f883d304acab937958e9a7573efcb918e0026f18d4af9ed6614
     maintainers:
     - email: sakamoto@chatwork.com
       name: cwsakamoto
@@ -66,7 +66,7 @@ entries:
     - https://chatwork.github.io/charts/assume-role-operator-0.0.4.tgz
     version: 0.0.4
   - appVersion: 0.0.2
-    created: "2019-12-25T04:13:47.842048977Z"
+    created: "2019-12-27T00:35:40.104240503Z"
     description: AWS Role assume policy modify
     digest: 87014b4c4167d64f7a1858f05232932343c8332de9f8c391b93b7816b68fe353
     maintainers:
@@ -77,7 +77,7 @@ entries:
     - https://chatwork.github.io/charts/assume-role-operator-0.0.3.tgz
     version: 0.0.3
   - appVersion: 0.0.1
-    created: "2019-12-25T04:13:47.841142002Z"
+    created: "2019-12-27T00:35:40.10390823Z"
     description: AWS Role assume policy modify for role using kiam
     digest: 9fce1a672fe0770754834633331c04e72a2b59dfa549b92d507eae85b1aa45b6
     maintainers:
@@ -88,7 +88,7 @@ entries:
     - https://chatwork.github.io/charts/assume-role-operator-0.0.2.tgz
     version: 0.0.2
   - appVersion: 0.0.1
-    created: "2019-12-25T04:13:47.840555541Z"
+    created: "2019-12-27T00:35:40.103078249Z"
     description: AWS Role assume policy modify for role using kiam
     digest: 08d26bf66ed94001025ce46914d4636279ff65d1567835fabfc5c9f4acf3438e
     maintainers:
@@ -101,9 +101,9 @@ entries:
   contour:
   - apiVersion: v1
     appVersion: 1.0.0
-    created: "2019-12-25T04:13:47.847429521Z"
+    created: "2019-12-27T00:35:40.10734711Z"
     description: Chart for Contour
-    digest: 9213948d2b7257d79cb09a9ea4cef813112cf936c52575743784803976fcaad6
+    digest: 1cbc78fe9116c1ad5431a7dce91944f9a11150bc692ae42f91d9308390be9644
     home: https://github.com/projectcontour/contour
     maintainers:
     - email: sakamoto@chatwork.com
@@ -116,7 +116,7 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: 1.0.0-rc.2
-    created: "2019-12-25T04:13:47.846253221Z"
+    created: "2019-12-27T00:35:40.106743297Z"
     description: Chart for Contour
     digest: 82d162411b8e21a3ccb57c8ac73c7fe9fe8a705ecf09cc40166b00ef384c7a0b
     home: https://github.com/projectcontour/contour
@@ -131,7 +131,7 @@ entries:
     version: 0.1.0
   - apiVersion: v1
     appVersion: 0.14.0
-    created: "2019-12-25T04:13:47.845407509Z"
+    created: "2019-12-27T00:35:40.106144674Z"
     description: Chart for Contour
     digest: e4f4031af8724daa9e76024b36683360df98cfdb3e96f3278a93e41d9987ca5f
     home: https://github.com/heptio/contour
@@ -146,7 +146,7 @@ entries:
     version: 0.0.3
   - apiVersion: v1
     appVersion: 0.14.0
-    created: "2019-12-25T04:13:47.844583048Z"
+    created: "2019-12-27T00:35:40.105637741Z"
     description: Chart for Contour
     digest: bc97ddfb4419a25b1b4ee614cc4bb925a0708db7ca21928fdb65801919d494b8
     home: https://github.com/heptio/contour
@@ -161,7 +161,7 @@ entries:
     version: 0.0.2
   - apiVersion: v1
     appVersion: 0.14.0
-    created: "2019-12-25T04:13:47.843911272Z"
+    created: "2019-12-27T00:35:40.105104499Z"
     description: Chart for Contour
     digest: ce20a99697a6431011b7bf0b297f5456494e1cd7102f1d7456cee131369fe93b
     home: https://github.com/heptio/contour
@@ -177,7 +177,7 @@ entries:
   docker-registry:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.84769809Z"
+    created: "2019-12-27T00:35:40.107578292Z"
     description: Pull an Image from a Private Registry
     digest: dc6a6eac97769dcd4ecfd9ef06fbbc6f5c2b62382437d9581aa745916d3a9750
     name: docker-registry
@@ -187,16 +187,16 @@ entries:
   dynamodb:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.848422352Z"
+    created: "2019-12-27T00:35:40.108032438Z"
     description: DynamoDB Local
-    digest: d1ad19a941e759eec7123d7faee6ec5be7beaaca65829687387cbb2f4a45be19
+    digest: d7d8ad68c0118164659ca1122c8077faa84eec745d58891b889904d7bf054d9a
     name: dynamodb
     urls:
     - https://chatwork.github.io/charts/dynamodb-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.848006521Z"
+    created: "2019-12-27T00:35:40.107807538Z"
     description: DynamoDB Local
     digest: 3abd8e4e55a772f7746e2a1380b82ad69e99be14b8438acc071334e237d85ffb
     name: dynamodb
@@ -206,9 +206,9 @@ entries:
   elasticmq:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.848694442Z"
+    created: "2019-12-27T00:35:40.108273957Z"
     description: ElasticMQ
-    digest: 1550812115486e4af4aadaf05dc3026852c08a5bdeaba79a83474f098cd6341c
+    digest: 4774445b6ea5b8e15509e6f4daee0b7427f9d7eea0d0aaced0ab9396ef6412fc
     name: elasticmq
     urls:
     - https://chatwork.github.io/charts/elasticmq-0.1.0.tgz
@@ -216,22 +216,22 @@ entries:
   example:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.848973336Z"
+    created: "2019-12-27T00:35:40.108524255Z"
     description: A Helm chart for Kubernetes
-    digest: 544f8897a4404f60ce7b859a57323ddd1b9dde0a2e2d6a0eec21708443ba7a21
+    digest: 825c05ab159902e9df13ed5c6aad0b7fb0f5a5a0d601ecb1ffd01f7c07da209f
     name: example
     urls:
     - https://chatwork.github.io/charts/example-0.1.0.tgz
     version: 0.1.0
   gcp-credentials:
-  - created: "2019-12-25T04:13:47.849319788Z"
+  - created: "2019-12-27T00:35:40.108912039Z"
     description: GCP credentials
-    digest: 2442062083000f81c9b2b16b85de08120cdded6d8e69de7f00f0369d5da399ac
+    digest: a55339371ba808c9b7f4deab80c2babb7173584550536347d3bcdabbec021633
     name: gcp-credentials
     urls:
     - https://chatwork.github.io/charts/gcp-credentials-0.0.2.tgz
     version: 0.0.2
-  - created: "2019-12-25T04:13:47.849146989Z"
+  - created: "2019-12-27T00:35:40.108740494Z"
     description: GCP credentials
     digest: a81a125cc587d24c29c4377f6884e0dde85b76c477514b71e5b5e234b94ce3ae
     name: gcp-credentials
@@ -241,9 +241,9 @@ entries:
   guard:
   - apiVersion: v1
     appVersion: 0.2.1
-    created: "2019-12-25T04:13:47.852715531Z"
+    created: "2019-12-27T00:35:40.11282289Z"
     description: chart for Guard (https://appscode.com/products/guard)
-    digest: 895352df7156fc1035fe55c9ee1c75ea55ccd9fcaf35bee8c4c3e572b4156d9f
+    digest: 372d46a3d4f5e5a91b4dccfd05bc4c0f0529778864f2da9f22b300bfcc93fd91
     home: https://appscode.com/products/guard
     keywords:
     - webhook-authentication
@@ -258,7 +258,7 @@ entries:
     version: 0.0.4
   - apiVersion: v1
     appVersion: 0.2.1
-    created: "2019-12-25T04:13:47.851672377Z"
+    created: "2019-12-27T00:35:40.111823801Z"
     description: chart for Guard (https://appscode.com/products/guard)
     digest: 3d85186e4bceb48debd0bd9430dda140e7496124e73ad25dd74d788575862766
     home: https://appscode.com/products/guard
@@ -275,7 +275,7 @@ entries:
     version: 0.0.3
   - apiVersion: v1
     appVersion: 0.2.1
-    created: "2019-12-25T04:13:47.850611208Z"
+    created: "2019-12-27T00:35:40.110830775Z"
     description: chart for Guard (https://appscode.com/products/guard)
     digest: d3c6e900b9c32a73d95b56186a9a27f054c49bb81f776b45d2655cf04408531a
     home: https://appscode.com/products/guard
@@ -292,7 +292,7 @@ entries:
     version: 0.0.2
   - apiVersion: v1
     appVersion: 0.2.1
-    created: "2019-12-25T04:13:47.849748002Z"
+    created: "2019-12-27T00:35:40.109751786Z"
     description: chart for Guard (https://appscode.com/products/guard)
     digest: 96904e9e6935e3b68f1c9d9a485f4a071cd9098605a32bc0db525e7244981679
     home: https://appscode.com/products/guard
@@ -309,9 +309,9 @@ entries:
     version: 0.0.1
   kube-aws-iam-controller:
   - appVersion: 0.1.0
-    created: "2019-12-25T04:13:47.8558169Z"
+    created: "2019-12-27T00:35:40.115190015Z"
     description: kube-aws-iam-controler chart
-    digest: a3ce151e6c7a042bd6567492dc604f0472ce0b741ee945c95872f1ce159daac6
+    digest: 4da86f870080c40f385a5f65f72e575eaf95f7b1b37adecdcd04273c74bd8632
     maintainers:
     - email: sakamoto@chatwork.com
       name: cwsakamoto
@@ -322,7 +322,7 @@ entries:
     - https://chatwork.github.io/charts/kube-aws-iam-controller-0.0.4.tgz
     version: 0.0.4
   - appVersion: 0.1.0
-    created: "2019-12-25T04:13:47.85491483Z"
+    created: "2019-12-27T00:35:40.114874874Z"
     description: kube-aws-iam-controler chart
     digest: eca2262b761eb4b4710bdc970ee8c6ea64461afccd9004416d5e64441cfbfd67
     maintainers:
@@ -335,7 +335,7 @@ entries:
     - https://chatwork.github.io/charts/kube-aws-iam-controller-0.0.3.tgz
     version: 0.0.3
   - appVersion: 0.0.6
-    created: "2019-12-25T04:13:47.854224678Z"
+    created: "2019-12-27T00:35:40.114535264Z"
     description: kube-aws-iam-controler chart
     digest: 51f9ac0e6f4e127bd2bf2e01edbf90b1bb08ca9650d4fe26b292136b04090ceb
     maintainers:
@@ -348,7 +348,7 @@ entries:
     - https://chatwork.github.io/charts/kube-aws-iam-controller-0.0.2.tgz
     version: 0.0.2
   - appVersion: 0.0.5
-    created: "2019-12-25T04:13:47.853477944Z"
+    created: "2019-12-27T00:35:40.11359447Z"
     description: kube-aws-iam-controler chart
     digest: 047c347dceac9f8ddffd29485111f5efd2c7bcc654623c609e02d39a5fef1697
     maintainers:
@@ -361,9 +361,9 @@ entries:
     - https://chatwork.github.io/charts/kube-aws-iam-controller-0.0.1.tgz
     version: 0.0.1
   kube-aws-iam-controller-crd:
-  - created: "2019-12-25T04:13:47.856127505Z"
+  - created: "2019-12-27T00:35:40.115466717Z"
     description: AWS Iam Role(with kube-aws-iam-controller) CRD
-    digest: df785396aa3e94cb66ae7d806aa19f3ef67c6c273e310c5d70048973d9238112
+    digest: 7234f922fa1576f2335f6bd3bf5019912e0ccfa93f635d5f1ef7c85f9421c97f
     maintainers:
     - email: sakamoto@chatwork.com
       name: cwsakamoto
@@ -373,25 +373,25 @@ entries:
     version: 0.0.1
   newrelic-php-agent:
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.856344362Z"
+    created: "2019-12-27T00:35:40.115698528Z"
     description: Newrelic PHP Agent
-    digest: 0f6988d0e9670ad00bbcfd5c95b69200ab9d141617ec9a47bf95970722ffc465
+    digest: 83925a35bbb0f5f751bdeead570ce0c39d6c06cc2f882a5f2faa673d917d14ec
     name: newrelic-php-agent
     urls:
     - https://chatwork.github.io/charts/newrelic-php-agent-0.1.0.tgz
     version: 0.1.0
   php:
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.871043731Z"
+    created: "2019-12-27T00:35:40.130434163Z"
     description: PHP-FPM Web Application
-    digest: c9745277e415d425d57bd95da06c5dc859bfdd3f885961094448d51141fba1b7
+    digest: 60eef01565cb09892a56aab16a5b2f1dd56b750fa05a405b9001a259234c636b
     icon: http://php.net/images/logos/php-logo-bigger.png
     name: php
     urls:
     - https://chatwork.github.io/charts/php-0.13.9.tgz
     version: 0.13.9
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.870050737Z"
+    created: "2019-12-27T00:35:40.129507201Z"
     description: PHP-FPM Web Application
     digest: a2c893662bd3c1d7a0655be0d1f3e66cdf8ced228d3a88b4f644f165f14e37a2
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -400,7 +400,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.13.8.tgz
     version: 0.13.8
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.869123091Z"
+    created: "2019-12-27T00:35:40.128543003Z"
     description: PHP-FPM Web Application
     digest: 275fa5ad0107987f2e2296dc59696517647160d104ca684d8f13d06db62477bd
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -409,7 +409,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.13.7.tgz
     version: 0.13.7
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.868192504Z"
+    created: "2019-12-27T00:35:40.127347648Z"
     description: PHP-FPM Web Application
     digest: c455bc7e29848c0c70afdbed329f8d474cf8aa0956d2d1c1dae59b70daae35f3
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -418,7 +418,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.13.6.tgz
     version: 0.13.6
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.866666297Z"
+    created: "2019-12-27T00:35:40.126336956Z"
     description: PHP-FPM Web Application
     digest: 92593c8873672883d9adda19bed93a40a67cf6e48bb0105d2567462a7d59ba90
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -427,7 +427,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.13.5.tgz
     version: 0.13.5
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.865068885Z"
+    created: "2019-12-27T00:35:40.124927607Z"
     description: PHP-FPM Web Application
     digest: 73d337b8d1c4b3b0a189257422921148ddbc4f7a54ae17e07b37982584913b72
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -436,7 +436,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.13.4.tgz
     version: 0.13.4
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.863411643Z"
+    created: "2019-12-27T00:35:40.123222008Z"
     description: PHP-FPM Web Application
     digest: 1f4ad98d1335c91372aa09818d36ef6b69acf26b3ee0f52cdebeab56b1e0e251
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -445,7 +445,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.13.3.tgz
     version: 0.13.3
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.861757083Z"
+    created: "2019-12-27T00:35:40.12152894Z"
     description: PHP-FPM Web Application
     digest: 082a23d2d274bdcb5672416bffec4473e2b7d1d05756155bcf5d7a280ff7af8f
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -454,7 +454,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.13.2.tgz
     version: 0.13.2
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.860862383Z"
+    created: "2019-12-27T00:35:40.120290394Z"
     description: PHP-FPM Web Application
     digest: a3ca6ec25aaf3494b5d6cc1310caa5b8efcd706a2ca4ce878257d692c5bc2edb
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -463,7 +463,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.13.1.tgz
     version: 0.13.1
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.859997266Z"
+    created: "2019-12-27T00:35:40.119312547Z"
     description: PHP-FPM Web Application
     digest: c3d8bb7877af5278ecabaa67ddf6c207444498895605cc89c5a030acb5a7f230
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -472,7 +472,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.13.0.tgz
     version: 0.13.0
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.859124189Z"
+    created: "2019-12-27T00:35:40.118404431Z"
     description: PHP-FPM Web Application
     digest: db42d3b033a59580f19c0e5e807e5d012a0376458d264211c355c21706a4a06e
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -481,7 +481,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.12.0.tgz
     version: 0.12.0
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.858210574Z"
+    created: "2019-12-27T00:35:40.117526403Z"
     description: PHP-FPM Web Application
     digest: 4202f74469b611e3d15ff498d9b491786ee47f6dee1e3aab4b69590a03d6ed81
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -490,7 +490,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.11.0.tgz
     version: 0.11.0
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.857299834Z"
+    created: "2019-12-27T00:35:40.116638968Z"
     description: PHP-FPM Web Application
     digest: 7f752796b31c2f927a93dd8c1c6e5daf505cd21c5bb324f8565ab6c595cab594
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -499,7 +499,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.10.0.tgz
     version: 0.10.0
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.878542102Z"
+    created: "2019-12-27T00:35:40.136377589Z"
     description: PHP-FPM Web Application
     digest: edea2ca9c6d4e2978eb681f039dd841c93de2b86706f7aafd34aaaaa9736fd82
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -508,7 +508,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.9.0.tgz
     version: 0.9.0
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.876980254Z"
+    created: "2019-12-27T00:35:40.135031974Z"
     description: PHP-FPM Web Application
     digest: ced5163d1cd9031a5f0847670aeb4f6b492cee55fa16ba472961ec4e17be0fa1
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -517,7 +517,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.8.0.tgz
     version: 0.8.0
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.875334593Z"
+    created: "2019-12-27T00:35:40.134186441Z"
     description: PHP-FPM Web Application
     digest: 68c8c0395feaf4d69da6bcb05134a9606aec96a00646b7f26e8981bc2e6b4019
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -526,7 +526,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.7.0.tgz
     version: 0.7.0
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.873828572Z"
+    created: "2019-12-27T00:35:40.133342684Z"
     description: PHP-FPM Web Application
     digest: ebe7ace120307cbd9abf84098d5db97b6fcab7b699d1035d9efd6e772eb24d42
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -535,7 +535,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.6.0.tgz
     version: 0.6.0
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.873104028Z"
+    created: "2019-12-27T00:35:40.132612553Z"
     description: PHP-FPM Web Application
     digest: e955b167b45b7230168307373f05685b1dd4cb0f3de36fd2ef2b6b88cdbbb7df
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -544,7 +544,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.5.0.tgz
     version: 0.5.0
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.872390235Z"
+    created: "2019-12-27T00:35:40.131869016Z"
     description: PHP-FPM Web Application
     digest: a59e58a833d86da9e9254ea058dd25ea2008e18b17bd6f3a83fb28b890b47efd
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -553,7 +553,7 @@ entries:
     - https://chatwork.github.io/charts/php-0.4.0.tgz
     version: 0.4.0
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.871713028Z"
+    created: "2019-12-27T00:35:40.131086879Z"
     description: PHP-FPM Web Application
     digest: 37a2b141a3e62ee51b2d1be92c1bbfda48a29d1d12ff1c70656f8c03e49a15f3
     icon: http://php.net/images/logos/php-logo-bigger.png
@@ -564,7 +564,16 @@ entries:
   postfix:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.883728861Z"
+    created: "2019-12-27T00:35:40.144137954Z"
+    description: Postfix Helm Chart
+    digest: 54aa6ed87f4ec7a6b4cb05ed2535b8e72fdbfd720eeda3e7ba79bdc38ab2ccf0
+    name: postfix
+    urls:
+    - https://chatwork.github.io/charts/postfix-0.5.1.tgz
+    version: 0.5.1
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2019-12-27T00:35:40.14306965Z"
     description: Postfix Helm Chart
     digest: 0210af761e4c8859fc48bdb284d7cfadf1d65468c35d7ae078c590003da74a9d
     name: postfix
@@ -573,7 +582,7 @@ entries:
     version: 0.5.0
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.882946776Z"
+    created: "2019-12-27T00:35:40.14227514Z"
     description: Postfix Helm Chart
     digest: 7d30c815efb1aeac3a9c0ae01bb6f76c684c0fae3aa11f4e1c65b204941cfc26
     name: postfix
@@ -582,7 +591,7 @@ entries:
     version: 0.4.0
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.882142368Z"
+    created: "2019-12-27T00:35:40.141496766Z"
     description: Postfix Helm Chart
     digest: 92be27113ed4f089aaf6b630b6fde18bce1b5913c1aec4d15773341c181ef15d
     name: postfix
@@ -591,7 +600,7 @@ entries:
     version: 0.3.0
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.881424453Z"
+    created: "2019-12-27T00:35:40.140707995Z"
     description: Postfix Helm Chart
     digest: 8f0e0f3770cdef28739b19bdc57f904a34352357ffcdc89907970f37df2d8b41
     name: postfix
@@ -600,7 +609,7 @@ entries:
     version: 0.2.1
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.880687452Z"
+    created: "2019-12-27T00:35:40.139918591Z"
     description: Postfix Helm Chart
     digest: 7897ba622ea585a3da13baa42a0e9529334bef745ea889237a4ba4eef8153ab8
     name: postfix
@@ -609,7 +618,7 @@ entries:
     version: 0.2.0
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.879873248Z"
+    created: "2019-12-27T00:35:40.138137204Z"
     description: Postfix Helm Chart
     digest: 74e9a0b44a5a4c106cfd35c51666af7f5b93d21209240ca205bd8a6d7c9355fc
     name: postfix
@@ -619,9 +628,9 @@ entries:
   regcred:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.884193457Z"
+    created: "2019-12-27T00:35:40.144641195Z"
     description: Pull an Image from a Private Registry
-    digest: 200b39a30a0093661ad8ba40e8514135bdf1035ecd15ac06a33aa4ce8bcbf36d
+    digest: 369e28cfe7aa79ba691634c2882c7de0ef91a4e794256955ecf8c7907a9f00ef
     maintainers:
     - email: ozaki@chatwork.com
       name: cw-ozaki
@@ -632,7 +641,7 @@ entries:
     version: 0.1.1
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-12-25T04:13:47.883951237Z"
+    created: "2019-12-27T00:35:40.144390602Z"
     description: Pull an Image from a Private Registry
     digest: 18a573cb87120aadf1d7bda35b8c12af6c5d854d764759c1b9a0dba1945e3d60
     maintainers:
@@ -645,9 +654,9 @@ entries:
     version: 0.1.0
   slime:
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.884810647Z"
+    created: "2019-12-27T00:35:40.145232682Z"
     description: ₍Ꙭ̂₎ < Not my bad slime
-    digest: 2a4005b41a5b9876c25671bf72896ba49412ed6dbd4bc9376fa93cbb1434c3d6
+    digest: b3f408664d1c1bb7ed921e17c4365943164d4f42745f9332cd9363f9aabeab29
     maintainers:
     - email: ozaki@chatwork.com
       name: cw-ozaki
@@ -660,7 +669,7 @@ entries:
     - https://chatwork.github.io/charts/slime-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v1
-    created: "2019-12-25T04:13:47.884484464Z"
+    created: "2019-12-27T00:35:40.14489311Z"
     description: ₍Ꙭ̂₎ < Not my bad slime
     digest: d2b65483ebbe880ab2a873735467f05f4731a116caf2553e935a08d5ebd14e79
     maintainers:
@@ -673,9 +682,9 @@ entries:
     version: 0.1.0
   tiller:
   - appVersion: 2.14.3
-    created: "2019-12-25T04:13:47.88711686Z"
+    created: "2019-12-27T00:35:40.146790617Z"
     description: Helm Charts for installing Helm Tiller.
-    digest: 6b86c4e94f34d5ea4a183a2cafe7a0346070c1b5a66a7aab4663fade63b73865
+    digest: 8ec74fa52698909705d9c9d0691b705343817b9dba88e48530f121ef77469384
     maintainers:
     - email: ozaki@chatwork.com
       name: cw-ozaki
@@ -688,7 +697,7 @@ entries:
     - https://chatwork.github.io/charts/tiller-0.0.6.tgz
     version: 0.0.6
   - appVersion: 2.14.1
-    created: "2019-12-25T04:13:47.886087233Z"
+    created: "2019-12-27T00:35:40.146448242Z"
     description: Helm Charts for installing Helm Tiller.
     digest: 7bac940751f82e08bea68820fb1a597412f340872c6b19c96d29412cf16bc496
     maintainers:
@@ -701,7 +710,7 @@ entries:
     - https://chatwork.github.io/charts/tiller-0.0.5.tgz
     version: 0.0.5
   - appVersion: 2.12.3
-    created: "2019-12-25T04:13:47.885760104Z"
+    created: "2019-12-27T00:35:40.14611471Z"
     description: Helm Charts for installing Helm Tiller.
     digest: 1fc1aa4d0a44c222fb046d61b3644923bcf936b2e60164905d0c5f646020bdb0
     maintainers:
@@ -714,7 +723,7 @@ entries:
     - https://chatwork.github.io/charts/tiller-0.0.4.tgz
     version: 0.0.4
   - appVersion: 2.12.3
-    created: "2019-12-25T04:13:47.885425429Z"
+    created: "2019-12-27T00:35:40.145787685Z"
     description: Helm Charts for installing Helm Tiller.
     digest: 072089b46650657276650d999a64130f035a9cc037250ff219064a3ca26c7d6f
     maintainers:
@@ -727,7 +736,7 @@ entries:
     - https://chatwork.github.io/charts/tiller-0.0.3.tgz
     version: 0.0.3
   - appVersion: 2.12.2
-    created: "2019-12-25T04:13:47.885096899Z"
+    created: "2019-12-27T00:35:40.14551693Z"
     description: Helm Charts for installing Helm Tiller.
     digest: 497f2bc8aec60d92f4d1a17b2fd8d303d3d5afb104aea1463c8a922e498ebf49
     maintainers:
@@ -742,9 +751,9 @@ entries:
   twistlock-console:
   - apiVersion: v1
     appVersion: 19.11.480
-    created: "2019-12-25T04:13:47.890948058Z"
+    created: "2019-12-27T00:35:40.148631951Z"
     description: Chart for Twistlock Console
-    digest: c3f6d80542e0efcd0337631e9d30759ae7574917e3538591fce30bc5770bb86a
+    digest: 0b88853e240b25aa0ed3e3ce96688bfb3aa8438a8b140fcaa270db47be65b163
     home: https://www.twistlock.com/
     maintainers:
     - email: sakamoto@chatwork.com
@@ -755,7 +764,7 @@ entries:
     version: 0.0.4
   - apiVersion: v1
     appVersion: 19.07.363
-    created: "2019-12-25T04:13:47.889769076Z"
+    created: "2019-12-27T00:35:40.148184595Z"
     description: Chart for Twistlock Console
     digest: 7f73342481b40d685d029b4f01b1c68c3d08086f4216cb667b259507f574b5ee
     home: https://www.twistlock.com/
@@ -768,7 +777,7 @@ entries:
     version: 0.0.3
   - apiVersion: v1
     appVersion: 19.07.363
-    created: "2019-12-25T04:13:47.888903146Z"
+    created: "2019-12-27T00:35:40.147741521Z"
     description: Chart for Twistlock Console
     digest: edc1b30f92e7e5a80a67c06b8b5282c889f4b7f6b6f94ba8c2180236dadf0057
     home: https://www.twistlock.com/
@@ -781,7 +790,7 @@ entries:
     version: 0.0.2
   - apiVersion: v1
     appVersion: 19.07.363
-    created: "2019-12-25T04:13:47.888001186Z"
+    created: "2019-12-27T00:35:40.147249111Z"
     description: Chart for Twistlock Console
     digest: 27f5f84b946353bb474dd12ce957d1cdf671668bf99b2bdf063c84eb8fac4a3f
     home: https://www.twistlock.com/
@@ -795,9 +804,9 @@ entries:
   twistlock-defender:
   - apiVersion: v1
     appVersion: 19.07.363
-    created: "2019-12-25T04:13:47.892212069Z"
+    created: "2019-12-27T00:35:40.149824887Z"
     description: Chart for Twistlock Defender
-    digest: d26eaa91b649aca2d59f44ddfea4d7e51f8554243626c95ad596f394e4f4600d
+    digest: cd16bea4a58a4e83ac834077379a4d4488c4a04fc76fd5e1974d68990309b249
     home: https://www.twistlock.com/
     maintainers:
     - email: sakamoto@chatwork.com
@@ -808,7 +817,7 @@ entries:
     version: 0.0.3
   - apiVersion: v1
     appVersion: 19.07.363
-    created: "2019-12-25T04:13:47.891835658Z"
+    created: "2019-12-27T00:35:40.149449863Z"
     description: Chart for Twistlock Defender
     digest: 841b99b2571c433b31a908bd085f0390af3af3f60135413a945d686b32ed73b6
     home: https://www.twistlock.com/
@@ -821,7 +830,7 @@ entries:
     version: 0.0.2
   - apiVersion: v1
     appVersion: 19.07.363
-    created: "2019-12-25T04:13:47.891446855Z"
+    created: "2019-12-27T00:35:40.14906009Z"
     description: Chart for Twistlock Defender
     digest: e6257906b0decd2147d9b7a2de7c0866b4d7b3880ec4b9bbeb39b5f5f5f62b27
     home: https://www.twistlock.com/
@@ -832,4 +841,4 @@ entries:
     urls:
     - https://chatwork.github.io/charts/twistlock-defender-0.0.1.tgz
     version: 0.0.1
-generated: "2019-12-25T04:13:47.836438792Z"
+generated: "2019-12-27T00:35:40.099378286Z"
