@@ -1,5 +1,5 @@
 name: tiller
-version: 0.0.6
+version: 0.1.0
 appVersion: 2.14.3
 description: Helm Charts for installing Helm Tiller.
 maintainers:
