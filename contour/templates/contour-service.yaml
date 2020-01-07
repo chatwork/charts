@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "contour.fullname" . }}
+    {{- if .Values.contour.service.annotations }}
+  annotations:
+{{ toYaml .Values.contour.service.annotations | indent 4 }}
+    {{- end }}
+  name: {{ template "contour.fullname" . }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: {{ .Values.contour.port.xds }}
+    name: xds
+    protocol: TCP
+    targetPort: {{ .Values.contour.port.xds }}
+  selector:
+    app: {{ template "contour.fullname" . }}

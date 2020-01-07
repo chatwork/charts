@@ -27,10 +27,13 @@ spec:
         - -c
         - |
         {{- if .Values.daemonset.enabled }}
-          export SMTPHOST="${NODE_IP}:{{ .Values.daemonset.hostPort }}" \
+          export SMTPHOST="${NODE_IP}:{{ .Values.daemonset.hostPort | default 25 }}" \
         {{- end }}
         {{- if .Values.deployment.enabled }}
-          export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.deployment.service.port }}" \
+          export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.service.port }}" \
+        {{- end }}
+        {{- if .Values.statefulSet.enabled }}
+          export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.service.port }}" \
         {{- end }}
           && /usr/local/bin/php -r "\$ret = mail(\"${TO_EMAIL}\", \"Hello\", \"Body\"); var_dump(\$ret);" | grep true \
           && sleep 1 \

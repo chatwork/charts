@@ -4,7 +4,7 @@
 
 image:
   repository: chatwork/postfix
-  tag: latest
+  tag: 0.1.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -25,6 +25,13 @@ readinessProbe:
     port: 25
   failureThreshold: 2
   periodSeconds: 5
+
+persistence:
+  enabled: false
+  # storageClass:
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  annotations: {}
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -60,10 +67,6 @@ deployment:
   enabled: false
   replicaCount: 1
 
-  service:
-    type: LoadBalancer
-    port: 25
-
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -79,9 +82,23 @@ deployment:
     minAvailable: 1
     maxUnavailable:
 
+statefulSet:
+  enabled: false
+
+  replicas: 1
+
+  podAnnotations: {}
+  affinity: {}
+  tolerations: []
+  updateStrategy: "RollingUpdate"
+
+service:
+  type: ClusterIP
+  port: 25
+
 postfix:
   templates:
-    main_cf: |
+    main.cf: |
       # Global Postfix configuration file. This file lists only a subset
       # of all parameters. For the syntax, and for a complete parameter
       # list, see the postconf(5) manual page (command: "man 5 postconf").
@@ -766,21 +783,12 @@ postfix:
       # Postfix の名前解決では、サービス名が引けないので native を指定
       smtp_host_lookup = native
       relayhost = [{{ include "postfix.fullname" . }}-mailcatcher]:1025
-      {{- else }}
-      # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
-      smtp_sasl_auth_enable = yes
-      smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-      smtp_sasl_security_options = noanonymous
-      smtp_sasl_tls_security_options = noanonymous
-      smtp_tls_security_level = encrypt
-      header_size_limit = 4096000
-      relayhost = [smtp.sendgrid.net]:587
       {{- end }}
-  secrets:
+  secrets: {}
     # dummy value
     # @see https://sendgrid.kke.co.jp/docs/Integrate/Mail_Servers/postfix.html
-    sasl_passwd: |-
-      [smtp.sendgrid.net]:587 yourSendGridUsername:yourSendGridPassword
+    # sasl_passwd: |-
+    #   [smtp.sendgrid.net]:587 yourSendGridUsername:yourSendGridPassword
 
 # for helm test
 test:

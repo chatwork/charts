@@ -1,0 +1,114 @@
+{{ $root := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "contour.fullname" $root }}
+  labels:
+    app: {{ template "contour.fullname" $root }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  {{- range $key, $value := .Values.contour.deployment.annotations }}
+  annotations:
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.contour.deployment.replicas }}
+  selector:
+    matchLabels:
+       app: {{ include "contour.fullname" $root }}
+       release: {{ .Release.Name }}
+  {{- with .Values.contour.deployment.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "contour.fullname" $root }}
+        release: {{ .Release.Name }}
+      name: {{ template "contour.fullname" $root }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.contour.port.healthz }}"
+        checksum/contour-config: {{ tpl (toYaml .Values.contour.config) . | sha256sum | quote }}
+        {{- range $key, $value := .Values.contour.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      {{- with .Values.contour.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      containers:
+      - name: contour
+        image: "{{ .Values.contour.image.repository }}:{{ .Values.contour.image.tag }}"
+        imagePullPolicy: "{{ .Values.contour.image.imagePullPolicy }}"
+        command:
+        - "contour"
+        args:
+        - "serve"
+        - "--incluster"
+        - "--use-extensions-v1beta1-ingress"
+        - "--xds-address={{ .Values.contour.xdsAddress }}"
+        - "--xds-port={{ .Values.contour.port.xds }}"
+        - "--envoy-service-http-port={{ .Values.envoy.service.port.http }}"
+        - "--envoy-service-https-port={{ .Values.envoy.service.port.https }}"
+        - "--config-path=/config/contour.yaml"
+        {{- if .Values.contour.insecure }}
+        - "--insecure"
+        {{- end }}
+        {{- with .Values.contour.extraArgs }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.contour.resources | indent 12 }}
+        volumeMounts:
+        - name: contour-config
+          mountPath: /config
+          readOnly: true
+        {{- with .Values.contour.extraVolumeMounts }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.contour.port.xds }}
+          name: xds
+          protocol: TCP
+        - containerPort: {{ .Values.contour.port.healthz }}
+          name: debug
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.contour.port.healthz }}
+          {{- if .Values.contour.livenessProbe.initialDelaySeconds }}
+          initialDelaySeconds: {{ .Values.contour.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.contour.livenessProbe.periodSeconds}}
+          {{- end }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.contour.port.xds }}
+          {{- if .Values.contour.readinessProbe }}
+          initialDelaySeconds: {{ .Values.contour.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.contour.readinessProbe.periodSeconds }}
+          {{- end }}
+      volumes:
+      - name: contour-config
+        configMap:
+          name: {{ template "contour.fullname" $root }}-config
+          defaultMode: 0644
+          items:
+          - key: contour.yaml
+            path: contour.yaml
+      {{- with .Values.contour.extraVolumes }}
+{{ toYaml . | indent 6 }}
+      {{- end }}
+      {{- with .Values.contour.affinity }}
+      affinity:
+{{ tpl (toYaml .) $root | indent 8 }}
+      {{- end }}
+      tolerations:
+      {{- with .Values.contour.tolerations }}
+{{ tpl (toYaml .) | indent 8 }}
+      {{- end }}
+      serviceAccountName: {{ if .Values.contour.rbac.create }}{{ template "contour.fullname" . }}{{ else }}"{{ .Values.contour.rbac.serviceAccountName }}"{{ end }}

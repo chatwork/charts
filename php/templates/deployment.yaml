@@ -55,7 +55,6 @@ spec:
       - name: "{{ template "php.fullname" . }}-busybox"
         image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
         imagePullPolicy: {{ .Values.busybox.image.pullPolicy }}
-        restartPolicy: Never
         command:
 {{ tpl (toYaml .Values.busybox.command) $root | indent 8 }}
 {{- with .Values.busybox.extraEnv }}
@@ -114,12 +113,15 @@ spec:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
         lifecycle:
+{{- with .Values.nginx.lifecycle.postStart }}
+          postStart:
+            exec:
+              command:
+{{ tpl (toYaml .) $root | indent 14 }}
+{{- end }}
           preStop:
             exec:
               command: ["sh", "-c", "sleep {{ .Values.fpm.processControlTimeout | default 0 }}; nginx -s quit; sleep 5"]
-        {{- with .Values.fpm.processControlTimeout }}
-        terminationGracePeriodSeconds: {{ add . 10 }}
-        {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
@@ -172,12 +174,15 @@ spec:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
         lifecycle:
+{{- with .Values.fpm.lifecycle.postStart }}
+          postStart:
+            exec:
+              command:
+{{ tpl (toYaml .) $root | indent 14 }}
+{{- end }}
           preStop:
             exec:
               command: ["sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ .Values.fpm.processControlTimeout | default 0 }}"]
-        {{- with .Values.fpm.processControlTimeout }}
-        terminationGracePeriodSeconds: {{ add . 10 }}
-        {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
@@ -185,6 +190,9 @@ spec:
 {{- end }}
         - name: php-fpm-sock
           mountPath: /var/run/php-fpm
+        - name: php-ini
+          subPath: php.ini
+          mountPath: /usr/local/etc/php/php.ini
         - name: fpm-conf
           subPath: php-fpm.conf
           mountPath: /usr/local/etc/php-fpm.conf
@@ -209,6 +217,9 @@ spec:
       - name: nginx-confd
         configMap:
           name: {{ template "php.fullname" . }}-nginx-conf-d
+      - name: php-ini
+        configMap:
+          name: {{ template "php.fullname" . }}-fpm-php-ini
       - name: fpm-conf
         configMap:
           name: {{ template "php.fullname" . }}-fpm-php-fpm-conf
@@ -227,9 +238,22 @@ spec:
 {{- with .Values.extraVolumes }}
 {{ tpl (toYaml .) $root | indent 6 }}
 {{- end }}
+{{- with .Values.restartPolicy }}
+      restartPolicy: {{ . }}
+{{- end }}
 {{- with .Values.imagePullSecrets}}
       imagePullSecrets:
 {{ tpl (toYaml .) $root | indent 6 }}
+{{- end }}
+{{- with .Values.securityContext }}
+      securityContext:
+{{ tpl (toYaml .) $root | indent 8 }}
+{{- end }}
+{{- with .Values.serviceAccountName }}
+      serviceAccountName: {{ . }}
+{{- end }}
+{{- with .Values.fpm.processControlTimeout }}
+      terminationGracePeriodSeconds: {{ add . 10 }}
 {{- end }}
 {{- with .Values.affinity }}
       affinity:

@@ -3,17 +3,13 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: {{ include "postfix.fullname" . }}
-  labels:
-   app: {{ include "postfix.name" . }}
-   chart: {{ include "postfix.chart" . }}
-   release: {{ .Release.Name }}
-   heritage: {{ .Release.Service }}
+  labels: {{ include "postfix.labels" . | nindent 4 }}
 spec:
-  {{- if .Values.deployment.podDisruptionBudget.minAvailable }}
-  minAvailable: {{ .Values.deployment.podDisruptionBudget.minAvailable }}
+  {{- with .Values.deployment.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ . }}
   {{- end  }}
-  {{- if .Values.deployment.podDisruptionBudget.maxUnavailable }}
-  maxUnavailable: {{ .Values.deployment.podDisruptionBudget.maxUnavailable }}
+  {{- with .Values.deployment.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ . }}
   {{- end  }}
   selector:
     matchLabels:

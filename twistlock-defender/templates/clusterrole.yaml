@@ -1,0 +1,28 @@
+{{- if or .Values.config.monitor.istio .Values.config.monitor.serviceAccounts }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "twistlock-defender.fullname" . }}
+  labels:
+    app: {{ template "twistlock-defender.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+rules:
+{{- if .Values.config.monitor.serviceAccounts }}
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"] # Allow Defenders to list RBAC resources
+  verbs: ["list"]
+{{- end}}
+{{- if .Values.config.monitor.istio }}
+- apiGroups: ["rbac.istio.io"]
+  resources: ["rbacconfigs", "servicerolebindings", "serviceroles"] # Allow Defenders to list Istio RBAC resources
+  verbs: ["list"]
+- apiGroups: ["authentication.istio.io"]
+  resources: ["meshpolicies"] # Allow Defenders to list Istio mesh policies
+  verbs: ["list"]
+- apiGroups: ["networking.istio.io"]
+  resources: ["virtualservices", "destinationrules", "gateways", "serviceentries"] # Allow Defenders to list Istio networking resources
+  verbs: ["list"]
+{{- end}}
+{{- end}}

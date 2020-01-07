@@ -1,0 +1,59 @@
+# This is a sample file for creating a certificate with cert-manager(>= 0.11.0)
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: contour-selfsigning-issuer
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: contour-ca
+spec:
+  secretName: contour-ca-tls
+  commonName: contour-ca
+  #duration: 24h
+  #renewBefore: 1h
+  isCA: true
+  issuerRef:
+    name: contour-selfsigning-issuer
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: contour-ca-issuer
+spec:
+  ca:
+    secretName: contour-ca-tls
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: contour
+spec:
+  dnsNames:
+  - contour
+  - contour.contour.svc
+  - contour.contour.svc.cluster.local
+  #duration: 24h
+  #renewBefore: 1h
+  issuerRef:
+    name: contour-ca-issuer
+  secretName: contour-tls
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: envoy
+spec:
+  dnsNames:
+  - envoy
+  - envoy.contour.svc
+  - envoy.contour.svc.cluster.local
+  #duration: 24h
+  #renewBefore: 1h
+  issuerRef:
+    name: contour-ca-issuer
+  secretName: envoy-tls

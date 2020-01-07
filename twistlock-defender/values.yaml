@@ -1,0 +1,97 @@
+fullnameOverride: ""
+nameOverride: ""
+
+accessToken: "accessToken"
+
+console:
+  dnsName: twistlock-console
+  port: 8084
+
+image:
+  repository: "registry-auth.twistlock.com/tw_{{ .Values.accessToken }}/twistlock/defender"
+  tag: "defender{{ .Values.config.docker.tag }}"
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+
+volumeMounts:
+  data: "/var/lib/twistlock"
+  certificates: "/var/lib/twistlock/certificates"
+  docker:
+    sockPath: "/var/run"
+    netns: "/var/run/docker/netns"
+  iptablesFlockPath: "/run"
+
+volumes:
+  data: "/var/lib/twistlock/defender"
+  docker:
+    sockPath: "/var/run"
+    netns: "/var/run/docker/netns"
+  iptablesFlockPath: "/run"
+  passwd: "/etc/passwd"
+  auditLog: "/var/log/audit"
+  syslog: "/dev/log"
+
+config:
+  console:
+    wsAddress: wss://{{ .Values.console.dnsName }}:{{ .Values.console.port }}
+  defender:
+    type: "daemonset"
+    listenerType: "none"
+  clusterId: "CLUSTERID"
+  monitor:
+    serviceAccounts: "true"
+    istio: "false"
+  # https://docs.twistlock.com/docs/19.07/install/install_defender/install_rasp_defender.html#embed-rasp-defender-manually
+  installBundle: ""
+  docker:
+    clientAddress: "/var/run/docker.sock"
+    tag: "_19_07_363"
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+securityContext:
+  readOnlyRootFilesystem: true
+  privileged: true
+  capabilities:
+    add:
+    - NET_ADMIN
+    - SYS_ADMIN
+    - SYS_PTRACE
+    - AUDIT_CONTROL
+
+secret:
+  ca_cert: "CA_CERT"
+  client_cert: "CLIENT_CERT"
+  client_key: "CLIENT_KEY"
+  service_parameter: "SERVICE_PARAMETER"
+
+useHostNetwork: true
+useHostPID: true
+
+deployment:
+  enabled: false
+  annotations: {}
+  replicas: 1
+  strategy: {}
+  affinity: {}
+
+daemonset:
+  enabled: true
+  annotations: {}
+  updateStrategy:
+    type: RollingUpdate
+
+podAnnotations: {}
+tolerations: []
+extraEnv: []
+extraVolumeMounts: []
+extraVolumes: []
+
+livenessProbe: {}
+readinessProbe: {}
