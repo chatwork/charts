@@ -15,6 +15,12 @@ podAnnotations: {}
 
 imagePullSecrets: []
 
+restartPolicy: ""
+
+securityContext: {}
+
+serviceAccountName: ""
+
 extraVolumes: []
 
 extraVolumeMounts: []

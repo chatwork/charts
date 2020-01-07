@@ -3,44 +3,34 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "postfix.fullname" . }}
-  labels:
-    app: {{ include "postfix.name" . }}
-    chart: {{ include "postfix.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  labels: {{ include "postfix.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
-{{- with .Values.deployment.strategy }}
-  strategy:
-{{ toYaml . | indent 4 }}
-{{- end }}
+  {{- with .Values.deployment.strategy }}
+  strategy: {{ toYaml . | nindent 4 }}
+  {{- end }}
   selector:
-    matchLabels:
-      app: {{ include "postfix.name" . }}
-      release: {{ .Release.Name }}
+    matchLabels: {{ include "postfix.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        app: {{ include "postfix.name" . }}
-        chart: {{ template "postfix.chart" . }}
-        release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
+      labels: {{ include "postfix.selectorLabels" . | nindent 8 }}
       annotations:
-        checksum/main_cf: {{ tpl .Values.postfix.templates.main_cf . | sha256sum }}
-        checksum/sasl_passwd: {{ .Values.postfix.secrets.sasl_passwd | sha256sum }}
-{{- with .Values.deployment.podAnnotations }}
-{{ toYaml . | indent 8 }}
-{{- end }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.postfix.secrets.sasl_passwd }}
+        checksum/sasl_passwd: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- end }}
+        {{- with .Values.deployment.podAnnotations }}
+        {{ toYaml . | indent 8 }}
+        {{- end }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{- with .Values.resources }}
-        resources:
-{{ toYaml . | indent 12 }}
-{{- end }}
+        {{- with .Values.resources }}
+        resources: {{ toYaml . | nindent 12 }}
+        {{- end }}
         lifecycle:
           preStop:
             exec:
@@ -49,37 +39,51 @@ spec:
         - name: smtp
           containerPort: 25
           protocol: TCP
-        livenessProbe:
-{{ toYaml .Values.livenessProbe | indent 12 }}
-        readinessProbe:
-{{ toYaml .Values.readinessProbe | indent 12 }}
+        livenessProbe: {{ toYaml .Values.livenessProbe | nindent 12 }}
+        readinessProbe: {{ toYaml .Values.readinessProbe | nindent 12 }}
         volumeMounts:
-        - name: configmap
-          subPath: main_cf
-          mountPath: /etc/postfix/main.cf
-        - name: secret
-          subPath: sasl_passwd
-          mountPath: /etc/postfix/sasl_passwd
-          readOnly: true
-{{- if .Values.extraVolumeMounts }}
-{{ toYaml .Values.extraVolumeMounts . | indent 8 }}
-{{- end }}
+          - name: spool
+            mountPath: /var/spool/postfix
+            {{- if .Values.persistence.subPath }}
+            subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
+          {{- range $k, $v := .Values.postfix.templates }}
+          - name: configmap
+            subPath: {{ $k }}
+            mountPath: /etc/postfix/{{ $k }}
+          {{- end }}
+          {{- if .Values.postfix.secrets.sasl_passwd }}
+          - name: secret
+            subPath: sasl_passwd
+            mountPath: /etc/postfix/sasl_passwd
+            readOnly: true
+          {{- end }}
+          {{- if .Values.extraVolumeMounts }}
+          {{ toYaml .Values.extraVolumeMounts . | nindent 10 }}
+          {{- end }}
       volumes:
-      - name: configmap
-        configMap:
-          name: {{ template "postfix.fullname" . }}-configmap
-      - name: secret
-        secret:
-          secretName: {{ template "postfix.fullname" . }}-secret
-{{- if .Values.extraVolumes }}
-{{ toYaml .Values.extraVolumes . | indent 6 }}
-{{- end }}
-{{- with .Values.deployment.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-{{- end }}
-{{- with .Values.deployment.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-{{- end }}
+        - name: spool
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "postfix.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: configmap
+          configMap:
+            name: {{ template "postfix.fullname" . }}-configmap
+        {{- if .Values.postfix.secrets.sasl_passwd }}
+        - name: secret
+          secret:
+            secretName: {{ template "postfix.fullname" . }}-secret
+        {{- end }}
+        {{- if .Values.extraVolumes }}
+        {{ toYaml .Values.extraVolumes . | indent 6 }}
+        {{- end }}
+      {{- with .Values.deployment.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
 {{ end }}

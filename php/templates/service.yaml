@@ -24,7 +24,7 @@ spec:
 {{- range .Values.nginx.extraPorts }}
   - name: {{ .name }}
     port: {{ .containerPort }}
-    {{- with .protocol }}protocol: {{ . }}{{ end }}
+    {{ with .protocol }}protocol: {{ . }}{{ end }}
     targetPort: {{ .name | default .containerPort }}
 {{- end }}
 {{- end }}

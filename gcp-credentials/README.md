@@ -1,5 +1,7 @@
 This chart creates a secret for credential of gcp.
 
+Items required for credential json can be created by gcp service account key generation.
+
 GCP credentials needs file to a specific path(https://cloud.google.com/logging/docs/agent/authorization).
 
 If you use secret created by this chart, please follow setting in your manifest.
