@@ -18,7 +18,7 @@ spec:
         checksum/sasl_passwd: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
         {{- with .Values.statefulSet.podAnnotations }}
-        {{ toYaml . | indent 8 }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
     spec:
       containers:
@@ -54,7 +54,6 @@ spec:
             - name: secret
               subPath: sasl_passwd
               mountPath: /etc/postfix/sasl_passwd
-              readOnly: true
             {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{ toYaml .Values.extraVolumeMounts . | nindent 10 }}
