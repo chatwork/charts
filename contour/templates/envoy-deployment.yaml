@@ -11,7 +11,7 @@ metadata:
     release: {{ .Release.Name | quote }}
   {{- range $key, $value := .Values.envoy.deployment.annotations }}
   annotations:
-    {{ $key }}: {{ $value | quote }}
+    {{ $key }}: {{ tpl $value $root | quote }}
   {{- end }}
 spec:
   replicas: {{ .Values.envoy.deployment.replicas }}
