@@ -47,6 +47,9 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `strategy` | Update strategy of pod in deployment | `type`: `RollingUpdate` |
 |  `podAnnotation` | Annotation specified for pod in deployment | `{}` |
 |  `imagePullSecrets` | Name of Secret resource containing private registry credentials | `[]` |
+|  `restartPolicy` | Container restart policy | `""` |
+|  `securityContext` | Enable security context | `""` |
+|  `serviceAccountName` | Existing ServiceAccount to use | `""` |
 |  `extraVolumes` | Additional volumes to all container | `[]` |
 |  `extraVolumeMounts` | Additional volumeMounts to all container | `[]` |
 |  `tolerations` | Pod taint tolerations for deployment | `[]` |

@@ -1,0 +1,21 @@
+{{- if and .Values.persistence.enabled (not .Values.statefulSet.enabled) }}
+{{- if .not .Values.persistence.existingClaim }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "postfix.fullname" . }}
+  labels: {{ include "postfix.labels" . | nindent 4 }}
+  {{- with .Values.persistence.annotations  }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+  {{- with .Values.persistence.storageClass }}
+  storageClassName: "{{ . }}"
+  {{- end }}
+{{- end }}
+{{- end }}
