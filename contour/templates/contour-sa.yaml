@@ -1,4 +1,5 @@
 {{- if .Values.contour.rbac.create }}
+{{ $root := . }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -8,4 +9,8 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "contour.fullname" . }}
+  {{- range $key, $value := .Values.contour.rbac.serviceAccount.annotations }}
+  annotations:
+    {{ $key }}: {{ tpl $value $root | quote }}
+  {{- end }}
 {{- end }}

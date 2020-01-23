@@ -1,8 +1,0 @@
-extraVolumeMounts:
-  - name: host-spool-postfix
-    mountPath: /var/spool/postfix
-
-extraVolumes:
-  - name: host-spool-postfix
-    hostPath:
-      path: /var/spool/postfix
