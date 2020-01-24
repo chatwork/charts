@@ -90,7 +90,7 @@ spec:
 {{- with .Values.newrelic.deployment.extraPorts }}
         ports:
 {{- range $v := . }}
-{{ tpl (toYaml .) $root | indent 8 }}
+{{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
 {{- end }}
 {{- else }}
@@ -114,7 +114,7 @@ spec:
           hostPath:
             path: /var/run/newrelic
 {{- with .Values.newrelic.deployment.extraVolumes }}
-{{ tpl (toYaml .) $root | indent 8 }}
+{{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
 {{- end }}
 {{ end }}
