@@ -117,4 +117,4 @@ spec:
 {{ tpl (toYaml .) $root | indent 10 }}
 {{- end }}
 {{- end }}
-{{ end }}
+{{- end }}
