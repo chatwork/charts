@@ -1,5 +1,5 @@
 namespace = "$$(basename $$PWD)$$(git rev-parse HEAD)"
-helmContext = --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"}
+helmContext = --kube-context $${KUBE_CONTEXT:-"dind"}
 releaseName = $$(basename $$PWD)-$$(git rev-parse HEAD)
 
 helmInstallOptions = --wait --install --namespace $(namespace) --set terminationGracePeriodSeconds=0

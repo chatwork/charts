@@ -1,7 +1,13 @@
+{{ $root := . }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "contour.fullname" . }}-config
+  labels:
+    app: {{ template "contour.fullname" $root }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
 data:
   contour.yaml: |
-{{ (tpl (toYaml .Values.contour.config) .) | indent 4 }}
+{{ (tpl (toYaml .Values.contour.config) $root) | indent 4 }}

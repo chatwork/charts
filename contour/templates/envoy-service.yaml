@@ -1,14 +1,22 @@
+{{ $root := . }}
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: {{ template "envoy.fullname" . }}
-    {{- if .Values.envoy.service.annotations }}
+    app: {{ template "envoy.fullname" $root }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  {{- range $key, $value := .Values.envoy.service.annotations }}
   annotations:
-{{ toYaml .Values.envoy.service.annotations | indent 4}}
-    {{- end }}
-  name: {{ template "envoy.fullname" . }}
+    {{ $key }}: {{ tpl $value $root | quote }}
+  {{- end }}
+  name: {{ template "envoy.fullname" $root }}
 spec:
+  {{- with .Values.envoy.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml . | indent 2 }}
+  {{- end }}
   type: {{ .Values.envoy.service.type }}
 {{- if and (.Values.envoy.daemonset.enabled) (.Values.envoy.service.externalTrafficPolicy) }}
   externalTrafficPolicy: "{{ .Values.envoy.service.externalTrafficPolicy }}"
@@ -29,4 +37,4 @@ spec:
     nodePort: {{ .Values.envoy.service.nodePort.https }}
 {{- end }}
   selector:
-    app: {{ template "envoy.fullname" . }}
+    app: {{ template "envoy.fullname" $root }}

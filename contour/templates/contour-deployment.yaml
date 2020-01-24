@@ -33,7 +33,7 @@ spec:
         prometheus.io/port: "{{ .Values.contour.port.healthz }}"
         checksum/contour-config: {{ tpl (toYaml .Values.contour.config) . | sha256sum | quote }}
         {{- range $key, $value := .Values.contour.podAnnotations }}
-        {{ $key }}: {{ $value | quote }}
+        {{ $key }}: {{ tpl $value $root | quote }}
         {{- end }}
     spec:
       {{- with .Values.contour.imagePullSecrets }}
@@ -111,4 +111,4 @@ spec:
       {{- with .Values.contour.tolerations }}
 {{ tpl (toYaml .) | indent 8 }}
       {{- end }}
-      serviceAccountName: {{ if .Values.contour.rbac.create }}{{ template "contour.fullname" . }}{{ else }}"{{ .Values.contour.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.contour.rbac.create }}{{ template "contour.fullname" . }}{{ else }}"{{ .Values.contour.rbac.serviceaccount.name }}"{{ end }}

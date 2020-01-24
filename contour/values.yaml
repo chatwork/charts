@@ -73,7 +73,9 @@ contour:
 
   rbac:
     create: true
-    serviceAccountName: default
+    serviceAccount:
+      name: default
+      annotations: {}
 
   config:
     # should contour expect to be running inside a k8s cluster
@@ -220,6 +222,7 @@ envoy:
       #service.beta.kubernetes.io/aws-load-balancer-extra-security-groups: sg-12234
       #
     type: "LoadBalancer"
+    loadBalancerSourceRanges: []
 
     #externalTrafficPolicy: "Cluster"
     externalTrafficPolicy: ""
