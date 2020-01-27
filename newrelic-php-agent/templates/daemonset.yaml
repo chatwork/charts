@@ -81,7 +81,6 @@ spec:
 {{- if isAbs $.Values.newrelic.address }}
         volumeMounts:
           - mountPath: {{ dir $.Values.newrelic.address }}
-            subPath: {{ base $.Values.newrelic.address }}
             name: newrelic
 {{- with .Values.newrelic.daemonset.extraVolumeMounts }}
 {{ tpl (toYaml .) $root | indent 10 }}
