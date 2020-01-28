@@ -1,5 +1,5 @@
 {{- $root := . -}}
-{{- if and .Values.newrelic.daemonset.enabled (not .Values.newrelic.deployment.enabled) }}
+{{- if and .Values.daemonset.enabled (not .Values.deployment.enabled) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -20,90 +20,90 @@ spec:
         app.kubernetes.io/name: {{ include "newrelic-php-agent.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      {{- if .Values.newrelic.daemonset.useHostNetwork }}
-      hostNetwork: {{ .Values.newrelic.daemonset.useHostNetwork }}
+      {{- if .Values.daemonset.useHostNetwork }}
+      hostNetwork: {{ .Values.daemonset.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-      {{- if .Values.newrelic.image.pullSecrets }}
+      {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
-{{ toYaml .Values.newrelic.image.pullSecrets | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.newrelic.image.repository }}:{{ .Values.newrelic.image.tag }}"
-        imagePullPolicy: {{ .Values.newrelic.image.pullPolicy }}
-{{- with .Values.newrelic.image.command }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- with .Values.image.command }}
         command:
-{{ tpl (toYaml .) $root | indent 10 }}
+{{ toYaml . | indent 10 }}
 {{- end }}
-{{- if isAbs $.Values.newrelic.address }}
-{{- else }}
+{{- if not (isAbs $.Values.newrelic.address) }}
         args: ["--address={{ $.Values.newrelic.address }}", "--watchdog-foreground"]
 {{- end }}
-{{- with .Values.newrelic.daemonset.extraEnv }}
+{{- with .Values.daemonset.extraEnv }}
         env:
-{{ tpl (toYaml .) $root | indent 10 }}
+{{ toYaml . | indent 10 }}
 {{- end }}
-{{- with .Values.newrelic.daemonset.extraEnvFrom }}
+{{- with .Values.daemonset.extraEnvFrom }}
         envFrom:
-{{ tpl (toYaml .) $root | indent 10 }}
+{{ toYaml . | indent 10 }}
 {{- end }}
-{{- with .Values.newrelic.livenessProbe }}
         livenessProbe:
+{{- with .Values.livenessProbe }}
+{{ toYaml . | indent 10 }}
+{{- else }}
           {{- if isAbs $.Values.newrelic.address }}
           exec:
             command:
             - /bin/sh
             - -c
-            - ls -al
-            - {{ dir $.Values.newrelic.address }}/{{ base $.Values.newrelic.address }}
+            - ls -al {{ $.Values.newrelic.address }}
           {{- else }}
           tcpSocket:
             port: {{ $.Values.newrelic.port }}
           {{- end }}
-{{ tpl (toYaml .) $root | indent 10 }}
+          failureThreshold: 2
+          initialDelaySeconds: 10
+          periodSeconds: 60
 {{- end }}
-{{- with .Values.newrelic.readinessProbe }}
         readinessProbe:
+{{- with .Values.readinessProbe }}
+{{ toYaml . | indent 10 }}
+{{- else }}
           {{- if isAbs $.Values.newrelic.address }}
           exec:
             command:
             - /bin/sh
             - -c
-            - ls -al
-            - {{ dir $.Values.newrelic.address }}/{{ base $.Values.newrelic.address }}
+            - ls -al {{ $.Values.newrelic.address }}
           {{- else }}
           tcpSocket:
             port: {{ $.Values.newrelic.port }}
           {{- end }}
-{{ tpl (toYaml .) $root | indent 10 }}
+          failureThreshold: 2
+          periodSeconds: 5
 {{- end }}
 {{- if isAbs $.Values.newrelic.address }}
         volumeMounts:
           - mountPath: {{ dir $.Values.newrelic.address }}
             name: newrelic
-{{- with .Values.newrelic.daemonset.extraVolumeMounts }}
-{{ tpl (toYaml .) $root | indent 10 }}
+{{- with .Values.daemonset.extraVolumeMounts }}
+{{ toYaml . | indent 10 }}
 {{- end }}
-{{- with .Values.newrelic.daemonset.extraPorts }}
+{{- with .Values.daemonset.extraPorts }}
         ports:
-{{- range $v := . }}
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
+{{ toYaml . | indent 10 }}
 {{- end }}
 {{- else }}
-{{- with .Values.newrelic.daemonset.extraVolumeMounts }}
+{{- with .Values.daemonset.extraVolumeMounts }}
         volumeMounts:
-{{ tpl (toYaml .) $root | indent 10 }}
+{{ toYaml . | indent 10 }}
 {{- end }}
         ports:
           - name: nw-daemon-port
             containerPort: {{ $.Values.newrelic.port }}
             protocol: TCP
-{{- with .Values.newrelic.daemonset.extraPorts }}
-{{- range $v := . }}
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
+{{- with .Values.daemonset.extraPorts }}
+{{ toYaml . | indent 10 }}
 {{- end }}
 {{- end }}
 {{- if isAbs $.Values.newrelic.address }}
@@ -111,20 +111,25 @@ spec:
         - name: newrelic
           hostPath:
             path: /var/run/newrelic
-{{- with .Values.newrelic.daemonset.extraVolumes }}
-{{ tpl (toYaml .) $root | indent 10 }}
+{{- with .Values.daemonset.extraVolumes }}
+{{ toYaml . | indent 10 }}
+{{- end }}
+{{- else }}
+{{- with .Values.daemonset.extraVolumes }}
+      volumes:
+{{ toYaml . | indent 10 }}
 {{- end }}
 {{- end }}
-{{- if .Values.newrelic.daemonset.tolerations }}
+{{- with .Values.daemonset.tolerations }}
       tolerations:
-{{ toYaml .Values.newrelic.daemonset.tolerations | indent 8 }}
+{{ toYaml . | indent 8 }}
 {{- end }}
-{{- if .Values.newrelic.daemonset.affinity }}
+{{- with .Values.daemonset.affinity }}
       affinity:
-{{ toYaml .Values.newrelic.daemonset.affinity | indent 8 }}
+{{ toYaml . | indent 8 }}
 {{- end }}
-{{- if .Values.newrelic.daemonset.nodeSelector }}
+{{- with .Values.daemonset.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.newrelic.daemonset.nodeSelector | indent 8 }}
+{{ toYaml . | indent 8 }}
 {{- end }}
 {{- end }}

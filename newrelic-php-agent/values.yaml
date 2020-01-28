@@ -2,56 +2,55 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 newrelic:
-  image:
-    repository: chatwork/newrelic-php-agent
-    tag: 0.1.1
-    pullPolicy: IfNotPresent
-    command: []
-    pullSecrets: []
-  
   # ref. https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-configuration#inivar-daemon-settings
   address: /tmp/.newrelic.sock
-  port: 31339
+  port: 
 
-  livenessProbe:
-    failureThreshold: 2
-    initialDelaySeconds: 10
-    periodSeconds: 60
+image:
+  repository: chatwork/newrelic-php-agent
+  tag: 9.4.0.249
+  pullPolicy: IfNotPresent
+  command: []
+  pullSecrets: []
 
-  readinessProbe:
-    failureThreshold: 2
-    periodSeconds: 5
+livenessProbe: {}
+readinessProbe: {}
 
-  daemonset:
-    enabled: true
-    useHostNetwork: false
-    extraPorts: []
-    extraEnv: []
-    extraEnvFrom: []
-    extraVolumes: []
-    extraVolumeMounts: []
-    tolerations: []
-    affinity: []
-    nodeSelector: []
+daemonset:
+  enabled: true
+  useHostNetwork: false
+  extraPorts: []
+  extraEnv: []
+  extraEnvFrom: []
+  extraVolumes: []
+  extraVolumeMounts: []
+  tolerations: []
+  affinity: {}
+  nodeSelector: {}
 
-  deployment:
-    enabled: false
-    useHostNetwork: false
-    replicaCount: 1
-    extraPorts: []
-    extraEnv: []
-    extraEnvFrom: []
-    extraVolumes: []
-    extraVolumeMounts: []
-    tolerations: []
-    affinity: []
-    nodeSelector: []
+deployment:
+  enabled: false
+  replicaCount: 1
+  extraPorts: []
+  extraEnv: []
+  extraEnvFrom: []
+  extraVolumes: []
+  extraVolumeMounts: []
+  tolerations: []
+  affinity: {}
+  nodeSelector: {}
 
-  ingress:
-    enabled: false
+ingress:
+  enabled: false
+  annotations: {}
+  hosts: []
+  tls: []
 
-  service:
-    type: ClusterIP
-  
-  nameOverride: ""
-  fullnameOverride: ""
+service:
+  enabled: false
+  type: ClusterIP
+  annotations: {}
+  port:
+
+nameOverride: ""
+fullnameOverride: ""

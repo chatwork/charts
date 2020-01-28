@@ -1,5 +1,5 @@
-{{- if .Values.newrelic.ingress.enabled }}
 {{- $root := . -}}
+{{- if .Values.ingress.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -9,7 +9,7 @@ metadata:
     helm.sh/chart: {{ include "newrelic-php-agent.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- with .Values.newrelic.ingress.annotations }}
+{{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -17,18 +17,15 @@ spec:
   backend:
     serviceName: {{ include "newrelic-php-agent.name" . }}
     servicePort: {{ $.Values.newrelic.port }}
-{{- if .Values.newrelic.ingress.tls }}
+{{- with .Values.ingress.tls }}
   tls:
-{{ toYaml .Values.newrelic.ingress.tls | indent 4 }}
+{{ toYaml . | indent 4 }}
 {{- end }}
   rules:
-{{- range $k, $host := .Values.newrelic.ingress.hosts }}
+{{- range $k, $host := .Values.ingress.hosts }}
   - host: {{ $host }}
     http:
       paths:
-{{- with $root.Values.newrelic.ingress.preferPaths }}
-{{ toYaml . | indent 6 }}
-{{- end }}
       - path: /*
         backend:
           serviceName: {{ include "newrelic-php-agent.name" . }}
