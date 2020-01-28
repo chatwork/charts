@@ -119,9 +119,15 @@ spec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
+{{- with .Values.nginx.lifecycle.preStop }}
           preStop:
             exec:
-              command: ["sh", "-c", "sleep {{ .Values.fpm.processControlTimeout | default 0 }}; nginx -s quit; sleep 5"]
+              command:
+{{ tpl (toYaml .) $root | indent 14 }}
+{{- end }}
+{{- with .Values.nginx.terminationGracePeriodSeconds }}
+        terminationGracePeriodSeconds: {{ . }}
+{{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
@@ -180,9 +186,15 @@ spec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
+{{- with .Values.fpm.lifecycle.preStop }}
           preStop:
             exec:
-              command: ["sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ .Values.fpm.processControlTimeout | default 0 }}"]
+              command:
+{{ tpl (toYaml .) $root | indent 14 }}
+{{- end }}
+{{- with .Values.fpm.terminationGracePeriodSeconds }}
+        terminationGracePeriodSeconds: {{ . }}
+{{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
