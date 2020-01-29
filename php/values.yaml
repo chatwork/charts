@@ -131,7 +131,7 @@ nginx:
     pullPolicy: IfNotPresent
 
   # NGINX configuration
-  # port using as Container port, Service port, Ingress port
+  # port using as Container port, Service port
   port: 80
 
   lifecycle:

@@ -60,7 +60,6 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `ingress.enabled` | Enables Ingress | `false` |
 |  `ingress.annotation` | Ingress annotations | `{}` |
 |  `ingress.hosts` | Ingress accepted hostname | `[]` |
-|  `ingress.port` | Ingress port | `service.port or nginx.port` |
 |  `ingress.preferPaths` | Paths that takes precedence over the ingress.path | `nil` |
 |  `ingress.tls` | TLS Secret (certificates)  | `false` |
 |  `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
