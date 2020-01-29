@@ -1,0 +1,28 @@
+{{- $root := . -}}
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "newrelic-php-agent.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "newrelic-php-agent.name" . }}
+    helm.sh/chart: {{ include "newrelic-php-agent.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.service.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - name: nw-daemon-port
+    port: {{ .Values.service.port | default .Values.newrelic.port }}
+    protocol: TCP
+    targetPort: nw-daemon-port
+{{- with .Values.service.extraPorts }}
+{{ toYaml . | indent 2 }}
+{{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "newrelic-php-agent.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

@@ -1,11 +1,56 @@
-# Default values for simple-echo.
+# Default values for newrelic-php-agent.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+newrelic:
+  # ref. https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-configuration#inivar-daemon-settings
+  address: /tmp/.newrelic.sock
+  port: 
+
 image:
   repository: chatwork/newrelic-php-agent
-  tag: latest
+  tag: 9.4.0.249
   pullPolicy: IfNotPresent
   command: []
+  pullSecrets: []
+
+livenessProbe: {}
+readinessProbe: {}
+
+daemonset:
+  enabled: true
+  useHostNetwork: false
+  extraPorts: []
+  extraEnv: []
+  extraEnvFrom: []
+  extraVolumes: []
+  extraVolumeMounts: []
+  tolerations: []
+  affinity: {}
+  nodeSelector: {}
+
+deployment:
+  enabled: false
+  replicaCount: 1
+  extraPorts: []
+  extraEnv: []
+  extraEnvFrom: []
+  extraVolumes: []
+  extraVolumeMounts: []
+  tolerations: []
+  affinity: {}
+  nodeSelector: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts: []
+  tls: []
+
+service:
+  enabled: false
+  type: ClusterIP
+  annotations: {}
+  port:
 
 nameOverride: ""
 fullnameOverride: ""

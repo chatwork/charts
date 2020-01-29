@@ -1,7 +1,7 @@
 {{- $root := . -}}
-{{- if and .Values.daemonset.enabled (not .Values.deployment.enabled) }}
+{{- if and .Values.deployment.enabled (not .Values.daemonset.enabled) }}
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
   name: {{ include "newrelic-php-agent.fullname" . }}
   labels:
@@ -10,6 +10,11 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+{{- with .Values.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "newrelic-php-agent.name" . }}
@@ -20,15 +25,11 @@ spec:
         app.kubernetes.io/name: {{ include "newrelic-php-agent.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      {{- if .Values.daemonset.useHostNetwork }}
-      hostNetwork: {{ .Values.daemonset.useHostNetwork }}
-      dnsPolicy: ClusterFirstWithHostNet
-      {{- end }}
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets: {{ toYaml . | nindent 8 }}
       {{- end }}
       containers:
-      - name: {{ .Chart.Name }}
+      - name: "{{ include "newrelic-php-agent.fullname" . }}"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
 {{- with .Values.image.command }}
@@ -37,10 +38,10 @@ spec:
 {{- if not (isAbs $.Values.newrelic.address) }}
         args: ["--address={{ $.Values.newrelic.address }}", "--watchdog-foreground"]
 {{- end }}
-{{- with .Values.daemonset.extraEnv }}
+{{- with .Values.deployment.extraEnv }}
         env: {{ toYaml . | nindent 10 }}
 {{- end }}
-{{- with .Values.daemonset.extraEnvFrom }}
+{{- with .Values.deployment.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 10 }}
 {{- end }}
         livenessProbe:
@@ -89,14 +90,14 @@ spec:
         ports: {{ toYaml . | nindent 10 }}
 {{- end }}
 {{- else }}
-{{- with .Values.daemonset.extraVolumeMounts }}
+{{- with .Values.deployment.extraVolumeMounts }}
         volumeMounts: {{ toYaml . | nindent 10 }}
 {{- end }}
         ports:
           - name: nw-daemon-port
             containerPort: {{ $.Values.newrelic.port }}
             protocol: TCP
-{{- with .Values.daemonset.extraPorts }}
+{{- with .Values.deployment.extraPorts }}
 {{ toYaml . | indent 10 }}
 {{- end }}
 {{- end }}
@@ -113,10 +114,10 @@ spec:
       volumes: {{ toYaml . | nindent 10 }}
 {{- end }}
 {{- end }}
-{{- with .Values.daemonset.tolerations }}
+{{- with .Values.tolerations }}
       tolerations: {{ toYaml . | nindent 8 }}
 {{- end }}
-{{- with .Values.daemonset.affinity }}
+{{- with .Values.affinity }}
       affinity: {{ toYaml . | nindent 8 }}
 {{- end }}
 {{- with .Values.daemonset.nodeSelector }}
