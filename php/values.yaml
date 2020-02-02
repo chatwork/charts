@@ -246,7 +246,7 @@ nginx:
     conf.d:
       default.conf: |
         server {
-            listen      80;
+            listen      {{ .Values.nginx.port }};
             server_name localhost;
             root        /var/www/html;
             index       index.php index.html index.htm;
