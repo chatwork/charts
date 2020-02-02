@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `serviceAccountName` | Existing ServiceAccount to use | `""` |
 |  `extraVolumes` | Additional volumes to all container | `[]` |
 |  `extraVolumeMounts` | Additional volumeMounts to all container | `[]` |
+|  `terminationGracePeriodSeconds` | Termination grace period (in seconds) | `nil` |
 |  `tolerations` | Pod taint tolerations for deployment | `[]` |
 |  `affinity` | Node / Pod affinities | `{}` |
 |  `service.type` | Changes to ClusterIP automatically if ingress enabled | `LoadBalancer` |
@@ -100,7 +101,6 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.port` | Default public port of NGINX | `80` |
 |  `nginx.lifecycle.postStart` | PostStart of NGINX | `[]` |
 |  `nginx.lifecycle.preStop` | PreStop of NGINX | `[]` |
-|  `nginx.lifecycle.terminationGracePeriodSeconds` | terminationGracePeriodSeconds of NGINX | `nil` |
 |  `nginx.livenessProbe.httpGet.path` | Overrides the default liveness probe httGet path | `/status` |
 |  `nginx.livenessProbe.httpGet.port` | Overrides the default liveness probe httGet port | `7777` |
 |  `nginx.livenessProbe.initialDelaySeconds` | Overrides the default liveness probe initialDelaySeconds | `15` |
@@ -135,7 +135,6 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.command` | Overrides the default command | `[]` |
 |  `fpm.lifecycle.postStart` | PostStart of FPM | `[]` |
 |  `fpm.lifecycle.preStop` | PreStop of FPM | `[]` |
-|  `fpm.lifecycle.terminationGracePeriodSeconds` | terminationGracePeriodSeconds of FPM | `nil` |
 |  `fpm.livenessProbe` | Overrides the default liveness probe | `{}` |
 |  `fpm.readinessProbe` | Overrides the default readness probe | `{}` |
 |  `fpm.resources` | Overrides the default resource | `{}` |
@@ -148,9 +147,10 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `php.ini`,`php-fpm.conf`,`php-fpm.d/www.conf` |
 |  `fpm.annotations` | Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets` | `{}` |
 
-### Manage Nginx host and port
+### Manage nginx host and port
+
 When changing `host` and `port` of `nginx.conf`,
-change `host` and `port` of `templates.conf.d.default.conf`.
+Change `host` and `port` of `templates.conf.d.default.conf`.
 
 ```
   templates:
@@ -161,55 +161,38 @@ change `host` and `port` of `templates.conf.d.default.conf`.
             server_name localhost;
 ```
 
-### Manage Request Timeout Setting
-This chart sets `lifecycle.preStop` command and `terminationGracePeriodSeconds` to perform a graceful shutdown safely according to requirements.
+### Manage request timeout and graceful shutdown
 
-Therefore, the next item is the point.
-#### nginx
-- proxy_connect_timeout
-- proxy_send_timeout
-- proxy_read_timeout
-- fastcgi_connect_timeout
-- fastcgi_send_timeout
-- fastcgi_read_timeout
+If you need graceful shutdown according to the request timeout, set as follows.
 
-setting sleep value larger than the value of each nginx item.
-
-##### fpm
-- process_control_timeout
-- request_terminate_timeout
-
-setting sleep value larger than the value of each fpm item.
-
-To change the value of `process_control_timeout`, change the value of template `php-fpm.conf` directly. And to change the value of `request_terminate_timeout`, change the value of template `www.conf` directly.
-
-For your reference, calculation method of sleep value by preStop command of each pod and calculation method of `terminationGracePeriodSeconds`.
 ```
-# calculation method
-{{ $fpm_request_timeout := max your_fpm_process_control_timeout your_fpm_request_terminate_timeout }}
-{{ $fpm_termination_grace_period_seconds := add $fpm_request_timeout 10 }}
-{{ $nginx_request_timeout := max your_proxy_connect_timeout  your_proxy_send_timeout  your_proxy_read_timeout your fastcgi_connect_timeout your fastcgi_send_timeout, fastcgi_read_timeout }}
-{{ $nginx_termination_grace_period_seconds := add (add $fpm_terminationGracePeriodSeconds + $nginx_request_timeout) 10 }}
+terminationGracePeriodSeconds: {{ your_fpm_process_control_timeout }}
 
-# values.yaml
-.Values.nginx.terminationGracePeriodSeconds = $nginx_termination_grace_period_seconds
-.Values.fpm.terminationGracePeriodSeconds =  $fpm_termination_grace_period_seconds
-
-templates:
-  php-fpm.conf: |
-    process_control_timeout = {{ your_fpm_process_control_timeout }}
-
-
-# deployment.yaml
 nginx:
+  templates:
+    conf.d:
+      ...
+      default.conf: |
+        server {
+          ...
+          location ~ \.php$ {
+              include fastcgi_params;
+              fastcgi_pass  unix:/var/run/php-fpm/php-fpm.sock;
+              fastcgi_index index.php;
+              fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+              fastcgi_read_timeout {{ your_fpm_process_control_timeout }}s;
+          }
+        }
+
   lifecycle:
-    postStart: []
-    preStop: ["/bin/sh", "-c", "sleep {{ $fpm_request_timeout }}; nginx -s quit; sleep {{ $nginx_request_timeout }}"]
-  terminationGracePeriodSeconds:  {{ $nginx_termination_grace_period_seconds }}
+    preStop: ["/bin/sh", "-c", "sleep 5; nginx -s quit; sleep {{ your_fpm_process_control_timeout }};"]
 
 fpm:
+  templates:
+    php-fpm.conf: |
+      ...
+      process_control_timeout = {{ your_fpm_process_control_timeout }}
+
   lifecycle:
-    postStart: []
-    preStop: ["/bin/sh", "-c", "sleep 1; kill -QUIT 1; sleep {{ $fpm_request_timeout }} "]
-  terminationGracePeriodSeconds: {{ $fpm_termination_grace_period_seconds }}
+    preStop: ["/bin/sh", "-c", "sleep 5; kill -QUIT 1; sleep {{ $fpm_request_timeout }} "]
 ```
