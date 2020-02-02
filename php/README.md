@@ -69,7 +69,7 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `extras.templates` | Additional raw Kubernetes resources | `{}` |
 |  `test.enabled` | Enables helm test | `true` |
 
-### Init Containers
+### Init containers
 
 Initialize using busybox.
 By default, we use [busybox](https://hub.docker.com/_/busybox), but you can use your container.
@@ -91,7 +91,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `busybox.templates` | Additional ConfigMap as a string to be passed to the tpl function. | `{}` |
 |  `busybox.annotations` | Grant annotations to ConfigMap of `busybox.templates`, Secrets of `busybox.secrets` | `{}` |
 
-## Nginx Containers
+## Nginx containers
 
 |  Parameter | Description | Default |
 | --- | --- | --- |
@@ -125,7 +125,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `nginx.conf`, `conf.d/default.conf`, `conf.d/status.conf` |
 |  `nginx.annotations` | Grant annotations to ConfigMap of `nginx.templates`, Secrets of `nginx.secrets` | `{}` |
 
-## PHP Containers
+## PHP containers
 
 |  Parameter | Description | Default |
 | --- | --- | --- |
