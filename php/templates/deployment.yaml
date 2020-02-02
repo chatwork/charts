@@ -190,6 +190,8 @@ spec:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
         volumeMounts:
+        - name: tmp
+          mountPath: /tmp
 {{- if .Values.busybox.enabled }}
         - name: share
           mountPath: {{ .Values.sharedPath }}
@@ -211,6 +213,8 @@ spec:
 {{ tpl (toYaml .) $root | indent 8 }}
 {{- end }}
       volumes:
+      - name: tmp
+        emptyDir: {}
 {{- if .Values.busybox.enabled }}
       - name: share
         emptyDir: {}
