@@ -44,6 +44,14 @@ ingress:
 podDisruptionBudget:
   enabled: false
 
+# HPA
+autoscaling:
+  enabled: false
+  #minReplicas:
+  #maxReplicas:
+  #targetCPUUtilizationPercentage:
+  #targetMemoryUtilizationPercentage
+
 # BUSYBOX
 busybox:
   enabled: true
@@ -123,7 +131,6 @@ busybox:
 
   # Grant annotations to ConfigMap of `busybox.templates`, Secrets of `busybox.secrets`.
   annotations: {}
-
 
 # NGINX
 nginx:
