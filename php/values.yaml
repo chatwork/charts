@@ -25,6 +25,8 @@ extraVolumes: []
 
 extraVolumeMounts: []
 
+terminationGracePeriodSeconds: 70
+
 tolerations: []
 
 affinity: {}
@@ -137,9 +139,7 @@ nginx:
   lifecycle:
     postStart: []
     # postStart: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
-    preStop: []
-
-  terminationGracePeriodSeconds:
+    preStop: ["/bin/sh", "-c", "sleep 5; nginx -s quit; sleep 60"]
 
   livenessProbe:
     httpGet:
@@ -246,7 +246,7 @@ nginx:
     conf.d:
       default.conf: |
         server {
-            listen      80;
+            listen      {{ .Values.nginx.port }};
             server_name localhost;
             root        /var/www/html;
             index       index.php index.html index.htm;
@@ -302,13 +302,7 @@ fpm:
   lifecycle:
     postStart: []
     # postStart: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
-    preStop: []
-
-  terminationGracePeriodSeconds:
-
-  pm:
-    maxChildren: 5
-    maxRequests: 500
+    preStop: ["/bin/sh", "-c", "sleep 5; kill -QUIT 1; sleep 60"]
 
   livenessProbe: {}
   readinessProbe: {}
@@ -523,7 +517,7 @@ fpm:
       ; Available units: s(econds), m(inutes), h(ours), or d(ays)
       ; Default Unit: seconds
       ; Default Value: 0
-      process_control_timeout = 0
+      process_control_timeout = 60
 
       ; The maximum number of processes FPM will fork. This has been designed to control
       ; the global number of processes when using dynamic PM within a lot of pools.
@@ -826,11 +820,7 @@ fpm:
         ;       anything, but it may not be a good idea to use the .php extension or it
         ;       may conflict with a real PHP file.
         ; Default Value: not set
-        {{- with .Values.fpm.pm.status }}
-        pm.status_path = {{ . }}
-        {{- else }}
-        ;pm.status_path = /status
-        {{- end }}
+        ;pm.status_path = /statu
 
         ; The ping URI to call the monitoring page of FPM. If this value is not set, no
         ; URI will be recognized as a ping page. This could be used to test from outside
@@ -1012,8 +1002,6 @@ fpm:
         ;php_admin_value[error_log] = /var/log/fpm-php.www.log
         ;php_admin_flag[log_errors] = on
         ;php_admin_value[memory_limit] = 32M
-        php_admin_value[error_log] = /dev/stderr
-        php_admin_flag[log_errors] = on
 
   # Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets`.
   annotations: {}

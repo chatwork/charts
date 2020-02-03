@@ -125,9 +125,6 @@ spec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
 {{- end }}
-{{- with .Values.nginx.terminationGracePeriodSeconds }}
-        terminationGracePeriodSeconds: {{ . }}
-{{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
         - name: share
@@ -191,9 +188,6 @@ spec:
             exec:
               command:
 {{ tpl (toYaml .) $root | indent 14 }}
-{{- end }}
-{{- with .Values.fpm.terminationGracePeriodSeconds }}
-        terminationGracePeriodSeconds: {{ . }}
 {{- end }}
         volumeMounts:
 {{- if .Values.busybox.enabled }}
@@ -264,8 +258,8 @@ spec:
 {{- with .Values.serviceAccountName }}
       serviceAccountName: {{ . }}
 {{- end }}
-{{- with .Values.fpm.processControlTimeout }}
-      terminationGracePeriodSeconds: {{ add . 10 }}
+{{- with .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
 {{- end }}
 {{- with .Values.affinity }}
       affinity:
