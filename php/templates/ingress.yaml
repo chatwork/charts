@@ -4,34 +4,28 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "php.fullname" . }}
-  labels:
-    app: {{ template "php.name" . }}
-    chart: {{ template "php.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-{{- with .Values.ingress.annotations }}
-  annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
+  labels: {{ include "php.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   backend:
     serviceName: {{ template "php.fullname" . }}
     servicePort: {{ .Values.service.port | default .Values.nginx.port }}
-{{- if .Values.ingress.tls }}
-  tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-{{- end }}
+  {{- if .Values.ingress.tls }}
+  tls: {{ toYaml .Values.ingress.tls | nindent 4 }}
+  {{- end }}
   rules:
-{{- range $k, $host := .Values.ingress.hosts }}
-  - host: {{ $host }}
-    http:
-      paths:
-{{- with $root.Values.ingress.preferPaths }}
-{{ toYaml . | indent 6 }}
-{{- end }}
-      - path: /*
-        backend:
-          serviceName: {{ template "php.fullname" $root }}
-          servicePort: {{ $root.Values.service.port | default $root.Values.nginx.port }}
-{{- end }}
+    {{- range $k, $host := .Values.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          {{- with $root.Values.ingress.preferPaths }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          - path: /*
+            backend:
+              serviceName: {{ template "php.fullname" $root }}
+              servicePort: {{ $root.Values.service.port | default $root.Values.nginx.port }}
+    {{- end }}
 {{- end }}

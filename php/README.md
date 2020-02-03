@@ -98,9 +98,9 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.image.repository` | The image repository to pull from | `nginx` |
 |  `nginx.image.tag` | The image tag to pull | `1.15.1-alpine` |
 |  `nginx.image.pullPolicy` | Image pull policy | `IfNotPresent` |
+|  `nginx.command` | Overrides the default command | `[]` |
 |  `nginx.port` | Default public port of NGINX | `80` |
-|  `nginx.lifecycle.postStart` | PostStart of NGINX | `[]` |
-|  `nginx.lifecycle.preStop` | PreStop of NGINX | `[]` |
+|  `nginx.lifecycle` | Pod lifecycle of NGINX | `{}` |
 |  `nginx.livenessProbe.httpGet.path` | Overrides the default liveness probe httGet path | `/status` |
 |  `nginx.livenessProbe.httpGet.port` | Overrides the default liveness probe httGet port | `7777` |
 |  `nginx.livenessProbe.initialDelaySeconds` | Overrides the default liveness probe initialDelaySeconds | `15` |
@@ -133,8 +133,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.image.tag` | The image tag to pull | `7.1-fpm-alpine` |
 |  `fpm.image.pullPolicy` | Image pull policy | `IfNotPresent` |
 |  `fpm.command` | Overrides the default command | `[]` |
-|  `fpm.lifecycle.postStart` | PostStart of FPM | `[]` |
-|  `fpm.lifecycle.preStop` | PreStop of FPM | `[]` |
+|  `fpm.lifecycle` | Pod lifecyle of FPM | `{}` |
 |  `fpm.livenessProbe` | Overrides the default liveness probe | `{}` |
 |  `fpm.readinessProbe` | Overrides the default readness probe | `{}` |
 |  `fpm.resources` | Overrides the default resource | `{}` |
