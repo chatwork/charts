@@ -34,11 +34,7 @@ spec:
           imagePullPolicy: {{ .Values.busybox.image.pullPolicy }}
           command: {{ tpl (toYaml .Values.busybox.command) . | nindent 12 }}
           {{- with .Values.busybox.extraEnv }}
-          env:
-            {{- range $k, $v := . }}
-            - name: {{ $k }}
-              value: {{ tpl (print $v) $root | quote }}
-            {{- end }}
+          env: {{ tpl (toYaml .) $root | nindent 12 }}
           {{- end }}
           {{- with .Values.busybox.extraEnvFrom }}
           envFrom: {{ tpl (toYaml .) $root | nindent 12 }}
@@ -60,17 +56,13 @@ spec:
           command: {{ tpl (toYaml .Values.nginx.command) . | nindent 12 }}
           ports:
             - name: default
-              containerPort: {{ .Values.nginx.port }}
+              containerPort: {{ .Values.nginx.containerPort }}
               protocol: TCP
             {{- with .Values.nginx.extraPorts }}
             {{- tpl (toYaml .) $root | nindent 12 }}
             {{- end }}
           {{- with .Values.nginx.extraEnv }}
-          env:
-            {{- range $k, $v := . }}
-            - name: {{ $k }}
-              value: {{ tpl (print $v) $root | quote }}
-            {{- end }}
+          env: {{ tpl (toYaml .) $root | nindent 12 }}
           {{- end }}
           {{- with .Values.nginx.extraEnvFrom }}
           envFrom: {{ tpl (toYaml .) $root | nindent 12 }}
@@ -115,11 +107,7 @@ spec:
           ports: {{ tpl (toYaml .) $root | nindent 12 }}
           {{- end }}
           {{- with .Values.fpm.extraEnv }}
-          env:
-            {{- range $k, $v := . }}
-            - name: {{ $k }}
-              value: {{ tpl (print $v) $root | quote }}
-            {{- end }}
+          env: {{ tpl (toYaml .) $root | nindent 12 }}
           {{- end }}
           {{- with .Values.fpm.extraEnvFrom }}
           envFrom: {{ tpl (toYaml .) $root | nindent 12 }}

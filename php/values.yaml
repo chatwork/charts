@@ -137,7 +137,7 @@ nginx:
 
   # NGINX configuration
   # port using as Container port, Service port
-  port: 80
+  containerPort: 80
 
   lifecycle: {}
     #postStart:
@@ -252,7 +252,7 @@ nginx:
     conf.d:
       default.conf: |
         server {
-            listen      {{ .Values.nginx.port }};
+            listen      {{ .Values.nginx.containerPort }};
             server_name localhost;
             root        /var/www/html;
             index       index.php index.html index.htm;

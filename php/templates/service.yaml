@@ -11,7 +11,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - name: default
-      port: {{ .Values.service.port | default .Values.nginx.port }}
+      port: {{ .Values.service.port | default .Values.nginx.containerPort }}
       protocol: TCP
       targetPort: default
     {{- with .Values.service.extraPorts }}
