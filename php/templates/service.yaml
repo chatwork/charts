@@ -1,33 +1,29 @@
+{{- $root := . -}}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "php.fullname" . }}
-  labels:
-    app: {{ template "php.name" . }}
-    chart: {{ template "php.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-{{- with .Values.service.annotations }}
-  annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
+  labels: {{ include "php.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - name: default
-    port: {{ .Values.service.port | default .Values.nginx.port }}
-    protocol: TCP
-    targetPort: default
-{{- if .Values.service.extraPorts }}
-{{ .Values.service.extraPorts | toYaml | indent 2}}
-{{- else }}
-{{- range .Values.nginx.extraPorts }}
-  - name: {{ .name }}
-    port: {{ .containerPort }}
-    {{ with .protocol }}protocol: {{ . }}{{ end }}
-    targetPort: {{ .name | default .containerPort }}
-{{- end }}
-{{- end }}
-  selector:
-    app: {{ template "php.name" . }}
-    release: {{ .Release.Name }}
+    - name: default
+      port: {{ .Values.service.port | default .Values.nginx.containerPort }}
+      protocol: TCP
+      targetPort: default
+    {{- with .Values.service.extraPorts }}
+    {{- . | toYaml | nindent 4 }}
+    {{- else }}
+    {{- range .Values.nginx.extraPorts }}
+    - name: {{ .name }}
+      port: {{ .containerPort }}
+      {{- with .protocol }}
+      protocol: {{ . }}
+      {{- end }}
+      targetPort: {{ .name | default .containerPort }}
+    {{- end }}
+    {{- end }}
+  selector: {{ include "php.selectorLabels" . | nindent 4 }}

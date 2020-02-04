@@ -132,14 +132,20 @@ nginx:
     tag: 1.15.1-alpine
     pullPolicy: IfNotPresent
 
+  # custom command for nginx image execution
+  command: []
+
   # NGINX configuration
   # port using as Container port, Service port
-  port: 80
+  containerPort: 80
 
-  lifecycle:
-    postStart: []
-    # postStart: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
-    preStop: ["/bin/sh", "-c", "sleep 5; nginx -s quit; sleep 60"]
+  lifecycle: {}
+    #postStart:
+    #  exec:
+    #    command: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
+    #preStop:
+    #  exec:
+    #    command: ["/bin/sh", "-c", "sleep 5; nginx -s quit; sleep 60"]
 
   livenessProbe:
     httpGet:
@@ -246,7 +252,7 @@ nginx:
     conf.d:
       default.conf: |
         server {
-            listen      {{ .Values.nginx.port }};
+            listen      {{ .Values.nginx.containerPort }};
             server_name localhost;
             root        /var/www/html;
             index       index.php index.html index.htm;
@@ -299,10 +305,13 @@ fpm:
   # - php-fpm
   # - -d zend_extension=xdebug.so
 
-  lifecycle:
-    postStart: []
-    # postStart: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
-    preStop: ["/bin/sh", "-c", "sleep 5; kill -QUIT 1; sleep 60"]
+  lifecycle: {}
+    #postStart:
+    #  exec:
+    #    command: ["/bin/sh", "-c", "echo Hello > /tmp/message"]
+    #preStop: {}
+    #  exec:
+    #    command: ["/bin/sh", "-c", "sleep 5; kill -QUIT 1; sleep 60"]
 
   livenessProbe: {}
   readinessProbe: {}

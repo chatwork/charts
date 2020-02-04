@@ -3,11 +3,7 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "php.fullname" . }}
-  labels:
-    app: {{ template "php.name" . }}
-    chart: {{ template "php.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  labels: {{ include "php.labels" . | nindent 4 }}
 spec:
   {{- if .Values.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
@@ -17,6 +13,5 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: {{ template "php.name" . }}
-      release: {{ .Release.Name }}
+      {{- include "php.selectorLabels" . | nindent 6 }}
 {{- end }}

@@ -3,273 +3,204 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "php.fullname" . }}
-  labels:
-    app: {{ template "php.name" . }}
-    chart: {{ template "php.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  labels: {{ include "php.labels" . | nindent 4 }}
 spec:
-{{- with .Values.replicaCount }}
-  replicas: {{ . }}
-{{- end }}
-{{- with .Values.strategy }}
-  strategy:
-{{ toYaml . | indent 4 }}
-{{- end }}
+  {{- with .Values.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  {{- with .Values.strategy }}
+  strategy: {{ toYaml . | nindent 4 }}
+  {{- end }}
   selector:
-    matchLabels:
-      app: {{ template "php.name" . }}
-      release: {{ .Release.Name }}
+    matchLabels: {{ include "php.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        app: {{ template "php.name" . }}
-        chart: {{ template "php.chart" . }}
-        release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
+      labels: {{ include "php.labels" . | nindent 8 }}
       annotations:
-{{- range $name, $tmpl := .Values.busybox.templates }}
-        checksum/busybox-{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
-{{- end }}
-{{- range $name, $tmpl := .Values.nginx.templates }}
-        checksum/nginx-{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
-{{- end }}
-{{- range $name, $tmpl := .Values.fpm.templates }}
-        checksum/fpm-{{ $name | replace "." "-" }}: {{ tpl (toYaml $tmpl) $root | sha256sum }}
-{{- end }}
-{{- range $name, $secret := .Values.busybox.secrets }}
-        checksum/busybox-secret-{{ $name | replace "." "-" }}: {{ tpl (toYaml $secret) $root | sha256sum }}
-{{- end }}
-{{- range $name, $secret := .Values.nginx.secrets }}
-        checksum/nginx-secret-{{ $name | replace "." "-" }}: {{ tpl (toYaml $secret) $root | sha256sum }}
-{{- end }}
-{{- range $name, $secret := .Values.fpm.secrets }}
-        checksum/fpm-secret-{{ $name | replace "." "-" }}: {{ tpl (toYaml $secret) $root | sha256sum }}
-{{- end }}
-{{- with .Values.podAnnotations }}
-{{ toYaml . | indent 8 }}
-{{- end }}
+        checksum/configmap-busybox: {{ include (print $.Template.BasePath "/configmap-busybox.yaml") . | sha256sum }}
+        checksum/configmap-fpm: {{ include (print $.Template.BasePath "/configmap-fpm.yaml") . | sha256sum }}
+        checksum/configmap-nginx: {{ include (print $.Template.BasePath "/configmap-nginx.yaml") . | sha256sum }}
+        checksum/secret-busybox: {{ include (print $.Template.BasePath "/secret-busybox.yaml") . | sha256sum }}
+        checksum/secret-fpm: {{ include (print $.Template.BasePath "/secret-fpm.yaml") . | sha256sum }}
+        checksum/secret-nginx: {{ include (print $.Template.BasePath "/secret-nginx.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
-{{- if .Values.busybox.enabled }}
+      {{- if .Values.busybox.enabled }}
       initContainers:
-      - name: "{{ template "php.fullname" . }}-busybox"
-        image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
-        imagePullPolicy: {{ .Values.busybox.image.pullPolicy }}
-        command:
-{{ tpl (toYaml .Values.busybox.command) $root | indent 8 }}
-{{- with .Values.busybox.extraEnv }}
-        env:
-{{- range $k, $v := . }}
-        - name: {{ $k }}
-          value: {{ $v }}
-{{- end }}
-{{- end }}
-{{- with .Values.busybox.extraEnvFrom }}
-        envFrom:
-{{ tpl (toYaml .) $root | indent 8 }}
-{{- end }}
-        volumeMounts:
-        - name: share
-          mountPath: {{ .Values.busybox.sharedPath | default .Values.sharedPath }}
-{{- with .Values.busybox.extraVolumeMounts }}
-{{ tpl (toYaml .) $root | indent 8 }}
-{{- end }}
-{{- with .Values.extraVolumeMounts }}
-{{ tpl (toYaml .) $root | indent 8 }}
-{{- end }}
-{{- end }}
+        - name: "{{ template "php.fullname" . }}-busybox"
+          image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
+          imagePullPolicy: {{ .Values.busybox.image.pullPolicy }}
+          command: {{ tpl (toYaml .Values.busybox.command) . | nindent 12 }}
+          {{- with .Values.busybox.extraEnv }}
+          env: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.busybox.extraEnvFrom }}
+          envFrom: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: share
+              mountPath: {{ .Values.busybox.sharedPath | default .Values.sharedPath }}
+            {{- with .Values.busybox.extraVolumeMounts }}
+            {{- tpl (toYaml .) $root | nindent 12 }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- tpl (toYaml .) $root | nindent 12 }}
+            {{- end }}
+      {{- end }}
       containers:
-      - name: "{{ template "php.fullname" . }}-nginx"
-        image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
-        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
-        ports:
-        - name: default
-          containerPort: {{ .Values.nginx.port }}
-          protocol: TCP
-{{- with .Values.nginx.extraPorts }}
-{{ tpl (toYaml .) $root | indent 8 }}
-{{- end }}
-{{- with .Values.nginx.extraEnv }}
-        env:
-{{- range $k, $v := . }}
-        - name: {{ $k }}
-          value: {{ tpl $v $root }}
-{{- end }}
-{{- end }}
-{{- with .Values.nginx.extraEnvFrom }}
-        envFrom:
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
-{{- with .Values.nginx.livenessProbe }}
-        livenessProbe:
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
-{{- with .Values.nginx.readinessProbe }}
-        readinessProbe:
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
-{{- with .Values.nginx.resources }}
-        resources:
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
-        lifecycle:
-{{- with .Values.nginx.lifecycle.postStart }}
-          postStart:
-            exec:
-              command:
-{{ tpl (toYaml .) $root | indent 14 }}
-{{- end }}
-{{- with .Values.nginx.lifecycle.preStop }}
-          preStop:
-            exec:
-              command:
-{{ tpl (toYaml .) $root | indent 14 }}
-{{- end }}
-        volumeMounts:
-{{- if .Values.busybox.enabled }}
-        - name: share
-          mountPath: {{ .Values.sharedPath }}
-{{- end }}
-        - name: php-fpm-sock
-          mountPath: /var/run/php-fpm
-        - name: nginx-conf
-          subPath: nginx.conf
-          mountPath: /etc/nginx/nginx.conf
-        - name: nginx-confd
-          mountPath: /etc/nginx/conf.d
-{{- with .Values.nginx.extraVolumeMounts }}
-{{ tpl (toYaml .) $root | indent 8 }}
-{{- end }}
-{{- with .Values.extraVolumeMounts }}
-{{ tpl (toYaml .) $root | indent 8 }}
-{{- end }}
-      - name: "{{ template "php.fullname" . }}-fpm"
-        image: "{{ .Values.fpm.image.repository }}:{{ .Values.fpm.image.tag }}"
-        imagePullPolicy: {{ .Values.fpm.image.pullPolicy }}
-{{- with .Values.fpm.command }}
-        command:
-{{ tpl (toYaml .) $root | indent 8 }}
-{{- end }}
-{{- with .Values.fpm.extraPorts }}
-        ports:
-{{- range $v := . }}
-{{ tpl (toYaml .) $root | indent 8 }}
-{{- end }}
-{{- end }}
-{{- with .Values.fpm.extraEnv }}
-        env:
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
-{{- with .Values.fpm.extraEnvFrom }}
-        envFrom:
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
-{{- with .Values.fpm.livenessProbe }}
-        livenessProbe:
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
-{{- with .Values.fpm.readinessProbe }}
-        readinessProbe:
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
-{{- with .Values.fpm.resources }}
-        resources:
-{{ tpl (toYaml .) $root | indent 10 }}
-{{- end }}
-        lifecycle:
-{{- with .Values.fpm.lifecycle.postStart }}
-          postStart:
-            exec:
-              command:
-{{ tpl (toYaml .) $root | indent 14 }}
-{{- end }}
-{{- with .Values.fpm.lifecycle.preStop }}
-          preStop:
-            exec:
-              command:
-{{ tpl (toYaml .) $root | indent 14 }}
-{{- end }}
-        volumeMounts:
-        - name: tmp
-          mountPath: /tmp
-{{- if .Values.busybox.enabled }}
-        - name: share
-          mountPath: {{ .Values.sharedPath }}
-{{- end }}
-        - name: php-fpm-sock
-          mountPath: /var/run/php-fpm
-        - name: php-ini
-          subPath: php.ini
-          mountPath: /usr/local/etc/php/php.ini
-        - name: fpm-conf
-          subPath: php-fpm.conf
-          mountPath: /usr/local/etc/php-fpm.conf
-        - name: fpm-confd
-          mountPath: /usr/local/etc/php-fpm.d
-{{- with .Values.fpm.extraVolumeMounts }}
-{{ tpl (toYaml .) $root | indent 8 }}
-{{- end }}
-{{- with .Values.extraVolumeMounts }}
-{{ tpl (toYaml .) $root | indent 8 }}
-{{- end }}
+        - name: "{{ template "php.fullname" . }}-nginx"
+          image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+          command: {{ tpl (toYaml .Values.nginx.command) . | nindent 12 }}
+          ports:
+            - name: default
+              containerPort: {{ .Values.nginx.containerPort }}
+              protocol: TCP
+            {{- with .Values.nginx.extraPorts }}
+            {{- tpl (toYaml .) $root | nindent 12 }}
+            {{- end }}
+          {{- with .Values.nginx.extraEnv }}
+          env: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.nginx.extraEnvFrom }}
+          envFrom: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.nginx.livenessProbe }}
+          livenessProbe: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.nginx.readinessProbe }}
+          readinessProbe: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.nginx.resources }}
+          resources: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.nginx.lifecycle }}
+          lifecycle: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- if .Values.busybox.enabled }}
+            - name: share
+              mountPath: {{ .Values.sharedPath }}
+            {{- end }}
+            - name: php-fpm-sock
+              mountPath: /var/run/php-fpm
+            - name: nginx-conf
+              subPath: nginx.conf
+              mountPath: /etc/nginx/nginx.conf
+            - name: nginx-confd
+              mountPath: /etc/nginx/conf.d
+            {{- with .Values.nginx.extraVolumeMounts }}
+            {{- tpl (toYaml .) $root | nindent 12 }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- tpl (toYaml .) $root | nindent 12 }}
+            {{- end }}
+        - name: "{{ template "php.fullname" . }}-fpm"
+          image: "{{ .Values.fpm.image.repository }}:{{ .Values.fpm.image.tag }}"
+          imagePullPolicy: {{ .Values.fpm.image.pullPolicy }}
+          {{- with .Values.fpm.command }}
+          command: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.fpm.extraPorts }}
+          ports: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.fpm.extraEnv }}
+          env: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.fpm.extraEnvFrom }}
+          envFrom: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.fpm.livenessProbe }}
+          livenessProbe: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.fpm.readinessProbe }}
+          readinessProbe: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.fpm.resources }}
+          resources: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.fpm.lifecycle }}
+          lifecycle: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.busybox.enabled }}
+            - name: share
+              mountPath: {{ .Values.sharedPath }}
+            {{- end }}
+            - name: php-fpm-sock
+              mountPath: /var/run/php-fpm
+            - name: php-ini
+              subPath: php.ini
+              mountPath: /usr/local/etc/php/php.ini
+            - name: fpm-conf
+              subPath: php-fpm.conf
+              mountPath: /usr/local/etc/php-fpm.conf
+            - name: fpm-confd
+              mountPath: /usr/local/etc/php-fpm.d
+            {{- with .Values.fpm.extraVolumeMounts }}
+            {{- tpl (toYaml .) $root | nindent 12 }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- tpl (toYaml .) $root | nindent 12 }}
+            {{- end }}
       volumes:
-      - name: tmp
-        emptyDir: {}
-{{- if .Values.busybox.enabled }}
-      - name: share
-        emptyDir: {}
-{{- end }}
-      - name: php-fpm-sock
-        emptyDir: {}
-      - name: nginx-conf
-        configMap:
-          name: {{ template "php.fullname" . }}-nginx-nginx-conf
-      - name: nginx-confd
-        configMap:
-          name: {{ template "php.fullname" . }}-nginx-conf-d
-      - name: php-ini
-        configMap:
-          name: {{ template "php.fullname" . }}-fpm-php-ini
-      - name: fpm-conf
-        configMap:
-          name: {{ template "php.fullname" . }}-fpm-php-fpm-conf
-      - name: fpm-confd
-        configMap:
-          name: {{ template "php.fullname" . }}-fpm-php-fpm-d
-{{- with .Values.busybox.extraVolumes }}
-{{ tpl (toYaml .) $root | indent 6 }}
-{{- end }}
-{{- with .Values.nginx.extraVolumes }}
-{{ tpl (toYaml .) $root | indent 6 }}
-{{- end }}
-{{- with .Values.fpm.extraVolumes }}
-{{ tpl (toYaml .) $root | indent 6 }}
-{{- end }}
-{{- with .Values.extraVolumes }}
-{{ tpl (toYaml .) $root | indent 6 }}
-{{- end }}
-{{- with .Values.restartPolicy }}
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.busybox.enabled }}
+        - name: share
+          emptyDir: {}
+        {{- end }}
+        - name: php-fpm-sock
+          emptyDir: {}
+        - name: nginx-conf
+          configMap:
+            name: {{ template "php.fullname" . }}-nginx-nginx-conf
+        - name: nginx-confd
+          configMap:
+            name: {{ template "php.fullname" . }}-nginx-conf-d
+        - name: php-ini
+          configMap:
+            name: {{ template "php.fullname" . }}-fpm-php-ini
+        - name: fpm-conf
+          configMap:
+            name: {{ template "php.fullname" . }}-fpm-php-fpm-conf
+        - name: fpm-confd
+          configMap:
+            name: {{ template "php.fullname" . }}-fpm-php-fpm-d
+        {{- with .Values.busybox.extraVolumes }}
+        {{- tpl (toYaml .) $root | nindent 8 }}
+        {{- end }}
+        {{- with .Values.nginx.extraVolumes }}
+        {{- tpl (toYaml .) $root | nindent 8 }}
+        {{- end }}
+        {{- with .Values.fpm.extraVolumes }}
+        {{- tpl (toYaml .) $root | nindent 8 }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- tpl (toYaml .) $root | nindent 8 }}
+        {{- end }}
+      {{- with .Values.restartPolicy }}
       restartPolicy: {{ . }}
-{{- end }}
-{{- with .Values.imagePullSecrets}}
-      imagePullSecrets:
-{{ tpl (toYaml .) $root | indent 6 }}
-{{- end }}
-{{- with .Values.securityContext }}
-      securityContext:
-{{ tpl (toYaml .) $root | indent 8 }}
-{{- end }}
-{{- with .Values.serviceAccountName }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets}}
+      imagePullSecrets: {{ tpl (toYaml .) $root | nindent 8 }}
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext: {{ tpl (toYaml .) $root | nindent 8 }}
+      {{- end }}
+      {{- with .Values.serviceAccountName }}
       serviceAccountName: {{ . }}
-{{- end }}
-{{- with .Values.terminationGracePeriodSeconds }}
+      {{- end }}
+      {{- with .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ . }}
-{{- end }}
-{{- with .Values.affinity }}
-      affinity:
-{{ tpl (toYaml .) $root | indent 6 }}
-{{- end }}
-{{- with .Values.tolerations }}
-      tolerations:
-{{ tpl (toYaml .) $root | indent 6 }}
-{{- end }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity: {{ tpl (toYaml .) $root | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{ tpl (toYaml .) $root | nindent 8 }}
+      {{- end }}

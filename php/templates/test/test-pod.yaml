@@ -4,24 +4,21 @@ kind: Pod
 metadata:
   name: {{ template "php.fullname" . }}-test
   labels:
-    app: {{ template "php.name" . }}
-    chart: {{ template "php.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
     role: test
+    {{- include "php.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test-success
 spec:
   containers:
-    - name: {{ .Chart.Name }}-test
+    - name: {{ template "php.fullname" . }}-test
       image: appropriate/curl
       command:
         - /bin/sh
         - -c
         - |
           curl http://{{ template "php.fullname" . }}:{{ .Values.service.port | default .Values.nginx.port }}
-{{- with .Values.test.extraContainer }}
-{{ toYaml . | indent 8}}
-{{- end }}
+    {{- with .Values.test.extraContainer }}
+    {{- toYaml . | nindent 4}}
+    {{- end }}
   restartPolicy: Never
 {{- end }}
