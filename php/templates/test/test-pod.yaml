@@ -16,7 +16,7 @@ spec:
         - /bin/sh
         - -c
         - |
-          curl http://{{ template "php.fullname" . }}:{{ .Values.service.port | default .Values.nginx.port }}
+          curl http://{{ template "php.fullname" . }}:{{ .Values.service.port | default .Values.nginx.containerPort }}
     {{- with .Values.test.extraContainer }}
     {{- toYaml . | nindent 4}}
     {{- end }}
