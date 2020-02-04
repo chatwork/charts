@@ -49,8 +49,13 @@ autoscaling:
   enabled: false
   #minReplicas:
   #maxReplicas:
-  #targetCPUUtilizationPercentage:
-  #targetMemoryUtilizationPercentage
+  #metrics:
+  #  - type: Resource
+  #    resource:
+  #      name: cpu
+  #      target:
+  #        type: Utilization
+  #        averageUtilization: 60
 
 # BUSYBOX
 busybox:
