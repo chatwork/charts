@@ -12,7 +12,7 @@ $ helm install chatwork/php
 
 ## Prerequisites
 
-* Kubernetes 1.11+
+* Kubernetes 1.12+ with Beta APIs enabled
 * LoadBalancer support or Ingress Controller
 
 ## Installing the Chart
@@ -66,6 +66,11 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
 |  `podDisruptionBudget.minAvailabled` | Minimum number / percentage of pods that should remain scheduled | `nil` |
 |  `podDisruptionBudget.maxAvailabled` | Minimum number / percentage of pods that should remain scheduled | `nil` |
+|  `autoscaling.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
+|  `autoscaling.minReplicas` | Min pods for HorizontalPodAutoscaler | `nil` |
+|  `autoscaling.maxReplicas` | Max pods for HorizontalPodAutoscaler | `nil` |
+|  `autoscaling.targetCPUUtilizationPercentage` | CPU threshold percent for HorizontalPodAutoscaler | `nil` |
+|  `autoscaling.targetMemoryUtilizationPercentage` | Memory threshold percent for HorizontalPodAutoscaler | `nil` |
 |  `extras.templates` | Additional raw Kubernetes resources | `{}` |
 |  `test.enabled` | Enables helm test | `true` |
 
