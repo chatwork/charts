@@ -69,8 +69,7 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `autoscaling.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
 |  `autoscaling.minReplicas` | Min pods for HorizontalPodAutoscaler | `nil` |
 |  `autoscaling.maxReplicas` | Max pods for HorizontalPodAutoscaler | `nil` |
-|  `autoscaling.targetCPUUtilizationPercentage` | CPU threshold percent for HorizontalPodAutoscaler | `nil` |
-|  `autoscaling.targetMemoryUtilizationPercentage` | Memory threshold percent for HorizontalPodAutoscaler | `nil` |
+|  `autoscaling.metrics` | Metrics used for autoscaling | `nil` |
 |  `extras.templates` | Additional raw Kubernetes resources | `{}` |
 |  `test.enabled` | Enables helm test | `true` |
 

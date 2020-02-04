@@ -11,17 +11,5 @@ spec:
     name: {{ template "php.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
-  metrics:
-  {{- with .Values.autoscaling.targetCPUUtilizationPercentage }}
-  - type: Resource
-    resource:
-      name: cpu
-      targetAverageUtilization: {{ . }}
-  {{- end }}
-  {{- with .Values.autoscaling.targetMemoryUtilizationPercentage }}
-  - type: Resource
-    resource:
-      name: memory
-      targetAverageUtilization: {{ . }}
-  {{- end }}
+  metrics: {{ toYaml .Values.autoscaling.metrics | nindent 4 }}
 {{- end }}
