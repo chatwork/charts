@@ -8,7 +8,7 @@ newrelic:
 
 image:
   repository: chatwork/newrelic-php-agent
-  tag: 9.4.0.249
+  tag: 9.6.1.256
   pullPolicy: IfNotPresent
   command: []
   pullSecrets: []
