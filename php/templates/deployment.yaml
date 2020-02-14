@@ -24,7 +24,7 @@ spec:
         checksum/secret-fpm: {{ include (print $.Template.BasePath "/secret-fpm.yaml") . | sha256sum }}
         checksum/secret-nginx: {{ include (print $.Template.BasePath "/secret-nginx.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (toYaml .) $root | nindent 8 }}
         {{- end }}
     spec:
       {{- if .Values.busybox.enabled }}

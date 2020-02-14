@@ -5,7 +5,7 @@ metadata:
   name: {{ template "php.fullname" . }}-fpm-php-ini
   labels: {{- include "php.labels" . | nindent 4 }}
   {{- with .Values.fpm.annotations }}
-  annotations: {{ toYaml . | nindent 4 }}
+  annotations: {{ tpl (toYaml .) $root | nindent 4 }}
   {{- end }}
 data:
   php.ini: {{ tpl (index .Values.fpm.templates "php.ini") . | toYaml | indent 2 }}

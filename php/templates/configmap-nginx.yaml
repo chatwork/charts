@@ -5,7 +5,7 @@ metadata:
   name: {{ template "php.fullname" . }}-nginx-nginx-conf
   labels: {{ include "php.labels" . | nindent 4 }}
   {{- with .Values.nginx.annotations }}
-  annotations: {{ toYaml . | nindent 4 }}
+  annotations: {{ tpl (toYaml .) $root | nindent 4 }}
   {{- end }}
 data:
   nginx.conf: {{ tpl (index .Values.nginx.templates "nginx.conf") . | toYaml | indent 2 }}

@@ -5,7 +5,7 @@ metadata:
   name: {{ template "php.fullname" . }}
   labels: {{ include "php.labels" . | nindent 4 }}
   {{- with .Values.service.annotations }}
-  annotations: {{ toYaml . | nindent 4 }}
+  annotations: {{ tpl (toYaml .) $root | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.service.type }}
