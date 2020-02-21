@@ -1,55 +1,21 @@
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "php.fullname" . }}-fpm-php-ini
-  labels: {{- include "php.labels" . | nindent 4 }}
-  {{- with .Values.fpm.annotations }}
-  annotations: {{ tpl (toYaml .) $root | nindent 4 }}
-  {{- end }}
-data:
-  php.ini: {{ tpl (index .Values.fpm.templates "php.ini") . | toYaml | indent 2 }}
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "php.fullname" . }}-fpm-php-fpm-conf
-  labels: {{ include "php.labels" . | nindent 4 }}
-  {{- with .Values.fpm.annotations }}
-  annotations: {{ toYaml . | nindent 4 }}
-  {{- end }}
-data:
-  php-fpm.conf: {{ tpl (index .Values.fpm.templates "php-fpm.conf") . | toYaml | indent 2 }}
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "php.fullname" . }}-fpm-php-fpm-d
-  labels: {{ include "php.labels" . | nindent 4 }}
-  {{- with .Values.fpm.annotations }}
-  annotations: {{ toYaml . | nindent 4 }}
-  {{- end }}
-data:
-{{- $root := . -}}
-{{- range $k, $v := (index .Values.fpm.templates "php-fpm.d") }}
-  {{ $k }}: {{ tpl $v $root | toYaml | indent 2 }}
-{{- end }}
-
 {{- $root := . -}}
 {{- range $name, $tmpl := .Values.fpm.templates }}
-{{- if and (ne $name "php-fpm.conf") (and (ne $name "php-fpm.d") (ne $name "php.ini")) }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" $root }}-fpm-{{ $name | replace "." "-" }}
+  name: {{ template "php.fullname" $root }}-fpm-{{ $name | replace "." "-" | lower }}
   labels: {{ include "php.labels" $root | nindent 4 }}
   {{- with $root.Values.fpm.annotations }}
   annotations: {{ toYaml . | nindent 4 }}
   {{- end }}
 data:
-{{ tpl (toYaml $tmpl) $root | indent 2 }}
-{{- end}}
+  {{- if eq (kindOf $tmpl) "string" }}
+  {{ $name }}: |
+{{ tpl $tmpl $root | indent 4 }}
+  {{- else }}
+  {{- range $k, $v := $tmpl }}
+  {{ $k }}: {{ tpl $v $root | toYaml | indent 2 }}
+  {{- end }}
+  {{- end }}
 {{- end }}

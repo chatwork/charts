@@ -114,7 +114,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.extraVolumes` | Additional volumes | `[]` |
 |  `nginx.extraVolumeMounts` | Additional volumeMounts | `[]` |
 |  `nginx.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
-|  `nginx.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `nginx.conf`, `conf.d/default.conf`, `conf.d/status.conf` |
+|  `nginx.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `nginx.conf`, `conf.d/default.conf` |
 |  `nginx.annotations` | Grant annotations to ConfigMap of `nginx.templates`, Secrets of `nginx.secrets` | `{}` |
 
 ## PHP-FPM containers
@@ -135,7 +135,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.extraVolumes` | Additional volumes | `[]` |
 |  `fpm.extraVolumeMounts` | Additional volumeMounts | `[]` |
 |  `fpm.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
-|  `fpm.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `php.ini`,`php-fpm.conf`,`php-fpm.d/www.conf` |
+|  `fpm.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `php-fpm.conf`,`www.conf` |
 |  `fpm.annotations` | Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets` | `{}` |
 
 ### Manage request timeout and graceful shutdown
@@ -147,19 +147,17 @@ terminationGracePeriodSeconds: {{ your_fpm_process_control_timeout }}
 
 nginx:
   templates:
-    conf.d:
-      ...
-      default.conf: |
-        server {
-          ...
-          location ~ \.php$ {
-              include fastcgi_params;
-              fastcgi_pass  unix:/var/run/php-fpm/php-fpm.sock;
-              fastcgi_index index.php;
-              fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-              fastcgi_read_timeout {{ your_fpm_process_control_timeout }}s;
-          }
+    default.conf: |
+      server {
+        ...
+        location ~ \.php$ {
+          include fastcgi_params;
+          fastcgi_pass  unix:/var/run/php-fpm/php-fpm.sock;
+          fastcgi_index index.php;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_read_timeout {{ your_fpm_process_control_timeout }}s;
         }
+      }
 
   lifecycle:
     preStop: ["/bin/sh", "-c", "sleep 5; nginx -s quit; sleep {{ your_fpm_process_control_timeout }};"]
@@ -194,7 +192,7 @@ log_errors = On
 ; Set maximum length of log_errors. In error_log information about the source is
 ; added. The default is 1024 and 0 allows to not apply any maximum length at all.
 ; http://php.net/log-errors-max-len
-log_errors_max_len = 4096
+log_errors_max_len = 8192
 ```
 
 **php-fpm.conf**
@@ -215,7 +213,7 @@ error_log = /proc/self/fd/2
 ; logging to a file descriptor. It means the new line character is not present
 ; when logging to syslog.
 ; Default Value: 1024
-log_limit = 4096
+log_limit = 8192
 ```
 
 **php-fpm.d/www.conf**
