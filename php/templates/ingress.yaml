@@ -6,22 +6,22 @@ metadata:
   name: {{ template "php.fullname" . }}
   labels: {{ include "php.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
-  annotations: {{ toYaml . | nindent 4 }}
+  annotations: {{ tpl (toYaml .) $root | nindent 4 }}
   {{- end }}
 spec:
   backend:
     serviceName: {{ template "php.fullname" . }}
     servicePort: {{ .Values.service.port | default .Values.nginx.containerPort }}
-  {{- if .Values.ingress.tls }}
-  tls: {{ toYaml .Values.ingress.tls | nindent 4 }}
+  {{- with .Values.ingress.tls }}
+  tls: {{ tpl (toYaml .) $root | nindent 4 }}
   {{- end }}
   rules:
     {{- range $k, $host := .Values.ingress.hosts }}
-    - host: {{ $host }}
+    - host: {{ tpl $host $root }}
       http:
         paths:
           {{- with $root.Values.ingress.preferPaths }}
-          {{- toYaml . | nindent 10 }}
+          {{- tpl (toYaml .) $root | nindent 10 }}
           {{- end }}
           - path: /*
             backend:

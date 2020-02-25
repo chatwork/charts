@@ -24,7 +24,7 @@ spec:
         checksum/secret-fpm: {{ include (print $.Template.BasePath "/secret-fpm.yaml") . | sha256sum }}
         checksum/secret-nginx: {{ include (print $.Template.BasePath "/secret-nginx.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (toYaml .) $root | nindent 8 }}
         {{- end }}
     spec:
       {{- if .Values.busybox.enabled }}
@@ -80,17 +80,22 @@ spec:
           lifecycle: {{ tpl (toYaml .) $root | nindent 12 }}
           {{- end }}
           volumeMounts:
+            - name: php-fpm-sock
+              mountPath: /var/run/php-fpm
             {{- if .Values.busybox.enabled }}
             - name: share
               mountPath: {{ .Values.sharedPath }}
             {{- end }}
-            - name: php-fpm-sock
-              mountPath: /var/run/php-fpm
+            {{- if index .Values.nginx.templates "nginx.conf" }}
             - name: nginx-conf
-              subPath: nginx.conf
               mountPath: /etc/nginx/nginx.conf
-            - name: nginx-confd
-              mountPath: /etc/nginx/conf.d
+              subPath: nginx.conf
+            {{- end }}
+            {{- if index .Values.nginx.templates "default.conf" }}
+            - name: default-conf
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            {{- end }}
             {{- with .Values.nginx.extraVolumeMounts }}
             {{- tpl (toYaml .) $root | nindent 12 }}
             {{- end }}
@@ -127,20 +132,42 @@ spec:
           volumeMounts:
             - name: tmp
               mountPath: /tmp
+            - name: php-fpm-sock
+              mountPath: /var/run/php-fpm
+            {{- if index .Values.fpm.templates "php.ini" }}
+            - name: php-ini
+              mountPath: /usr/local/etc/php/php.ini
+              subPath: php.ini
+            {{- end }}
+            {{- if index .Values.fpm.templates "php-fpm.conf" }}
+            - name: php-fpm-conf
+              mountPath: /usr/local/etc/php-fpm.conf
+              subPath: php-fpm.conf
+            {{- end }}
+            {{- if index .Values.fpm.templates "www.conf" }}
+            - name: www-conf
+              mountPath: /usr/local/etc/php-fpm.d/www.conf
+              subPath: www.conf
+            {{- end }}
+            {{- if index .Values.fpm.templates "docker.conf" }}
+            - name: docker-conf
+              mountPath: /usr/local/etc/php-fpm.d/docker.conf
+              subPath: docker.conf
+            {{- end }}
+            {{- if index .Values.fpm.templates "zz-docker.conf" }}
+            - name: zz-docker-conf
+              mountPath: /usr/local/etc/php-fpm.d/zz-docker.conf
+              subPath: zz-docker.conf
+            {{- end }}
+            {{- if index .Values.fpm.templates "zz-kubernetes.conf" }}
+            - name: zz-kubernetes-conf
+              mountPath: /usr/local/etc/php-fpm.d/zz-kubernetes.conf
+              subPath: zz-kubernetes.conf
+            {{- end }}
             {{- if .Values.busybox.enabled }}
             - name: share
               mountPath: {{ .Values.sharedPath }}
             {{- end }}
-            - name: php-fpm-sock
-              mountPath: /var/run/php-fpm
-            - name: php-ini
-              subPath: php.ini
-              mountPath: /usr/local/etc/php/php.ini
-            - name: fpm-conf
-              subPath: php-fpm.conf
-              mountPath: /usr/local/etc/php-fpm.conf
-            - name: fpm-confd
-              mountPath: /usr/local/etc/php-fpm.d
             {{- with .Values.fpm.extraVolumeMounts }}
             {{- tpl (toYaml .) $root | nindent 12 }}
             {{- end }}
@@ -150,27 +177,52 @@ spec:
       volumes:
         - name: tmp
           emptyDir: {}
+        - name: php-fpm-sock
+          emptyDir: {}
         {{- if .Values.busybox.enabled }}
         - name: share
           emptyDir: {}
         {{- end }}
-        - name: php-fpm-sock
-          emptyDir: {}
+        {{- if index .Values.nginx.templates "nginx.conf" }}
         - name: nginx-conf
           configMap:
-            name: {{ template "php.fullname" . }}-nginx-nginx-conf
-        - name: nginx-confd
+            name: '{{ template "php.fullname" . }}-nginx-nginx-conf'
+        {{- end }}
+        {{- if index .Values.nginx.templates "default.conf" }}
+        - name: default-conf
           configMap:
-            name: {{ template "php.fullname" . }}-nginx-conf-d
+            name: '{{ template "php.fullname" . }}-nginx-default-conf'
+        {{- end }}
+        {{- if index .Values.fpm.templates "php.ini" }}
         - name: php-ini
           configMap:
-            name: {{ template "php.fullname" . }}-fpm-php-ini
-        - name: fpm-conf
+            name: '{{ template "php.fullname" . }}-fpm-php-ini'
+        {{- end }}
+        {{- if index .Values.fpm.templates "php-fpm.conf" }}
+        - name: php-fpm-conf
           configMap:
-            name: {{ template "php.fullname" . }}-fpm-php-fpm-conf
-        - name: fpm-confd
+            name: '{{ template "php.fullname" . }}-fpm-php-fpm-conf'
+        {{- end }}
+        {{- if index .Values.fpm.templates "www.conf" }}
+        - name: www-conf
           configMap:
-            name: {{ template "php.fullname" . }}-fpm-php-fpm-d
+            name: '{{ template "php.fullname" . }}-fpm-www-conf'
+        {{- end }}
+        {{- if index .Values.fpm.templates "docker.conf" }}
+        - name: docker-conf
+          configMap:
+            name: '{{ template "php.fullname" . }}-fpm-docker-conf'
+        {{- end }}
+        {{- if index .Values.fpm.templates "zz-docker.conf" }}
+        - name: zz-docker-conf
+          configMap:
+            name: '{{ template "php.fullname" . }}-fpm-zz-docker-conf'
+        {{- end }}
+        {{- if index .Values.fpm.templates "zz-kubernetes.conf" }}
+        - name: zz-kubernetes-conf
+          configMap:
+            name: '{{ template "php.fullname" . }}-fpm-zz-kubernetes-conf'
+        {{- end }}
         {{- with .Values.busybox.extraVolumes }}
         {{- tpl (toYaml .) $root | nindent 8 }}
         {{- end }}
@@ -193,10 +245,10 @@ spec:
       securityContext: {{ tpl (toYaml .) $root | nindent 8 }}
       {{- end }}
       {{- with .Values.serviceAccountName }}
-      serviceAccountName: {{ . }}
+      serviceAccountName: {{ tpl (toYaml .) $root}}
       {{- end }}
       {{- with .Values.terminationGracePeriodSeconds }}
-      terminationGracePeriodSeconds: {{ . }}
+      terminationGracePeriodSeconds: {{ tpl (toYaml .) $root }}
       {{- end }}
       {{- with .Values.affinity }}
       affinity: {{ tpl (toYaml .) $root | nindent 8 }}

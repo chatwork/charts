@@ -5,7 +5,7 @@ metadata:
   name: {{ template "php.fullname" . }}
   labels: {{ include "php.labels" . | nindent 4 }}
   {{- with .Values.service.annotations }}
-  annotations: {{ toYaml . | nindent 4 }}
+  annotations: {{ tpl (toYaml .) $root | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.service.type }}
@@ -15,15 +15,15 @@ spec:
       protocol: TCP
       targetPort: default
     {{- with .Values.service.extraPorts }}
-    {{- . | toYaml | nindent 4 }}
+    {{- tpl (toYaml .) $root | nindent 4 }}
     {{- else }}
-    {{- range .Values.nginx.extraPorts }}
-    - name: {{ .name }}
-      port: {{ .containerPort }}
+    {{- range .Values.nginx.extraPortss }}
+    - name: {{ tpl .name $root }}
+      port: {{ tpl .containerPort $root }}
       {{- with .protocol }}
-      protocol: {{ . }}
+      protocol: {{ tpl . $root }}
       {{- end }}
-      targetPort: {{ .name | default .containerPort }}
+      targetPort: {{ tpl .name $root | default .containerPort }}
     {{- end }}
     {{- end }}
   selector: {{ include "php.selectorLabels" . | nindent 4 }}

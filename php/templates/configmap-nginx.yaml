@@ -1,43 +1,21 @@
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "php.fullname" . }}-nginx-nginx-conf
-  labels: {{ include "php.labels" . | nindent 4 }}
-  {{- with .Values.nginx.annotations }}
-  annotations: {{ toYaml . | nindent 4 }}
-  {{- end }}
-data:
-  nginx.conf: {{ tpl (index .Values.nginx.templates "nginx.conf") . | toYaml | indent 2 }}
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "php.fullname" . }}-nginx-conf-d
-  labels: {{ include "php.labels" . | nindent 4 }}
-  {{- with .Values.nginx.annotations }}
-  annotations: {{ toYaml . | nindent 4 }}
-  {{- end }}
-data:
-{{- $root := . -}}
-{{- range $k, $v := (index .Values.nginx.templates "conf.d") }}
-  {{ $k }}: {{ tpl $v $root | toYaml | indent 2 }}
-{{- end }}
-
 {{- $root := . -}}
 {{- range $name, $tmpl := .Values.nginx.templates }}
-{{- if and (ne $name "nginx.conf") (ne $name "conf.d") }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" $root }}-nginx-{{ $name | replace "." "-" }}
+  name: {{ template "php.fullname" $root }}-nginx-{{ $name | replace "." "-" | lower }}
   labels: {{ include "php.labels" $root | nindent 4 }}
   {{- with $root.Values.nginx.annotations }}
   annotations: {{ toYaml . | nindent 4 }}
   {{- end }}
 data:
-{{ tpl (toYaml $tmpl) $root | indent 2 }}
-{{- end}}
+  {{- if eq (kindOf $tmpl) "string" }}
+  {{ $name }}: |
+{{ tpl $tmpl $root | indent 4 }}
+  {{- else }}
+  {{- range $k, $v := $tmpl }}
+  {{ $k }}: {{ tpl $v $root | toYaml | indent 2 }}
+  {{- end }}
+  {{- end }}
 {{- end }}
