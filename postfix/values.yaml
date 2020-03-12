@@ -55,6 +55,10 @@ daemonset:
 
   hostPort: 25
 
+  lifecycle:
+    preStop:
+      command: ["/usr/sbin/postfix", "flush"]
+
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   #updateStrategy: RollingUpdate
 
@@ -73,6 +77,10 @@ deployment:
       maxSurge: 1
       maxUnavailable: 0
 
+  lifecycle:
+    preStop:
+      command: ["/usr/sbin/postfix", "flush"]
+
   podAnnotations: {}
   affinity: {}
   tolerations: []
@@ -86,6 +94,10 @@ statefulSet:
   enabled: false
 
   replicas: 1
+
+  lifecycle:
+    preStop:
+      command: ["/usr/sbin/postfix", "flush"]
 
   podAnnotations: {}
   affinity: {}
