@@ -23,8 +23,8 @@ spec:
         checksum/secret-busybox: {{ include (print $.Template.BasePath "/secret-busybox.yaml") . | sha256sum }}
         checksum/secret-fpm: {{ include (print $.Template.BasePath "/secret-fpm.yaml") . | sha256sum }}
         checksum/secret-nginx: {{ include (print $.Template.BasePath "/secret-nginx.yaml") . | sha256sum }}
-        {{- with .Values.podAnnotations }}
-        {{- tpl (toYaml .) $root | nindent 8 }}
+        {{- range $k, $v := .Values.podAnnotations }}
+        {{ $k }}: {{ tpl $v $root | toYaml | indent 8 }}
         {{- end }}
     spec:
       {{- if .Values.busybox.enabled }}

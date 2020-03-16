@@ -6,7 +6,10 @@ metadata:
   name: {{ template "php.fullname" . }}
   labels: {{ include "php.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
-  annotations: {{ tpl (toYaml .) $root | nindent 4 }}
+  annotations:
+    {{- range $k, $v := . }}
+    {{ $k }}: {{ tpl $v $root | toYaml | indent 4 }}
+    {{- end }}
   {{- end }}
 spec:
   backend:
