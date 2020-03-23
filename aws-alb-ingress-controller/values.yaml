@@ -1,0 +1,141 @@
+nameOverride: ""
+fullnameOverride: ""
+
+# Default values for aws-alb-ingress-controller.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Resources created by the ALB Ingress controller will be prefixed with this string
+## Required
+clusterName: k8s-cluster
+
+## AWS region of k8s cluster, required if ec2metadata is unavailable from controller pod
+## Required if autoDiscoverAwsRegion != true
+awsRegion: "ap-northeast-1"
+
+## Auto Discover awsRegion from ec2metadata, set this to true and omit awsRegion when ec2metadata is available.
+autoDiscoverAwsRegion: false
+
+## VPC ID of k8s cluster, required if ec2metadata is unavailable from controller pod
+## Required if autoDiscoverAwsVpcID != true
+awsVpcID: "vpc-xxx"
+
+## Auto Discover awsVpcID from ec2metadata, set this to true and omit awsVpcID: " when ec2metadata is available.
+autoDiscoverAwsVpcID: false
+
+scope:
+  ## If provided, the ALB ingress controller will only act on Ingress resources annotated with this class
+  ## Ref: https://github.com/kubernetes-sigs/aws-alb-ingress-controller/blob/master/docs/guide/controller/config.md#limiting-ingress-class
+  ingressClass: alb
+
+  ## If true, the ALB ingress controller will only act on Ingress resources in a single namespace
+  ## Default: false; watch all namespaces
+  singleNamespace: false
+
+  ## If scope.singleNamespace=true, the ALB ingress controller will only act on Ingress resources in this namespace
+  ## Ref: https://github.com/kubernetes-sigs/aws-alb-ingress-controller/blob/master/docs/guide/controller/config.md#limiting-namespaces
+  ## Default: namespace of the ALB ingress controller
+  watchNamespace: ""
+
+deployment:
+  annotations: {}
+  labels: {}
+  replicaCount: 1
+
+containerPort: 10254
+
+extraArgs: {}
+
+extraEnv: []
+envFromConfigMap: {}
+envFromSecret: {}
+
+podAnnotations: {}
+
+podLabels: {}
+
+# configure readinessProbe on controller pod
+readinessProbe:
+  enable: true
+
+  # How often (in seconds) to check controller readiness
+  periodSeconds: 60
+
+  # How long to wait before timeout (in seconds) when checking controller readiness
+  timeoutSeconds: 3
+
+  # How long to wait (in seconds) before checking the readiness probe
+  initialDelaySeconds: 30
+
+# configure livenessProbe on controller pod
+livenessProbe:
+  enable: true
+
+  # How often (in seconds) to check controller liveness
+  periodSeconds: 60
+
+  # How long to wait before timeout (in seconds) when checking controller liveness
+  timeoutSeconds: 1
+
+  # How long to wait (in seconds) before checking the liveness probe
+  initialDelaySeconds: 30
+
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: true
+  serviceAccount:
+    create: true
+    name: default
+
+  ## Annotations for the Service Account
+  serviceAccountAnnotations: {}
+
+image:
+  repository: docker.io/amazon/aws-alb-ingress-controller
+  tag: "v1.1.5"
+  pullPolicy: IfNotPresent
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+  # node-role.kubernetes.io/node: "true"
+  # tier: cs
+
+tolerations: []
+  #  - key: "node-role.kubernetes.io/master"
+  #    effect: NoSchedule
+
+affinity: {}
+
+volumeMounts: []
+  # - name: aws-iam-credentials
+  #   mountPath: /meta/aws-iam
+  #   readOnly: true
+
+volumes: []
+  # - name: aws-iam-credentials
+  #   secret:
+  #     secretName: alb-ingress-controller-role
+
+# Leverage a PriorityClass to ensure your pods survive resource shortages
+# ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# PriorityClass: system-cluster-critical
+priorityClassName: ""
+
+securityContext: {}
+containerSecurityContext: {}
+podSecurityPolicy:
+  create: false
+
+terminationGracePeriodSeconds: 60
