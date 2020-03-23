@@ -135,3 +135,7 @@ podSecurityPolicy:
   create: false
 
 terminationGracePeriodSeconds: 60
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2

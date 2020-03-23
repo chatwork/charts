@@ -32,6 +32,23 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Return instance and name labels.
+*/}}
+{{- define "aws-alb-ingress-controller.instance-labels" -}}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+app.kubernetes.io/name: {{ include "aws-alb-ingress-controller.name" . | quote }}
+{{- end -}}
+
+{{/*
+Return labels, including instance and name.
+*/}}
+{{- define "aws-alb-ingress-controller.labels" -}}
+{{ include "aws-alb-ingress-controller.instance-labels" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+helm.sh/chart: {{ include "aws-alb-ingress-controller.chart" . | quote }}
+{{- end -}}
+
+{{/*
 Return the service account name used by the pod.
 */}}
 {{- define "serviceaccount.name" -}}

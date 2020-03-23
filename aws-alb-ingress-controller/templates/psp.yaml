@@ -3,11 +3,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ include "aws-alb-ingress-controller.fullname" . }}
-  labels:
-    app.kubernetes.io/name: {{ include "aws-alb-ingress-controller.name" . }}
-    helm.sh/chart: {{ include "aws-alb-ingress-controller.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  labels: {{ include "aws-alb-ingress-controller.labels" . | nindent 4 }}
 spec:
   allowPrivilegeEscalation: false
   hostIPC: false

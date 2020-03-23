@@ -1,0 +1,12 @@
+{{ $root := . }}
+{{- with .Values.podDisruptionBudget }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels: {{ include "aws-alb-ingress-controller.labels" $root | nindent 4 }}
+  name: {{ template "aws-alb-ingress-controller.fullname" $root }}
+spec:
+  selector:
+    matchLabels: {{ include "aws-alb-ingress-controller.instance-labels" $root | nindent 6 }}
+{{ toYaml . | indent 2 }}
+{{- end }}
