@@ -11,4 +11,12 @@ rules:
       - pods
     verbs:
       - get
+  - apiGroups:
+      - policy
+    resources:
+      - podsecuritypolicies
+    resourceNames:
+      - {{ template "fluent-bit.fullname" . }}
+    verbs:
+      - use
 {{- end }}

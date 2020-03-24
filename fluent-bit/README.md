@@ -10,7 +10,7 @@ $ helm install chatwork/fluent-bit
 
 ## Prerequisites
 
-* Kubernetes 1.11+
+* Kubernetes 1.14+
 
 ## Installing the Chart
 
