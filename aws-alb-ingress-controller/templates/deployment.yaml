@@ -1,0 +1,113 @@
+{{ $root := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aws-alb-ingress-controller.fullname" $root }}
+  labels: {{ include "aws-alb-ingress-controller.labels" $root | nindent 4 }}
+    {{- range $key, $value :=.Values.deployment.labels }}
+    {{ $key }}: {{ tpl $value $root | quote }}
+    {{- end }}
+  annotations: {{- with .Values.deployment.annotations }}{{- tpl (toYaml . ) $root | nindent 4 }}{{- end }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels: {{ include "aws-alb-ingress-controller.instance-labels" $root | nindent 6 }}
+  template:
+    metadata:
+      labels: {{ include "aws-alb-ingress-controller.instance-labels" $root | nindent 8 }}
+        {{- range $key, $value := .Values.podLabels }}
+        {{ $key }}: {{ tpl $value $root | quote }}
+        {{- end }}
+      annotations: {{- with .Values.podAnnotations }}{{- tpl (toYaml . ) $root | nindent 8 }}{{- end }}
+    spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - --cluster-name={{ required "specify clusterName via --set clusterName=YourClusterName" .Values.clusterName }}
+        {{- with .Values.scope.ingressClass }}
+        - --ingress-class={{ . }}
+        {{- end }}
+        {{- with .Values.scope.singleNamespace }}
+        - --watch-namespace={{ default .Release.Namespace .Values.scope.watchNamespace }}
+        {{- end }}
+        {{- if not .Values.autoDiscoverAwsRegion }}
+        - --aws-region={{ .Values.awsRegion }}
+        {{- end }}
+        {{- if not .Values.autoDiscoverAwsVpcID }}
+        - --aws-vpc-id={{ .Values.awsVpcID }}
+        {{- end }}
+        {{- with .Values.extraArgs }}{{ toYaml . | nindent 8 }}{{- end }}
+        env:
+        {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            value: "{{ $value }}"
+        {{- end }}
+        {{- range $key, $value := .Values.envValueFromConfigMap }}
+          - name: {{ $key }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ $value.name }}
+                key: {{ $value.key }}
+        {{- end }}
+        {{- range $key, $value := .Values.envValueFromEnvSecret }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value.name }}
+                key: {{ $value.key }}
+        {{- end }}
+        {{- with .Values.extraEnvFrom }}
+        envFrom: {{ toYaml . | nindent 10 }}
+        {{- end }}
+        ports:
+        - name: health
+          containerPort: {{ .Values.containerPort }}
+          protocol: TCP
+        {{- if .Values.readinessProbe.enable }}
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: health
+            scheme: HTTP
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+        {{- end }}
+        {{- if .Values.livenessProbe.enable }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: health
+            scheme: HTTP
+          initialDelaySeconds: {{ add .Values.livenessProbe.initialDelaySeconds .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+        {{- end }}
+        {{- with .Values.containerSecurityContext }}
+        securityContext: {{ toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.resources }}
+        resources: {{ toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.volumeMounts }}
+        volumeMounts:  {{ toYaml . | nindent 10 }}
+        {{- end }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | indent 10 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.volumes }}
+      volumes: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ template "serviceaccount.name" . }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
