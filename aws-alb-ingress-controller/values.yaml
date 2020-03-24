@@ -47,8 +47,7 @@ containerPort: 10254
 extraArgs: {}
 
 extraEnv: []
-envFromConfigMap: {}
-envFromSecret: {}
+extraEnvFrom: {}
 
 podAnnotations: {}
 

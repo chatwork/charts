@@ -7,10 +7,7 @@ metadata:
     {{- range $key, $value :=.Values.deployment.labels }}
     {{ $key }}: {{ tpl $value $root | quote }}
     {{- end }}
-  annotations:
-  {{- range $key, $value := .Values.deployment.annotations }}
-    {{ $key }}: {{ tpl $value $root | quote }}
-  {{- end }}
+  annotations: {{- with .Values.deployment.annotations }}{{- tpl (toYaml . ) $root | nindent 4 }}{{- end }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
   selector:
@@ -21,10 +18,7 @@ spec:
         {{- range $key, $value := .Values.podLabels }}
         {{ $key }}: {{ tpl $value $root | quote }}
         {{- end }}
-      annotations:
-        {{- range $key, $value := .Values.podAnnotations }}
-        {{ $key }}: {{ tpl $value $root | quote }}
-        {{- end }}
+      annotations: {{- with .Values.podAnnotations }}{{- tpl (toYaml . ) $root | nindent 8 }}{{- end }}
     spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
@@ -47,9 +41,7 @@ spec:
         {{- if not .Values.autoDiscoverAwsVpcID }}
         - --aws-vpc-id={{ .Values.awsVpcID }}
         {{- end }}
-        {{- with .Values.extraArgs }}
-{{ toYaml . | indent 8 }}
-        {{- end }}
+        {{- with .Values.extraArgs }}{{ toYaml . | nindent 8 }}{{- end }}
         env:
         {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
@@ -69,15 +61,8 @@ spec:
                 name: {{ $value.name }}
                 key: {{ $value.key }}
         {{- end }}
-        {{- with .Values.envFromConfigmap }}
-          envFrom:
-            - configMapRef:
-                name: {{ . }}
-        {{- end }}
-        {{- with .Values.envFromSecret }}
-          envFrom:
-            - secretRef:
-                name: {{ . }}
+        {{- with .Values.extraEnvFrom }}
+        envFrom: {{ toYaml . | nindent 10 }}
         {{- end }}
         ports:
         - name: health
