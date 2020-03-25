@@ -1,0 +1,12 @@
+{{- $root := . -}}
+{{- range $name, $tmpl := .Values.configmaps }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fluent-bit.fullname" $root }}-{{ $name | replace "." "-" | replace "_" "-" | lower }}
+  labels: {{ include "fluent-bit.labels" $root | nindent 4 }}
+data:
+  {{ $name }}: |
+{{ tpl $tmpl $root | indent 4 }}
+{{- end }}

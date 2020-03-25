@@ -1,0 +1,89 @@
+{{- $root := . -}}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "fluent-bit.fullname" . }}
+  labels: {{ include "fluent-bit.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels: {{ include "fluent-bit.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{ include "fluent-bit.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "fluent-bit.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.metrics.enabled }}
+          ports:
+          - name: metrics
+            containerPort: 2020
+            protocol: TCP
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+            - name: varlibdockercontainers
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+            {{- range $name, $tmpl := .Values.configmaps }}
+            - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
+              mountPath: /fluent-bit/etc/{{ $name }}
+              subPath: {{ $name }}
+            {{- end }}
+            {{- range $name, $secret := .Values.secrets }}
+            - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
+              mountPath: /secure/{{ $name }}
+              subPath: {{ $name }}
+            {{- end }}
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
+        {{- range $name, $tmpl := .Values.configmaps }}
+        - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
+          configMap:
+            name: {{ include "fluent-bit.fullname" $root }}-{{ $name | replace "." "-" | replace "_" "-" | lower }}
+        {{- end }}
+        {{- range $name, $secrets := .Values.secrets }}
+        - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
+          secret:
+            secretName: {{ include "fluent-bit.fullname" $root }}-{{ $name | replace "." "-" | replace "_" "-" | lower }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 10 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 10 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 10 }}
+      {{- end }}
