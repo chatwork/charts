@@ -26,7 +26,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.resources }}
-          resources: {{ toYaml . | nindent 10 }}
+          resources: {{ toYaml . | nindent 12 }}
           {{- end }}
           lifecycle: {{ toYaml .Values.statefulSet.lifecycle | nindent 12 }}
           ports:
