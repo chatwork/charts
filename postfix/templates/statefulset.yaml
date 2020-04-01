@@ -7,7 +7,7 @@ metadata:
 spec:
   selector:
     matchLabels: {{ include "postfix.selectorLabels" . | nindent 6 }}
-  serviceName: "nginx"
+  serviceName: {{ include "postfix.fullname" . }}
   replicas: {{ .Values.statefulSet.replicas }}
   template:
     metadata:
@@ -26,9 +26,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.resources }}
-          resources: {{ toYaml . | nindent 12 }}
+          resources: {{ toYaml . | nindent 10 }}
           {{- end }}
-          lifecycle: {{ toYaml .Values.preStop | nindent 10 }}
+          lifecycle: {{ toYaml .Values.statefulSet.lifecycle | nindent 12 }}
           ports:
             - name: smtp
               containerPort: 25
@@ -39,8 +39,8 @@ spec:
           volumeMounts:
             - name: {{ template "postfix.fullname" . }}-spool
               mountPath: /var/spool/postfix
-              {{- if .Values.persistence.subPath }}
-              subPath: {{ .Values.persistence.subPath }}
+              {{- with .Values.persistence.subPath }}
+              subPath: {{ . }}
               {{- end }}
             {{- range $k, $v := .Values.postfix.templates }}
             - name: configmap
