@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "elasticsearch.fullname" . }}
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ template "elasticsearch.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "elasticsearch.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "elasticsearch.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/elasticsearch_conf: {{ tpl .Values.elasticsearch.config . | sha256sum }}
+    spec:
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{- end }}
+{{- with .Values.initContainers }}
+      initContainers:
+{{ toYaml . | indent 6 }}
+{{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: elasticsearch
+              containerPort: {{ .Values.elasticsearch.port }}
+              protocol: TCP
+          env:
+{{- with .Values.elasticsearch.discoveryType }}
+          - name: discovery.type
+            value: {{ . }}
+{{- end }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.elasticsearch.port }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.elasticsearch.port }}
+          volumeMounts:
+            - name: conf
+              subPath: elasticsearch_conf
+              mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+{{- with .Values.extraVolumeMounts }}
+{{ toYaml . | indent 12 }}
+{{- end }}
+{{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+{{- end }}
+      volumes:
+        - name: conf
+          configMap:
+            name: {{ template "elasticsearch.fullname" . }}
+{{- with .Values.extraVolumes }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
