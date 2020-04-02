@@ -57,7 +57,8 @@ daemonset:
 
   lifecycle:
     preStop:
-      command: ["/usr/sbin/postfix", "flush"]
+      exec:
+        command: ["/usr/sbin/postfix", "flush"]
 
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   #updateStrategy: RollingUpdate
@@ -79,7 +80,8 @@ deployment:
 
   lifecycle:
     preStop:
-      command: ["/usr/sbin/postfix", "flush"]
+      exec:
+        command: ["/usr/sbin/postfix", "flush"]
 
   podAnnotations: {}
   affinity: {}
@@ -97,7 +99,8 @@ statefulSet:
 
   lifecycle:
     preStop:
-      command: ["/usr/sbin/postfix", "flush"]
+      exec:
+        command: ["/usr/sbin/postfix", "flush"]
 
   podAnnotations: {}
   affinity: {}
