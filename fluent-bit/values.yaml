@@ -10,6 +10,8 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+command: []
+
 podAnnotations: {}
 
 serviceAccount:
