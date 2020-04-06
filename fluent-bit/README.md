@@ -41,6 +41,7 @@ The following table lists the configurable parameters of the slime chart and the
 | `image.repository` | The image repository to pull from | `"fluent/fluent-bit` |
 | `image.pullPolicy` | Image pull policy | `"IfNotPresent` |
 | `imagePullSecrets` | Image pull secrets | `[]` |
+| `command` | Additional command arguments | `[]` |
 | `nameOverride` | Override name of app | `""` |
 | `fullnameOverride` | Override full name of app | `""` |
 | `podAnnotations` | Annotations to be added to pods | `{}` |
