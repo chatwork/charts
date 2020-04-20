@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `config.defender.listenerType` | Configuration defender listener type| `"none"` |
 |  `config.readOnlyFs` | Sets Twistlock containers' file-systems to read-only | `true` |
 |  `config.runConsoleAsRoot` | Run Twistlock Console processes as root (default, twistlock user account) | `false` |
-|  `config.docker.tag` | docker image tag| `"_19_11_480"` |
+|  `config.docker.tag` | docker image tag| `"_20_04_163"` |
 |  `config.docker.socket` | docker socket path| `"/var/run/docker.sock"` |
 |  `config.backup` | Enable backup (but same volume) | `"true"` |
 |  `config.management.http.enabled` | Enable management http | `"false"` |
@@ -76,6 +76,7 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `extraEnv` | Pod extra environment value | `[]`|
 |  `extraVolumeMounts` | Pod extra volumeMounts | `[]`|
 |  `extraVolume` | Pod extra volume | `[]`|
+|  `priorityClassName` | Pod priority class name | `""`|
 |  `persistenceVolumeClaim.storage.size` | PVC volume size | `"100G"` |
 |  `persistenceVolumeClaim.storage.className` | PVC volume class name| `"gp2"` |
 |  `persistenceVolumeClaim.selector` | PVC selector | `"{}"` |

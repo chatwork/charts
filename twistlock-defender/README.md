@@ -69,7 +69,8 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `config.monitor.istio` | Configuration monitor istio | `"false"` |
 |  `config.installBundle` | Configuration installBundle for rasp | `""` |
 |  `config.docker.clientAddress` | Configuration docker client address path | `"/var/run/docker.sock"` |
-|  `config.docker.tag` | Configuration docker tag for image | `"_19_07_363"` |
+|  `config.docker.tag` | Configuration docker tag for image | `"_20_04_163"` |
+|  `config.collectPodLabels` | Configuration collect pod labels | `"true"` |
 |  `resources.limit.cpu` | Resources cpu limit | `"1000m"` |
 |  `resources.limit.memory` | Resources memory limit | `"512Mi"` |
 |  `resources.requests.cpu` | Resources cpu requests | `"250m"` |
@@ -97,3 +98,4 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `extraVolume` | Pod extra volume | `[]`|
 |  `livenessProve` | Pod livenessProve | `{}`|
 |  `readinessProve` | Pod readinessProve | `{}`|
+|  `priorityClassName` | Pod priority class name | `""`|
