@@ -96,3 +96,5 @@ extraVolumes: []
 
 livenessProbe: {}
 readinessProbe: {}
+
+priorityClassName: ""

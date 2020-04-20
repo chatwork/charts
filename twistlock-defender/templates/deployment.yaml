@@ -41,6 +41,9 @@ spec:
       {{- with .Values.image.imagePullSecrets }}
       imagePullSecrets:{{ toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       containers:
       - name: twistlock-defender
         image: {{ tpl .Values.image.repository $root }}:{{ tpl .Values.image.tag $root }}
