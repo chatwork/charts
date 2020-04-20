@@ -46,7 +46,7 @@ config:
   collectPodLabels: "true"
   docker:
     clientAddress: "/var/run/docker.sock"
-    tag: "_20_04_168"
+    tag: "_20_04_163"
 
 resources:
   limits:
