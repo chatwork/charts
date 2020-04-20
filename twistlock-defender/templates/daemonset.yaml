@@ -64,6 +64,8 @@ spec:
           value: "{{ .Values.config.monitor.serviceAccounts }}"
         - name: MONITOR_ISTIO
           value: "{{ .Values.config.monitor.istio }}"
+        - name: COLLECT_POD_LABELS
+          value: "{{ .Values.config.collectPodLabels }}"
         - name: INSTALL_BUNDLE
           value: "{{ .Values.config.installBundle }}"
         {{- with .Values.extraEnv }}

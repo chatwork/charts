@@ -43,9 +43,10 @@ config:
     istio: "false"
   # https://docs.twistlock.com/docs/19.07/install/install_defender/install_rasp_defender.html#embed-rasp-defender-manually
   installBundle: ""
+  collectPodLabels: "true"
   docker:
     clientAddress: "/var/run/docker.sock"
-    tag: "_19_07_363"
+    tag: "_20_04_168"
 
 resources:
   limits:

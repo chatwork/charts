@@ -9,20 +9,61 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 rules:
-{{- if .Values.config.monitor.serviceAccounts }}
-- apiGroups: ["rbac.authorization.k8s.io"]
-  resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"] # Allow Defenders to list RBAC resources
+{{- with .Values.config.monitor.serviceAccounts }}
+# Allow Defenders to list RBAC resources
+- apiGroups:
+  - "rbac.authorization.k8s.io"
+  resources:
+  - "roles"
+  - "rolebindings"
+  - "clusterroles"
+  - "clusterrolebindings"
   verbs: ["list"]
-{{- end}}
-{{- if .Values.config.monitor.istio }}
-- apiGroups: ["rbac.istio.io"]
-  resources: ["rbacconfigs", "servicerolebindings", "serviceroles"] # Allow Defenders to list Istio RBAC resources
-  verbs: ["list"]
-- apiGroups: ["authentication.istio.io"]
-  resources: ["meshpolicies"] # Allow Defenders to list Istio mesh policies
-  verbs: ["list"]
-- apiGroups: ["networking.istio.io"]
-  resources: ["virtualservices", "destinationrules", "gateways", "serviceentries"] # Allow Defenders to list Istio networking resources
-  verbs: ["list"]
-{{- end}}
-{{- end}}
+{{- end }}
+{{- with .Values.config.monitor.istio }}
+# Allow Defenders to list Istio RBAC resources
+- apiGroups:
+  - "rbac.istio.io"
+  resources:
+  - "rbacconfigs"
+  - "servicerolebindings"
+  - "serviceroles"
+  verbs:
+  - "list"
+# Allow Defenders to list Istio mesh policies
+- apiGroups:
+  - "authentication.istio.io"
+  resources:
+  - "meshpolicies"
+  verbs:
+  - "list"
+# Allow Defenders to list Istio networking resources
+- apiGroups:
+  - "networking.istio.io"
+  resources:
+  - "virtualservices"
+  - "destinationrules"
+  - "gateways"
+  - "serviceentries"
+  verbs:
+  - "list"
+{{- end }}
+{{- with .Values.config.collectPodLabels}}
+# Allow Defenders to get Deployments and ReplicaSets
+- apiGroups:
+  - "apps"
+  resources:
+  - "deployments"
+  - "replicasets"
+  verbs:
+  - "get"
+# Allow Defenders to get Namespaces and Pods
+- apiGroups:
+  - "" # Core API
+  resources:
+  - "namespaces"
+  - "pods"
+  verbs:
+  - "get"
+{{- end }}
+{{- end }}
