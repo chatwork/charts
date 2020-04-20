@@ -19,8 +19,7 @@ spec:
        app: {{ include "twistlock-console.fullname" $root }}
        release: {{ .Release.Name }}
   {{- with .Values.deployment.strategy }}
-  strategy:
-{{ toYaml . | indent 4 }}
+  strategy:{{ toYaml . | nindent 4 }}
   {{- end }}
   template:
     metadata:
@@ -35,8 +34,10 @@ spec:
         {{- end }}
     spec:
       {{- with .Values.image.imagePullSecrets }}
-      imagePullSecrets:
-{{ toYaml . | indent 8 }}
+      imagePullSecrets:{{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
       {{- end }}
       serviceAccountName: {{ template "twistlock-console.fullname" $root }}
       containers:
@@ -57,15 +58,12 @@ spec:
           containerPort: {{ .Values.port.highAvailability.port }}
         {{- end }}
         {{- with .Values.livenessProbe }}
-        livenessProbe:
-{{ tpl (toYaml .) $root | indent 10 }}
+        livenessProbe:{{ tpl (toYaml .) $root | nindent 10 }}
         {{- end }}
         {{- with .Values.readinessProbe }}
-        readinessProbe:
-{{ tpl (toYaml .) $root | indent 10 }}
+        readinessProbe:{{ tpl (toYaml .) $root | nindent 10 }}
         {{- end }}
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
+        resources:{{ toYaml .Values.resources | nindent 10 }}
         env:
         - name: CONFIG_PATH
           value: /data/config/twistlock.cfg
@@ -77,12 +75,10 @@ spec:
         - name: CONSOLE_PORTAL_SERVER_KEY
           value: "{{ .Values.config.console.portalServer.key }}"
         {{- end }}
-        {{- with .Values.extraEnv }}
-{{ toYaml . | indent 8 }}
+        {{- with .Values.extraEnv }}{{ toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.securityContext }}
-        securityContext:
-{{ toYaml . | indent 8 }}
+        securityContext:{{ toYaml . | nindent 8 }}
         {{- end }}
         volumeMounts:
         - name: twistlock-config-volume
@@ -102,16 +98,13 @@ spec:
         {{- end}}
         - name: syslog-socket
           mountPath: "/dev/log"
-        {{- with .Values.extraVolumeMounts }}
-{{ toYaml . | indent 8 }}
+        {{- with .Values.extraVolumeMounts }}{{ toYaml . | nindent 8 }}
         {{- end }}
       {{- with .Values.affinity }}
-      affinity:
-{{ tpl (toYaml .) $root | indent 8 }}
+      affinity:{{ tpl (toYaml .) $root | nindent 8 }}
       {{- end }}
       tolerations:
-      {{- with .Values.tolerations }}
-{{ tpl (toYaml .) $root | indent 8 }}
+      {{- with .Values.tolerations }}{{ tpl (toYaml .) $root | nindent 8 }}
       {{- end }}
       volumes:
       - name: persistent-volume
@@ -129,6 +122,5 @@ spec:
           secretName: {{ template "twistlock-console.fullname" $root }}
           defaultMode: 256
       {{- end}}
-      {{- with .Values.extraVolumes }}
-{{ toYaml . | indent 6 }}
+      {{- with .Values.extraVolumes }}{{ toYaml . | nindent 6 }}
       {{- end }}
