@@ -20,8 +20,7 @@ spec:
        app: {{ template "twistlock-defender.fullname" $root }}
        release: {{ .Release.Name }}
   {{- with .Values.deployment.strategy }}
-  strategy:
-{{ toYaml . | indent 4 }}
+  strategy:{{ toYaml . | nindent 4 }}
   {{- end }}
   template:
     metadata:
@@ -40,8 +39,10 @@ spec:
       serviceAccountName: {{ template "twistlock-defender.fullname" $root }}
       {{- end }}
       {{- with .Values.image.imagePullSecrets }}
-      imagePullSecrets:
-{{ toYaml . | indent 8 }}
+      imagePullSecrets:{{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
       {{- end }}
       containers:
       - name: twistlock-defender
@@ -70,16 +71,13 @@ spec:
         - name: iptables-lock
           mountPath: "{{ .Values.volumeMounts.iptablesFlockPath }}"
         {{- end }}
-        {{- with .Values.extraVolumeMounts }}
-{{ toYaml . | indent 8 }}
+        {{- with .Values.extraVolumeMounts }}{{ toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.livenessProbe }}
-        livenessProbe:
-{{ tpl (toYaml .) $root | indent 10 }}
+        livenessProbe:{{ tpl (toYaml .) $root | nindent 10 }}
         {{- end }}
         {{- with .Values.readinessProbe }}
-        readinessProbe:
-{{ tpl (toYaml .) $root | indent 10 }}
+        readinessProbe:{{ tpl (toYaml .) $root | nindent 10 }}
         {{- end }}
         env:
         - name: LOG_PROD
@@ -101,18 +99,17 @@ spec:
           value: "{{ .Values.config.monitor.serviceAccounts }}"
         - name: MONITOR_ISTIO
           value: "{{ .Values.config.monitor.istio }}"
+        - name: COLLECT_POD_LABELS
+          value: "{{ .Values.config.collectPodLabels }}"
         # https://docs.twistlock.com/docs/19.07/install/install_defender/install_rasp_defender.html#embed-rasp-defender-manually
         - name: INSTALL_BUNDLE
           value: "{{ .Values.config.installBundle }}"
-        {{- with .Values.extraEnv }}
-{{ toYaml . | indent 8 }}
+        {{- with .Values.extraEnv }}{{ toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.securityContext }}
-        securityContext:
-{{ toYaml . | indent 10 }}
+        securityContext:{{ toYaml . | nindent 10 }}
         {{- end }}
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
+        resources:{{ toYaml .Values.resources | nindent 10 }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -123,12 +120,10 @@ spec:
                 values:
                 - "{{ template "twistlock-defender.fullname" . }}"
             topologyKey: kubernetes.io/hostname
-      {{- with .Values.deployment.affinity }}
-{{ tpl (toYaml .) $root | indent 8 }}
+      {{- with .Values.deployment.affinity }}{{ tpl (toYaml .) $root | nindent 8 }}
       {{- end }}
       tolerations:
-      {{- with .Values.tolerations }}
-{{ tpl (toYaml .) $root | indent 8 }}
+      {{- with .Values.tolerations }}{{ tpl (toYaml .) $root | nindent 8 }}
       {{- end }}
       volumes:
       - name: certificates
@@ -161,8 +156,7 @@ spec:
         hostPath:
           path: "{{ .Values.volumes.iptablesFlockPath }}"
       {{- end }}
-      {{- with .Values.extraVolumes }}
-{{ toYaml . | indent 6 }}
+      {{- with .Values.extraVolumes }}{{ toYaml . | nindent 6 }}
       {{- end }}
       {{- if .Values.useHostPID }}
       hostPID: true
