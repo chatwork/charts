@@ -76,10 +76,10 @@ spec:
           readinessProbe: {{ toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
-            - name: spool
+            - name: {{ template "postfix.fullname" . }}-spool
               mountPath: /var/spool/postfix
-              {{- if .Values.persistence.subPath }}
-              subPath: {{ .Values.persistence.subPath }}
+              {{- with .Values.persistence.subPath }}
+              subPath: {{ . }}
               {{- end }}
               readOnly: true
             {{- if .Values.extraVolumeMounts }}
