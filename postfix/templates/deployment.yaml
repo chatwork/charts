@@ -44,8 +44,6 @@ spec:
             {{- if .Values.persistence.subPath }}
             subPath: {{ .Values.persistence.subPath }}
             {{- end }}
-          - name: varlog
-            mountPath: /var/log
           {{- range $k, $v := .Values.postfix.templates }}
           - name: configmap
             subPath: {{ $k }}
@@ -87,9 +85,9 @@ spec:
             subPath: {{ .Values.persistence.subPath }}
             {{- end }}
             readOnly: true
-          - name: varlog
-            mountPath: /var/log
-            readOnly: true
+        {{- if .Values.extraVolumeMounts }}
+        {{ toYaml .Values.extraVolumeMounts | nindent 10 }}
+        {{- end }}
       {{- end }}
       volumes:
         - name: spool
@@ -99,8 +97,6 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
-        - name: varlog
-          emptyDir: {}
         - name: configmap
           configMap:
             name: {{ template "postfix.fullname" . }}-configmap
