@@ -806,6 +806,20 @@ postfix:
     # sasl_passwd: |-
     #   [smtp.sendgrid.net]:587 yourSendGridUsername:yourSendGridPassword
 
+metrics:
+  enabled: false
+  image:
+    repository: chatwork/kumina-postfix-exporter
+    tag: k-kinzal-fixes-panic-logfilepath-empty
+    pullPolicy: IfNotPresent
+  command:
+    - /bin/postfix_exporter
+    - --postfix.logfile_path=""
+  port: 9154
+  resources: {}
+  livenessProbe: {}
+  readinessProbe: {}
+
 # for helm test
 test:
   # helm test でテスト送信する宛先
