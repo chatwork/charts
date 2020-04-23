@@ -60,30 +60,30 @@ spec:
           image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
           {{- with .Values.metrics.command }}
-          command: {{ toYaml . | nindent 10 }}
+          command: {{ toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.metrics.resources }}
-          resources: {{ toYaml . | nindent 10 }}
+          resources: {{ toYaml . | nindent 12 }}
           {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.metrics.port }}
               protocol: TCP
           {{- with .Values.metrics.livenessProbe }}
-          livenessProbe: {{ toYaml . | nindent 10 }}
+          livenessProbe: {{ toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.metrics.readinessProbe }}
-          readinessProbe: {{ toYaml . | nindent 10 }}
+          readinessProbe: {{ toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
-            - name: spool
+            - name: {{ template "postfix.fullname" . }}-spool
               mountPath: /var/spool/postfix
-              {{- if .Values.persistence.subPath }}
-              subPath: {{ .Values.persistence.subPath }}
+              {{- with .Values.persistence.subPath }}
+              subPath: {{ . }}
               {{- end }}
               readOnly: true
             {{- if .Values.extraVolumeMounts }}
-            {{ toYaml .Values.extraVolumeMounts | nindent 10 }}
+            {{ toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
         {{- end }}
       volumes:
@@ -96,7 +96,7 @@ spec:
             secretName: {{ template "postfix.fullname" . }}-secret
         {{- end }}
         {{- if .Values.extraVolumes }}
-        {{ toYaml .Values.extraVolumes . | indent 6 }}
+        {{ toYaml .Values.extraVolumes . | indent 8 }}
         {{- end }}
       {{- with .Values.statefulSet.affinity }}
       affinity: {{ toYaml . | nindent 8 }}
