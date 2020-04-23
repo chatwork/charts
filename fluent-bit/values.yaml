@@ -4,7 +4,7 @@
 
 image:
   repository: fluent/fluent-bit
-  tag: 1.3.11
+  tag: 1.4.2
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -14,6 +14,8 @@ fullnameOverride: ""
 command: []
 
 podAnnotations: {}
+
+priorityClassName: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -90,7 +92,7 @@ configmaps:
         Name           kubernetes
         Match          kube.*
         Kube_URL       https://kubernetes.default.svc:443
-        Merge_JSON_Log On
+        Merge_Log      On
     [OUTPUT]
         Name            stdout
         Match           *

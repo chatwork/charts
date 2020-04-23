@@ -56,6 +56,7 @@ The following table lists the configurable parameters of the slime chart and the
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node taints to tolerate | `[]` |
 | `affinity` | Node/Pod affinities | `{}` |
+| `priorityClassName` | Priority Class Name | `""` |
 | `metrics.enabled` | If true, enable Prometheus metrics | `false` |
 | `configmaps` | Configuration file to be mounted under /fluent-bit/etc | `{"fluent-bit.conf":"..."}` |
 | `secrets` | Secret information file to be mounted under /secure | `{}` |
