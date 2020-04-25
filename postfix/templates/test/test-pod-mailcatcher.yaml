@@ -37,6 +37,6 @@ spec:
         {{- end }}
           && /usr/local/bin/php -r "\$ret = mail(\"${TO_EMAIL}\", \"Hello\", \"Body\"); var_dump(\$ret);" | grep true \
           && sleep 1 \
-          && curl http://${MAILCATCHER_HOST}:${MAILCATCHER_HTTP_PORT}/messages | grep ${TO_EMAIL}
+          && curl --retry 10 --retry-connrefused http://${MAILCATCHER_HOST}:${MAILCATCHER_HTTP_PORT}/messages | grep ${TO_EMAIL}
   restartPolicy: Never
 {{- end }}

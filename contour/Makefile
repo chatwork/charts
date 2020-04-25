@@ -1,21 +1,15 @@
-.PHONY: apply
-apply:
-	@if ! kubectl get namespace "$$(basename $$PWD)$$(git rev-parse --short HEAD)" >/dev/null 2>&1; then \
-		kubectl create namespace "$$(basename $$PWD)$$(git rev-parse --short HEAD)"; \
-	fi
-	@if [ -n "$${CI}" ]; then \
-		kubectl apply -f ./crd.yaml ; \
-		kubectl apply -f https://projectcontour.io/examples/kuard.yaml ; \
-		helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} upgrade --debug --wait --install --namespace "$$(basename $$PWD)$$(git rev-parse --short HEAD)" $$(basename $$PWD)-$$(git rev-parse --short HEAD) --set envoy.service.type=ClusterIP .; \
-	else \
-		helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} upgrade --wait --install --namespace "$$(basename $$PWD)$$(git rev-parse --short HEAD)" $$(basename $$PWD)-$$(git rev-parse --short HEAD) .; \
-	fi
+RELEASE = "$$(basename $$PWD)"
 
+.PHONY: install
+install:
+	kubectl apply -f ./crd.yaml
+	kubectl apply -f https://projectcontour.io/examples/kuard.yaml
+	helm upgrade -i --wait --set envoy.service.type=ClusterIP $(RELEASE) .
 
 .PHONY: test
 test:
-	helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} test $$(basename $$PWD)-$$(git rev-parse --short HEAD)
+	helm test --logs $(RELEASE)
 
-.PHONY: delete
-delete:
-	helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} delete --purge $$(basename $$PWD)-$$(git rev-parse --short HEAD)
+.PHONY: uninstall
+uninstall:
+	helm uninstall $(RELEASE)

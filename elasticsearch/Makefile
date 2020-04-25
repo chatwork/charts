@@ -1,18 +1,13 @@
-NAMESPACE := $$(basename $$PWD)$$(git rev-parse --short HEAD)
-RELEASE := $$(basename $$PWD)-$$(git rev-parse --short HEAD)
+RELEASE = "$$(basename $$PWD)"
 
-.PHONY: apply
-apply:
-	@if ! kubectl get namespace "${NAMESPACE}" >/dev/null 2>&1; then \
-		kubectl create namespace "${NAMESPACE}"; \
-	fi
-	helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} upgrade --wait --install --namespace "${NAMESPACE}" "${RELEASE}" .;
+.PHONY: install
+install:
+	helm upgrade -i --wait $(RELEASE) .
 
 .PHONY: test
 test:
-	helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} test "${RELEASE}"
+	helm test --logs $(RELEASE)
 
-.PHONY: delete
-delete:
-	helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} ls -q \
-		| xargs -I {} helm --kube-context $${KUBE_CONTEXT:-"dind"} --tiller-namespace $${TILLER_NAMESPACE:-"kube-system"} delete --purge "${RELEASE}";
+.PHONY: uninstall
+uninstall:
+	helm uninstall $(RELEASE)
