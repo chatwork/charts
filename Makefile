@@ -22,7 +22,6 @@ ci\:dump:
 	cat cluster-dump/describe-all.txt;
 	ls cluster-dump/pod-*.log | xargs -I{} /bin/sh -c "echo \"\n\n@@@ {} @@@\" && cat {}";
 
-
 .PHONY: ci\:enable\:helm
 ci\:enable\:helm:
 	wget -O - https://storage.googleapis.com/kubernetes-helm/helm-v2.14.3-linux-amd64.tar.gz | tar zxvf - -O linux-amd64/helm > helm;
@@ -36,23 +35,29 @@ ci\:enable\:helm:
 
 .PHONY: ci\:diff\:from
 ci\:diff\:from:
-		@if [ "$(shell git symbolic-ref --short HEAD)" = "master" ]; then \
-			git --no-pager log --first-parent master --merges -n 2 --pretty=format:"%H" | tail -n 1; \
-		else \
-			echo "HEAD"; \
-		fi
+	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" = "master" ]; then \
+	    git --no-pager log --first-parent master --merges -n 2 --pretty=format:"%H" | tail -n 1; \
+	else \
+		echo "remotes/origin/master"; \
+	fi
 
 .PHONY: ci\:diff\:to
 ci\:diff\:to:
-		@if [ "$(shell git symbolic-ref --short HEAD)" = "master" ]; then \
-			echo "HEAD"; \
-		else \
-			echo "remotes/origin/master"; \
-		fi
+	@echo "HEAD";
 
 .PHONY: ci\:diff
 ci\:diff:
-	@git --no-pager diff --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" | sed 's:^.*/compare/::g' | xargs -I{} dirname {} | sed 's/[.\/].*$$//' | xargs -I{} sh -c 'test -d {} && echo {} || true' | sed '/^$$/d' | uniq;
+	@git --no-pager diff --diff-filter=ACMRTUXB --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" \
+	  | sed 's:^.*/compare/::g' \
+	  | grep -v Makefile \
+	  | grep -v README.md \
+	  | grep -v variant.lock \
+	  | grep -v variant.mod \
+	  | xargs -I{} dirname {} \
+	  | xargs -I{} sh -c "test -d {} && echo {}" \
+	  | sed 's/[.\/].*$$//' \
+	  | sed '/^$$/d' \
+	  | uniq;
 
 .PHONY: ci\:changelog
 ci\:changelog:
