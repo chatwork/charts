@@ -4,12 +4,20 @@ jobs:
     machine: true
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-binary
       - run: make ci:enable:k8s
       - run: make ci:enable:helm
       - run: make ci:diff
       - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && ../.circleci/check-version.sh || exit 255"
       - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make install || exit 255"
       - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255"
+      - save_cache:
+          key: v1-binary
+          paths:
+            - .bin/
+
   publish:
     machine: true
     steps:

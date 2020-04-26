@@ -13,25 +13,28 @@ test:
 
 .PHONY: ci\:enable\:k8s
 ci\:enable\:k8s:
-	@if [ ! -f "/usr/local/bin/kind" ]; then \
-	    curl -sSL -o ./kind https://github.com/kubernetes-sigs/kind/releases/download/v$(KIND_VERSION)/kind-linux-amd64; \
-	    chmod +x ./kind; \
-	    sudo mv ./kind /usr/local/bin/kind; \
+	@mkdir -p .bin/
+	@if [ ! -f " ./.bin/kind" ]; then \
+	    curl -sSL -o ./.bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v$(KIND_VERSION)/kind-linux-amd64; \
+	    chmod +x ./.bin/kind; \
 	fi
-	@if [ ! -f "/usr/local/bin/kubectl" ]; then \
-	    curl -sSL -o ./kubectl https://storage.googleapis.com/kubernetes-release/release/v$(KUBERNETES_VERSION)/bin/linux/amd64/kubectl; \
-	    chmod +x ./kubectl; \
-	    sudo mv ./kubectl /usr/local/bin/kubectl; \
+	@sudo cp ./.bin/kind /usr/local/bin/kind;
+
+	@if [ ! -f "./.bin/kubectl" ]; then \
+	    curl -sSL -o ./.bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v$(KUBERNETES_VERSION)/bin/linux/amd64/kubectl; \
+	    chmod +x ./.bin/kubectl; \
 	fi
+	@sudo cp ./.bin/kubectl /usr/local/bin/kubectl;
 	kind create cluster --image kindest/node:v$(KUBERNETES_VERSION)@sha256:$(KIND_NODE_HASH) --wait 3m;
 
 .PHONY: ci\:enable\:helm
 ci\:enable\:helm:
-	@if [ ! -f "/usr/local/bin/helm" ]; then \
-	    curl -sSL https://get.helm.sh/helm-v$(HELM_VERSION)-linux-amd64.tar.gz | tar zxvf - -O linux-amd64/helm > ./helm; \
-	    chmod +x ./helm; \
-	    sudo mv ./helm /usr/local/bin/helm; \
+	@mkdir -p .bin/
+	@if [ ! -f "./.bin/helm" ]; then \
+	    curl -sSL https://get.helm.sh/helm-v$(HELM_VERSION)-linux-amd64.tar.gz | tar zxvf - -O linux-amd64/helm > ./.bin/helm; \
+	    chmod +x ./.bin/helm; \
 	fi
+	@sudo mv ./.bin/helm /usr/local/bin/helm;
 
 .PHONY: ci\:diff\:from
 ci\:diff\:from:
