@@ -43,12 +43,26 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
+{{- define "postfix-mailcatcher.labels" -}}
+helm.sh/chart: {{ include "postfix.chart" . }}
+{{ include "postfix-mailcatcher.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
 {{/*
 Selector labels
 */}}
 {{- define "postfix.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "postfix.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
+{{- define "postfix-mailcatcher.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "postfix.name" . }}-mailcatcher
+app.kubernetes.io/instance: {{ .Release.Name }}-mailcatcher
 {{- end -}}
 
 {{/*

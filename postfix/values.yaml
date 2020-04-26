@@ -837,6 +837,21 @@ mailcatcher:
     repository: chatwork/mailcatcher
     tag: latest
     pullPolicy: IfNotPresent
+  livenessProbe:
+    httpGet:
+      port: 1080
+      path: /
+      scheme: HTTP
+    failureThreshold: 2
+    initialDelaySeconds: 10
+    periodSeconds: 60
+  readinessProbe:
+    httpGet:
+      port: 1080
+      path: /
+      scheme: HTTP
+    failureThreshold: 2
+    periodSeconds: 5
   # MailCatcher HTTP ポート
   # Docker for Mac では http://localhost:1080/ でアクセスできる
   service:

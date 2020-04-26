@@ -34,8 +34,12 @@ spec:
               containerPort: 25
               hostPort: 25
               protocol: TCP
-          livenessProbe: {{ toYaml .Values.livenessProbe | nindent 12 }}
-          readinessProbe: {{ toYaml .Values.readinessProbe | nindent 12 }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe: {{ toYaml .| nindent 10 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe: {{ toYaml . | nindent 10 }}
+          {{- end }}
           volumeMounts:
             - name: {{ template "postfix.fullname" . }}-spool
               mountPath: /var/spool/postfix

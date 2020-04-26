@@ -12,33 +12,40 @@ test: test-daemonset test-daemonset-mailcatcher test-deployment test-deployment-
 
 .PHONY: test-daemonset
 test-daemonset:
+	-helm uninstall $(RELEASE) && kubectl delete pod $(RELEASE)-test && kubectl wait --all --for="delete" pod
 	helm upgrade $(helmInstallOptions) $(RELEASE) .
-	helm test $(RELEASE) || (make test:debug && exit 1)
+	kubectl wait --all --for="condition=Ready" --timeout="300s" pod
+	helm test --logs $(RELEASE)
 
 .PHONY: test-daemonset-mailcatcher
 test-daemonset-mailcatcher:
+	-helm uninstall $(RELEASE) && kubectl delete pod $(RELEASE)-test && kubectl wait --all --for="delete" pod
 	helm upgrade $(helmInstallOptions) $(mailcatcher) $(RELEASE) .
-	helm test $(RELEASE) || (make test:debug && exit 1)
+	kubectl wait --all --for="condition=Ready" --timeout="300s" pod
+	helm test --logs $(RELEASE)
 
 .PHONY: test-deployment
 test-deployment:
+	-helm uninstall $(RELEASE) && kubectl delete pod $(RELEASE)-test && kubectl wait --all --for="delete" pod
 	# kubeadm-dind-cluster 環境で Service を利用する場合、type=LoadBalancer だと 起動しない。ClusterIP を指定して回避。
 	# @see https://github.com/kubernetes-sigs/kubeadm-dind-cluster/issues/74
-	helm upgrade $(helmInstallOptions) --set deployment.enabled=true --set daemonset.enabled=false --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP  $(RELEASE) .
-	helm test $(RELEASE) || (make test:debug && exit 1)
+	helm upgrade $(helmInstallOptions) --set deployment.enabled=true --set daemonset.enabled=false --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP $(RELEASE) .
+	kubectl wait --all --for="condition=Ready" --timeout="300s" pod
+	helm test --logs $(RELEASE)
 
 .PHONY: test-deployment-mailcatcher
 test-deployment-mailcatcher:
+	# Chart を削除して再生成すると、test-pod では古い Service の IP を引いてしまうので削除しない。
+	-kubectl delete pod $(RELEASE)-test && kubectl wait --all --for="delete" pod
 	# kubeadm-dind-cluster 環境で Service を利用する場合、type=LoadBalancer だと 起動しない。ClusterIP を指定して回避。
 	# @see https://github.com/kubernetes-sigs/kubeadm-dind-cluster/issues/74
 	helm upgrade $(helmInstallOptions) --set deployment.enabled=true --set daemonset.enabled=false $(mailcatcher) --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP  $(RELEASE) .
-	helm test $(RELEASE) || (make test:debug && exit 1)
-
-.PHONY: test\:debug
-test\:debug:
-	kubectl get pod | grep $(RELEASE)
-	kubectl get pod --field-selector=status.phase=Failed -ojsonpath='{.items..metadata.name}' | xargs -I{} kubectl logs {} --all-containers
+	kubectl wait --all --for="condition=Ready" --timeout="300s" pod
+	helm test --logs $(RELEASE)
 
 .PHONY: uninstall
 uninstall:
-	helm uninstall $(RELEASE)
+	-helm uninstall $(RELEASE)
+	-helm uninstall $(RELEASE)-test-daemonset-mailcatcher
+	-helm uninstall $(RELEASE)-test-deployment
+	-helm uninstall $(RELEASE)-test-deployment-mailcatcher
