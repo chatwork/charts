@@ -22,6 +22,10 @@ spec:
           value: dummy
         - name: AWS_DEFAULT_REGION
           value: ap-northeast-1
+        - name: AWS_RETRY_MODE
+          value: standard
+        - name: AWS_MAX_ATTEMPTS
+          value: "100"
       command:
         - /bin/sh
         - -c

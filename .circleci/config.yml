@@ -4,12 +4,21 @@ jobs:
     machine: true
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-binary
       - run: make ci:enable:k8s
       - run: make ci:enable:helm
       - run: make ci:diff
       - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && ../.circleci/check-version.sh || exit 255"
-      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make apply || exit 255"
-      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make test || exit 255" || (make ci:dump && exit 1)
+      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && kubectl create namespace {} --dry-run -o yaml | kubectl apply -f -"
+      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && kubectl config set-context --current --namespace={} && make install || exit 255"
+      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} s&& kubectl config set-context --current --namespace={} && make test || exit 255"
+      - save_cache:
+          key: v1-binary
+          paths:
+            - .bin/
+
   publish:
     machine: true
     steps:
@@ -18,7 +27,7 @@ jobs:
             - "56:a1:e2:9e:89:f8:c2:87:7c:5a:89:bd:31:ed:88:2d"
       - run: echo -e "  StrictHostKeyChecking no\n" >> ~/.ssh/config
       - checkout
-      - run: make ci:enable:helm -e HELM_CLIENT_ONLY=true
+      - run: make ci:enable:helm
       - run: git clone -b gh-pages git@github.com:chatwork/charts.git .dist
       - run: ls -d */ | xargs -I{} helm package {} -d .dist/
       - run: helm repo index .dist/ --url https://chatwork.github.io/charts

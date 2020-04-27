@@ -26,17 +26,19 @@ spec:
         - /bin/sh
         - -c
         - |
-        {{- if .Values.daemonset.enabled }}
+          {{- if .Values.daemonset.enabled }}
           export SMTPHOST="${NODE_IP}:{{ .Values.daemonset.hostPort | default 25 }}" \
-        {{- end }}
-        {{- if .Values.deployment.enabled }}
+          {{- end }}
+          {{- if .Values.deployment.enabled }}
           export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.service.port }}" \
-        {{- end }}
-        {{- if .Values.statefulSet.enabled }}
+          {{- end }}
+          {{- if .Values.statefulSet.enabled }}
           export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.service.port }}" \
-        {{- end }}
+          {{- end }}
           && /usr/local/bin/php -r "\$ret = mail(\"${TO_EMAIL}\", \"Hello\", \"Body\"); var_dump(\$ret);" | grep true \
-          && sleep 1 \
-          && curl http://${MAILCATCHER_HOST}:${MAILCATCHER_HTTP_PORT}/messages | grep ${TO_EMAIL}
+          && sleep 3 \
+          && BODY=$(curl --retry 100 --connect-timeout 10 --retry-connrefused http://${MAILCATCHER_HOST}:${MAILCATCHER_HTTP_PORT}/messages) \
+          && echo ${BODY} 1>&2 \
+          && echo ${BODY} | grep ${TO_EMAIL}
   restartPolicy: Never
 {{- end }}
