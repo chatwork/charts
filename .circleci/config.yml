@@ -27,7 +27,7 @@ jobs:
             - "56:a1:e2:9e:89:f8:c2:87:7c:5a:89:bd:31:ed:88:2d"
       - run: echo -e "  StrictHostKeyChecking no\n" >> ~/.ssh/config
       - checkout
-      - run: make ci:enable:hel
+      - run: make ci:enable:helm
       - run: git clone -b gh-pages git@github.com:chatwork/charts.git .dist
       - run: ls -d */ | xargs -I{} helm package {} -d .dist/
       - run: helm repo index .dist/ --url https://chatwork.github.io/charts
