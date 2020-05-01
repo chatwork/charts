@@ -1,3 +1,4 @@
+
 roleSecretName: "aws-iam-role"
 roleReference: "arn:aws:iam::<account-id>:role/AWS_ROLE_NAME"
 roleSessionDuration: "3600"

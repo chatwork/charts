@@ -1,3 +1,4 @@
+
 image:
    repository: "chatwork/assume-role-operator"
    tag: "latest"
