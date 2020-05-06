@@ -11,6 +11,10 @@ sharedPath: /var/www/html
 strategy:
   type: RollingUpdate
 
+labels: {}
+
+podLabels: {}
+
 podAnnotations: {}
 
 imagePullSecrets: []
@@ -35,10 +39,14 @@ affinity: {}
 service:
   type: LoadBalancer
   extraPorts: []
+  labels: {}
+  annotations: {}
 
 # INGRESS
 ingress:
   enabled: false
+  labels: {}
+  annotations: {}
 
 # PDB
 podDisruptionBudget:
