@@ -45,7 +45,9 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `sharedPath` | Path shared by busybox/nginx/fpm | `/var/www/html` |
 |  `replicaCount` | Number of pods to start with deployment | `1` |
 |  `strategy` | Update strategy of pod in deployment | `type`: `RollingUpdate` |
-|  `podAnnotation` | Annotation specified for pod in deployment | `{}` |
+|  `labels` | Label specified for deployment | `{}` |
+|  `podLabels` | Label specified for pod in deployment | `{}` |
+|  `podAnnotations` | Annotation specified for pod in deployment | `{}` |
 |  `imagePullSecrets` | Name of Secret resource containing private registry credentials | `[]` |
 |  `restartPolicy` | Container restart policy | `""` |
 |  `terminationGracePeriodSeconds` | Termination grace period (in seconds) | `nil` |
@@ -58,8 +60,11 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `service.type` | Changes to ClusterIP automatically if ingress enabled | `LoadBalancer` |
 |  `service.port` | Port to advertise the main web service in LoadBalancer mode | `nil` |
 |  `service.extraPorts` | Additional ports | `[]` |
+|  `service.labels` | Label specified for service | `{}` |
+|  `service.annotations` | Annotation specified for service | `{}` |
 |  `ingress.enabled` | Enables Ingress | `false` |
-|  `ingress.annotation` | Ingress annotations | `{}` |
+|  `ingress.labels` | Label specified for ingress | `{}` |
+|  `ingress.annotations` | Annotation specified for ingress | `{}` |
 |  `ingress.hosts` | Ingress accepted hostname | `[]` |
 |  `ingress.preferPaths` | Paths that takes precedence over the ingress.path | `nil` |
 |  `ingress.tls` | TLS Secret (certificates)  | `false` |
