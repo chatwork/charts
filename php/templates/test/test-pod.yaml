@@ -16,7 +16,7 @@ spec:
         - /bin/sh
         - -c
         - |
-          curl http://{{ template "php.fullname" . }}:{{ .Values.service.port | default .Values.nginx.containerPort }}
+          curl --retry 100 --connect-timeout 10 --retry-connrefused http://{{ template "php.fullname" . }}:{{ .Values.service.port | default .Values.nginx.containerPort }}
     {{- with .Values.test.extraContainer }}
     {{- toYaml . | nindent 4}}
     {{- end }}
