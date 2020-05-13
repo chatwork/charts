@@ -1,0 +1,47 @@
+# This method is a workaround and we do not recommend it.
+# If you need to respond to the input introduced in the official announcement, please change the chart and issue a PR.
+fluentd:
+  http:
+    enabled: false
+  forward:
+    enabled: false
+
+daemonset:
+  enabled: false
+
+statefulset:
+  enabled: true
+
+extraPort:
+  - name: udp
+    containerPort: 20001
+    protocol: UDP
+
+extraService:
+ - annotations: {}
+   labels: {}
+   name: udp
+   ports:
+   - name: udp
+     port: 20001
+     protocol: UDP
+     targetPort: udp
+   type: NodePort
+
+configmaps:
+  fluent.conf: |-
+    <source>
+      @type udp
+      tag myta
+      <parse>
+        @type regexp
+        expression /^(?<field1>\d+):(?<field2>\w+)$/
+      </parse>
+      port 20001
+      bind 0.0.0.0
+      message_length_limit 1MB
+    </source>
+
+    <match **>
+     @type stdout
+    </match>

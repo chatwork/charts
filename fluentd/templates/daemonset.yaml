@@ -1,0 +1,152 @@
+{{- $root := . -}}
+{{- if and .Values.daemonset.enabled (not .Values.statefulset.enabled) }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  annotations:
+    {{- toYaml .Values.annotations | nindent 4 }}
+  labels:
+    {{- include "fluentd.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: {{ include "fluentd.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "fluentd.selectorLabels" . | nindent 6 }}
+  updateStrategy:
+    type: {{ .Values.daemonset.updateStrategy }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "fluentd.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      containers:
+        - command:
+            {{- toYaml .Values.command | nindent 12 }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if and .Values.livenessProbe.enabled .Values.fluentd.http.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /fluentd.healthcheck?json=%7B%22ping%22%3A+%22pong%22%7D
+              port: http
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          name: {{ .Chart.Name }}
+          ports:
+            {{- if .Values.metrics.enabled }}
+            - name: prometheus
+              containerPort: {{ .Values.metrics.port }}
+              hostPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.fluentd.http.enabled }}
+            - name: http
+              containerPort: {{ .Values.fluentd.http.port }}
+              hostPort: {{ .Values.fluentd.http.port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.fluentd.forward.enabled }}
+            - name: forward
+              containerPort: {{ .Values.fluentd.forward.port }}
+              hostPort: {{ .Values.fluentd.forward.port }}
+              protocol: TCP
+            {{- end }}
+            {{- with .Values.extraPort }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- if and .Values.readinessProbe.enabled .Values.fluentd.http.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /fluentd.healthcheck?json=%7B%22ping%22%3A+%22pong%22%7D
+              port: http
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+            - name: varlibdockercontainers
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+            {{- range $name, $tmpl := .Values.configmaps }}
+            {{- if eq $name "fluent.conf" }}
+            - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
+              mountPath: /fluentd/etc/{{ $name }}
+              subPath: {{ $name }}
+            {{- else }}
+            - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
+              mountPath: /fluentd/etc/config.d/{{ $name }}
+              subPath: {{ $name }}
+            {{- end }}
+            {{- end }}
+            {{- range $name, $secret := .Values.secrets }}
+            - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
+              mountPath: /secure/{{ $name }}
+              subPath: {{ $name }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+      {{- with .Values.daemonset.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: {{ . }}
+      {{- end }}
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      serviceAccountName: {{ include "fluentd.serviceAccountName" . }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
+        {{- range $name, $tmpl := .Values.configmaps }}
+        - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
+          configMap:
+            name: {{ include "fluentd.fullname" $root }}-{{ $name | replace "." "-" | replace "_" "-" | lower }}
+        {{- end }}
+        {{- range $name, $secrets := .Values.secrets }}
+        - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
+          secret:
+            secretName: {{ include "fluentd.fullname" $root }}-{{ $name | replace "." "-" | replace "_" "-" | lower }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+{{- end }}

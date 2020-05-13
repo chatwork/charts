@@ -1,0 +1,23 @@
+{{- if and .Values.fluentd.forward.enabled .Values.fluentd.forward.service.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    {{- toYaml .Values.fluentd.forward.service.annotations | nindent 4 }}
+  labels:
+    {{- include "fluentd.labels" . | nindent 4 }}
+    {{- with .Values.fluentd.forward.service.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: {{ include "fluentd.fullname" . }}-forward
+spec:
+  type: {{ .Values.fluentd.forward.service.type }}
+  ports:
+    - port: {{ .Values.fluentd.forward.service.port }}
+      targetPort: forward
+      protocol: TCP
+      name: forward
+  selector:
+    {{- include "fluentd.selectorLabels" . | nindent 4 }}
+{{- end }}

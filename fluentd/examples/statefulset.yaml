@@ -1,0 +1,27 @@
+fluentd:
+  http:
+    enabled: true
+    service:
+      enabled: true
+  forward:
+    enabled: true
+    service:
+      enabled: true
+
+daemonset:
+  enabled: false
+
+statefulset:
+  enabled: true
+
+persistence:
+  enabled: true
+
+metrics:
+  enabled: true
+
+configmaps:
+  statefulset.conf: |-
+    <match **>
+     @type stdout
+    </match>

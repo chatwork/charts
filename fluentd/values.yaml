@@ -1,0 +1,357 @@
+# Default values for fluentd.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: chatwork/fluentd
+  tag: 1.10.4
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Fluentd settings
+fluentd:
+  # See: https://docs.fluentd.org/input/http
+  http:
+    enabled: true
+    id:
+    label:
+    logLevel:
+    port: 9880
+    bind: 0.0.0.0
+    bodySizeLimit: 32m
+    keepaliveTimeout: 10s
+    addHttpHeaders: false
+    addRemoteAddr: false
+    corsAllowOrigins: []
+    respondWithEmptyImg: false
+    tls:
+      enabled: false
+      certPath: ""
+    service:
+      enabled: false
+      annotations: {}
+      labels: {}
+      port: 9880
+      type: ClusterIP
+  # https://docs.fluentd.org/input/forward
+  forward:
+    enabled: true
+    id:
+    label:
+    logLevel:
+    port: 24224
+    bind: 0.0.0.0
+    addTagPrefix:
+    lingerTimeout: 0
+    resolveHostname: false
+    denyKeepalive: false
+    sendKeepalivePacket: false
+    chunkSizeLimit:
+    chunkSizeWarnLimit:
+    skipInvalidEvent: false
+    sourceAddressKey:
+    sourceHostnameKey:
+    tls:
+      enabled: false
+      path: ""
+    service:
+      enabled: false
+      annotations: {}
+      labels: {}
+      port: 24224
+      type: ClusterIP
+
+# Pod settings
+affinity: {}
+
+annotations: {}
+
+args: []
+  # - -vv
+
+command: []
+  # - -c
+  # - /fluentd/etc/fluent.conf
+
+env: []
+  # - name: FOO
+  #   value: "Hello World"
+
+# Any extra port
+extraPort: []
+  # - name: other-port
+  #   containerPort: 10008
+  #   protocol: TCP
+
+# Any extra volumeMounts
+extraVolumeMounts: []
+  # - name: volume-name
+  #   mountPath: /path/to
+
+# Any extra volumes
+extraVolumes: []
+  # - name: volime-name
+  #   hostPath:
+  #     path: /path/to
+
+labels: {}
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+nodeSelector: {}
+
+podAnnotations: {}
+
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+priorityClassName: ""
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+terminationGracePeriodSeconds: 30
+
+tolerations: []
+
+# DaemonSet settings
+daemonset:
+  # Specifies whether or not to create a DaemonSet.
+  enabled: true
+  # Use the host networking.
+  useHostNetwork: false
+  # Update strategy for a DaemonSet.
+  updateStrategy: RollingUpdate
+
+# StatefulSet settings
+statefulset:
+  # Specifies whether or not to create a StatefulSet.
+  enabled: false
+  # Statefulset replicas
+  replicas: 1
+  # Update strategy for a StatefulSet.
+  updateStrategy: RollingUpdate
+
+# Extra Service settings
+# If service is required for inputs other than http/forward, use extraService.
+extraService: []
+  # - annotations: {}
+  #   labels: {}
+  #   name: udp
+  #   ports:
+  #   - name: udp
+  #     port: 20001
+  #     protocol: UDP
+  #     targetPort: udp
+  #   type: ClusterIP
+
+# ServiceAccount settings
+serviceAccount:
+  # Specifies whether a service account should be created.
+  create: false
+  # Annotations to add to the service account.
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template.
+  name:
+
+# Persistence settings
+persistence:
+  # Specifies whether a persistent volume claim should be created.
+  enabled: false
+  annotations: {}
+  existingClaim: false
+  labels: {}
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  storageClass:
+
+# RBAC settings
+# To get the metadata of Kubernetes, set rback.create to true and use the image with fluent-plugin-kubernetes_metadata_filter installed.
+# See: https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter
+rbac:
+  # Specifies whether a role & rolebinding should be created.
+  create: false
+
+# Prometheus metrics endpoint settings
+# If you want to enable the metrics, please use the image with fluent-plugin-prometheus installed.
+# See: https://github.com/fluent/fluent-plugin-prometheus
+metrics:
+  # Enable HTTP endpoint to return metrics with fluentd.
+  enabled: false
+  # Binding interface.
+  port: 24231
+  # Listen port.
+  bind: 0.0.0.0
+  # Metrics HTTP endpoint.
+  metricsPath: "/metrics"
+  # Metrics HTTP endpoint.
+  aggregatedMetricsPath: "/aggregated_metrics"
+  # Lnterval to update monitor_agent information in seconds.
+  interval: 5
+
+# Fluentd configuration file
+configmaps:
+  # Define fluentd configuration files such as fluent.conf and other configuration.
+  # These are mounted under /fluentd/etc/ and /fluentd/etc/config.d/.
+  fluent.conf: |-
+    {{- if .Values.metrics.enabled -}}
+    <source>
+      @type prometheus
+      port {{ .Values.metrics.port }}
+      bind {{ .Values.metrics.bind }}
+      metrics_path {{ .Values.metrics.metricsPath }}
+      aggregated_metrics_path {{ .Values.metrics.aggregatedMetricsPath }}
+    </source>
+    <source>
+      @type prometheus_monitor
+      interval {{ .Values.metrics.interval }}
+    </source>
+    <source>
+      @type prometheus_output_monitor
+      interval {{ .Values.metrics.interval }}
+    </source>
+    <source>
+      @type prometheus_tail_monitor
+      interval {{ .Values.metrics.interval }}
+    </source>
+    {{- end }}
+
+    {{- if .Values.fluentd.http.enabled }}
+    <source>
+      @type http
+      {{- with .Values.fluentd.http.id }}
+      @id {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.http.label }}
+      @label {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.http.logLevel }}
+      @log_level {{ . }}
+      {{- end }}
+      port {{ .Values.fluentd.http.port }}
+      bind {{ .Values.fluentd.http.bind }}
+      {{- with .Values.fluentd.http.bodySizeLimit }}
+      body_size_limit {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.http.keepaliveTimeout }}
+      keepalive_timeout {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.http.addHttpHeaders }}
+      add_http_headers {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.http.addRemoteAddr }}
+      add_remote_addr {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.http.corsAllowOrigins }}
+      cors_allow_origins {{ toJson . }}
+      {{- end }}
+      {{- with .Values.fluentd.http.respondWithEmptyImg }}
+      respond_with_empty_img {{ . }}
+      {{- end }}
+      {{- if .Values.fluentd.http.tls.enabled }}
+      <transport tls>
+        cert_path {{ .Values.fluentd.http.tls.certPath }}
+      </transport>
+      {{- end }}
+    </source>
+    {{- end }}
+
+    {{- if .Values.fluentd.forward.enabled }}
+    <source>
+      @type  forward
+      {{- with .Values.fluentd.forward.id }}
+      @id {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.forward.label }}
+      @label {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.forward.logLevel }}
+      @log_level {{ . }}
+      {{- end }}
+      port {{ .Values.fluentd.forward.port }}
+      bind {{ .Values.fluentd.forward.bind }}
+      {{- with .Values.fluentd.forward.addTagPrefix }}
+      add_tag_prefix {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.forward.lingerTimeout }}
+      linger_timeout {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.forward.resolveHostname }}
+      resolve_hostname {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.forward.denyKeepalive }}
+      deny_keepalive {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.forward.sendKeepalivePacket }}
+      send_keepalive_packet {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.forward.chunkSizeLimit }}
+      chunk_size_limit {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.forward.chunkSizeWarnLimit }}
+      chunk_size_warn_limit {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.forward.skipInvalidEvent }}
+      skip_invalid_event {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.forward.sourceAddressKey }}
+      source_address_key {{ . }}
+      {{- end }}
+      {{- with .Values.fluentd.forward.sourceHostnameKey }}
+      source_hostname_key {{ . }}
+      {{- end }}
+      {{- if .Values.fluentd.forward.tls.enabled }}
+      <transport tls>
+        cert_path {{ .Values.fluentd.forward.tls.certPath }}
+      </transport>
+      {{- end }}
+    </source>
+    {{- end }}
+
+    {{- if gt (len .Values.configmaps) 1 }}
+    @include config.d/*.conf
+    {{- end }}
+
+# The secret to use with Fluentd
+secrets: {}
+  # Define secret information used in fluentd such as google_service_credentials.json.
+  # These are mounted under /secure.
+  # google_service_credentials.json: |
+  #   ...

@@ -1,0 +1,26 @@
+{{- $root := . -}}
+{{- range $i, $service := .Values.extraService }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    {{- toYaml $service.annotations | nindent 4 }}
+  labels:
+    {{- include "fluentd.labels" $root | nindent 4 }}
+    {{- with $service.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: {{ include "fluentd.fullname" $root }}-{{ $service.name }}
+spec:
+  type: {{ $service.type }}
+  ports:
+    {{- range $ii, $port := $service.ports }}
+    - port: {{ $port.port }}
+      targetPort: {{ $port.targetPort }}
+      protocol: {{ $port.protocol }}
+      name: {{ $port.name }}
+    {{- end }}
+  selector:
+    {{- include "fluentd.selectorLabels" $root | nindent 4 }}
+{{- end }}
