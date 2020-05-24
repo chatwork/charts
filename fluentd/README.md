@@ -39,7 +39,7 @@ The following table lists the configurable parameters of the fluentd chart and t
 |  Parameter | Description | Default |
 | --- | --- | --- |
 | `image.repository` | The image repository to pull from | `"chatwork/fluentd"` |
-| `image.tag` | The image tag to pull | `"1.10.3-1.0"` |
+| `image.tag` | The image tag to pull | `"1.10.4"` |
 | `image.pullPolicy` | Image pull policy | `"IfNotPresent"` |
 | `imagePullSecrets` | Image pull secrets | `[]` |
 | `nameOverride` | Override name of app | `""` |
