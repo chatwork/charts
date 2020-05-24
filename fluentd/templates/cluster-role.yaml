@@ -1,0 +1,23 @@
+{{- if .Values.rbac.create }}
+apiVersion: {{ include "rbac.apiVersion" . }}
+kind: ClusterRole
+metadata:
+  labels:
+    {{- include "fluentd.labels" . | nindent 4 }}
+  name: {{ include "fluentd.fullname" . }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+  - apiGroups:
+      - policy
+    resources:
+      - podsecuritypolicies
+    resourceNames:
+      - {{ template "fluentd.fullname" . }}
+    verbs:
+      - use
+{{- end }}
