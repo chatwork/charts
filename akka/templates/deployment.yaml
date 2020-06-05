@@ -53,7 +53,7 @@ spec:
             {{- toYaml .Values.env | nindent 12 }}
           envFrom:
             {{- toYaml .Values.envFrom | nindent 12 }}
-          name: {{ .Chart.Name }}
+          name: "{{ include "akka.containerName" . }}"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tags }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           {{- if and .Values.akka.management.enabled .Values.livenessProbe.enabled }}

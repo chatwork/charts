@@ -112,6 +112,8 @@ affinity: {}
 
 annotations: {}
 
+containerName: ""
+
 command: []
 
 env: []

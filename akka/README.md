@@ -78,6 +78,7 @@ The following table lists the configurable parameters of the akka chart and thei
 | `akka.remote.port` | Port to bind remote | `25520` |
 | `affinity` | Deployment affinities | `{}` |
 | `annotations` | Annotations to be added to deployment | `{}` |
+| `containerName` | Override container name of akka application | `""` |
 | `command` | Additional command arguments | `[]` |
 | `env` | Extra environment variables that will be passed onto pods | `[]` |
 | `envFrom` | Extra environment from that will be passed onto pods | `[]` |

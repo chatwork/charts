@@ -52,6 +52,17 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
+Create the name of the container
+*/}}
+{{- define "akka.containerName" -}}
+{{- with .Values.containerName -}}
+{{ .  }}
+{{- else -}}
+{{ include "akka.fullname" . }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "akka.serviceAccountName" -}}
