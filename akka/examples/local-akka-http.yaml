@@ -10,10 +10,15 @@ akka:
     enabled: false
   http:
     enabled: true
-    port: 7777
     service:
       enabled: true
       type: NodePort
+      ports:
+        - targetPort: http
+          name: http
+          port: 7777
+          nodePort: 30000
+          protocol: TCP
   management:
     enabled: false
   remote:

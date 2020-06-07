@@ -58,6 +58,12 @@ akka:
       annotations: {}
       labels: {}
       type: NodePort
+      ports:
+        # - targetPort: http
+        #   name: http
+        #   port: 8080
+        #   nodePort: 38080
+        #   protocol: TCP
 
     # Ingress for akka-http.
     ingresses: []

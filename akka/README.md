@@ -58,6 +58,7 @@ The following table lists the configurable parameters of the akka chart and thei
 | `akka.http.service.enabled` | If true, create a service for akka.http.port and akka.http.extraPorts | `false` |
 | `akka.http.service.annotations` | Annotations to be added to service | `{}` |
 | `akka.http.service.labels` | Labels to be added to service | `{}` |
+| `akka.http.service.ports` | The service ports for http | `[]` |
 | `akka.http.service.type` | The service type for http | `"NodePort"` |
 | `akka.http.ingresses` | If true, create a ingress | `[]` |
 | `akka.management.enabled` | If it is true, set akka.management and liveness/readiness probe, and headless service. To use this feature, you need to include akka-management and akka-management-cluster-bootstrap in your application dependencies | `true` |

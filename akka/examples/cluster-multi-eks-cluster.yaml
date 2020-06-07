@@ -16,7 +16,12 @@ akka:
     enabled: true
     service:
       enabled: true
-      port: 8080
+      ports:
+        - targetPort: http
+          name: http
+          port: 8080
+          nodePort: 30000
+          protocol: TCP
     ingresses:
       - annotations:
           kubernetes.io/ingress.class: "alb"

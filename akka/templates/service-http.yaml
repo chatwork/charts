@@ -1,4 +1,5 @@
 {{- if and .Values.akka.http.enabled .Values.akka.http.service.enabled }}
+{{- $svcType := .Values.akka.http.service.type }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -12,17 +13,16 @@ metadata:
   name: {{ include "akka.fullname" . }}
 spec:
   ports:
-    - targetPort: http
-      name: http
-      port: {{ .Values.akka.http.port }}
-      protocol: TCP
-    {{- range $i, $v := .Values.akka.http.extraPorts }}
-    - targetPort: {{ $v.name }}
+    {{- range $i, $v := .Values.akka.http.service.ports }}
+    - targetPort: {{ $v.targetPort }}
       name: {{ $v.name }}
-      port: {{ $v.containerPort }}
+      port: {{ $v.port }}
+      {{- if and (eq $svcType "NodePort") $v.nodePort }}
+      nodePort: {{ $v.nodePort }}
+      {{- end }}
       protocol: {{ $v.protocol }}
-  {{ end }}
+    {{- end }}
   selector:
     {{- include "akka.selectorLabels" . | nindent 4 }}
-  type: {{ .Values.akka.http.service.type }}
+  type: {{ $svcType }}
 {{- end }}
