@@ -18,7 +18,7 @@ $ helm install chatwork/akka
 To install the chart with the release name `my-release`:
 
 ```
-$ helm install --name my-release chatwork/fluentd
+$ helm install --name my-release chatwork/akka
 ```
 
 The command deploys the akka chart on the Kubernetes cluster in the default configuration. The [configuration](https://github.com/chatwork/charts/tree/master/akka#configuration) section lists the parameters that can be configured during installation.
