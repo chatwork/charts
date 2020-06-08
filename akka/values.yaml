@@ -158,9 +158,9 @@ livenessProbe:
   #   port: [your http port]
   tcpSocket: {}
   #   port: [your tcp port]
-  initialDelaySeconds: 15
+  initialDelaySeconds: 60
   periodSeconds: 5
-  timeoutSeconds: 1
+  timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 3
 
@@ -188,9 +188,9 @@ readinessProbe:
   #   port: [your http port]
   tcpSocket: {}
   #   port: [your tcp port]
-  initialDelaySeconds: 15
+  initialDelaySeconds: 60
   periodSeconds: 5
-  timeoutSeconds: 1
+  timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 3
 
