@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the akka chart and thei
 | `akka.http.enabled` | If it is true, set akka.http and container port, and service, and ingress. To use this feature, you need to include akka-http in your application dependencies | `true` |
 | `akka.http.hostname` | Hostname to bind http | `0.0.0.0` |
 | `akka.http.port` | Port to bind http | `8080` |
+| `akka.http.portName` | Name of the port to bind the http to | `http` |
 | `akka.http.extraPorts` | Extra ports to bind http | `[]` |
 | `akka.http.service.enabled` | If true, create a service for akka.http.port and akka.http.extraPorts | `false` |
 | `akka.http.service.annotations` | Annotations to be added to service | `{}` |

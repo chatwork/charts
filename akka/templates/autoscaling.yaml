@@ -10,7 +10,7 @@ metadata:
     {{- with .Values.autoscaling.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  name: {{ template "akka.fullname" . }}
+  name: "{{ template "akka.fullname" . }}"
 spec:
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
@@ -19,5 +19,5 @@ spec:
   scaleTargetRef:
     kind: Deployment
     apiVersion: apps/v1
-    name: {{ template "akka.fullname" . }}
+    name: "{{ template "akka.fullname" . }}"
 {{- end }}

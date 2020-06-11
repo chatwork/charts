@@ -4,7 +4,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     {{- include "akka.labels" . | nindent 4 }}
-  name: {{ include "akka.fullname" . }}
+  name: "{{ include "akka.fullname" . }}"
 rules:
   - apiGroups: [""]
     resources: ["pods", "services"]

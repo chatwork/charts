@@ -4,7 +4,7 @@
 {{- $fullName := include "akka.fullname" $root -}}
 {{- $svcPort := $ingress.targetPort }}
 ---
-apiVersion: {{ include "akka.ingress.apiVersion" $root }}
+apiVersion: "{{ include "akka.ingress.apiVersion" $root }}"
 kind: Ingress
 metadata:
   annotations:
@@ -14,7 +14,7 @@ metadata:
     {{- with $ingress.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  name: {{ $fullName }}{{ with $ingress.name }}-{{ . }}{{ end }}
+  name: "{{ $fullName }}{{ with $ingress.name }}-{{ . }}{{ end }}"
 spec:
   {{- if $ingress.tls }}
   tls:
@@ -23,18 +23,18 @@ spec:
         {{- range .hosts }}
         - {{ . | quote }}
         {{- end }}
-      secretName: {{ .secretName }}
+      secretName: "{{ .secretName }}"
     {{- end }}
   {{- end }}
   rules:
     {{- range $ingress.hosts }}
-    - host: {{ .host | quote }}
+    - host: "{{ .host }}"
       http:
         paths:
         {{- range .paths }}
           - path: {{ . }}
             backend:
-              serviceName: {{ $fullName }}
+              serviceName: "{{ $fullName }}"
               servicePort: {{ $svcPort }}
         {{- end }}
     {{- end }}

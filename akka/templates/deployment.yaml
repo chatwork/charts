@@ -60,7 +60,7 @@ spec:
           livenessProbe:
             httpGet:
               scheme: HTTP
-              path: /{{ .Values.akka.management.healthChecks.livenessPath }}
+              path: "/{{ .Values.akka.management.healthChecks.livenessPath }}"
               port: {{ .Values.akka.management.port }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -71,11 +71,11 @@ spec:
           livenessProbe:
             {{- with .Values.livenessProbe.httpGet }}
             httpGet:
-            {{- toYaml . | nindent 14 }}
+              {{- toYaml . | nindent 14 }}
             {{- end }}
             {{- with .Values.livenessProbe.tcpSocket }}
             tcpSocket:
-            {{- toYaml . | nindent 14 }}
+              {{- toYaml . | nindent 14 }}
             {{- end }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -89,7 +89,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           ports:
             {{- if .Values.akka.http.enabled }}
-            - name: http
+            - name: "{{.Values.akka.http.portName }}"
               containerPort: {{ .Values.akka.http.port }}
               protocol: TCP
             {{- with .Values.akka.http.extraPorts }}
@@ -115,7 +115,7 @@ spec:
           readinessProbe:
             httpGet:
               scheme: HTTP
-              path: /{{ .Values.akka.management.healthChecks.readinessPath }}
+              path: "/{{ .Values.akka.management.healthChecks.readinessPath }}"
               port: {{ .Values.akka.management.port }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -144,9 +144,9 @@ spec:
             {{- if .Values.useResourceApplicationConf }}
             {{- range $name, $v := .Values.configmaps }}
             {{- if ne $v "" }}
-            - name: {{ $name | replace "." "-" | lower }}
-              mountPath: /opt/conf/{{ $name }}
-              subPath: {{ $name }}
+            - name: "{{ $name | replace "." "-" | lower }}"
+              mountPath: "/opt/conf/{{ $name }}"
+              subPath: "{{ $name }}"
             {{- end }}
             {{- end }}
             {{- end }}
@@ -174,9 +174,9 @@ spec:
         {{- if .Values.useResourceApplicationConf }}
         {{- range $name, $v := .Values.configmaps }}
         {{- if ne $v "" }}
-        - name: {{ $name | replace "." "-" | lower }}
+        - name: "{{ $name | replace "." "-" | lower }}"
           configMap:
-            name: '{{ template "akka.fullname" $root }}-{{ $name | replace "." "-" | lower }}'
+            name: "{{ template "akka.fullname" $root }}-{{ $name | replace "." "-" | lower }}"
         {{- end }}
         {{- end }}
         {{- end }}

@@ -9,7 +9,7 @@ metadata:
     {{- with .Values.podDisruptionBudget.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  name: {{ template "akka.fullname" . }}
+  name: "{{ template "akka.fullname" . }}"
 spec:
   {{- with .Values.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ . }}

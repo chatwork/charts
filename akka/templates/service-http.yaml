@@ -10,19 +10,19 @@ metadata:
     {{- with .Values.akka.http.service.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  name: {{ include "akka.fullname" . }}
+  name: "{{ include "akka.fullname" . }}"
 spec:
   ports:
     {{- range $i, $v := .Values.akka.http.service.ports }}
     - targetPort: {{ $v.targetPort }}
-      name: {{ $v.name }}
+      name: "{{ $v.name }}"
       port: {{ $v.port }}
       {{- if and (eq $svcType "NodePort") $v.nodePort }}
       nodePort: {{ $v.nodePort }}
       {{- end }}
-      protocol: {{ $v.protocol }}
+      protocol: "{{ $v.protocol }}"
     {{- end }}
   selector:
     {{- include "akka.selectorLabels" . | nindent 4 }}
-  type: {{ $svcType }}
+  type: "{{ $svcType }}"
 {{- end }}
