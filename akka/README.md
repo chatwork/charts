@@ -60,7 +60,12 @@ The following table lists the configurable parameters of the akka chart and thei
 | `akka.http.service.labels` | Labels to be added to service | `{}` |
 | `akka.http.service.ports` | The service ports for http | `[]` |
 | `akka.http.service.type` | The service type for http | `"NodePort"` |
-| `akka.http.ingresses` | If true, create a ingress | `[]` |
+| `akka.http.ingresses[].annotations` | Annotations to be added to ingress | `nil` |
+| `akka.http.ingresses[].labels` | Labels to be added to ingress | `nil` |
+| `akka.http.ingresses[].name` | The name of the Ingress. You create will be in the `{{ include "akka.fullname" . }}-{{ .Values.akka.http.ingresses[].name }}` format | `nil` |
+| `akka.http.ingresses[].tls` | TLS configuration for the ingress | `nil` |
+| `akka.http.ingresses[].hosts` | A list of hosts for the ingresss | `nil` |
+| `akka.http.ingresses[].targetPort` | The target port of the service | `nil` |
 | `akka.management.enabled` | If it is true, set akka.management and liveness/readiness probe, and headless service. To use this feature, you need to include akka-management and akka-management-cluster-bootstrap in your application dependencies | `true` |
 | `akka.management.hostname` | Hostname to bind management | `0.0.0.0` |
 | `akka.management.port` | Port to bind management | `8558` |

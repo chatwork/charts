@@ -2,7 +2,7 @@
 {{- if .Values.akka.http.enabled -}}
 {{- range $i, $ingress := .Values.akka.http.ingresses }}
 {{- $fullName := include "akka.fullname" $root -}}
-{{- $svcPort := $ingress.targetPort -}}
+{{- $svcPort := $ingress.targetPort }}
 ---
 apiVersion: {{ include "akka.ingress.apiVersion" $root }}
 kind: Ingress
@@ -14,7 +14,7 @@ metadata:
     {{- with $ingress.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  name: {{ $fullName }}
+  name: {{ $fullName }}{{ with $ingress.name }}-{{ . }}{{ end }}
 spec:
   {{- if $ingress.tls }}
   tls:

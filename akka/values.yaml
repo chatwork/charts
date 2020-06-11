@@ -69,6 +69,7 @@ akka:
     ingresses: []
       # - annotations: {}
       #   labels: {}
+      #   name: "your-ingress-name"
       #   tls: []
       #     - hosts: []
       #       secretName: ""
