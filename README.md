@@ -1,6 +1,6 @@
-# Helm Charts from ChatWork
+# Helm Charts from Chatwork
 
-This repository is a [Charts](https://chatwork.github.io/charts/index.yaml) published by ChatWork.
+This repository is a [Charts](https://chatwork.github.io/charts/index.yaml) published by Chatwork.
 
 # Get Started
 
