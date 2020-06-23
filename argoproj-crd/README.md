@@ -19,8 +19,14 @@ The following table lists the configurable parameters of the argoproj-crd chart 
 
 |  Parameter | Description | Default |
 | --- | --- | --- |
-| `name` | Unique project name in Argo CD | `nil` |
-| `description` | Project description | `nil` |
+| `project.name` | Unique project name in Argo CD | `nil` |
+| `project.description` | Project description | `nil` |
+| `project.clusterResourceWhitelist` | ClusterResourceWhitelist contains list of whitelisted cluster level resources | `[]` |
+| `project.namespaceResourceBlacklist` | NamespaceResourceBlacklist contains list of blacklisted namespace level resources | `[]` |
+| `project.namespaceResourceWhitelist` | Allow all namespaced-scoped resources to be created, except for ResourceQuota, LimitRange, NetworkPolicy. | `[]` |
+| `project.orphanedResources` | OrphanedResources specifies if controller should monitor orphaned resources of apps in this project | `[]` |
+| `project.roles` | Roles are user defined RBAC roles associated with this project | `[]` |
+| `project.syncWindows` | SyncWindows controls when syncs can be run for apps in this project | `[]` |
 | `applications[].name` | Application name in Argo CD | `nil` |
 | `applications[].repoURL` | Repository URL to be the source of the application | `nil` |
 | `applications[].targetRevision` | HEAD/branch/tag/commit hash | `nil` |
@@ -33,38 +39,3 @@ The following table lists the configurable parameters of the argoproj-crd chart 
 | `applications[].namespace` | Destination namespace to deploy the application | `nil` |
 | `applications[].syncPolicy` | Sync policy | `automated: {}` |
 | `applications[].ignoreDifferences` | Ignore differences at the specified json pointers | `[]`  |
-| `clusterResourceWhitelist` | Deny all cluster-scoped resources from being created, except for Namespace. | `[]` |
-| `namespaceResourceBlacklist` | Allow all namespaced-scoped resources to be created, except for ResourceQuota, LimitRange, NetworkPolicy. | `[]` |
-| `roles[]` | Role that operates in the project | `[]` |
-
-## Namespace
-
-argoproj-crd creates a namespace specified for the application.
-
-```yaml
-applications: []
-- name: guestbook
-  repoURL: https://github.com/argoproj/argocd-example-apps.git
-  targetRevision: HEAD
-  path: guestbook
-
-  server: https://kubernetes.default.svc
-  namespace: guestbook
-```
-
-or
-
-```yaml
-applications: []
-- name: guestbook
-  repoURL: https://github.com/argoproj/argocd-example-apps.git
-  targetRevision: HEAD
-  path: guestbook
-
-  server: https://kubernetes.default.svc
-  namespace:
-    metadata:
-      name: guestbook
-      annotations:
-        iam.amazonaws.com/permitted: ".*"
-```
