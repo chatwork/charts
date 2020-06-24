@@ -19,7 +19,7 @@ spec:
 
 {{- with $app.ignoreDifferences }}
   ignoreDifferences:
-    {{- toYaml . | indent 4 }}
+    {{- toYaml . | nindent 4 }}
 {{- else }}
   ignoreDifferences: []
 {{- end }}
