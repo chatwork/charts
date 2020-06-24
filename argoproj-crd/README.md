@@ -39,3 +39,8 @@ The following table lists the configurable parameters of the argoproj-crd chart 
 | `applications[].namespace` | Destination namespace to deploy the application | `nil` |
 | `applications[].syncPolicy` | Sync policy | `automated: {}` |
 | `applications[].ignoreDifferences` | Ignore differences at the specified json pointers | `[]`  |
+
+## ToDo
+
+- separate appproject and application
+  - Right now they are configured to be created together, but there could be use cases where you want to create them separately (e.g. different management teams for projects and applications), so we need to be able to create them separately.
