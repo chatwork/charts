@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ .Values.project.name }}
+  labels:
+    {{- include "argoproj-crd.labels" . | nindent 4 }}
+    {{- with .Values.project.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  description: {{ .Values.project.description }}
+  sourceRepos:
+    {{- include "argoproj-crd.repositories" . | splitList "," | uniq | toYaml | nindent 4 }}
+
+{{- $map := fromYaml (include "argoproj-crd.applications" .) -}}
+{{- if $map.applications }}
+  destinations:
+{{- range $app := $map.applications | uniq }}
+  - server: {{ $app.server }}
+    namespace: {{ $app.namespace }}
+{{- end }}
+{{- else }}
+  destinations: []
+{{- end }}
+  clusterResourceWhitelist:
+    {{- toYaml .Values.project.clusterResourceWhitelist | nindent 4}}
+  namespaceResourceBlacklist:
+    {{- toYaml .Values.project.namespaceResourceBlacklist | nindent 4}}
+  namespaceResourceWhitelist:
+    {{- toYaml .Values.project.namespaceResourceBlacklist | nindent 4}}
+  orphanedResources:
+    {{- toYaml .Values.project.orphanedResources | nindent 4}}
+  roles:
+    {{- toYaml .Values.project.roles | nindent 4}}
+  syncWindows:
+    {{- toYaml .Values.project.syncWindows | nindent 4}}
