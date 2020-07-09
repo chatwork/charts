@@ -255,9 +255,7 @@ spec:
       {{- with .Values.securityContext }}
       securityContext: {{ tpl (toYaml .) $root | nindent 8 }}
       {{- end }}
-      {{- with .Values.serviceAccountName }}
-      serviceAccountName: {{ tpl (toYaml .) $root}}
-      {{- end }}
+      serviceAccountName: '{{ include "php.serviceAccountName" . }}'
       {{- with .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ tpl (toYaml .) $root }}
       {{- end }}
