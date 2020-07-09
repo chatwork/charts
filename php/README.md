@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `imagePullSecrets` | Name of Secret resource containing private registry credentials | `[]` |
 |  `restartPolicy` | Container restart policy | `""` |
 |  `terminationGracePeriodSeconds` | Termination grace period (in seconds) | `nil` |
-|  `securityContext` | Enable security context | `""` |
+|  `securityContext` | Enable security context | `{}` |
 |  `serviceAccountName` | Existing ServiceAccount to use | `""` |
 |  `extraVolumes` | Additional volumes to all container | `[]` |
 |  `extraVolumeMounts` | Additional volumeMounts to all container | `[]` |
@@ -75,6 +75,11 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `autoscaling.minReplicas` | Min pods for HorizontalPodAutoscaler | `nil` |
 |  `autoscaling.maxReplicas` | Max pods for HorizontalPodAutoscaler | `nil` |
 |  `autoscaling.metrics` | Metrics used for autoscaling | `nil` |
+|  `rbac.create` | If true, create & use RBAC resources | `true` |
+|  `serviceAccount.create` | If true, create a service account for the pod | `true` |
+|  `serviceAccount.annotations` | Annotations for the created service account | `{}` |
+|  `serviceAccount.labels` | Labels for the created service account | `{}` |
+|  `serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template | `` |
 |  `extras.templates` | Additional raw Kubernetes resources | `{}` |
 |  `test.enabled` | Enables helm test | `true` |
 
