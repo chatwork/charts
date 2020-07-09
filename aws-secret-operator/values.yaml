@@ -12,7 +12,7 @@ scope:
 
 image:
   registry: docker.io
-  repository: docker.io/mumoshu/aws-secret-operator
+  repository: mumoshu/aws-secret-operator
 
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
