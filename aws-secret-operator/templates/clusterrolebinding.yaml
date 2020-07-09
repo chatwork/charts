@@ -1,4 +1,3 @@
-{{- if not .Values.scope.singleNamespace }}
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -11,4 +10,3 @@ roleRef:
   kind: ClusterRole
   name: {{ include "aws-secret-operator.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
-{{- end }}

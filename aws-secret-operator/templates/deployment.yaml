@@ -37,7 +37,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
             - name: WATCH_NAMESPACE
-              value: {{ if .Values.scope.singleNamespace }}"{{ .Release.Namespace }}"{{ else }}""{{ end }}
+              value: {{ tpl .Values.watchNamespace . | quote }}
             - name: POD_NAME
               valueFrom:
                 fieldRef:

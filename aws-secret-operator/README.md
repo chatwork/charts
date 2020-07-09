@@ -21,7 +21,7 @@ The following table lists the configurable parameters of the Aws-secret-operator
 | ------------------------ | ----------------------- | -------------- |
 | `replicaCount` | replica count  | `1` |
 | `region` | aws region  | `"ap-northeast-1"` |
-| `scope.singleNamespace`   | If true, the this operator will only act in a single namespace( `.Release.Namespace`)  | `false` (watch all namespaces)                                            |
+| `watchNamespace`   | If you set this parameter, the operator will only act in a single namespace  | `""` (watch all namespaces)                                            |
 | `image.registry` | image registry   | `"docker.io"` |
 | `image.repository` | image repository  | `"mumoshu/aws-secret-operator"` |
 | `image.pullPolicy` | image pullPolicy | `"IfNotPresent"` |
