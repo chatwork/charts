@@ -1,0 +1,11 @@
+apiVersion: v2
+name: aws-secret-operator
+description: A Helm chart for aws-secret-operator
+type: application
+version: 0.1.0
+appVersion: 0.2.4
+sources:
+  - https://github.com/mumoshu/aws-secret-operator
+maintainers:
+  - name: Ryo Sakamoto
+    email: sakamoto@chatwork.com

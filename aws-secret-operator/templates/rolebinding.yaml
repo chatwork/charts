@@ -1,0 +1,14 @@
+{{- if .Values.scope.singleNamespace -}}
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "aws-secret-operator.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "aws-secret-operator.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ include "aws-secret-operator.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
