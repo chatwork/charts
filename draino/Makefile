@@ -2,7 +2,7 @@ RELEASE = "$$(basename $$PWD)"
 
 .PHONY: install
 install:
-	helm upgrade -i --wait --set livenessProbe.enable=false $(RELEASE) .
+	helm upgrade -i --wait $(RELEASE) .
 
 .PHONY: test
 test:

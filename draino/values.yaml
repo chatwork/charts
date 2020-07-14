@@ -8,7 +8,7 @@ image:
   repository: planetlabs/draino
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart version.
-  tag: "e0f16a4"
+  tag: "68d76c2"
   
 command: [/draino, --dry-run, --node-label=draino-enabled=true, BadCondition, ReallyBadCondition]
 
