@@ -68,6 +68,9 @@ spec:
         - name: health
           containerPort: {{ .Values.containerPort }}
           protocol: TCP
+        - name: metrics
+          containerPort: {{ .Values.containerPort }}
+          protocol: TCP
         {{- if .Values.readinessProbe.enable }}
         readinessProbe:
           httpGet:
