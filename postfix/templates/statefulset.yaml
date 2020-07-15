@@ -108,6 +108,9 @@ spec:
       {{- with .Values.statefulSet.tolerations }}
       tolerations: {{ toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
   updateStrategy:
     type: {{ .Values.statefulSet.updateStrategy }}
   {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
