@@ -138,3 +138,8 @@ terminationGracePeriodSeconds: 60
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
+
+metrics:
+  enabled: true
+  port: 10254
+  path: metrics

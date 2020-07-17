@@ -18,7 +18,13 @@ spec:
         {{- range $key, $value := .Values.podLabels }}
         {{ $key }}: {{ tpl $value $root | quote }}
         {{- end }}
-      annotations: {{- with .Values.podAnnotations }}{{- tpl (toYaml . ) $root | nindent 8 }}{{- end }}
+      annotations:
+        {{- if .Values.metrics.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.metrics.port }}"
+        prometheus.io/path: "{{ .Values.metrics.path }}"
+        {{- end }}
+        {{- with .Values.podAnnotations }}{{- tpl (toYaml . ) $root | nindent 8 }}{{- end }}
     spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
@@ -66,9 +72,6 @@ spec:
         {{- end }}
         ports:
         - name: health
-          containerPort: {{ .Values.containerPort }}
-          protocol: TCP
-        - name: metrics
           containerPort: {{ .Values.containerPort }}
           protocol: TCP
         {{- if .Values.readinessProbe.enable }}
