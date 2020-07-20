@@ -143,4 +143,3 @@ metrics:
   enabled: true
   port: 10254
   path: metrics
-  
