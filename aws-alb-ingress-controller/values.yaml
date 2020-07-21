@@ -92,7 +92,7 @@ rbac:
 
 image:
   repository: docker.io/amazon/aws-alb-ingress-controller
-  tag: "v1.1.6"
+  tag: "v1.1.8"
   pullPolicy: IfNotPresent
 
 resources: {}
@@ -138,3 +138,8 @@ terminationGracePeriodSeconds: 60
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
+
+metrics:
+  enabled: true
+  port: 10254
+  path: metrics
