@@ -38,8 +38,8 @@ spec:
         {{- with .Values.scope.ingressClass }}
         - --ingress-class={{ . }}
         {{- end }}
-        {{- with .Values.scope.singleNamespace }}
-        - --watch-namespace={{ default .Release.Namespace .Values.scope.watchNamespace }}
+        {{- with .Values.scope.watchNamespace }}
+        - --watch-namespace={{ tpl . $root }}
         {{- end }}
         {{- if not .Values.autoDiscoverAwsRegion }}
         - --aws-region={{ .Values.awsRegion }}
