@@ -89,8 +89,7 @@ The following tables lists the configurable parameters of the alb-ingress-contro
 | `containerSecurityContext`| set to security context for container                                                                          | `{}`                                                                      |
 | `securityContext`         | set to security context for pod                                                                                | `{}`                                                                      |
 | `scope.ingressClass`      | If provided, the ALB ingress controller will only act on Ingress resources annotated with this class           | `alb`                                                                     |
-| `scope.singleNamespace`   | If true, the ALB ingress controller will only act on Ingress resources in a single namespace                   | `false` (watch all namespaces)                                            |
-| `scope.watchNamespace`    | If scope.singleNamespace=true, the ALB ingress controller will only act on Ingress resources in this namespace | `""` (namespace of the ALB ingress controller)                            |
+| `scope.watchNamespace`    | the ALB ingress controller will only act on Ingress resources in this namespace | `""` (namespace of the ALB ingress controller)                            |
 
 ```bash
 helm install chatwork/aws-alb-ingress-controller --set clusterName=MyClusterName --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --name my-release --namespace kube-system
