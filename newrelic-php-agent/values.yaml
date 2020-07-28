@@ -28,6 +28,7 @@ daemonset:
   tolerations: []
   affinity: {}
   nodeSelector: {}
+  resources: {}
 
 deployment:
   enabled: false
@@ -41,6 +42,7 @@ deployment:
   tolerations: []
   affinity: {}
   nodeSelector: {}
+  resources: {}
 
 ingress:
   enabled: false

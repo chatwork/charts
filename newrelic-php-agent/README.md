@@ -39,6 +39,7 @@ The following table lists the configurable parameters of the newrelic-php-agent 
 |  `daemonset.tolerations` | Set Pod tolerations | `[]`|
 |  `daemonset.affinity` | Set Pod affinity | `{}`|
 |  `daemonset.nodeSelector` | Set Pod nodeSelector | `{}`|
+|  `daemonset.resources` | Pod resources | `{}`|
 |  `deployment.enabled` | Enables deployment | `false` |
 |  `deployment.replicaCount` | Deployment replicaCount | `1` |
 |  `deployment.extraPorts` | Extra ports | `[]` |
@@ -50,6 +51,7 @@ The following table lists the configurable parameters of the newrelic-php-agent 
 |  `deployment.tolerations` | Set Pod tolerations | `[]`|
 |  `deployment.affinity` | Set Pod affinity | `{}`|
 |  `deployment.nodeSelector` | Set Pod nodeSelector | `{}`|
+|  `deployment.resources` | Pod resources | `{}`|
 |  `ingress.enabled` | Enables Ingress | `false` |
 |  `ingress.annotations` | Ingress annotations | `{}` |
 |  `ingress.hosts` | Ingress accepted hostname | `[]` |

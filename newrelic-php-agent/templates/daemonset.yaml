@@ -43,6 +43,9 @@ spec:
 {{- with .Values.daemonset.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 10 }}
 {{- end }}
+{{- with .Values.daemonset.resources }}
+        resources: {{ toYaml . | nindent 12 }}
+{{- end }}
         livenessProbe:
 {{- with .Values.livenessProbe }}
 {{ toYaml . | indent 10 }}

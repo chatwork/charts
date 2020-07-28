@@ -44,6 +44,9 @@ spec:
 {{- with .Values.deployment.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 10 }}
 {{- end }}
+{{- with .Values.deployment.resources }}
+        resources: {{ toYaml . | nindent 12 }}
+{{- end }}
         livenessProbe:
 {{- with .Values.livenessProbe }}
 {{ toYaml . | indent 10 }}
