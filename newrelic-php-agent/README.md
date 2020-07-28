@@ -35,6 +35,7 @@ The following table lists the configurable parameters of the newrelic-php-agent 
 |  `daemonset.extraEnvFrom` | Extra env form | `[]` |
 |  `daemonset.extraVolumes` | Extra volumes | `[]` |
 |  `daemonset.extraVolumeMounts` | Extra volume mounts | `[]` |
+|  `daemonset.priorityClassName` | Set pod priorityClassName | `[]`|
 |  `daemonset.tolerations` | Set Pod tolerations | `[]`|
 |  `daemonset.affinity` | Set Pod affinity | `{}`|
 |  `daemonset.nodeSelector` | Set Pod nodeSelector | `{}`|
@@ -45,6 +46,7 @@ The following table lists the configurable parameters of the newrelic-php-agent 
 |  `deployment.extraEnvFrom` | Extra env form | `[]` |
 |  `deployment.extraVolumes` | Extra volumes | `[]` |
 |  `deployment.extraVolumeMounts` | Extra volume mounts | `[]` |
+|  `deployment.priorityClassName` | Set pod priorityClassName | `[]`|
 |  `deployment.tolerations` | Set Pod tolerations | `[]`|
 |  `deployment.affinity` | Set Pod affinity | `{}`|
 |  `deployment.nodeSelector` | Set Pod nodeSelector | `{}`|

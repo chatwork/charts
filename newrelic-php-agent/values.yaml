@@ -24,6 +24,7 @@ daemonset:
   extraEnvFrom: []
   extraVolumes: []
   extraVolumeMounts: []
+  priorityClassName: ""
   tolerations: []
   affinity: {}
   nodeSelector: {}
@@ -36,6 +37,7 @@ deployment:
   extraEnvFrom: []
   extraVolumes: []
   extraVolumeMounts: []
+  priorityClassName: ""
   tolerations: []
   affinity: {}
   nodeSelector: {}
