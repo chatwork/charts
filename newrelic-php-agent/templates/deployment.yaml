@@ -86,10 +86,10 @@ spec:
         volumeMounts:
           - mountPath: {{ dir $.Values.newrelic.address }}
             name: newrelic
-{{- with .Values.daemonset.extraVolumeMounts }}
+{{- with .Values.deployment.extraVolumeMounts }}
 {{ toYaml . | indent 10 }}
 {{- end }}
-{{- with .Values.daemonset.extraPorts }}
+{{- with .Values.deployment.extraPorts }}
         ports: {{ toYaml . | nindent 10 }}
 {{- end }}
 {{- else }}
@@ -109,21 +109,24 @@ spec:
         - name: newrelic
           hostPath:
             path: /var/run/newrelic
-{{- with .Values.daemonset.extraVolumes }}
+{{- with .Values.deployment.extraVolumes }}
 {{ toYaml . | indent 10 }}
 {{- end }}
 {{- else }}
-{{- with .Values.daemonset.extraVolumes }}
+{{- with .Values.deployment.extraVolumes }}
       volumes: {{ toYaml . | nindent 10 }}
 {{- end }}
 {{- end }}
-{{- with .Values.tolerations }}
+{{- with .Values.deployment.priorityClassName }}
+      priorityClassName: {{ . }}
+{{- end }}
+{{- with .Values.deployment.tolerations }}
       tolerations: {{ toYaml . | nindent 8 }}
 {{- end }}
-{{- with .Values.affinity }}
+{{- with .Values.deployment.affinity }}
       affinity: {{ toYaml . | nindent 8 }}
 {{- end }}
-{{- with .Values.daemonset.nodeSelector }}
+{{- with .Values.deployment.nodeSelector }}
       nodeSelector: {{ toYaml . | nindent 8 }}
 {{- end }}
 {{- end }}
