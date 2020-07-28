@@ -113,6 +113,9 @@ spec:
       volumes: {{ toYaml . | nindent 10 }}
 {{- end }}
 {{- end }}
+{{- with .Values.daemonset.priorityClassName }}
+      priorityClassName: {{ . }}
+{{- end }}
 {{- with .Values.daemonset.tolerations }}
       tolerations: {{ toYaml . | nindent 8 }}
 {{- end }}
