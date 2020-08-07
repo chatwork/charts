@@ -1,0 +1,5 @@
+apiVersion: v2
+name: burrow
+description: A Helm chart for burrow (https://github.com/linkedin/Burrow)
+type: application
+version: 0.1.0

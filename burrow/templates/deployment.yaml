@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "burrow.fullname" . }}
+  labels:
+    {{- include "burrow.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "burrow.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ tpl (toYaml .Values.config) . | sha256sum }}
+        {{- if .Values.datadog.enabled }}
+        checksum/datadog-config: {{ tpl (toYaml .Values.datadog.checks_d) . | sha256sum }}
+        {{- end }}
+    {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "burrow.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "burrow.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /etc/burrow
+              name: burrow-config-volume
+          command:
+            - sh
+            - -c
+            - |
+              set -x
+              echo "--- /etc/burrow/burrow.cfg ---"
+              cat /etc/burrow/burrow.cfg
+              echo "------------------------------"
+              {{ .Values.burrow.command.path }} --config /etc/burrow/burrow.cfg
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: {{ .Values.service.port }}
+          {{- if .Values.readinessProbe.enable }}
+          readinessProbe:
+            httpGet:
+              path: /burrow/admin
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.livenessProbe.enable }}
+          livenessProbe:
+            httpGet:
+              path: /burrow/admin
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: {{ add .Values.livenessProbe.initialDelaySeconds .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          {{- end }}
+        {{- if .Values.datadog.enabled }}
+        - name: dd-agent
+          image: "{{ .Values.datadog.image.repository }}:{{ .Values.datadog.image.tag }}"
+          imagePullPolicy: {{ .Values.datadog.image.pullPolicy }}
+          command: ["bash", "-c"]
+          args:
+            - rm -rf /etc/datadog-agent/conf.d && touch /etc/datadog-agent/datadog.yaml && exec agent run
+          env:
+            - name: DD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "burrow.fullname" . }}
+                  key: datadog.api.key
+            - name: DD_LOG_LEVEL
+              value: {{ .Values.datadog.logLevel | quote }}
+            - name: DD_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            # Remove unused features
+            - name: DD_USE_DOGSTATSD
+              value: "false"
+            - name: DD_PROCESS_AGENT_ENABLED
+              value: "false"
+            - name: DD_LOGS_ENABLED
+              value: "false"
+            - name: DD_APM_ENABLED
+              value: "false"
+          volumeMounts:
+            - name: dd-agent-checks-volume
+              mountPath: /checks.d
+            - name: dd-agent-conf-volume
+              mountPath: /conf.d
+        {{- end }}
+      volumes:
+        - name: burrow-config-volume
+          configMap:
+            name: "{{ template "burrow.fullname" . }}-config"
+        {{- if .Values.datadog.enabled }}
+        - name: dd-agent-checks-volume
+          configMap:
+            name: "{{ template "burrow.fullname" . }}-dd-check"
+        - name: dd-agent-conf-volume
+          configMap:
+            name: "{{ template "burrow.fullname" . }}-dd-conf"
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

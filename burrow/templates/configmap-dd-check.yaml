@@ -1,0 +1,11 @@
+{{- if .Values.datadog.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "burrow.fullname" . }}-dd-check
+  labels:
+    {{- include "burrow.labels" . | nindent 4 }}
+data:
+  burrow.py: |
+    {{- .Values.datadog.checks_d.burrowCheck  | nindent 4 }}
+{{- end }}
