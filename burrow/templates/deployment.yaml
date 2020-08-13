@@ -38,15 +38,6 @@ spec:
           volumeMounts:
             - mountPath: /etc/burrow
               name: burrow-config-volume
-          command:
-            - sh
-            - -c
-            - |
-              set -x
-              echo "--- /etc/burrow/burrow.cfg ---"
-              cat /etc/burrow/burrow.cfg
-              echo "------------------------------"
-              {{ .Values.burrow.command.path }} --config /etc/burrow/burrow.cfg
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
@@ -74,12 +65,18 @@ spec:
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           {{- end }}
         {{- if .Values.datadog.enabled }}
-        - name: dd-agent
+        - name: datadog-agent
           image: "{{ .Values.datadog.image.repository }}:{{ .Values.datadog.image.tag }}"
           imagePullPolicy: {{ .Values.datadog.image.pullPolicy }}
-          command: ["bash", "-c"]
-          args:
-            - rm -rf /etc/datadog-agent/conf.d && touch /etc/datadog-agent/datadog.yaml && exec agent run
+          command:
+            - "sh"
+            - "-c"
+            - |
+              rm -rf /etc/datadog-agent/conf.d/*
+              cp /conf.d/* /etc/datadog-agent/conf.d/
+              cp /checks.d/* /etc/datadog-agent/checks.d/
+              touch /etc/datadog-agent/datadog.yaml
+              exec agent run
           env:
             - name: DD_API_KEY
               valueFrom:

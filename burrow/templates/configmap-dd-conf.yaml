@@ -11,9 +11,9 @@ data:
     instances:
     - burrow_uri: http://localhost:{{ .Values.service.port }}
       clusters:
-        {{- toYaml .Values.datadog.checks_d.clusters | nindent 8 }}
-      {{- if .Values.datadog.checks_d.tags }}
+        {{- toYaml .Values.datadog.checksd.clusters | nindent 8 }}
+      {{- with .Values.datadog.checksd.tags }}
       tags:
-        {{- toYaml .Values.datadog.checks_d.tags | nindent 8}}
+        {{- toYaml . | nindent 8}}
       {{- end }}
 {{- end }}
