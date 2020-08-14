@@ -5,56 +5,46 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "slime.fullname" $root }}
-{{- with .Values.deployment.annotations }}
   annotations:
-{{- range $k, $v := . }}
-    {{ $k }}: {{ tpl $v $root | quote }}
-{{- end }}
-{{- end }}
+    {{- toYaml .Values.deployment.annotations | nindent 4 }}
   labels:
     app: {{ template "slime.name" $root }}
     chart: {{ template "slime.chart" $root }}
     release: {{ $root.Release.Name }}
     heritage: {{ $root.Release.Service }}
-{{- with .Values.deployment.labels }}
-{{ toYaml . | indent 4 }}
-{{- end }}
+    {{- with .Values.deployment.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "slime.name" $root }}
       release: {{ $root.Release.Name | quote }}
-{{- with .Values.deployment.strategy }}
+  {{- with .Values.deployment.strategy }}
   strategy:
-{{ toYaml . | indent 4 }}
-{{- end }}
-{{- with .Values.deployment.extraField }}
-{{ toYaml . | indent 2 }}
-{{- end }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.deployment.extraField }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
   template:
     metadata:
       name: {{ include "slime.fullname" $root }}
-{{- with .Values.deployment.pod.annotations }}
       annotations:
-{{- range $k, $v := . }}
-        {{ $k }}: {{ tpl $v $root | quote }}
-{{- end }}
-{{- end }}
+        {{- toYaml .Values.deployment.annotations | nindent 8 }}
       labels:
         app: {{ template "slime.name" $root }}
         release: {{ $root.Release.Name | quote }}
-{{- with .Values.deployment.pod.labels }}
-{{ toYaml . | indent 8 }}
-{{- end }}
+        {{- with .Values.deployment.pod.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
-{{- with .Values.deployment.pod.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-{{- end }}
+        {{- toYaml .Values.deployment.pod.affinity | nindent 8 }}
       containers:
-{{ tpl (toYaml .Values.deployment.pod.container) $root | indent 6 }}
-{{- end }}
-{{- with .Values.deployment.pod.extraField }}
-{{ toYaml . | indent 6 }}
+        {{- tpl (toYaml .Values.deployment.pod.container) $root | nindent 8 }}
+      {{- with .Values.deployment.pod.extraField }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
 {{- end }}

@@ -6,7 +6,7 @@ metadata:
   name: {{ include "slime.fullname" $root }}
 {{- with .Values.service.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
+    {{- toYaml . | nindent 4 }}
 {{- end }}
   labels:
     app: {{ template "slime.name" $root }}
