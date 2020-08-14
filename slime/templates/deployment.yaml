@@ -32,7 +32,7 @@ spec:
     metadata:
       name: {{ include "slime.fullname" $root }}
       annotations:
-        {{- toYaml .Values.deployment.annotations | nindent 8 }}
+        {{- toYaml .Values.deployment.pod.annotations | nindent 8 }}
       labels:
         app: {{ template "slime.name" $root }}
         release: {{ $root.Release.Name | quote }}
