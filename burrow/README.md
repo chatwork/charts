@@ -8,6 +8,15 @@ And if you want to use it with datadog-agent, you can run it as sidecar for appl
 The checksd and confd of datadog-agent are based on those of [datadog-agent-burrow](https://github.com/packetloop/datadog-agent-burrow)
 and modified for datadog v7 and burrow v3 (they can be defined in the values section, so the user can modify the contents of the script).
 
+## Prometheus
+
+Burrow supports prometheus exporter.
+https://github.com/linkedin/Burrow/blob/master/core/internal/httpserver/prometheus.go
+
+
+If you use datadog and promehteus exporter, you need `podAnnotation` parameter for metrics.
+https://docs.datadoghq.com/integrations/prometheus/
+
 
 ## Configuration
 
