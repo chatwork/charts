@@ -22,10 +22,12 @@ data:
     except ImportError:
         from checks import AgentCheck
 
+    # 特別な変数 __version__ の内容は Agent のステータスページに表示されます
     __version__ = "1.1.0"
 
     # project
     SERVICE_CHECK_NAME = 'burrow.can_connect'
+
     # appname burrow, namespace: burrow
     DEFAULT_BURROW_URI = 'http://burrow.burrow:8000'
     CLUSTER_ENDPOINT = '/v3/kafka'
@@ -66,12 +68,18 @@ data:
                         continue
                     status = lag_json["status"]
                     consumer_tags = ["cluster:%s" % cluster, "consumer:%s" % consumer] + extra_tags
-                    self.gauge("kafka.consumer.maxlag", status["maxlag"]["end"]["lag"], tags=consumer_tags)
-                    self.gauge("kafka.consumer.totallag", status["totallag"], tags=consumer_tags)
+
+                    # The entire lag of consumer
+                    self.gauge("kafka.consumer.maxlag", status["maxlag"]["current_lag"], tags=consumer_tags)
+                    self.gauge("kaka.consumer.totallag", status["totallag"], tags=consumer_tags)
+
                     self._submit_lag_status("kafka.consumer.lag_status", status["status"], tags=consumer_tags)
+
                     for partition in status.get("partitions", []):
                         partition_tags = consumer_tags + ["topic:%s" % partition["topic"], "partition:%s" % partition["partition"]]
-                        self._submit_partition_lags(partition, partition_tags)
+
+                        # The lag each partition of consumer
+                        self.gauge("kafka.consumer.partition_lag", partition["current_lag"], tags=partition_tags)
                         self._submit_lag_status("kafka.consumer.partition_lag_status", partition["status"], tags=partition_tags)
 
         def _submit_lag_status(self, metric_namespace, status, tags):
@@ -91,13 +99,6 @@ data:
             for metric_name, value in burrow_status.items():
                 self.gauge("%s.%s" % (metric_namespace, metric_name.lower()), value, tags=tags)
 
-        def _submit_partition_lags(self, partition, tags):
-            end = partition.get("end")
-            if not end:
-                return
-            lag = end.get("lag")
-            self.gauge("kafka.consumer.partition_lag", lag, tags=tags)
-
         def _check_burrow(self, burrow_address, extra_tags):
             """
             Check the Burrow health endpoint
@@ -116,6 +117,7 @@ data:
                 self.service_check(SERVICE_CHECK_NAME, AgentCheck.OK,
                                    tags=tags,
                                    message='Connection to %s was successful' % url)
+
         def _topic_offsets(self, clusters, burrow_address, extra_tags):
             """
             Retrieve the offsets for all topics in the clusters
@@ -140,8 +142,11 @@ data:
                 consumers_path = "%s/%s/consumer" % (CLUSTER_ENDPOINT, cluster)
                 consumers_list = self._rest_request_to_json(burrow_address, consumers_path).get("consumers", [])
                 for consumer in consumers_list:
-                    topics_path = "%s/%s/topic" % (consumers_path, consumer)
-                    topics_list = self._rest_request_to_json(burrow_address, topics_path).get("topics", [])
+                    topics_path = "%s/%s" % (consumers_path, consumer)
+                    topics_data = self._rest_request_to_json(burrow_address, topics_path).get("topics", []).keys()
+                    topics_list = []
+                    if not topics_data:
+                        topics_list = topics_data.keys()
                     for topic in topics_list:
                         topic_path = "%s/%s" % (topics_path, topic)
                         response = self._rest_request_to_json(burrow_address, topic_path)
