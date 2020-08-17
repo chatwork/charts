@@ -22,7 +22,6 @@ data:
     except ImportError:
         from checks import AgentCheck
 
-    # 特別な変数 __version__ の内容は Agent のステータスページに表示されます
     __version__ = "1.1.0"
 
     # project
