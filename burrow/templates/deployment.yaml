@@ -4,6 +4,8 @@ metadata:
   name: {{ include "burrow.fullname" . }}
   labels:
     {{- include "burrow.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.annotations | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -22,10 +24,8 @@ spec:
       labels:
         {{- include "burrow.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       serviceAccountName: {{ include "burrow.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -116,15 +116,9 @@ spec:
           configMap:
             name: "{{ template "burrow.fullname" . }}-dd-conf"
         {{- end }}
-      {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
+        {{- toYaml .Values.affinity | nindent 8 }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- toYaml .Values.tolerations | nindent 8 }}

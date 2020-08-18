@@ -14,6 +14,7 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+annotations: {}
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -56,6 +57,7 @@ tolerations: []
 affinity: {}
 
 service:
+  annotations: {}
   type: ClusterIP
   port: 8080
 
