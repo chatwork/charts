@@ -4,10 +4,8 @@ metadata:
   name: {{ include "kube-schedule-scaler.fullname" . }}
   labels:
     {{- include "kube-schedule-scaler.labels" . | nindent 4 }}
-  {{- with .Values.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- toYaml .Values.annotations | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -15,20 +13,14 @@ spec:
       {{- include "kube-schedule-scaler.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-    {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
       labels:
         {{- include "kube-schedule-scaler.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.priorityClassName }}
-      priorityClassName: "{{ . }}"
-      {{- end }}
-      {{- with .Values.imagePullSecrets }}
+      priorityClassName: {{ .Values.priorityClassName }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       serviceAccountName: {{ include "kube-schedule-scaler.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -40,15 +32,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
+        {{- toYaml .Values.affinity | nindent 8 }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- toYaml .Values.tolerations | nindent 8 }}
