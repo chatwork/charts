@@ -5,11 +5,11 @@
 apiVersion: v1
 {{- with $value.binaryData }}
 binaryData:
-{{ . | toYaml | indent 2 }}
+  {{- . | toYaml | nindent 2 }}
 {{- end }}
 {{- with $value.data }}
 data:
-{{ . | toYaml | indent 2 }}
+  {{- . | toYaml | nindent 2 }}
 {{- end }}
 kind: ConfigMap
 metadata:
@@ -30,7 +30,7 @@ metadata:
   {{ $key }}: {{ $val }}
 {{- else }}
   {{ $key }}:
-{{ toYaml $val | indent 4 }}
+    {{- toYaml $val | nindent 4 }}
 {{- end }}
 {{- end }}
 {{- end }}
