@@ -39,9 +39,8 @@ deployment:
   #  revisionHistoryLimit: 10
   pod:
     annotations: {}
-    #  checksum/config: "{{ include (print $.Template.BasePath \"/configmap.yaml\") . | sha256sum }}"
-    #  checksum/secret: "{{ include (print $.Template.BasePath \"/secret.yaml\") . | sha256sum }}"
     labels: {}
+    affinity: {}
     extraField: {}
     # dnsPolicy: ClusterFirst
     container: []
