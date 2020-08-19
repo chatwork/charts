@@ -1,0 +1,111 @@
+# Default values for burrow.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  # if you use official image, you need imagePullSecrets for github packages docker
+  # https://docs.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-docker-for-use-with-github-packages
+  repository: docker.pkg.github.com/linkedin/burrow/burrow
+  tag: v1.3.4
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+annotations: {}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+tolerations: []
+
+affinity: {}
+
+service:
+  annotations: {}
+  type: ClusterIP
+  port: 8080
+
+readinessProbe:
+  enable: true
+
+  # How often (in seconds) to check controller readiness
+  periodSeconds: 60
+
+  # How long to wait before timeout (in seconds) when checking controller readiness
+  timeoutSeconds: 3
+
+  # How long to wait (in seconds) before checking the readiness probe
+  initialDelaySeconds: 10
+
+livenessProbe:
+  enable: true
+
+  # How often (in seconds) to check controller liveness
+  periodSeconds: 60
+
+  # How long to wait before timeout (in seconds) when checking controller liveness
+  timeoutSeconds: 1
+
+  # How long to wait (in seconds) before checking the liveness probe
+  initialDelaySeconds: 30
+
+config:
+  burrow.toml: |
+    [logging]
+    level="info"
+    use-localtime=false
+
+    [zookeeper]
+    servers=[ "sample-kafka-zookeeper:2181" ]
+    timeout=6
+    root-path="/burrow"
+
+    [cluster.local]
+    class-name="kafka"
+    servers=[ "sample-kafka:9092" ]
+    topic-refresh=60
+    offset-refresh=30
+
+    [consumer.local]
+    class-name="kafka"
+    cluster="local"
+    servers=[ "sample-kafka:9092" ]
+    group-denylist="^(console-consumer-|python-kafka-consumer-).*$"
+    group-allowlist=""
+
+    [httpserver.default]
+    address=":8000"
