@@ -18,9 +18,9 @@ spec:
         {{- if .Values.datadog.enabled }}
         checksum/datadog-config: {{ tpl (toYaml .Values.datadog.checks_d) . | sha256sum }}
         {{- end }}
-    {{- with .Values.podAnnotations }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+        {{- end }}
       labels:
         {{- include "burrow.selectorLabels" . | nindent 8 }}
     spec:
