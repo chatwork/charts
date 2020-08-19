@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kube-schedule-scaler
+description: A Helm chart for kube-schedule-scaler https://github.com/chatwork/kube-schedule-scaler
+type: application
+version: 0.1.0
+appVersion: v0.0.1
