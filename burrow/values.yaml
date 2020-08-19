@@ -50,8 +50,6 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-nodeSelector: {}
-
 tolerations: []
 
 affinity: {}
@@ -111,25 +109,3 @@ config:
 
     [httpserver.default]
     address=":8000"
-
-datadog:
-  enabled: false
-  apiKey: ""
-  logLevel: INFO
-  image:
-    repository: datadog/agent
-    tag: 7
-    pullPolicy: Always
-    resources:
-      # requests:
-      #   memory: "128Mi"
-      #   cpu: "100m"
-      # limits:
-      #   memory: "512Mi"
-      #   cpu: "250m"
-  checksd:
-    clusters:
-     - local
-
-    #tags:
-    #burrowCheckScript: |

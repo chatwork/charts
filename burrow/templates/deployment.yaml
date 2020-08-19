@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "burrow.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "burrow.labels" . | nindent 4 }}
   annotations:
@@ -14,10 +15,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ tpl (toYaml .Values.config) . | sha256sum }}
-        {{- if .Values.datadog.enabled }}
-        checksum/datadog-config: {{ tpl (toYaml .Values.datadog.checks_d) . | sha256sum }}
-        {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -64,60 +62,10 @@ spec:
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           {{- end }}
-        {{- if .Values.datadog.enabled }}
-        - name: datadog-agent
-          image: "{{ .Values.datadog.image.repository }}:{{ .Values.datadog.image.tag }}"
-          imagePullPolicy: {{ .Values.datadog.image.pullPolicy }}
-          command:
-            - "sh"
-            - "-c"
-            - |
-              rm -rf /etc/datadog-agent/conf.d/*
-              cp /conf.d/* /etc/datadog-agent/conf.d/
-              cp /checks.d/* /etc/datadog-agent/checks.d/
-              touch /etc/datadog-agent/datadog.yaml
-              exec agent run
-          env:
-            - name: DD_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "burrow.fullname" . }}
-                  key: datadog.api.key
-            - name: DD_LOG_LEVEL
-              value: {{ .Values.datadog.logLevel | quote }}
-            - name: DD_HOSTNAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            # Remove unused features
-            - name: DD_USE_DOGSTATSD
-              value: "false"
-            - name: DD_PROCESS_AGENT_ENABLED
-              value: "false"
-            - name: DD_LOGS_ENABLED
-              value: "false"
-            - name: DD_APM_ENABLED
-              value: "false"
-          volumeMounts:
-            - name: dd-agent-checks-volume
-              mountPath: /checks.d
-            - name: dd-agent-conf-volume
-              mountPath: /conf.d
-        {{- end }}
       volumes:
         - name: burrow-config-volume
           configMap:
             name: "{{ template "burrow.fullname" . }}-config"
-        {{- if .Values.datadog.enabled }}
-        - name: dd-agent-checks-volume
-          configMap:
-            name: "{{ template "burrow.fullname" . }}-dd-check"
-        - name: dd-agent-conf-volume
-          configMap:
-            name: "{{ template "burrow.fullname" . }}-dd-conf"
-        {{- end }}
-      nodeSelector:
-        {{- toYaml .Values.nodeSelector | nindent 8 }}
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
       tolerations:
