@@ -37,7 +37,6 @@ The following table lists the configurable parameters of the Kube-schedule-scale
 | `resources.limits.memory` | memory limits  | `"512Mi"` |
 | `resources.requests.cpu` | cpu requests  | `"200m"` |
 | `resources.requests.memory` | memory requests  | `"512Mi"` |
-| `nodeSelector` | node selector  | `{}` |
 | `tolerations` | tolerations | `[]` |
 | `affinity` | affinity  | `{}` |
 

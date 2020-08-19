@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "kube-schedule-scaler.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "kube-schedule-scaler.labels" . | nindent 4 }}
   annotations:
@@ -32,8 +33,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      nodeSelector:
-        {{- toYaml .Values.nodeSelector | nindent 8 }}
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
       tolerations:
