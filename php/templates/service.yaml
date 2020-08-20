@@ -8,14 +8,9 @@ metadata:
     {{- with .Values.service.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- with .Values.service.annotations }}
   annotations:
-    {{- range $k, $v := . }}
-    {{ $k }}: {{ tpl $v $root | toYaml | indent 4 }}
-    {{- end }}
-  {{- end }}
 spec:
-  type: {{ .Values.service.type }}
+  type: "{{ .Values.service.type }}"
   ports:
     - name: default
       port: {{ .Values.service.port | default .Values.nginx.containerPort }}
@@ -33,4 +28,5 @@ spec:
       targetPort: {{ tpl .name $root | default .containerPort }}
     {{- end }}
     {{- end }}
-  selector: {{ include "php.selectorLabels" . | nindent 4 }}
+  selector:
+    {{- include "php.selectorLabels" . | nindent 4 }}

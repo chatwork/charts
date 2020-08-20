@@ -4,21 +4,19 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" $root }}-busybox-{{ $name | replace "." "-" | lower }}
-  labels: {{ include "php.labels" $root | nindent 4 }}
-  {{- with $root.Values.busybox.annotations }}
+  name: "{{ template "php.fullname" $root }}-busybox-{{ $name | replace "." "-" | lower }}"
+  labels: "{{ include "php.labels" $root | nindent 4 }}"
   annotations:
-    {{- range $k, $v := . }}
-    {{ $k }}: {{ tpl $v $root | toYaml | indent 4 }}
+    {{- range $k, $v := $root.Values.busybox.annotations }}
+    {{ $k }}: "{{ tpl $v $root }}"
     {{- end }}
-  {{- end }}
 data:
   {{- if eq (kindOf $tmpl) "string" }}
   {{ $name }}: |
-{{ tpl $tmpl $root | indent 4 }}
+    {{- tpl $tmpl $root | nindent 4 }}
   {{- else }}
   {{- range $k, $v := $tmpl }}
-  {{ $k }}: {{ tpl $v $root | toYaml | indent 2 }}
+  {{ $k }}: "{{ tpl $v $root }}"
   {{- end }}
   {{- end }}
 {{- end }}

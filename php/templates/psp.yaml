@@ -2,9 +2,9 @@
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
+  name: "{{ template "php.fullname" . }}"
   labels:
     {{- include "php.labels" . | nindent 4 }}
-  name: {{ template "php.fullname" . }}
 spec:
   privileged: false
   seLinux:

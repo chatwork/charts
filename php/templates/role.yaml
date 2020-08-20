@@ -2,16 +2,16 @@
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
+  name: "{{ include "php.fullname" . }}"
   labels:
     {{- include "php.labels" . | nindent 4 }}
-  name: "{{ include "php.fullname" . }}"
 rules:
   - apiGroups:
       - policy
     resources:
       - podsecuritypolicies
     resourceNames:
-      - {{ template "php.fullname" . }}
+      - "{{ template "php.fullname" . }}"
     verbs:
       - use
 {{- end }}

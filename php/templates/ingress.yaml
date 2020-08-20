@@ -3,28 +3,26 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "php.fullname" . }}
+  name: "{{ template "php.fullname" . }}"
   labels:
     {{- include "php.labels" . | nindent 4 }}
     {{- with .Values.ingress.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- with .Values.ingress.annotations }}
   annotations:
-    {{- range $k, $v := . }}
-    {{ $k }}: {{ tpl $v $root | toYaml | indent 4 }}
+    {{- range $k, $v := .Values.ingress.annotations }}
+    {{ $k }}: "{{ tpl $v $root }}"
     {{- end }}
-  {{- end }}
 spec:
   backend:
-    serviceName: {{ template "php.fullname" . }}
+    serviceName: "{{ template "php.fullname" . }}"
     servicePort: {{ .Values.service.port | default .Values.nginx.containerPort }}
   {{- with .Values.ingress.tls }}
   tls: {{ tpl (toYaml .) $root | nindent 4 }}
   {{- end }}
   rules:
     {{- range $k, $host := .Values.ingress.hosts }}
-    - host: {{ tpl $host $root }}
+    - host: "{{ tpl $host $root }}"
       http:
         paths:
           {{- with $root.Values.ingress.preferPaths }}
@@ -32,7 +30,7 @@ spec:
           {{- end }}
           - path: /*
             backend:
-              serviceName: {{ template "php.fullname" $root }}
+              serviceName: "{{ template "php.fullname" $root }}"
               servicePort: {{ $root.Values.service.port | default $root.Values.nginx.containerPort }}
     {{- end }}
 {{- end }}

@@ -8,18 +8,17 @@ metadata:
     {{- with .Values.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- with .Values.annotations }}
-  annotations: {{ toYaml . | nindent 4 }}
-  {{- end }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
 spec:
   {{- with .Values.replicaCount }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ . }}
   {{- end }}
-  {{- with .Values.strategy }}
-  strategy: {{ toYaml . | nindent 4 }}
-  {{- end }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 4 }}
   selector:
-    matchLabels: {{ include "php.selectorLabels" . | nindent 6 }}
+    matchLabels:
+      {{- include "php.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
@@ -35,7 +34,7 @@ spec:
         checksum/secret-fpm: {{ include (print $.Template.BasePath "/secret-fpm.yaml") . | sha256sum }}
         checksum/secret-nginx: {{ include (print $.Template.BasePath "/secret-nginx.yaml") . | sha256sum }}
         {{- range $k, $v := .Values.podAnnotations }}
-        {{ $k }}: {{ tpl $v $root | toYaml | indent 8 }}
+        {{ $k }}: "{{ tpl $v $root }}"
         {{- end }}
     spec:
       {{- if .Values.busybox.enabled }}
@@ -43,16 +42,15 @@ spec:
         - name: "{{ template "php.fullname" . }}-busybox"
           image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
           imagePullPolicy: {{ .Values.busybox.image.pullPolicy }}
-          command: {{ tpl (toYaml .Values.busybox.command) . | nindent 12 }}
-          {{- with .Values.busybox.extraEnv }}
-          env: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
-          {{- with .Values.busybox.extraEnvFrom }}
-          envFrom: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
+          command:
+            {{- tpl (toYaml .Values.busybox.command) . | nindent 12 }}
+          env:
+            {{- tpl (toYaml .Values.busybox.extraEnv) . | nindent 12 }}
+          envFrom:
+            {{- tpl (toYaml .Values.busybox.extraEnvFrom) . | nindent 12 }}
           volumeMounts:
             - name: share
-              mountPath: {{ .Values.busybox.sharedPath | default .Values.sharedPath }}
+              mountPath: "{{ .Values.busybox.sharedPath | default .Values.sharedPath }}"
             {{- with .Values.busybox.extraVolumeMounts }}
             {{- tpl (toYaml .) $root | nindent 12 }}
             {{- end }}
@@ -64,7 +62,8 @@ spec:
         - name: "{{ template "php.fullname" . }}-nginx"
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
           imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
-          command: {{ tpl (toYaml .Values.nginx.command) . | nindent 12 }}
+          command:
+            {{- tpl (toYaml .Values.nginx.command) . | nindent 12 }}
           ports:
             - name: default
               containerPort: {{ .Values.nginx.containerPort }}
@@ -72,30 +71,28 @@ spec:
             {{- with .Values.nginx.extraPorts }}
             {{- tpl (toYaml .) $root | nindent 12 }}
             {{- end }}
-          {{- with .Values.nginx.extraEnv }}
-          env: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
-          {{- with .Values.nginx.extraEnvFrom }}
-          envFrom: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
+          env:
+            {{- tpl (toYaml .Values.nginx.extraEnv) . | nindent 12 }}
+          envFrom:
+            {{- tpl (toYaml .Values.nginx.extraFrom) . | nindent 12 }}
           {{- with .Values.nginx.livenessProbe }}
-          livenessProbe: {{ tpl (toYaml .) $root | nindent 12 }}
+          livenessProbe:
+            {{- tpl (toYaml .) $root | nindent 12 }}
           {{- end }}
           {{- with .Values.nginx.readinessProbe }}
-          readinessProbe: {{ tpl (toYaml .) $root | nindent 12 }}
+          readinessProbe:
+            {{- tpl (toYaml .) $root | nindent 12 }}
           {{- end }}
-          {{- with .Values.nginx.resources }}
-          resources: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
-          {{- with .Values.nginx.lifecycle }}
-          lifecycle: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
+          resources:
+            {{- tpl (toYaml .Values.nginx.resources) . | nindent 12 }}
+          lifecycle:
+            {{- tpl (toYaml .Values.nginx.lifecycle) . | nindent 12 }}
           volumeMounts:
             - name: php-fpm-sock
               mountPath: /var/run/php-fpm
             {{- if .Values.busybox.enabled }}
             - name: share
-              mountPath: {{ .Values.sharedPath }}
+              mountPath: "{{ .Values.sharedPath }}"
             {{- end }}
             {{- if index .Values.nginx.templates "nginx.conf" }}
             - name: nginx-conf
@@ -116,30 +113,26 @@ spec:
         - name: "{{ template "php.fullname" . }}-fpm"
           image: "{{ .Values.fpm.image.repository }}:{{ .Values.fpm.image.tag }}"
           imagePullPolicy: {{ .Values.fpm.image.pullPolicy }}
-          {{- with .Values.fpm.command }}
-          command: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
-          {{- with .Values.fpm.extraPorts }}
-          ports: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
-          {{- with .Values.fpm.extraEnv }}
-          env: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
-          {{- with .Values.fpm.extraEnvFrom }}
-          envFrom: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
+          command: |
+            {{- tpl (toYaml .Values.fpm.command) $root | nindent 12 }}
+          ports: |
+            {{- tpl (toYaml .Values.fpm.extraPorts) $root | nindent 12 }}
+          env:
+            {{- tpl (toYaml .Values.fpm.extraEnv) $root | nindent 12 }}
+          envFrom:
+            {{- tpl (toYaml .Values.fpm.extraEnvFrom) $root | nindent 12 }}
           {{- with .Values.fpm.livenessProbe }}
-          livenessProbe: {{ tpl (toYaml .) $root | nindent 12 }}
+          livenessProbe:
+            {{- tpl (toYaml .) $root | nindent 12 }}
           {{- end }}
           {{- with .Values.fpm.readinessProbe }}
-          readinessProbe: {{ tpl (toYaml .) $root | nindent 12 }}
+          readinessProbe:
+            {{- tpl (toYaml .) $root | nindent 12 }}
           {{- end }}
-          {{- with .Values.fpm.resources }}
-          resources: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
-          {{- with .Values.fpm.lifecycle }}
-          lifecycle: {{ tpl (toYaml .) $root | nindent 12 }}
-          {{- end }}
+          resources:
+            {{- tpl (toYaml .Values.fpm.resources) $root | nindent 12 }}
+          lifecycle:
+            {{- tpl (toYaml .Values.fpm.lifecycle) $root | nindent 12 }}
           volumeMounts:
             - name: tmp
               mountPath: /tmp
@@ -246,22 +239,14 @@ spec:
         {{- with .Values.extraVolumes }}
         {{- tpl (toYaml .) $root | nindent 8 }}
         {{- end }}
-      {{- with .Values.restartPolicy }}
-      restartPolicy: {{ . }}
-      {{- end }}
-      {{- with .Values.imagePullSecrets}}
-      imagePullSecrets: {{ tpl (toYaml .) $root | nindent 8 }}
-      {{- end }}
-      {{- with .Values.securityContext }}
-      securityContext: {{ tpl (toYaml .) $root | nindent 8 }}
-      {{- end }}
-      serviceAccountName: '{{ include "php.serviceAccountName" . }}'
-      {{- with .Values.terminationGracePeriodSeconds }}
-      terminationGracePeriodSeconds: {{ tpl (toYaml .) $root }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity: {{ tpl (toYaml .) $root | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations: {{ tpl (toYaml .) $root | nindent 8 }}
-      {{- end }}
+      restartPolicy: "{{ .Values.restartPolicy }}"
+      imagePullSecrets:
+        {{- tpl (toYaml .) . | nindent 8 }}
+      securityContext:
+        {{- tpl (toYaml .Values.securityContext) . | nindent 8 }}
+      serviceAccountName: "{{ include "php.serviceAccountName" . }}"
+      terminationGracePeriodSeconds: {{ tpl (toYaml .Values.terminationGracePeriodSeconds) . }}
+      affinity:
+        {{- tpl (toYaml .Values.affinity) . | nindent 8 }}
+      tolerations:
+        {{- tpl (toYaml .Values.tolerations) . | nindent 8 }}

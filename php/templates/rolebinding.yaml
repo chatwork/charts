@@ -2,13 +2,13 @@
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
+  name: "{{ include "php.fullname" . }}"
   labels:
     {{- include "php.labels" . | nindent 4 }}
-  name: "{{ include "php.fullname" . }}"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ include "php.fullname" . }}
+  name: "{{ include "php.fullname" . }}"
 subjects:
   - kind: ServiceAccount
     name: "{{ include "php.serviceAccountName" . }}"
