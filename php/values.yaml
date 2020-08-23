@@ -19,6 +19,8 @@ podAnnotations: {}
 
 imagePullSecrets: []
 
+readinessGates: {}
+
 restartPolicy: ""
 
 securityContext: {}
