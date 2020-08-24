@@ -17,10 +17,10 @@ project:
 
 
   # NamespaceResourceBlacklist contains list of blacklisted namespace level resources
-  namespaceResourceBlacklist: []
+  # namespaceResourceBlacklist: []
 
   # Allow all namespaced-scoped resources to be created, except for ResourceQuota, LimitRange, NetworkPolicy.
-  namespaceResourceWhitelist: []
+  # namespaceResourceWhitelist: []
   # ex) NamespaceResourceWhitelist contains list of whitelisted namespace level resources
   # - group: ''
   #   kind: ResourceQuota
@@ -30,10 +30,10 @@ project:
   #   kind: NetworkPolicy
 
   # OrphanedResources specifies if controller should monitor orphaned resources of apps in this project
-  orphanedResources: {}
+  # orphanedResources: {}
 
   # Roles are user defined RBAC roles associated with this project
-  roles: []
+  # roles: []
   # ex) A role which provides read-only access to all applications in the project
   # - name: read-only
   #   description: Read-only privileges to my-project
@@ -54,7 +54,7 @@ project:
   #   - iat: 1535390316
 
   # SyncWindows controls when syncs can be run for apps in this project
-  syncWindows: []
+  # syncWindows: []
   # ex) allow '*-prod" application to sync in window time
   #- kind: allow
   #  schedule: '10 1 * * *'

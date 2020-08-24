@@ -12,25 +12,28 @@ spec:
   sourceRepos:
     {{- include "argoproj-crd.repositories" . | splitList "," | uniq | toYaml | nindent 4 }}
 
-{{- $map := fromYaml (include "argoproj-crd.applications" .) -}}
-{{- if $map.applications }}
   destinations:
-{{- range $app := $map.applications | uniq }}
-  - server: {{ $app.server }}
-    namespace: {{ $app.namespace }}
-{{- end }}
-{{- else }}
-  destinations: []
-{{- end }}
+  {{- toYaml .Values.project.destinations | nindent 4}}
+
   clusterResourceWhitelist:
     {{- toYaml .Values.project.clusterResourceWhitelist | nindent 4}}
+  {{- if .Values.project.namespaceResourceBlacklist }}
   namespaceResourceBlacklist:
     {{- toYaml .Values.project.namespaceResourceBlacklist | nindent 4}}
+  {{- end }}
+  {{- if .Values.project.namespaceResourceWhitelist }}
   namespaceResourceWhitelist:
     {{- toYaml .Values.project.namespaceResourceBlacklist | nindent 4}}
+  {{- end }}
+  {{- if .Values.project.orphanedResources }}
   orphanedResources:
     {{- toYaml .Values.project.orphanedResources | nindent 4}}
+  {{- end }}
+  {{- if .Values.project.roles }}
   roles:
     {{- toYaml .Values.project.roles | nindent 4}}
+  {{- end }}
+  {{- if .Values.project.syncWindows }}
   syncWindows:
     {{- toYaml .Values.project.syncWindows | nindent 4}}
+  {{- end }}
