@@ -1,10 +1,12 @@
 apiVersion: v2
 name: argoproj-crd
-version: 0.1.1
-appVersion: 1.6.1
+version: 0.1.2
+appVersion: 1.6.2
 description: Manage AppProject and Application that you define for Argo CD.
 maintainers:
   - name: cw-ozaki
     email: ozaki@chatwork.com
   - name: cw-sakamoto
     email: sakamoto@chatwork.com
+  - name: cw-shinya
+    email: shinya@chatwork.com
