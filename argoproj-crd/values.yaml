@@ -9,6 +9,11 @@ project:
   # Project description.
   description: my project
 
+  # Destinations cluster and namespace for project.
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: "default"
+
   # ClusterResourceWhitelist contains list of whitelisted cluster level resources
   clusterResourceWhitelist: []
   # ex) Deny all cluster-scoped resources from being created, except for Namespace.

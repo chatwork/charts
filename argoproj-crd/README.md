@@ -21,12 +21,13 @@ The following table lists the configurable parameters of the argoproj-crd chart 
 | --- | --- | --- |
 | `project.name` | Unique project name in Argo CD | `nil` |
 | `project.description` | Project description | `nil` |
+| `project.destinations` | Destinations contains list of destination cluster and namespace | `[{"server"=>"https://kubernetes.default.svc", "namespace"=>"default"}]` |
 | `project.clusterResourceWhitelist` | ClusterResourceWhitelist contains list of whitelisted cluster level resources | `[]` |
-| `project.namespaceResourceBlacklist` | NamespaceResourceBlacklist contains list of blacklisted namespace level resources | `[]` |
-| `project.namespaceResourceWhitelist` | Allow all namespaced-scoped resources to be created, except for ResourceQuota, LimitRange, NetworkPolicy. | `[]` |
-| `project.orphanedResources` | OrphanedResources specifies if controller should monitor orphaned resources of apps in this project | `[]` |
-| `project.roles` | Roles are user defined RBAC roles associated with this project | `[]` |
-| `project.syncWindows` | SyncWindows controls when syncs can be run for apps in this project | `[]` |
+| `project.namespaceResourceBlacklist` | NamespaceResourceBlacklist contains list of blacklisted namespace level resources | `""` |
+| `project.namespaceResourceWhitelist` | Allow all namespaced-scoped resources to be created, except for ResourceQuota, LimitRange, NetworkPolicy. | `""` |
+| `project.orphanedResources` | OrphanedResources specifies if controller should monitor orphaned resources of apps in this project | `""` |
+| `project.roles` | Roles are user defined RBAC roles associated with this project | `""` |
+| `project.syncWindows` | SyncWindows controls when syncs can be run for apps in this project | `""` |
 | `applications[].name` | Application name in Argo CD | `nil` |
 | `applications[].repoURL` | Repository URL to be the source of the application | `nil` |
 | `applications[].targetRevision` | HEAD/branch/tag/commit hash | `nil` |
