@@ -246,6 +246,12 @@ spec:
         {{- with .Values.extraVolumes }}
         {{- tpl (toYaml .) $root | nindent 8 }}
         {{- end }}
+      {{- with .Values.readinessGates }}
+      readinessGates:
+        {{- range $k, $v := . }}
+        - conditionType: '{{ tpl $v.conditionType $root }}'
+        {{- end }}
+      {{- end }}
       {{- with .Values.restartPolicy }}
       restartPolicy: {{ . }}
       {{- end }}
