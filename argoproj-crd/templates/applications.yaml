@@ -10,8 +10,10 @@ metadata:
     {{- with $app.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  {{- if $app.cascade }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  {{- end }}
 spec:
   destination:
     server: {{ $app.server }}
@@ -20,8 +22,6 @@ spec:
 {{- with $app.ignoreDifferences }}
   ignoreDifferences:
     {{- toYaml . | nindent 4 }}
-{{- else }}
-  ignoreDifferences: []
 {{- end }}
 {{- with $app.info }}
   info:
