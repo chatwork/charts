@@ -110,6 +110,7 @@ We recommend that you embed the source code in your container and copy it to the
 
 |  Parameter | Description | Default |
 | --- | --- | --- |
+|  `nginx.enabled` | Enable NGINX container | `true` |
 |  `nginx.image.repository` | The image repository to pull from | `nginx` |
 |  `nginx.image.tag` | The image tag to pull | `1.17-alpine` |
 |  `nginx.image.pullPolicy` | Image pull policy | `IfNotPresent` |
@@ -136,6 +137,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.image.tag` | The image tag to pull | `7.4-fpm-alpine` |
 |  `fpm.image.pullPolicy` | Image pull policy | `IfNotPresent` |
 |  `fpm.command` | Command to execute | `[]` |
+|  `fpm.containerPort` | Listen port of NGINX container | `nil` |
 |  `fpm.lifecycle` | PHP-FPM container lifecycle hooks | `{}` |
 |  `fpm.livenessProbe` | Liveness probe settings | `{}` |
 |  `fpm.readinessProbe` | Readiness probe settings | `{}` |

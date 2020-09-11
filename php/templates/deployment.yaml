@@ -28,18 +28,22 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       annotations:
+        {{- if .Values.busybox.enabled }}
         checksum/configmap-busybox: {{ include (print $.Template.BasePath "/configmap-busybox.yaml") . | sha256sum }}
-        checksum/configmap-fpm: {{ include (print $.Template.BasePath "/configmap-fpm.yaml") . | sha256sum }}
-        checksum/configmap-nginx: {{ include (print $.Template.BasePath "/configmap-nginx.yaml") . | sha256sum }}
         checksum/secret-busybox: {{ include (print $.Template.BasePath "/secret-busybox.yaml") . | sha256sum }}
-        checksum/secret-fpm: {{ include (print $.Template.BasePath "/secret-fpm.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if .Values.nginx.enabled }}
+        checksum/configmap-nginx: {{ include (print $.Template.BasePath "/configmap-nginx.yaml") . | sha256sum }}
         checksum/secret-nginx: {{ include (print $.Template.BasePath "/secret-nginx.yaml") . | sha256sum }}
+        {{- end }}
+        checksum/configmap-fpm: {{ include (print $.Template.BasePath "/configmap-fpm.yaml") . | sha256sum }}
+        checksum/secret-fpm: {{ include (print $.Template.BasePath "/secret-fpm.yaml") . | sha256sum }}
         {{- range $k, $v := .Values.podAnnotations }}
         {{ $k }}: {{ tpl $v $root | toYaml | indent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.busybox.enabled }}
       initContainers:
+        {{- if .Values.busybox.enabled }}
         - name: "{{ template "php.fullname" . }}-busybox"
           image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
           imagePullPolicy: {{ .Values.busybox.image.pullPolicy }}
@@ -59,8 +63,9 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- tpl (toYaml .) $root | nindent 12 }}
             {{- end }}
-      {{- end }}
+        {{- end }}
       containers:
+        {{- if .Values.nginx.enabled }}
         - name: "{{ template "php.fullname" . }}-nginx"
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
           imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
@@ -91,8 +96,10 @@ spec:
           lifecycle: {{ tpl (toYaml .) $root | nindent 12 }}
           {{- end }}
           volumeMounts:
+            {{- if not .Values.fpm.containerPort }}
             - name: php-fpm-sock
               mountPath: /var/run/php-fpm
+            {{- end }}
             {{- if .Values.busybox.enabled }}
             - name: share
               mountPath: {{ .Values.sharedPath }}
@@ -113,14 +120,21 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- tpl (toYaml .) $root | nindent 12 }}
             {{- end }}
+        {{- end }}
         - name: "{{ template "php.fullname" . }}-fpm"
           image: "{{ .Values.fpm.image.repository }}:{{ .Values.fpm.image.tag }}"
           imagePullPolicy: {{ .Values.fpm.image.pullPolicy }}
           {{- with .Values.fpm.command }}
           command: {{ tpl (toYaml .) $root | nindent 12 }}
           {{- end }}
-          {{- with .Values.fpm.extraPorts }}
-          ports: {{ tpl (toYaml .) $root | nindent 12 }}
+          {{- if .Values.fpm.containerPort }}
+          ports:
+            - name: fcgi
+              containerPort: {{ .Values.fpm.containerPort }}
+              protocol: TCP
+            {{- with .Values.fpm.extraPorts }}
+            {{ tpl (toYaml .) $root | nindent 12 }}
+            {{- end }}
           {{- end }}
           {{- with .Values.fpm.extraEnv }}
           env: {{ tpl (toYaml .) $root | nindent 12 }}
@@ -143,8 +157,10 @@ spec:
           volumeMounts:
             - name: tmp
               mountPath: /tmp
+            {{- if not .Values.fpm.containerPort }}
             - name: php-fpm-sock
               mountPath: /var/run/php-fpm
+            {{- end }}
             {{- if index .Values.fpm.templates "php.ini" }}
             - name: php-ini
               mountPath: /usr/local/etc/php/php.ini
@@ -188,12 +204,15 @@ spec:
       volumes:
         - name: tmp
           emptyDir: {}
+        {{- if not .Values.fpm.containerPort }}
         - name: php-fpm-sock
           emptyDir: {}
+        {{- end }}
         {{- if .Values.busybox.enabled }}
         - name: share
           emptyDir: {}
         {{- end }}
+        {{- if .Values.nginx.enabled }}
         {{- if index .Values.nginx.templates "nginx.conf" }}
         - name: nginx-conf
           configMap:
@@ -203,6 +222,7 @@ spec:
         - name: default-conf
           configMap:
             name: '{{ template "php.fullname" . }}-nginx-default-conf'
+        {{- end }}
         {{- end }}
         {{- if index .Values.fpm.templates "php.ini" }}
         - name: php-ini

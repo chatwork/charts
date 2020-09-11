@@ -18,7 +18,11 @@ metadata:
 spec:
   backend:
     serviceName: {{ template "php.fullname" . }}
+    {{- if .Values.nginx.enabled }}
     servicePort: {{ .Values.service.port | default .Values.nginx.containerPort }}
+    {{- else }}
+    servicePort: {{ .Values.service.port | default .Values.fpm.containerPort }}
+    {{- end }}
   {{- with .Values.ingress.tls }}
   tls: {{ tpl (toYaml .) $root | nindent 4 }}
   {{- end }}
@@ -33,6 +37,10 @@ spec:
           - path: /*
             backend:
               serviceName: {{ template "php.fullname" $root }}
+              {{- if $root.Values.nginx.enabled }}
               servicePort: {{ $root.Values.service.port | default $root.Values.nginx.containerPort }}
+              {{- else }}
+              servicePort: {{ $root.Values.service.port | default $root.Values.fpm.containerPort }}
+              {{- end }}
     {{- end }}
 {{- end }}
