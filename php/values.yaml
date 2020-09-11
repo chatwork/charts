@@ -163,6 +163,7 @@ busybox:
 
 # NGINX
 nginx:
+  enabled: true
   image:
     repository: nginx
     tag: 1.17-alpine
@@ -317,6 +318,9 @@ fpm:
   # - php-fpm
   # - -d zend_extension=xdebug.so
 
+  # If containerPort is null, then PHP-FPM works with sock.
+  containerPort: null
+
   lifecycle: {}
     #postStart:
     #  exec:
@@ -386,7 +390,11 @@ fpm:
   templates:
     zz-kubernetes.conf: |
       [www]
+      {{- if .Values.fpm.containerPort }}
+      listen = 127.0.0.1:{{ .Values.fpm.containerPort }}
+      {{- else }}
       listen = /var/run/php-fpm/php-fpm.sock
+      {{- end }}
       listen.owner = nobody
       listen.group = nogroup
       listen.mode = 0660

@@ -18,19 +18,14 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - name: default
+      {{- if .Values.nginx.enabled }}
       port: {{ .Values.service.port | default .Values.nginx.containerPort }}
+      {{- else }}
+      port: {{ .Values.service.port | default .Values.fpm.containerPort }}
+      {{- end }}
       protocol: TCP
       targetPort: default
     {{- with .Values.service.extraPorts }}
     {{- tpl (toYaml .) $root | nindent 4 }}
-    {{- else }}
-    {{- range .Values.nginx.extraPortss }}
-    - name: {{ tpl .name $root }}
-      port: {{ tpl .containerPort $root }}
-      {{- with .protocol }}
-      protocol: {{ tpl . $root }}
-      {{- end }}
-      targetPort: {{ tpl .name $root | default .containerPort }}
-    {{- end }}
     {{- end }}
   selector: {{ include "php.selectorLabels" . | nindent 4 }}
