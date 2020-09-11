@@ -77,6 +77,15 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `autoscaling.maxReplicas` | Max pods for HorizontalPodAutoscaler | `nil` |
 |  `autoscaling.metrics` | Metrics used for autoscaling | `nil` |
 |  `rbac.create` | If true, create & use RBAC resources | `true` |
+|  `psp.create` |  | `false` |
+|  `psp.annotations` | Annotations for the created PSP  | `{}` |
+|  `psp.labels` | Labels for the created PSP | `{}` |
+|  `psp.name` | The name of the PSP to use. If not set and create is true, a name is generated using the fullname template | `nil` |
+|  `psp.seLinux` | The SELinux context of the container | `{"rule":"RunAsAny"}` |
+|  `psp.supplementalGroups` | The user and group IDs of the container | `{"rule":"RunAsAny"}` |
+|  `psp.runAsUser` | The user and group IDs of the container | `{"rule":"RunAsAny"}` |
+|  `psp.fsGroup` | The user and group IDs of the container | `{"rule":"RunAsAny"}` |
+|  `psp.volumes` | Usage of volume types | `['*']` |
 |  `serviceAccount.create` | If true, create a service account for the pod | `true` |
 |  `serviceAccount.annotations` | Annotations for the created service account | `{}` |
 |  `serviceAccount.labels` | Labels for the created service account | `{}` |
