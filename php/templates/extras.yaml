@@ -1,5 +1,0 @@
-{{- $root := . }}
-{{- range $k, $v := .Values.extras.templates }}
----
-{{ tpl $v $root }}
-{{- end }}

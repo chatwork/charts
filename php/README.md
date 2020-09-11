@@ -88,7 +88,6 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `serviceAccount.annotations` | Annotations for the created service account | `{}` |
 |  `serviceAccount.labels` | Labels for the created service account | `{}` |
 |  `serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template | `` |
-|  `extras.templates` | Additional raw Kubernetes resources | `{}` |
 |  `test.enabled` | Enables helm test | `true` |
 
 ### Init containers
