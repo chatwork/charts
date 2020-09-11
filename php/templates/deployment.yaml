@@ -197,8 +197,8 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       readinessGates:
-        {{- range $k, $v := .Values.readinessGates }}
-        - conditionType: {{ $v.conditionType }}
+        {{- range .Values.readinessGates }}
+        - conditionType: {{ .conditionType }}
         {{- end }}
       restartPolicy: {{ .Values.restartPolicy }}
       imagePullSecrets:

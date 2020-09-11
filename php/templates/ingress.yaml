@@ -24,8 +24,8 @@ spec:
   tls:
     {{- toYaml .Values.ingress.tls | nindent 4 }}
   rules:
-    {{- range $k, $host := .Values.ingress.hosts }}
-    - host: {{ tpl $host $root }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ tpl .host $root }}
       http:
         paths:
           {{- with $root.Values.ingress.preferPaths }}
