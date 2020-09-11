@@ -1,20 +1,20 @@
 {{- $root := . -}}
 {{- if .Values.busybox.enabled }}
-{{- range $name, $tmpl := .Values.busybox.templates }}
+{{- range $name, $tmpl := .Values.busybox.configMaps }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
     {{- include "php.labels" $root | nindent 4 }}
-  name: {{ include "php.fullname" $root }}-busybox-{{ $name | replace "." "-" | lower }}
+  name: {{ include "php.fullname" $root }}-busybox-{{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
 data:
   {{- if eq (kindOf $tmpl) "string" }}
-  {{ $name }}: |
+  {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" }}: |
     {{- tpl $tmpl $root | nindent 4 }}
   {{- else }}
   {{- range $k, $v := $tmpl }}
-  {{ $k }}: {{ tpl $v $root | quote }}
+  {{ $k | replace "/" "-" | replace "_" "-" | replace "." "-" }}: {{ tpl $v $root | quote }}
   {{- end }}
   {{- end }}
 {{- end }}
