@@ -3,14 +3,23 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ template "php.fullname" . }}
-  labels: {{ include "php.labels" . | nindent 4 }}
+  annotations:
+    {{- range $k, $v := .Values.autoscaling.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+    {{- range $k, $v := .Values.autoscaling.labels }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
+  name: {{ include "php.fullname" . }}
 spec:
   scaleTargetRef:
     kind: Deployment
     apiVersion: apps/v1
-    name: {{ template "php.fullname" . }}
+    name: {{ include "php.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
-  metrics: {{ toYaml .Values.autoscaling.metrics | nindent 4 }}
+  metrics:
+    {{- toYaml .Values.autoscaling.metrics | nindent 4 }}
 {{- end }}

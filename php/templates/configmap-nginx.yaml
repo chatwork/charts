@@ -5,21 +5,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" $root }}-nginx-{{ $name | replace "." "-" | lower }}
-  labels: {{ include "php.labels" $root | nindent 4 }}
-  {{- with $root.Values.nginx.annotations }}
-  annotations:
-    {{- range $k, $v := . }}
-    {{ $k }}: {{ tpl $v $root | toYaml | indent 4 }}
-    {{- end }}
-  {{- end }}
+  labels:
+    {{- include "php.labels" $root | nindent 4 }}
+  name: {{ include "php.fullname" $root }}-nginx-{{ $name | replace "." "-" | lower }}
 data:
   {{- if eq (kindOf $tmpl) "string" }}
   {{ $name }}: |
-{{ tpl $tmpl $root | indent 4 }}
+    {{- tpl $tmpl $root | nindent 4 }}
   {{- else }}
   {{- range $k, $v := $tmpl }}
-  {{ $k }}: {{ tpl $v $root | toYaml | indent 2 }}
+  {{ $k }}: {{ tpl $v $root | quote }}
   {{- end }}
   {{- end }}
 {{- end }}

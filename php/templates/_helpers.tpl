@@ -62,6 +62,16 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+{{- define "php.ingress.apiVersion" -}}
+{{- if .Values.ingress.overrideApiVersion -}}
+{{ .Values.ingress.overrideApiVersion }}
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+networking.k8s.io/v1beta1
+{{- else -}}
+extensions/v1beta1
+{{- end }}
+{{- end -}}
+
 {{/*
 Create the name of the PSP to use
 */}}

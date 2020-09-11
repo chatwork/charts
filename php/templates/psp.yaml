@@ -2,16 +2,16 @@
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
+  annotations:
+    {{- range $k, $v := .Values.psp.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
   labels:
     {{- include "php.labels" . | nindent 4 }}
-    {{- with .Values.psp.labels }}
-    {{- toYaml . | nindent 4}}
+    {{- range $k, $v := .Values.psp.labels }}
+    {{ $k }}: {{ $v | quote }}
     {{- end }}
-  annotations:
-    {{- with .Values.psp.annotations }}
-    {{- toYaml . | nindent 4}}
-    {{- end }}
-  name: {{ template "php.pspName" . }}
+  name: {{ include "php.pspName" . }}
 spec:
   privileged: false
   seLinux:
@@ -26,6 +26,6 @@ spec:
     {{- toYaml .Values.psp.volumes | nindent 4 }}
   allowedUnsafeSysctls:
     {{- range .Values.securityContext.sysctls }}
-    - '{{ .name }}'
+    - {{ .name }}
     {{- end }}
 {{- end }}

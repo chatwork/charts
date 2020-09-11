@@ -11,6 +11,8 @@ sharedPath: /var/www/html
 strategy:
   type: RollingUpdate
 
+annotations: {}
+
 labels: {}
 
 podLabels: {}
@@ -21,7 +23,7 @@ imagePullSecrets: []
 
 readinessGates: {}
 
-restartPolicy: ""
+restartPolicy: "Always"
 
 securityContext: {}
 
@@ -57,9 +59,11 @@ podDisruptionBudget:
 # HPA
 autoscaling:
   enabled: false
-  #minReplicas:
-  #maxReplicas:
-  #metrics:
+  annotations: {}
+  labels: {}
+  minReplicas:
+  maxReplicas:
+  metrics: {}
   #  - type: Resource
   #    resource:
   #      name: cpu
@@ -111,11 +115,11 @@ busybox:
   # `busybox.command` is initialize command.
   # Copy the source code in busybox to `sharedPath` or `busybox.sharedPath`.
   # e.g. sh -c "cp -av /path/to/sources/* /path/to/share-path"
-  command: ["sh", "-c", "echo '<?php echo \"Hello World\";' > {{ .Values.sharedPath }}/index.php"]
+  command: ["sh", "-c", "echo '<?php echo \"Hello World\";' > /var/www/html/index.php"]
 
   # `busybox.sharedPath` is specifies the directory to mount.
   # Default is `sharedPath`, but if it conflicts with the source code directory, please specify it.
-  #sharedPath: {{ .Values.sharedPath }}
+  #sharedPath: /var/www/html
 
   # `busybox.extraEnv` is additional environment variables.
   extraEnv: {}

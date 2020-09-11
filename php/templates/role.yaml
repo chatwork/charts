@@ -4,14 +4,16 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     {{- include "php.labels" . | nindent 4 }}
-  name: "{{ include "php.fullname" . }}"
+  name: {{ include "php.fullname" . }}
 rules:
+  {{- if .Values.psp.create }}
   - apiGroups:
       - policy
     resources:
       - podsecuritypolicies
     resourceNames:
-      - {{ template "php.fullname" . }}
+      - {{ include "php.pspName" . }}
     verbs:
       - use
+  {{- end }}
 {{- end }}
