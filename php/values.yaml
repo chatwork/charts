@@ -72,6 +72,23 @@ rbac:
   # Specifies whether a role and rolebinding should be created.
   create: true
 
+# PSP
+psp:
+  create: false
+  annotations: {}
+  labels: {}
+  name:
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  volumes:
+    - '*'
+
 # SA
 serviceAccount:
   # Specifies whether a service account should be created.

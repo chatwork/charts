@@ -61,3 +61,10 @@ Create the name of the service account to use
 {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the PSP to use
+*/}}
+{{- define "php.pspName" -}}
+{{ .Values.psp.name | default (include "php.fullname" .) }}
+{{- end -}}
