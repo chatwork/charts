@@ -255,6 +255,10 @@ nginx:
   #    BAR: 2
   #    BAZ: 3
 
+  # If true, do not mount the templates to the pod.
+  # This is for use in environment variables only, or to include when building containers.
+  disabledDefaultTemplatesMount: false
+
   # configuration NGINX templates.
   # If you can not be satisfied with the default settings you can change the template.
   templates:
@@ -384,6 +388,10 @@ fpm:
   #    FOO: 1
   #    BAR: 2
   #    BAZ: 3
+
+  # If true, do not mount the templates to the pod.
+  # This is for use in environment variables only, or to include when building containers.
+  disabledDefaultTemplatesMount: false
 
   # configuration PHP-FPM templates
   # If you can not be satisfied with the default settings you can change the template.

@@ -104,6 +104,7 @@ spec:
             - name: share
               mountPath: {{ .Values.sharedPath }}
             {{- end }}
+            {{- if not .Values.nginx.disabledDefaultTemplatesMount }}
             {{- if index .Values.nginx.templates "nginx.conf" }}
             - name: nginx-conf
               mountPath: /etc/nginx/nginx.conf
@@ -113,6 +114,7 @@ spec:
             - name: default-conf
               mountPath: /etc/nginx/conf.d/default.conf
               subPath: default.conf
+            {{- end }}
             {{- end }}
             {{- with .Values.nginx.extraVolumeMounts }}
             {{- tpl (toYaml .) $root | nindent 12 }}
@@ -161,6 +163,7 @@ spec:
             - name: php-fpm-sock
               mountPath: /var/run/php-fpm
             {{- end }}
+            {{- if not .Values.fpm.disabledDefaultTemplatesMount }}
             {{- if index .Values.fpm.templates "php.ini" }}
             - name: php-ini
               mountPath: /usr/local/etc/php/php.ini
@@ -191,6 +194,7 @@ spec:
               mountPath: /usr/local/etc/php-fpm.d/zz-kubernetes.conf
               subPath: zz-kubernetes.conf
             {{- end }}
+            {{- end }}
             {{- if .Values.busybox.enabled }}
             - name: share
               mountPath: {{ .Values.sharedPath }}
@@ -212,7 +216,7 @@ spec:
         - name: share
           emptyDir: {}
         {{- end }}
-        {{- if .Values.nginx.enabled }}
+        {{- if and .Values.nginx.enabled (not .Values.nginx.disabledDefaultTemplatesMount) }}
         {{- if index .Values.nginx.templates "nginx.conf" }}
         - name: nginx-conf
           configMap:
@@ -224,6 +228,7 @@ spec:
             name: '{{ template "php.fullname" . }}-nginx-default-conf'
         {{- end }}
         {{- end }}
+        {{- if not .Values.fpm.disabledDefaultTemplatesMount }}
         {{- if index .Values.fpm.templates "php.ini" }}
         - name: php-ini
           configMap:
@@ -253,6 +258,7 @@ spec:
         - name: zz-kubernetes-conf
           configMap:
             name: '{{ template "php.fullname" . }}-fpm-zz-kubernetes-conf'
+        {{- end }}
         {{- end }}
         {{- with .Values.busybox.extraVolumes }}
         {{- tpl (toYaml .) $root | nindent 8 }}

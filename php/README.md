@@ -126,6 +126,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.extraVolumes` | Additional volumes | `[]` |
 |  `nginx.extraVolumeMounts` | Additional volumeMounts | `[]` |
 |  `nginx.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
+|  `nginx.disabledDefaultTemplatesMount` | If true, do not mount the default templates to the pod | `false` |
 |  `nginx.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `nginx.conf`, `conf.d/default.conf` |
 |  `nginx.annotations` | Grant annotations to ConfigMap of `nginx.templates`, Secrets of `nginx.secrets` | `{}` |
 
@@ -148,6 +149,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.extraVolumes` | Additional volumes | `[]` |
 |  `fpm.extraVolumeMounts` | Additional volumeMounts | `[]` |
 |  `fpm.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
+|  `fpm.disabledDefaultTemplatesMount` | If true, do not mount the default templates to the pod | `false` |
 |  `fpm.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `php-fpm.conf`,`www.conf` |
 |  `fpm.annotations` | Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets` | `{}` |
 
