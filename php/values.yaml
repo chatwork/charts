@@ -29,10 +29,6 @@ securityContext: {}
 
 serviceAccountName: ""
 
-extraVolumes: []
-
-extraVolumeMounts: []
-
 terminationGracePeriodSeconds: 70
 
 tolerations: []

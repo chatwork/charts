@@ -54,8 +54,6 @@ The following table lists the configurable parameters of the PHP chart and their
 |  `terminationGracePeriodSeconds` | Termination grace period (in seconds) | `nil` |
 |  `securityContext` | Enable security context | `{}` |
 |  `serviceAccountName` | Existing ServiceAccount to use | `""` |
-|  `extraVolumes` | Additional volumes to all container | `[]` |
-|  `extraVolumeMounts` | Additional volumeMounts to all container | `[]` |
 |  `tolerations` | Pod taint tolerations for deployment | `[]` |
 |  `affinity` | Node / Pod affinities | `{}` |
 |  `service.type` | Changes to ClusterIP automatically if ingress enabled | `LoadBalancer` |

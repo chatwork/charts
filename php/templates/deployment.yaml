@@ -60,9 +60,6 @@ spec:
             {{- with .Values.busybox.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
-            {{- with .Values.extraVolumeMounts }}
-            {{- toYaml . | nindent 12 }}
-            {{- end }}
         {{- end }}
       containers:
         {{- if .Values.nginx.enabled }}
@@ -112,9 +109,6 @@ spec:
             {{- end }}
             {{- end }}
             {{- with .Values.nginx.extraVolumeMounts }}
-            {{- tpl (toYaml .) $root | nindent 12 }}
-            {{- end }}
-            {{- with .Values.extraVolumeMounts }}
             {{- tpl (toYaml .) $root | nindent 12 }}
             {{- end }}
         {{- end }}
@@ -190,9 +184,6 @@ spec:
             {{- with .Values.fpm.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
-            {{- with .Values.extraVolumeMounts }}
-            {{- toYaml . | nindent 12 }}
-            {{- end }}
       volumes:
         - name: tmp
           emptyDir: {}
@@ -255,9 +246,6 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.fpm.extraVolumes }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       readinessGates:
