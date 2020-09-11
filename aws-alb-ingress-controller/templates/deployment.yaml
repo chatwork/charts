@@ -105,7 +105,7 @@ spec:
         volumeMounts:  {{ toYaml . | nindent 10 }}
         {{- end }}
       {{- with .Values.affinity }}
-      affinity: {{ toYaml . | indent 10 }}
+      affinity: {{ toYaml . | nindent 10 }}
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations: {{ toYaml . | nindent 8 }}
