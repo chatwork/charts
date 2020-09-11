@@ -75,6 +75,6 @@ extensions/v1beta1
 {{/*
 Create the name of the PSP to use
 */}}
-{{- define "php.pspName" -}}
-{{ .Values.psp.name | default (include "php.fullname" .) }}
+{{- define "php.podSecurityPolicyName" -}}
+{{ .Values.podSecurityPolicy.name | default (include "php.fullname" .) }}
 {{- end -}}

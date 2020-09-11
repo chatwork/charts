@@ -6,13 +6,13 @@ metadata:
     {{- include "php.labels" . | nindent 4 }}
   name: {{ include "php.fullname" . }}
 rules:
-  {{- if .Values.psp.create }}
+  {{- if .Values.podSecurityPolicy.create }}
   - apiGroups:
       - policy
     resources:
       - podsecuritypolicies
     resourceNames:
-      - {{ include "php.pspName" . }}
+      - {{ include "php.podSecurityPolicyName" . }}
     verbs:
       - use
   {{- end }}
