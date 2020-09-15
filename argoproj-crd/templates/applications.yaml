@@ -10,10 +10,11 @@ metadata:
     {{- with $app.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  {{- if $app.annotations }}
   annotations:
-  {{- if $app.chatworkRoomId }}
-    recipients.argocd-notifications.argoproj.io: webhook:chatwork
-    chatwork: "{{ $app.chatworkRoomId }}"
+    {{- with $app.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   {{- if $app.cascade }}
   finalizers:
