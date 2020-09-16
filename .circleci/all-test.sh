@@ -2,9 +2,10 @@
 
 set -u
 
-dirs='ls -d */ | sed "s#/\$##"'
+dirs=`ls -d */ | sed "s%/\$%%"`
 
-for dir in dirs;do
+for dir in $dirs;do
+    echo $dir
     cd $dir
     kubectl create namespace $dir --dry-run -o yaml | kubectl apply -f -
     kubectl config set-context --current --namespace=$dir
