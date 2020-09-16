@@ -41,40 +41,36 @@ ci\:diff\:from:
 	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" = "master" ]; then \
 	    git --no-pager log --first-parent master --merges -n 2 --pretty=format:"%H" | tail -n 1; \
 	else \
-	    echo "remotes/origin/master"; \
+	    echo "remotes/origin/test_makefile"; \
 	fi
 
 .PHONY: ci\:diff\:to
 ci\:diff\:to:
 	@echo "HEAD";
 
-.PHONY: ci\:diff\:chart
-ci\:diff\:chart:
-	@git --no-pager diff --diff-filter=ACMRTUXB --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" \
-	  | sed 's:^.*/compare/::g' \
-	  | grep -v README.md \
-	  | grep -v Makefile \
-	  | grep -v variant.lock \
-	  | grep -v variant.mod \
-	  | xargs -I{} dirname {} \
-	  | xargs -I{} sh -c "test -d {} && echo {}" \
-	  | sed 's/[.\/].*$$//' \
-	  | sed '/^$$/d' \
-	  | uniq;
-
-.PHONY: ci\:diff
-ci\:diff:
-	@if echo "$(shell make ci:diff:makefile)" | grep -e ^Makefile$$ >/dev/null; then \
-		ls -d */ | sed "s:/\$$::"; \
-	else \
-		echo "$(shell make ci:diff:chart)"; \
-	fi
-
 .PHONY: ci\:diff\:makefile
 ci\:diff\:makefile:
 	@git --no-pager diff --diff-filter=ACMRTUXB --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" \
 	  | sed 's:^.*/compare/::g' \
-	  | grep -e ^Makefile$$;
+	  | grep -e '^Makefile$$' || exit 0;
+
+.PHONY: ci\:diff
+ci\:diff:
+	@if echo "$(shell make ci:diff:makefile)" | grep -e "^Makefile$$" >/dev/null; then \
+		ls -d */ | sed "s:/\$$::"; \
+	else \
+		git --no-pager diff --diff-filter=ACMRTUXB --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" \
+		| sed 's:^.*/compare/::g' \
+		| grep -v README.md \
+		| grep -v Makefile \
+		| grep -v variant.lock \
+		| grep -v variant.mod \
+		| xargs -I{} dirname {} \
+		| xargs -I{} sh -c "test -d {} && echo {}" \
+		| sed 's/[.\/].*$$//' \
+		| sed '/^$$/d' \
+		| uniq; \
+	fi
 
 .PHONY: ci\:changelog
 ci\:changelog:
