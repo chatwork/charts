@@ -13,7 +13,7 @@ jobs:
       - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && ../.circleci/check-version.sh || exit 255"
       - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && kubectl create namespace {} --dry-run -o yaml | kubectl apply -f -"
       - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && kubectl config set-context --current --namespace={} && make install || exit 255"
-      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} s&& kubectl config set-context --current --namespace={} && make test || exit 255"
+      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && kubectl config set-context --current --namespace={} && make test || exit 255"
       - save_cache:
           key: v1-binary
           paths:
