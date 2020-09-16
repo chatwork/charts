@@ -54,22 +54,26 @@ ci\:diff\:makefile:
 	  | sed 's:^.*/compare/::g' \
 	  | grep -e '^Makefile$$' || exit 0;
 
+.PHONY: ci\:diff\:chart
+ci\:diff\:chart:
+	@git --no-pager diff --diff-filter=ACMRTUXB --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" \
+	| sed 's:^.*/compare/::g' \
+	| grep -v README.md \
+	| grep -v Makefile \
+	| grep -v variant.lock \
+	| grep -v variant.mod \
+	| xargs -I{} dirname {} \
+	| xargs -I{} sh -c "test -d {} && echo {}" \
+	| sed 's/[.\/].*$$//' \
+	| sed '/^$$/d' \
+	| uniq;
+
 .PHONY: ci\:diff
 ci\:diff:
 	@if echo "$(shell make ci:diff:makefile)" | grep -e "^Makefile$$" >/dev/null; then \
-		ls -d */ | sed "s:/\$$::"; \
+		ls -d */ | sed "s:/$$::"; \
 	else \
-		git --no-pager diff --diff-filter=ACMRTUXB --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" \
-		| sed 's:^.*/compare/::g' \
-		| grep -v README.md \
-		| grep -v Makefile \
-		| grep -v variant.lock \
-		| grep -v variant.mod \
-		| xargs -I{} dirname {} \
-		| xargs -I{} sh -c "test -d {} && echo {}" \
-		| sed 's/[.\/].*$$//' \
-		| sed '/^$$/d' \
-		| uniq; \
+		for n in $(shell make ci:diff:chart);do echo $$n; done; \
 	fi
 
 .PHONY: ci\:changelog
