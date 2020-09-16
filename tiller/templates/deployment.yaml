@@ -25,7 +25,7 @@ spec:
       containers:
       - env:
         - name: TILLER_NAMESPACE
-          value: {{ .Release.Namespace }}
+          value: "{{ .Release.Namespace }}"
         - name: TILLER_HISTORY_MAX
           value: "0"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
