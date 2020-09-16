@@ -19,7 +19,8 @@ spec:
        app: {{ include "twistlock-console.fullname" $root }}
        release: {{ .Release.Name }}
   {{- with .Values.deployment.strategy }}
-  strategy:{{ toYaml . | nindent 4 }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   template:
     metadata:
