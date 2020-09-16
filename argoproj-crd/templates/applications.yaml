@@ -10,6 +10,12 @@ metadata:
     {{- with $app.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  {{- if $app.annotations }}
+  annotations:
+    {{- with $app.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
   {{- if $app.cascade }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
