@@ -48,8 +48,8 @@ ci\:diff\:from:
 ci\:diff\:to:
 	@echo "HEAD";
 
-.PHONY: ci\:diff
-ci\:diff:
+.PHONY: ci\:diff\:chart
+ci\:diff\:chart:
 	@git --no-pager diff --diff-filter=ACMRTUXB --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" \
 	  | sed 's:^.*/compare/::g' \
 	  | grep -v README.md \
@@ -62,11 +62,19 @@ ci\:diff:
 	  | sed '/^$$/d' \
 	  | uniq;
 
+.PHONY: ci\:diff
+ci\:diff:
+	@if echo "$(shell make ci:diff:makefile)" | grep -e ^Makefile$$ >/dev/null; then \
+		ls -d */ | sed "s:/\$$::"; \
+	else \
+		echo "$(shell make ci:diff:chart)"; \
+	fi
+
 .PHONY: ci\:diff\:makefile
 ci\:diff\:makefile:
 	@git --no-pager diff --diff-filter=ACMRTUXB --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" \
 	  | sed 's:^.*/compare/::g' \
-	  | grep -e ^Makefile$;
+	  | grep -e ^Makefile$$;
 
 .PHONY: ci\:changelog
 ci\:changelog:
