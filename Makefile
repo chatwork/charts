@@ -1,6 +1,6 @@
-KIND_VERSION = 0.8.1
-KUBERNETES_VERSION = 1.17.9
-KIND_NODE_HASH = e2df133f80ef633c53c0200114fce2ed5e1f6947477dbc83261a6a921169488d
+KIND_VERSION = 0.9.0
+KUBERNETES_VERSION = 1.17.11
+KIND_NODE_HASH = 5240a7a2c34bf241afb54ac05669f8a46661912eab05705d660971eeb12f6555
 HELM_VERSION = 3.3.1
 
 .PHONY: apply
@@ -48,19 +48,29 @@ ci\:diff\:from:
 ci\:diff\:to:
 	@echo "HEAD";
 
-.PHONY: ci\:diff
-ci\:diff:
+.PHONY: ci\:diff\:makefile
+ci\:diff\:makefile:
 	@git --no-pager diff --diff-filter=ACMRTUXB --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" \
 	  | sed 's:^.*/compare/::g' \
-	  | grep -v README.md \
-	  | grep -v Makefile \
-	  | grep -v variant.lock \
-	  | grep -v variant.mod \
-	  | xargs -I{} dirname {} \
-	  | xargs -I{} sh -c "test -d {} && echo {}" \
-	  | sed 's/[.\/].*$$//' \
-	  | sed '/^$$/d' \
-	  | uniq;
+	  | grep -e '^Makefile$$' || exit 0;
+
+.PHONY: ci\:diff
+ci\:diff:
+	@if echo "$(shell make ci:diff:makefile)" | grep -e "^Makefile$$" >/dev/null; then \
+		ls -d */ | sed "s:/\$$::"; \
+	else \
+		git --no-pager diff --diff-filter=ACMRTUXB --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" \
+		| sed 's:^.*/compare/::g' \
+		| grep -v README.md \
+		| grep -v Makefile \
+		| grep -v variant.lock \
+		| grep -v variant.mod \
+		| xargs -I{} dirname {} \
+		| xargs -I{} sh -c "test -d {} && echo {}" \
+		| sed 's/[.\/].*$$//' \
+		| sed '/^$$/d' \
+		| uniq; \
+	fi
 
 .PHONY: ci\:changelog
 ci\:changelog:
