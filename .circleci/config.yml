@@ -1,5 +1,20 @@
 version: 2
 jobs:
+  alltest:
+    machine: true
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-binary
+      - run: make ci:enable:k8s
+      - run: make ci:enable:helm
+      - run: make ci:diff:makefile | xargs -I{} /bin/bash -c ".circleci/all-test.sh"
+      - save_cache:
+          key: v1-binary
+          paths:
+            - .bin/
+
   test:
     machine: true
     steps:
@@ -57,6 +72,10 @@ workflows:
   integration:
     jobs:
       - test:
+          filters:
+            branches:
+              ignore: gh-pages
+      - alltest:
           filters:
             branches:
               ignore: gh-pages

@@ -62,6 +62,12 @@ ci\:diff:
 	  | sed '/^$$/d' \
 	  | uniq;
 
+.PHONY: ci\:diff\:makefile
+ci\:diff\:makefile:
+	@git --no-pager diff --diff-filter=ACMRTUXB --name-only "$(shell make ci:diff:from)" "$(shell make ci:diff:to)" \
+	  | sed 's:^.*/compare/::g' \
+	  | grep -e ^Makefile$;
+
 .PHONY: ci\:changelog
 ci\:changelog:
 	@if [ -n "${DIR}" ]; then \
