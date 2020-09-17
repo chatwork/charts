@@ -73,6 +73,7 @@ test-local-akka-http:
 	@echo "=> Testing examples/local-akka-http.yaml"
 	helm upgrade -i --wait -f examples/local-akka-http.yaml $(RELEASE)-local-akka-http .
 	helm test --logs $(RELEASE)-local-akka-http
+	helm uninstall $(RELEASE)-local-akka-http
 
 .PHONY: test-cluster-discovery-dns
 test-cluster-discovery-dns:
@@ -80,6 +81,7 @@ test-cluster-discovery-dns:
 	@echo "=> Testing examples/cluster-discovery-dns.yaml"
 	helm upgrade -i --wait -f examples/cluster-discovery-dns.yaml $(RELEASE)-cluster-discovery-dns .
 	helm test --logs $(RELEASE)-cluster-discovery-dns
+	helm uninstall $(RELEASE)-cluster-discovery-dns
 
 .PHONY: test-cluster-discovery-kubernetes-api
 test-cluster-discovery-kubernetes-api:
@@ -87,6 +89,7 @@ test-cluster-discovery-kubernetes-api:
 	@echo "=> Testing examples/cluster-discovery-kubernetes-api.yaml"
 	helm upgrade -i --wait -f examples/cluster-discovery-kubernetes-api.yaml $(RELEASE)-cluster-discovery-kubernetes-api .
 	helm test --logs $(RELEASE)-cluster-discovery-kubernetes-api
+	helm uninstall $(RELEASE)-cluster-discovery-kubernetes-api
 
 .PHONY: test-use-environment-variable-and-secret
 test-use-environment-variable-and-secret:
@@ -94,6 +97,7 @@ test-use-environment-variable-and-secret:
 	@echo "=> Testing examples/use-environment-variable-and-secret.yaml"
 	helm upgrade -i --wait -f examples/use-environment-variable-and-secret.yaml $(RELEASE)-use-environment-variable-and-secret .
 	helm test --logs $(RELEASE)-use-environment-variable-and-secret
+	helm uninstall $(RELEASE)-use-environment-variable-and-secret
 
 .PHONY: uninstall
 uninstall:
