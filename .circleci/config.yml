@@ -10,8 +10,8 @@ jobs:
       - run: make ci:enable:k8s
       - run: make ci:enable:helm
       - run: make ci:diff
-      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && ../.circleci/check-version.sh || exit 255"
-      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && kubectl create namespace {} --dry-run -o yaml | kubectl apply -f -"
+      - run: make ci:diff:chart | xargs -I{} /bin/bash -c "cd ./{} && ../.circleci/check-version.sh || exit 255"
+      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && kubectl create namespace {} --dry-run -o yaml | kubectl apply -f - || exit 255"
       - run: for target in `make ci:diff`;do cd ./$target; kubectl config set-context --current --namespace=$target; make install && make test && make uninstall || exit 255; cd ..; done
       - save_cache:
           key: v1-binary
