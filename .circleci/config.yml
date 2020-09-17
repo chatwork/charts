@@ -14,8 +14,7 @@ jobs:
       - run:
           command: |
             make ci:diff | xargs -I{} /bin/bash -c "
-              cd ./{};
-              kubectl create namespace {} --dry-run -o yaml | kubectl apply -f -" && make install && make test && make uninstall || exit 255;
+              cd ./{} && kubectl create namespace {} --dry-run -o yaml | kubectl apply -f -" && make install && make test && make uninstall || exit 255;
             "
       - save_cache:
           key: v1-binary
