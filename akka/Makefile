@@ -1,5 +1,5 @@
-KUBERNETES_VERSION="1.15.7"
-RELEASE = "$$(basename $$PWD)"
+KUBERNETES_VERSION="1.17.11"
+RELEASE = $$(basename $$PWD)
 
 .PHONY: install
 install:
@@ -69,35 +69,31 @@ test-default:
 
 .PHONY: test-local-akka-http
 test-local-akka-http:
-	-@helm uninstall $(RELEASE)
+	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi
 	@echo "=> Testing examples/local-akka-http.yaml"
 	helm upgrade -i --wait -f examples/local-akka-http.yaml $(RELEASE)-local-akka-http .
 	helm test --logs $(RELEASE)-local-akka-http
-	helm uninstall $(RELEASE)-local-akka-http
 
 .PHONY: test-cluster-discovery-dns
 test-cluster-discovery-dns:
-	-@helm uninstall $(RELEASE)
+	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi
 	@echo "=> Testing examples/cluster-discovery-dns.yaml"
 	helm upgrade -i --wait -f examples/cluster-discovery-dns.yaml $(RELEASE)-cluster-discovery-dns .
 	helm test --logs $(RELEASE)-cluster-discovery-dns
-	helm uninstall $(RELEASE)-cluster-discovery-dns
 
 .PHONY: test-cluster-discovery-kubernetes-api
 test-cluster-discovery-kubernetes-api:
-	-@helm uninstall $(RELEASE)
+	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi
 	@echo "=> Testing examples/cluster-discovery-kubernetes-api.yaml"
 	helm upgrade -i --wait -f examples/cluster-discovery-kubernetes-api.yaml $(RELEASE)-cluster-discovery-kubernetes-api .
 	helm test --logs $(RELEASE)-cluster-discovery-kubernetes-api
-	helm uninstall $(RELEASE)-cluster-discovery-kubernetes-api
 
 .PHONY: test-use-environment-variable-and-secret
 test-use-environment-variable-and-secret:
-	-@helm uninstall $(RELEASE)
+	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi
 	@echo "=> Testing examples/use-environment-variable-and-secret.yaml"
 	helm upgrade -i --wait -f examples/use-environment-variable-and-secret.yaml $(RELEASE)-use-environment-variable-and-secret .
 	helm test --logs $(RELEASE)-use-environment-variable-and-secret
-	helm uninstall $(RELEASE)-use-environment-variable-and-secret
 
 .PHONY: uninstall
 uninstall:
