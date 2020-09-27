@@ -1,7 +1,7 @@
 apiVersion: v1
 name: twistlock-console
-version: "0.0.5"
-appVersion: "20.04.163"
+version: "0.0.6"
+appVersion: "20.09.345"
 description: Chart for Twistlock Console
 home: https://www.twistlock.com/
 maintainers:
