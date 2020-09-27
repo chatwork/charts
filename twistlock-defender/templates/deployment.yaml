@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "twistlock-defender.fullname" $root }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "twistlock-defender.fullname" $root }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -79,6 +80,11 @@ spec:
         {{- with .Values.readinessProbe }}
         readinessProbe:{{ tpl (toYaml .) $root | nindent 10 }}
         {{- end }}
+        {{- if .Values.service.enabled }}
+        ports:
+        - name: https
+          containerPort: {{ .Values.deployment.containerPort }}
+        {{- end }}
         env:
         - name: LOG_PROD
           value: "true"
@@ -104,6 +110,24 @@ spec:
         # https://docs.twistlock.com/docs/19.07/install/install_defender/install_rasp_defender.html#embed-rasp-defender-manually
         - name: INSTALL_BUNDLE
           value: "{{ .Values.config.installBundle }}"
+        {{- if .Values.config.containerizedHost }}
+        - name: CONTAINERIZED_HOST
+          value: "true"
+        {{- end }}
+        {{- if .Values.config.microsegmentation }}
+        - name: ENFORCERD_KUBENODE
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: K8S_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: K8S_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        {{- end }}
         {{- with .Values.extraEnv }}{{ toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.securityContext }}

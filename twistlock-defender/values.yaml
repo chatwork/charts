@@ -39,14 +39,21 @@ config:
     listenerType: "none"
   clusterId: "CLUSTERID"
   monitor:
-    serviceAccounts: "true"
-    istio: "false"
+    serviceAccounts: true
+    istio: false
   # https://docs.twistlock.com/docs/19.07/install/install_defender/install_rasp_defender.html#embed-rasp-defender-manually
   installBundle: ""
-  collectPodLabels: "true"
+  collectPodLabels: true
   docker:
     clientAddress: "/var/run/docker.sock"
-    tag: "_20_04_163"
+    tag: "_20_09_345"
+  containerizedHost: false
+  microsegmentation: false
+  # if you set microsegmentation true, you need set to securityContext following capabilities
+  #- NET_RAW # Required for using raw sockets by UDP datapath and in diagnostic ping implementations
+  #- SYS_RESOURCE # Required for setting resource limits (setrlimit syscall)
+  #- SYS_MODULE # Required for loading kernel modules
+  #- IPC_LOCK # Required for defender to use perf events on systems with insufficient mlock limit, since microsegmentation agent consumes it too. (See https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html#unprivileged-users)
 
 resources:
   limits:
@@ -81,12 +88,17 @@ deployment:
   replicas: 1
   strategy: {}
   affinity: {}
+  containerPort: 443
 
 daemonset:
   enabled: true
   annotations: {}
   updateStrategy:
     type: RollingUpdate
+  containerPort: 443
+
+service:
+  enabled: false
 
 podAnnotations: {}
 tolerations: []

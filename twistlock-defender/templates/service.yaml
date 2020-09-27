@@ -1,5 +1,6 @@
+{{- if .Values.service.enabled }}
 apiVersion: v1
-kind: ServiceAccount
+kind: Service # Expose the Defender as admission controller
 metadata:
   name: {{ template "twistlock-defender.fullname" . }}
   namespace: {{ .Release.Namespace }}
@@ -8,5 +9,12 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-secrets:
-- name: {{ template "twistlock-defender.fullname" . }}
+spec:
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: {{ .Values.daemonset.containerPort }}
+  selector:
+    app: {{ template "twistlock-defender.fullname" . }}
+    release: {{ .Release.Name }}
+{{- end }}
