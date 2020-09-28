@@ -13,3 +13,4 @@ test:
 .PHONY: uninstall
 uninstall:
 	helm uninstall $(RELEASE)
+	kubectl delete -f https://projectcontour.io/examples/kuard.yaml

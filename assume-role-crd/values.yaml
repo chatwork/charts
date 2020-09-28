@@ -1,5 +1,0 @@
-# Same clusterName in kube-aws cluster.yaml.
-# clusterName: ""
-
-# ARN of IAM Role to assume.
-# roleArn: ""

@@ -1,7 +1,0 @@
-name: assume-role-operator
-version: 0.0.4
-appVersion: 0.0.3
-description: AWS Role assume policy modify
-maintainers:
-- name: cwsakamoto
-  email: sakamoto@chatwork.com
