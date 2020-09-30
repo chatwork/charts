@@ -1,0 +1,28 @@
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    {{- with .Values.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "mailcatcher-mailcatcher.labels" . | nindent 4 }}
+    {{- with .Values.service.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: {{ include "mailcatcher.fullname" . }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.mailcatcher.smtpPort }}
+      targetPort: smtp
+      protocol: TCP
+      name: smtp
+    - port: {{ .Values.service.port | default .Values.mailcatcher.httpPort }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "mailcatcher-mailcatcher.selectorLabels" . | nindent 4 }}
+{{- end }}

@@ -1,0 +1,141 @@
+# Default values for postfix.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: chatwork/mailcatcher
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+mailcatcher:
+  # Set the ip address of both servers
+  ip: 0.0.0.0
+  # Set the ip address of the smtp server
+  smtpIp:
+  # Set the port of the smtp server
+  smtpPort: 1025
+  # Set the ip address of the http server
+  httpIp:
+  # Set the port address of the http server
+  httpPort: 1080
+  # Add a prefix to all HTTP paths
+  httpPath:
+  # Don't allow quitting the process
+  noQuit:
+  # Be more verbose
+  verbose:
+
+affinity: {}
+
+annotations: {}
+
+env: []
+  # - name: DEMO_GREETING
+  #   value: "Hello from the environment"
+
+envFrom: []
+  # - configMapRef:
+  #     name: special-config
+
+extraCmmand: []
+
+extraPorts: []
+  #- name: extra-port
+  #  containerPort: 9999
+  #  protocol: TCP
+
+extraVolumes: []
+  # - name: volime-name
+  #   hostPath:
+  #     path: /path/to
+
+extraVolumeMounts: []
+  # - name: volume-name
+  #   mountPath: /path/to
+
+imagePullSecrets: []
+
+labels: {}
+
+lifecycle: {}
+
+livenessProbe:
+  httpGet:
+    port: 1080
+    path: /
+    scheme: HTTP
+  failureThreshold: 2
+  initialDelaySeconds: 10
+  periodSeconds: 60
+
+nodeSelector: {}
+
+podAnnotations: {}
+
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+priorityClassName: ""
+
+readinessGates: []
+
+readinessProbe:
+  httpGet:
+    port: 1080
+    path: /
+    scheme: HTTP
+  failureThreshold: 2
+  periodSeconds: 5
+
+replicaCount: 1
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+restartPolicy: Always
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+strategy: {}
+
+terminationGracePeriodSeconds: 60
+
+tolerations: []
+
+# SA Configuration
+serviceAccount:
+  # Specifies whether a service account should be created.
+  create: true
+  # Annotations to add to the service account.
+  annotations: {}
+  labels: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template.
+  name:
+
+service:
+  enabled: true
+  annotations: []
+  labels: []
+  type: LoadBalancer
+  port: 1080
