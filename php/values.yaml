@@ -118,7 +118,7 @@ busybox:
   #sharedPath: /var/www/html
 
   # `busybox.extraEnv` is additional environment variables.
-  extraEnv: {}
+  extraEnv: []
   #  KEY1: VALUE1
   #  KEY2: VALUE2
   #  KEY3: VALUE3
@@ -221,7 +221,7 @@ nginx:
   resources: {}
 
   # `nginx.extraEnv` is additional environment variables.
-  extraEnv: {}
+  extraEnv: []
   #  KEY1: VALUE1
   #  KEY2: VALUE2
   #  KEY3: VALUE3
