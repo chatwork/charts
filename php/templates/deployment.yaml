@@ -108,9 +108,9 @@ spec:
             {{- if .Values.nginx.enableAutoMountConfigMap }}
             {{- range $name, $tmpl := .Values.nginx.configMaps }}
             {{- if eq (kindOf $tmpl) "string" }}
-            - name: {{ $name | replace "/" "-" | replace "." "-" | lower }}
+            - name: {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
               mountPath: /etc/nginx/{{ $name }}
-              subPath: {{ $name }}
+              subPath: {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" }}
             {{- end }}
             {{- end }}
             {{- end }}
@@ -158,9 +158,9 @@ spec:
             {{- if .Values.fpm.enableAutoMountConfigMap }}
             {{- range $name, $tmpl := .Values.fpm.configMaps }}
             {{- if eq (kindOf $tmpl) "string" }}
-            - name: {{ $name | replace "/" "-" | replace "." "-" | lower }}
+            - name: {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
               mountPath: /usr/local/etc/{{ $name }}
-              subPath: {{ $name }}
+              subPath: {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" }}
             {{- end }}
             {{- end }}
             {{- end }}
@@ -189,9 +189,9 @@ spec:
         {{- if and .Values.nginx.enabled .Values.nginx.enableAutoMountConfigMap }}
         {{- range $name, $tmpl := .Values.nginx.configMaps }}
         {{- if eq (kindOf $tmpl) "string" }}
-        - name: {{ $name | replace "/" "-"  | replace "." "-" | lower }}
+        - name: {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
           configMap:
-            name: {{ include "php.fullname" $root }}-nginx-{{ $name | replace "/" "-"  | replace "." "-" | lower }}
+            name: {{ include "php.fullname" $root }}-nginx-{{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
         {{- end }}
         {{- end }}
         {{- end }}
@@ -205,9 +205,9 @@ spec:
         {{- if .Values.fpm.enableAutoMountConfigMap }}
         {{- range $name, $tmpl := .Values.fpm.configMaps }}
         {{- if eq (kindOf $tmpl) "string" }}
-        - name: {{ $name | replace "/" "-"  | replace "." "-" | lower }}
+        - name: {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
           configMap:
-            name: {{ include "php.fullname" $root }}-fpm-{{ $name | replace "/" "-"  | replace "." "-" | lower }}
+            name: {{ include "php.fullname" $root }}-fpm-{{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
         {{- end }}
         {{- end }}
         {{- end }}
