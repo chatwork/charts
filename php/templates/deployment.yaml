@@ -57,6 +57,15 @@ spec:
           volumeMounts:
             - name: share
               mountPath: {{ .Values.busybox.sharedPath | default .Values.sharedPath }}
+            {{- if .Values.busybox.enableAutoMountConfigMap }}
+            {{- range $name, $tmpl := .Values.busybox.configMaps }}
+            {{- if eq (kindOf $tmpl) "string" }}
+            - name: {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
+              mountPath: {{ .Values.busybox.sharedPath | default .Values.sharedPath }}/{{ $name }}
+              subPath: {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
             {{- with .Values.busybox.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -164,6 +173,15 @@ spec:
         {{- if .Values.busybox.enabled }}
         - name: share
           emptyDir: {}
+        {{- end }}
+        {{- if and .Values.busybox.enabled .Values.busybox.enableAutoMountConfigMap }}
+        {{- range $name, $tmpl := .Values.busybox.configMaps }}
+        {{- if eq (kindOf $tmpl) "string" }}
+        - name: {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
+          configMap:
+            name: {{ include "php.fullname" $root }}-busybox-{{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
+        {{- end }}
+        {{- end }}
         {{- end }}
         {{- with .Values.busybox.extraVolumes }}
         {{- toYaml . | nindent 8 }}
