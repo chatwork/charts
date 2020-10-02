@@ -6,7 +6,7 @@
 sharedPath: /var/www/html
 
 # DEPLOYMENT
-#replicaCount: 1
+replicaCount: 1
 
 strategy:
   type: RollingUpdate
