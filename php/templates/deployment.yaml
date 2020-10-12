@@ -88,10 +88,14 @@ spec:
             {{- toYaml .Values.nginx.extraEnv | nindent 12 }}
           envFrom:
             {{- toYaml .Values.nginx.extraEnvFrom | nindent 12 }}
+          {{- with .Values.nginx.livenessProbe }}
           livenessProbe:
-            {{- toYaml .Values.nginx.livenessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.nginx.readinessProbe }}
           readinessProbe:
-            {{- toYaml .Values.nginx.readinessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
           lifecycle:
@@ -136,10 +140,14 @@ spec:
             {{- toYaml .Values.fpm.extraEnv | nindent 12 }}
           envFrom:
             {{- toYaml .Values.fpm.extraEnvFrom | nindent 12 }}
+          {{- with .Values.fpm.livenessProbe }}
           livenessProbe:
-            {{- toYaml .Values.fpm.livenessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.fpm.readinessProbe }}
           readinessProbe:
-            {{- toYaml .Values.fpm.readinessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.fpm.resources | nindent 12 }}
           lifecycle:
