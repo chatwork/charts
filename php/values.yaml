@@ -38,6 +38,7 @@ affinity: {}
 # SERVICE
 service:
   type: LoadBalancer
+  port: 80
   extraPorts: []
   labels: {}
   annotations: {}
@@ -307,7 +308,7 @@ nginx:
 
           location / {
               root   {{ .Values.sharedPath }};
-              index  index.html index.htm;
+              index  index.php index.html index.htm;
           }
           location ~ \.php$ {
               root           {{ .Values.sharedPath }};
