@@ -24,7 +24,7 @@ spec:
           {{- range .extraPathes }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
-          - path: {{ .path | default "/" }}
+          - path: {{ .path }}
             backend:
               serviceName: {{ include "php.fullname" $root }}
               {{- if $root.Values.nginx.enabled }}
