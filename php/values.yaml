@@ -37,21 +37,37 @@ affinity: {}
 
 # SERVICE
 service:
-  type: LoadBalancer
-  port: 80
-  extraPorts: []
-  labels: {}
   annotations: {}
+  labels: {}
+  type: LoadBalancer
+  port: null
+  extraPorts: []
 
 # INGRESS
 ingress:
   enabled: false
   labels: {}
   annotations: {}
+  hosts: []
+  # - host: localhost
+  #   path: /
+  #   extraPathes:
+  #     path: /foo
+  #     backend:
+  #       serviceName: foo-service
+  #       servicePort: 80
+  tls: []
+  # - hosts:
+  #     - example.com
+  #       secretName: examplecret-tls
 
 # PDB
 podDisruptionBudget:
   enabled: false
+  annotations: {}
+  labels: {}
+  minAvailabled:
+  maxAvailabled:
 
 # HPA
 autoscaling:
@@ -116,7 +132,7 @@ busybox:
 
   # `busybox.sharedPath` is specifies the directory to mount.
   # Default is `sharedPath`, but if it conflicts with the source code directory, please specify it.
-  #sharedPath: /var/www/html
+  sharedPath:
 
   # `busybox.extraEnv` is additional environment variables.
   extraEnv: []
@@ -160,18 +176,21 @@ busybox:
   #    BAR: 2
   #    BAZ: 3
 
-  # `buxybox.templates` is additional ConfigMap as a string to be passed to the tpl function.
+  # If true, ConfigMap will be volume-mounted to the pod automatically.
+  enableAutoMountConfigMap: true
+
+  # `buxybox.configMaps` is additional ConfigMap as a string to be passed to the tpl function.
   # ConfigMap name created here is `[release-name]-busybox-[template-name]`.
   configMaps: {}
-  #  file1.yaml: |
+  #  template-name1.yaml: |
   #    foo: 1
   #    bar: 2
   #    baz: 3
-  #  file2.yaml: |
+  #  template-name2.yaml: |
   #    foo: 1
   #    bar: 2
   #    baz: 3
-  #  envname:
+  #  template-name3:
   #    FOO: 1
   #    BAR: 2
   #    BAZ: 3
@@ -201,7 +220,7 @@ nginx:
 
   livenessProbe:
     httpGet:
-      path: /index.php
+      path: /
       port: 80
     initialDelaySeconds: 15
     periodSeconds: 5
@@ -211,7 +230,7 @@ nginx:
 
   readinessProbe:
     httpGet:
-      path: /index.php
+      path: /
       port: 80
     initialDelaySeconds: 15
     periodSeconds: 5
@@ -270,6 +289,7 @@ nginx:
   #    BAR: 2
   #    BAZ: 3
 
+  # If true, ConfigMap will be volume-mounted to the pod automatically.
   enableAutoMountConfigMap: true
 
   # configuration NGINX templates.
@@ -399,6 +419,7 @@ fpm:
   #    BAR: 2
   #    BAZ: 3
 
+  # If true, ConfigMap will be volume-mounted to the pod automatically.
   enableAutoMountConfigMap: true
 
   # configuration PHP-FPM templates
