@@ -70,8 +70,8 @@ The following table lists the configurable parameters of the PHP chart and their
 | `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
 | `podDisruptionBudget.annotations` | Annotations for the pod disruption budget | `{}` |
 | `podDisruptionBudget.labels` | Labels for the pod disruption budget | `{}` |
-| `podDisruptionBudget.minAvailabled` | Minimum number / percentage of pods that should remain scheduled | `nil` |
-| `podDisruptionBudget.maxAvailabled` | Minimum number / percentage of pods that should remain scheduled | `nil` |
+| `podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `nil` |
+| `podDisruptionBudget.maxUnavailable` | Minimum number / percentage of pods that should remain scheduled | `nil` |
 | `autoscaling.enabled` | If true, create a horizonal pod autoscaler | `false` |
 | `autoscaling.annotations` | Annotations for the horizonal pod autoscaler | `{}` |
 | `autoscaling.labels` | Annotations for the horizonal pod autoscaler | `{}` |

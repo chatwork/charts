@@ -66,8 +66,8 @@ podDisruptionBudget:
   enabled: false
   annotations: {}
   labels: {}
-  minAvailabled:
-  maxAvailabled:
+  minAvailable:
+  maxUnavailable:
 
 # HPA
 autoscaling:
