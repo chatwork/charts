@@ -2,18 +2,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "php.fullname" . }}
+  annotations:
+    {{- range $k, $v := .Values.service.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
   labels:
     {{- include "php.labels" . | nindent 4 }}
-    {{- with .Values.service.labels }}
-    {{- toYaml . | nindent 4 }}
+    {{- range $k, $v := .Values.service.labels }}
+    {{ $k }}: {{ $v | quote }}
     {{- end }}
-  {{- with .Values.service.annotations }}
-  annotations:
-    {{- range $k, $v := . }}
-    {{ $k }}: {{ tpl $v $root | toYaml | indent 4 }}
-    {{- end }}
-  {{- end }}
+  name: {{ include "php.fullname" . }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -28,4 +26,5 @@ spec:
     {{- with .Values.service.extraPorts }}
     {{- tpl (toYaml .) $root | nindent 4 }}
     {{- end }}
-  selector: {{ include "php.selectorLabels" . | nindent 4 }}
+  selector:
+    {{- include "php.selectorLabels" . | nindent 4 }}

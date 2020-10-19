@@ -15,8 +15,11 @@ spec:
       command:
         - /bin/sh
         - -c
-        - |
-          curl http://{{ template "php.fullname" . }}:{{ .Values.service.port | default .Values.nginx.containerPort }}
+        {{- if .Values.nginx.enabled }}
+        - 'curl http://{{ template "php.fullname" . }}:{{ .Values.service.port | default .Values.nginx.containerPort }}'
+        {{- else }}
+        - 'curl http://{{ template "php.fullname" . }}:{{ .Values.service.port | default .Values.fpm.containerPort }}'
+        {{- end }}
     {{- with .Values.test.extraContainer }}
     {{- toYaml . | nindent 4}}
     {{- end }}
