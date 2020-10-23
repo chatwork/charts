@@ -3,8 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    checksum/configmap: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
-    checksum/secret: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
     {{- with .Values.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -26,6 +24,8 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/configmap: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
+        checksum/secret: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
         {{- if .Values.metrics.enabled }}
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.metrics.port }}"
