@@ -1,25 +1,20 @@
 {{- $root := . -}}
 {{- if .Values.nginx.enabled }}
-{{- range $name, $tmpl := .Values.nginx.templates }}
+{{- range $name, $tmpl := .Values.nginx.configMaps }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" $root }}-nginx-{{ $name | replace "." "-" | lower }}
-  labels: {{ include "php.labels" $root | nindent 4 }}
-  {{- with $root.Values.nginx.annotations }}
-  annotations:
-    {{- range $k, $v := . }}
-    {{ $k }}: {{ tpl $v $root | toYaml | indent 4 }}
-    {{- end }}
-  {{- end }}
+  labels:
+    {{- include "php.labels" $root | nindent 4 }}
+  name: {{ include "php.fullname" $root }}-nginx-{{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
 data:
   {{- if eq (kindOf $tmpl) "string" }}
-  {{ $name }}: |
-{{ tpl $tmpl $root | indent 4 }}
+  {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" }}: |
+    {{- tpl $tmpl $root | nindent 4 }}
   {{- else }}
   {{- range $k, $v := $tmpl }}
-  {{ $k }}: {{ tpl $v $root | toYaml | indent 2 }}
+  {{ $k | replace "/" "-" | replace "_" "-" | replace "." "-" }}: {{ tpl $v $root | quote }}
   {{- end }}
   {{- end }}
 {{- end }}
