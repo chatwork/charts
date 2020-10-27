@@ -27,8 +27,6 @@ restartPolicy: "Always"
 
 securityContext: {}
 
-serviceAccountName: ""
-
 terminationGracePeriodSeconds: 70
 
 tolerations: []
