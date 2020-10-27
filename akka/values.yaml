@@ -98,6 +98,7 @@ akka:
     healthChecks:
       livenessPath: alive
       readinessPath: ready
+      startupPath: startup
 
     # Service fo akka-management.
     service:
@@ -148,6 +149,24 @@ extraVolumeMounts: []
 labels: {}
 
 lifecycle: {}
+
+startupProbe:
+  # If true, enable the startup probe.
+  # The probe overrides the akka-management setting.
+  # If you don't use akka-management, you should set up httpGet or tcpSocket.
+  enabled: true
+  httpGet: {}
+  #   scheme: HTTP
+  #   path: [your http path]
+  #   port: [your http port]
+  tcpSocket: {}
+  #   port: [your tcp port]
+  initialDelaySeconds: 60
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
 
 livenessProbe:
   # If true, enable the liveness probe.
@@ -260,6 +279,7 @@ autoscaling:
   minReplicas:
   maxReplicas:
   metrics: []
+  behavior: {}
 
 # Metrics Configuration.
 metrics:
@@ -324,6 +344,7 @@ configmaps:
         }
         {{- with .Values.akka.management.healthChecks }}
         health-checks {
+          startup-path = "{{ .startupPath }}"
           readiness-path = "{{ .readinessPath }}"
           liveness-path = "{{ .livenessPath }}"
         }
