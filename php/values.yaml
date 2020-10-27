@@ -21,7 +21,7 @@ podAnnotations: {}
 
 imagePullSecrets: []
 
-readinessGates: {}
+readinessGates: []
 
 restartPolicy: "Always"
 
