@@ -30,6 +30,18 @@ env:
   - name: APP_PORT
     value: "7777"
 
+startupProbe:
+  enabled: true
+  httpGet:
+    scheme: HTTP
+    path: "/"
+    port: 7777
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
 livenessProbe:
   enabled: true
   httpGet:

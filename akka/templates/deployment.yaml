@@ -3,8 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    checksum/configmap: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
-    checksum/secret: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
     {{- with .Values.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -26,6 +24,8 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/configmap: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
+        checksum/secret: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
         {{- if .Values.metrics.enabled }}
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.metrics.port }}"
@@ -42,6 +42,8 @@ spec:
     spec:
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
+      topologySpreadConstraints:
+        {{- toYaml .Values.topologySpreadConstraints | nindent 8 }}
       containers:
         - args:
             {{- if .Values.useResourceApplicationConf }}
@@ -56,6 +58,33 @@ spec:
           name: "{{ include "akka.containerName" . }}"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tags }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          {{- if and .Values.akka.management.enabled .Values.startupProbe.enabled }}
+          startupProbe:
+            httpGet:
+              scheme: HTTP
+              path: "/{{ .Values.akka.management.healthChecks.startupPath }}"
+              port: {{ .Values.akka.management.port }}
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+          {{- else if .Values.startupProbe.enabled }}
+          startupProbe:
+            {{- with .Values.startupProbe.httpGet }}
+            httpGet:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.startupProbe.tcpSocket }}
+            tcpSocket:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+          {{- end }}
           {{- if and .Values.akka.management.enabled .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:

@@ -12,6 +12,8 @@ metadata:
     {{- end }}
   name: "{{ template "akka.fullname" . }}"
 spec:
+  behavior:
+    {{- toYaml .Values.autoscaling.behavior | nindent 4 }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
     {{- toYaml .Values.autoscaling.metrics | nindent 4 }}
