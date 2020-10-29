@@ -50,10 +50,9 @@ The following table lists the configurable parameters of the PHP chart and their
 | `podLabels` | Label specified for pod in deployment | `{}` |
 | `podAnnotations` | Annotation specified for pod in deployment | `{}` |
 | `imagePullSecrets` | Name of Secret resource containing private registry credentials | `[]` |
-| `readinessGates` | Pod readiness extensions | `{}` |
+| `readinessGates` | Pod readiness extensions | `[]` |
 | `restartPolicy` | Container restart policy | `"Always"` |
 | `securityContext` | Enable security context | `{}` |
-| `serviceAccountName` | Existing ServiceAccount to use | `""` |
 | `terminationGracePeriodSeconds` | Termination grace period (in seconds) | `70` |
 | `tolerations` | Pod taint tolerations for deployment | `[]` |
 | `affinity` | Node / Pod affinities | `{}` |
