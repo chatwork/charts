@@ -93,6 +93,7 @@ test-cluster-discovery-kubernetes-api:
 
 .PHONY: test-use-environment-variable-and-secret
 test-use-environment-variable-and-secret:
+	@echo "!!! You need set namespace to akka to test this example !!!"
 	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi
 	@echo "=> Testing examples/use-environment-variable-and-secret.yaml"
 	helm upgrade -i --wait -f examples/use-environment-variable-and-secret.yaml $(RELEASE)-use-environment-variable-and-secret .

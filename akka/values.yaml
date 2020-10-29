@@ -98,7 +98,7 @@ akka:
     healthChecks:
       livenessPath: alive
       readinessPath: ready
-      startupPath: startup
+      startupPath: ready
 
     # Service fo akka-management.
     service:
@@ -161,7 +161,7 @@ startupProbe:
   #   port: [your http port]
   tcpSocket: {}
   #   port: [your tcp port]
-  initialDelaySeconds: 10
+  initialDelaySeconds: 30
   periodSeconds: 5
   timeoutSeconds: 5
   successThreshold: 1
