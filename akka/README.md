@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the akka chart and thei
 | --- | --- | --- |
 | `image.repository` | The image repository to pull from | `"kinzal/akkasvis"` |
 | `image.tags` | The image tag to pull | `"latest"` |
-| `image.pullPolicy` | Image pull policy | `"IfNotPresent"` | 
+| `image.pullPolicy` | Image pull policy | `"IfNotPresent"` |
 | `imagePullSecrets` | Image pull secrets | `[]` |
 | `nameOverride` | Override name of app | `""` |
 | `fullnameOverride` | Override full name of app | `""` |
@@ -67,13 +67,15 @@ The following table lists the configurable parameters of the akka chart and thei
 | `akka.http.ingresses[].tls` | TLS configuration for the ingress | `nil` |
 | `akka.http.ingresses[].hosts` | A list of hosts for the ingresss | `nil` |
 | `akka.http.ingresses[].targetPort` | The target port of the service | `nil` |
+| `akka.http.ingresses[].ingressClass` | Specifies ingressClass you use ingress controller. This feature is available since 1.18 and impremented by ingress controller | `nil` |
 | `akka.management.enabled` | If it is true, set akka.management and liveness/readiness probe, and headless service. To use this feature, you need to include akka-management and akka-management-cluster-bootstrap in your application dependencies | `true` |
 | `akka.management.hostname` | Hostname to bind management | `0.0.0.0` |
 | `akka.management.port` | Port to bind management | `8558` |
 | `akka.management.cluster.bootstrap.contactPointDiscovery.serviceName` | Define this name to be looked up in service discovery for "neighboring" nodes.  | `` |
 | `akka.management.cluster.bootstrap.contactPointDiscovery.requiredContactPointNr` | The smallest number of contact points that need to be discovered before the bootstrap process can start | `3` |
-| `akka.management.healthChecks.livenessPath` | When exposting health checks via Akka Management, the path to expost readiness checks on | `"alive"` |
+| `akka.management.healthChecks.livenessPath` | When exposting health checks via Akka Management, the path to expost liveness checks on | `"alive"` |
 | `akka.management.healthChecks.readinessPath` | When exposting health checks via Akka Management, the path to expost readiness checks on | `"ready"` |
+| `akka.management.healthChecks.startupPath` | When exposting health checks via Akka Management, the path to expost startup checks on | `"ready"` |
 | `akka.management.service.enabled` | If true, create a service for akka.management.port | `false` |
 | `akka.management.service.annotations` | Annotations to be added to service | `{}` |
 | `akka.management.service.labels` | Labels to be added to service | `{}` |
@@ -102,6 +104,14 @@ The following table lists the configurable parameters of the akka chart and thei
 | `livenessProbe.timeoutSeconds` | When the probe times out | `1` |
 | `livenessProbe.successThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded | `1` |
 | `livenessProbe.failureThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed | `3` |
+| `startupProbe.enabled` | Enable startup probes. This feature is available since 1.18 | `false` |
+| `startupProbe.httpGet` | Specify the endpoint to check the startup probe with http. This can be omitted if akka.management.enabled is true | `{}` |
+| `startupProbe.tcpSocket` | Specify the endpoint to check the startup probe with tco. This can be omitted if akka.management.enabled is true | `{}` |
+| `startupProbe.initialDelaySeconds` | Delay before start probe is initiated | `15` |
+| `startupProbe.periodSeconds` | How often to perform the probe | `5` |
+| `startupProbe.timeoutSeconds` | When the probe times out | `1` |
+| `startupProbe.successThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded | `1` |
+| `startupProbe.failureThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed | `3` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `podAnnotations` | Annotations to be added to pods | `{}` |
 | `podLabels` | Labels to be added to pods | `{}` |
@@ -121,6 +131,7 @@ The following table lists the configurable parameters of the akka chart and thei
 | `restartPolicy` | Container restart policy | `"Always"` |
 | `securityContext` | Allows you to overwrite the default securityContext applied to the container | `{}` |
 | `strategy` | Specifies the strategy used to replace old pods by new ones | `{}` |
+| `topologySpreadConstraints` | Set topology spread constraints to control how Pods are spread across your cluster. This feature is available since 1.18 | `[]` |
 | `terminationGracePeriodSeconds` | Termination grace period (in seconds) | `60` |
 | `tolerations` | Node taints to tolerate | `[]` |
 | `rbac.create` | If true, create & use RBAC resources | `true` |
@@ -139,6 +150,7 @@ The following table lists the configurable parameters of the akka chart and thei
 | `autoscaling.minReplicas` | Min pods for HorizontalPodAutoscaler | `` |
 | `autoscaling.maxReplicas` | Max pods for HorizontalPodAutoscaler | `` |
 | `autoscaling.metrics` | Metrics used for HorizontalPodAutoscaler | `[]` |
+| `autoscaling.behavior` | Behavior for HorizontalPodAutoscaler.  This feature is available since 1.18 | `{}` |
 | `metrics.enabled` | If true, enable Prometheus metrics | `false` |
 | `metrics.port` | Listen port | `9095` |
 | `metrics.path` | Metrics HTTP endpoint | `"/"` |
