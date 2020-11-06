@@ -11,4 +11,8 @@ test:
 
 .PHONY: uninstall
 uninstall:
-	helm uninstall $(RELEASE)
+	if helm ls | grep $(RELEASE) > /dev/null; then
+		helm uninstall $(RELEASE)
+	else
+		echo "no uninstall"
+	fi
