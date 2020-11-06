@@ -2,7 +2,8 @@ RELEASE = "$$(basename $$PWD)"
 
 .PHONY: install
 install:
-	helm upgrade -i --wait $(RELEASE) .
+	echo "no install"
+	echo "This application cannot be launched without AWS privileges."
 
 .PHONY: test
 test:

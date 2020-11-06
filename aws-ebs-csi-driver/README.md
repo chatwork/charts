@@ -6,6 +6,17 @@ A Helm chart for AWS EBS CSI Driver.
 
 CSI Document: https://kubernetes-csi.github.io/docs/introduction.html
 
+## TL;DR:
+
+```bash
+helm repo add chatwork https://chatwork.github.io/charts
+helm install chatwork/aws-ebs-csi-driver aws-ebs-csi-driver
+```
+
+This application cannot be launched without AWS privileges.
+
+https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/master/docs/example-iam-policy.json
+
 ## Configuration
 
 The following table lists the configurable parameters of the Aws-ebs-csi-driver chart and their default values.
