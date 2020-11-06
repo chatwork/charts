@@ -11,8 +11,6 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-podAnnotations: {}
-
 # True if enable volume scheduling for dynamic volume provisioning
 enableVolumeScheduling: false
 
