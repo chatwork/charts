@@ -154,7 +154,8 @@ startupProbe:
   # If true, enable the startup probe.
   # The probe overrides the akka-management setting.
   # If you don't use akka-management, you should set up httpGet or tcpSocket.
-  enabled: true
+  # This feature is available since 1.18
+  enabled: false
   httpGet: {}
   #   scheme: HTTP
   #   path: [your http path]
@@ -278,6 +279,7 @@ autoscaling:
   minReplicas:
   maxReplicas:
   metrics: []
+  # This feature is available since 1.18
   behavior: {}
 
 # Metrics Configuration.
@@ -341,11 +343,13 @@ configmaps:
             required-contact-point-nr = {{ .Values.akka.management.cluster.bootstrap.contactPointDiscovery.requiredContactPointNr }}
           }
         }
-        {{- with .Values.akka.management.healthChecks }}
+        {{- if .Values.akka.management.healthChecks }}
         health-checks {
-          startup-path = "{{ .startupPath }}"
-          readiness-path = "{{ .readinessPath }}"
-          liveness-path = "{{ .livenessPath }}"
+          {{- if .Values.startupProbe.enabled }}
+          startup-path = "{{ .Values.akka.management.healthChecks.startupPath }}"
+          {{- end }}
+          readiness-path = "{{ .Values.akka.management.healthChecks.readinessPath }}"
+          liveness-path = "{{ .Values.akka.management.healthChecks.livenessPath }}"
         }
         {{- end }}
       }
@@ -379,6 +383,10 @@ useResourceApplicationConf: true
 
 # Secret Configuration
 secrets: {}
+
+# This feature is available since 1.18
+# https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+topologySpreadConstraints: []
 
 test:
   enabled: false
