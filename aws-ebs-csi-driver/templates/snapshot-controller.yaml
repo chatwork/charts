@@ -1,0 +1,33 @@
+{{- if .Values.enableVolumeSnapshot }}
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: {{ include "aws-ebs-csi-driver.fullname" . }}-snapshot-controller
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "aws-ebs-csi-driver.snapshotController.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.snapshotController.replicas }}
+  serviceName: {{ include "aws-ebs-csi-driver.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "aws-ebs-csi-driver.snapshotController.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "aws-ebs-csi-driver.snapshotController.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "aws-ebs-csi-driver.snapshotController.serviceAccountName" .  }}
+      containers:
+        - name: {{ .Chart.Name }}-snapshot-controller
+          image: {{ .Values.snapshotController.image.repository }}:{{ .Values.snapshotController.image.tag }}
+          imagePullPolicy: {{ .Values.snapshotController.image.pullPolicy }}
+          args:
+            - --v={{ .Values.snapshotController.logLevel }}
+            - --leader-election={{ .Values.snapshotController.leaderElection }}
+            {{- with .Values.snapshotController.extraArgs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.snapshotController.resources | nindent 12 }}
+{{- end }}
