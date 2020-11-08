@@ -58,6 +58,7 @@ ingress:
   # - hosts:
   #     - example.com
   #       secretName: examplecret-tls
+  ingressClassName: ''
 
 # PDB
 podDisruptionBudget:

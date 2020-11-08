@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the PHP chart and their
 | `ingress.labels` | Label specified for ingress | `{}` |
 | `ingress.hosts` | Ingress accepted hostname | `[]` |
 | `ingress.tls` | TLS Secret (certificates)  | `[]` |
+| `ingress.ingressClassName` | Specifies ingressClass you use ingress controller. This feature is available since 1.18 and impremented by ingress controller | `""` |
 | `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
 | `podDisruptionBudget.annotations` | Annotations for the pod disruption budget | `{}` |
 | `podDisruptionBudget.labels` | Labels for the pod disruption budget | `{}` |
