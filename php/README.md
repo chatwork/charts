@@ -129,6 +129,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.lifecycle` | NGINX container lifecycle hooks | `{}` |
 |  `nginx.livenessProbe` | Liveness probe settings | `{ "httpGet": { "path": "/", "port": 80 } "initialDelaySeconds": 15, "periodSeconds": 5, "timeoutSeconds": 1, "successThreshold": 1, "failureThreshold": 3 }` |
 |  `nginx.readinessProbe` | Readiness probe settings | `{ "httpGet": { "path": "/", "port": 80 } "initialDelaySeconds": 15, "periodSeconds": 5, "timeoutSeconds": 1, "successThreshold": 1, "failureThreshold": 3 }` |
+|  `nginx.startupProbe` | Startup probes settings. This feature is available since 1.18 | `{}` |
 |  `nginx.resources` | NGINX resources requests & limits | `[]` |
 |  `nginx.extraEnv` | Additional environment variables | `{}` |
 |  `nginx.extraEnvFrom` | Additional envFrom | `[]` |
@@ -151,6 +152,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.lifecycle` | PHP-FPM container lifecycle hooks | `{}` |
 |  `fpm.livenessProbe` | Liveness probe settings | `{}` |
 |  `fpm.readinessProbe` | Readiness probe settings | `{}` |
+|  `fpm.startupProbe` | Startup probes settings. This feature is available since 1.18 | `{}` |
 |  `fpm.resources` | PHP-FPM resources requests & limits | `{}` |
 |  `fpm.extraEnv` | Additional environment variables | `[]` |
 |  `fpm.extraEnvFrom` | Additional envFrom | `[]` |

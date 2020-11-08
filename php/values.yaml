@@ -253,6 +253,16 @@ nginx:
     successThreshold: 1
     failureThreshold: 3
 
+  startupProbe:
+    httpGet:
+      path: /
+      port: 80
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
   resources: {}
 
   # `nginx.extraEnv` is additional environment variables.
@@ -380,6 +390,7 @@ fpm:
 
   livenessProbe: {}
   readinessProbe: {}
+  startupProbe: {}
   resources: {}
 
   # `fpm.extraEnv` is additional environment variables.
