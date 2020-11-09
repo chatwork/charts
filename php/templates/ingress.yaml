@@ -14,6 +14,9 @@ metadata:
     {{- end }}
   name: {{ include "php.fullname" . }}
 spec:
+  {{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion }}
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  {{- end }}
   tls:
     {{- toYaml .Values.ingress.tls | nindent 4 }}
   rules:
