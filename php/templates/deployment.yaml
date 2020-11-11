@@ -88,6 +88,8 @@ spec:
             {{- toYaml .Values.nginx.extraEnv | nindent 12 }}
           envFrom:
             {{- toYaml .Values.nginx.extraEnvFrom | nindent 12 }}
+          lifecycle:
+            {{- toYaml .Values.nginx.lifecycle | nindent 12 }}
           {{- with .Values.nginx.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -98,8 +100,10 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
-          lifecycle:
-            {{- toYaml .Values.nginx.lifecycle | nindent 12 }}
+          {{- if and (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) .Values.nginx.startupProbe }}
+          startupProbe:
+            {{- toYaml .Values.nginx.startupProbe | nindent 12 }}
+          {{- end }}
           volumeMounts:
             {{- if .Values.busybox.enabled }}
             - name: share
@@ -140,6 +144,8 @@ spec:
             {{- toYaml .Values.fpm.extraEnv | nindent 12 }}
           envFrom:
             {{- toYaml .Values.fpm.extraEnvFrom | nindent 12 }}
+          lifecycle:
+            {{- toYaml .Values.fpm.lifecycle | nindent 12 }}
           {{- with .Values.fpm.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -150,8 +156,10 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.fpm.resources | nindent 12 }}
-          lifecycle:
-            {{- toYaml .Values.fpm.lifecycle | nindent 12 }}
+          {{- if and (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) .Values.fpm.startupProbe }}
+          startupProbe:
+            {{- toYaml .Values.nginx.startupProbe | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: tmp
               mountPath: /tmp
