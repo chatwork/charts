@@ -23,6 +23,7 @@ spec:
         {{- toYaml .Values.node.nodeSelector | nindent 8 }}
       hostNetwork: true
       priorityClassName: {{ .Values.node.priorityClassName }}
+      serviceAccountName: {{ include "aws-ebs-csi-driver.node.serviceAccountName" . }}
       tolerations:
         {{- toYaml .Values.node.tolerations | nindent 8 }}
       containers:

@@ -136,11 +136,18 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+{{- define "aws-ebs-csi-driver.node.serviceAccountName" -}}
+{{- if .Values.node.serviceAccount.create -}}
+    {{ default (printf "%s-node" (include "aws-ebs-csi-driver.fullname" . )) .Values.node.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.node.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
 {{- define "aws-ebs-csi-driver.snapshotController.serviceAccountName" -}}
 {{- if .Values.snapshotController.serviceAccount.create -}}
-    {{ default (printf "%s-snapshot-controller" (include "aws-ebs-csi-driver.fullname" . )) .Values.controller.serviceAccount.name }}
+    {{ default (printf "%s-snapshot-controller" (include "aws-ebs-csi-driver.fullname" . )) .Values.snapshotController.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.snapshotController.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
-
