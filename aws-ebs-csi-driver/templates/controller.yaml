@@ -149,6 +149,9 @@ spec:
           args:
             - --csi-address=$(ADDRESS)
             - --v={{ .Values.csiResizer.logLevel }}
+            {{- if .Values.csiResizer.leaderElection }}
+            - --leader-election
+            {{- end }}
             {{- with .Values.csiResizer.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

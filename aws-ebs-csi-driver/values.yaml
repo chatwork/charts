@@ -61,6 +61,7 @@ csiResizer:
   imagePullPolicy: Always
   resources: {}
   logLevel: 5
+  leaderElection: true
   extraArgs: []
 
 csiSnapshotter:

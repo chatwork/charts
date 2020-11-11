@@ -1,4 +1,5 @@
 {{- if .Values.csiProvisoner.leaderElection }}
+---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -9,10 +10,22 @@ rules:
   verbs: ["get", "watch", "list", "delete", "update", "create"]
 {{- end }}
 {{- if .Values.csiAttacher.leaderElection }}
+---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ include "aws-ebs-csi-driver.fullname" . }}-external-attacher-leaderelection
+rules:
+- apiGroups: ["coordination.k8s.io"]
+  resources: ["leases"]
+  verbs: ["get", "watch", "list", "delete", "update", "create"]
+{{- end }}
+{{- if and .Values.enableVolumeResizing .Values.csiResizer.leaderElection }}
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "aws-ebs-csi-driver.fullname" . }}-external-resizer-leaderelection
 rules:
 - apiGroups: ["coordination.k8s.io"]
   resources: ["leases"]
