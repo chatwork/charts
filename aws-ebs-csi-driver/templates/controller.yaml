@@ -41,7 +41,7 @@ spec:
             {{- toYaml . | nindent 12 }}
             {{- end }}
             {{- if .Values.extraVolumeTags }}
-              {{- include "aws-ebs-csi-driver.extra-volume-tags" . | nindent 12 }}
+            {{- include "aws-ebs-csi-driver.extra-volume-tags" . | nindent 12 }}
             {{- end }}
           env:
             - name: CSI_ENDPOINT
