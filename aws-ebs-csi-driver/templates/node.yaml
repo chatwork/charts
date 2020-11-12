@@ -6,6 +6,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aws-ebs-csi-driver.node.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.node.annotations | nindent 4 }}
 spec:
   selector:
     matchLabels:

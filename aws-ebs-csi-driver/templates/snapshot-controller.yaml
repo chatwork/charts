@@ -6,6 +6,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aws-ebs-csi-driver.snapshotController.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.snapshotController.annotations | nindent 4 }}
 spec:
   replicas: {{ .Values.snapshotController.replicas }}
   serviceName: {{ include "aws-ebs-csi-driver.fullname" . }}
@@ -16,6 +18,8 @@ spec:
     metadata:
       labels:
         {{- include "aws-ebs-csi-driver.snapshotController.selectorLabels" . | nindent 8 }}
+      annotations:
+        {{- toYaml .Values.snapshotController.podAnnotations | nindent 8 }}
     spec:
       serviceAccountName: {{ include "aws-ebs-csi-driver.snapshotController.serviceAccountName" .  }}
       containers:
