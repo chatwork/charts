@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the PHP chart and their
 | `ingress.labels` | Label specified for ingress | `{}` |
 | `ingress.hosts` | Ingress accepted hostname | `[]` |
 | `ingress.tls` | TLS Secret (certificates)  | `[]` |
+| `ingress.ingressClassName` | Specifies ingressClass you use ingress controller. This feature is available since 1.18 and impremented by ingress controller | `""` |
 | `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
 | `podDisruptionBudget.annotations` | Annotations for the pod disruption budget | `{}` |
 | `podDisruptionBudget.labels` | Labels for the pod disruption budget | `{}` |
@@ -77,6 +78,7 @@ The following table lists the configurable parameters of the PHP chart and their
 | `autoscaling.minReplicas` | Min pods for horizontal pod autoscaler | `nil` |
 | `autoscaling.maxReplicas` | Max pods for Horizontal pod autoscaler | `nil` |
 | `autoscaling.metrics` | Metrics used for autoscaling | `{}` |
+| `autoscaling.behavior` | Behavior for HorizontalPodAutoscaler.  This feature is available since 1.18 | `{}` |
 | `rbac.create` | If true, create & use RBAC resources | `true` |
 | `podSecurityPolicy.create` |  | `false` |
 | `podSecurityPolicy.annotations` | Annotations for the created PSP  | `{}` |
@@ -128,6 +130,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.lifecycle` | NGINX container lifecycle hooks | `{}` |
 |  `nginx.livenessProbe` | Liveness probe settings | `{ "httpGet": { "path": "/", "port": 80 } "initialDelaySeconds": 15, "periodSeconds": 5, "timeoutSeconds": 1, "successThreshold": 1, "failureThreshold": 3 }` |
 |  `nginx.readinessProbe` | Readiness probe settings | `{ "httpGet": { "path": "/", "port": 80 } "initialDelaySeconds": 15, "periodSeconds": 5, "timeoutSeconds": 1, "successThreshold": 1, "failureThreshold": 3 }` |
+|  `nginx.startupProbe` | Startup probes settings. This feature is available since 1.18 | `{}` |
 |  `nginx.resources` | NGINX resources requests & limits | `[]` |
 |  `nginx.extraEnv` | Additional environment variables | `{}` |
 |  `nginx.extraEnvFrom` | Additional envFrom | `[]` |
@@ -150,6 +153,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.lifecycle` | PHP-FPM container lifecycle hooks | `{}` |
 |  `fpm.livenessProbe` | Liveness probe settings | `{}` |
 |  `fpm.readinessProbe` | Readiness probe settings | `{}` |
+|  `fpm.startupProbe` | Startup probes settings. This feature is available since 1.18 | `{}` |
 |  `fpm.resources` | PHP-FPM resources requests & limits | `{}` |
 |  `fpm.extraEnv` | Additional environment variables | `[]` |
 |  `fpm.extraEnvFrom` | Additional envFrom | `[]` |
