@@ -75,6 +75,10 @@ The following table lists the configurable parameters of the Aws-ebs-csi-driver 
 | `snapshotController.serviceAccount.annotations` | serviceAccount annotations  | `{}` |
 | `snapshotController.serviceAccount.create` | If true, serviceAccount created | `true` |
 | `snapshotController.serviceAccount.name` | Service account to be used | `null` |
+| `snapshotController.awsEnv.secret.existingSecretName` | Secret name to be used | `null` |
+| `snapshotController.awsEnv.secret.keyId` | AWS_ACCESS_KEY_ID | `null` |
+| `snapshotController.awsEnv.secret.accessKey` | AWS_SECRET_ACCESS_KEY | `null` |
+| `snapshotController.extraEnv` | extra environment value | `null` |
 | `nodeDriverRegistrar.image.repository` | Image repository | `"quay.io/k8scsi/csi-node-driver-registrar"` |
 | `nodeDriverRegistrar.image.tag` | Image tag  | `"v2.0.1"` |
 | `nodeDriverRegistrar.imagePullPolicy` | Image pullPolicy | `"Always"` |
@@ -92,6 +96,10 @@ The following table lists the configurable parameters of the Aws-ebs-csi-driver 
 | `controller.serviceAccount.annotations` | controller plugin serviceAccount annotations  | `{}` |
 | `controller.serviceAccount.create` | If true, controller plugin serviceAccount create | `true` |
 | `controller.serviceAccount.name` | controller plugin service account to be used | `null` |
+| `controller.awsEnv.secret.existingSecretName` | Secret name to be used | `null` |
+| `controller.awsEnv.secret.keyId` | AWS_ACCESS_KEY_ID | `null` |
+| `controller.awsEnv.secret.accessKey` | AWS_SECRET_ACCESS_KEY | `null` |
+| `controller.extraEnv` | extra environment value | `null` |
 | `controller.resources` | controller plugin resources | ... |
 | `controller.nodeSelector` | controller plugin nodeSelector  | `{}` |
 | `controller.tolerations` | controller plugin tolerations  | `[]` |

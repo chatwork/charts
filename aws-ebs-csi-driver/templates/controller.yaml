@@ -18,7 +18,10 @@ spec:
       labels:
         {{- include "aws-ebs-csi-driver.controller.selectorLabels" . | nindent 8 }}
       annotations:
-        {{- toYaml .Values.controller.podAnnotations | nindent 8 }}
+        checksum/secret: "{{ include (print $.Template.BasePath "/controller-secrets.yaml") . | sha256sum }}"
+        {{- with .Values.controller.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       nodeSelector:
         {{- toYaml .Values.controller.nodeSelector | nindent 8 }}

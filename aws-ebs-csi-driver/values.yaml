@@ -129,6 +129,7 @@ controller:
   logLevel: 5
   awsEnv:
     secret:
+      # if set this parameter, ignore keyId,accessKey
       existingSecretName:
       # AWS_ACCESS_KEY_ID
       keyId: ""
@@ -136,6 +137,7 @@ controller:
       accessKey: ""
   extraArgs: []
   extraEnv: {}
+    # key: value
 
 snapshotController:
   image:
@@ -154,6 +156,7 @@ snapshotController:
   logLevel: 5
   awsEnv:
     secret:
+      # if set this parameter, ignore keyId,accessKey
       existingSecretName:
       # AWS_ACCESS_KEY_ID
       keyId: ""
@@ -161,3 +164,4 @@ snapshotController:
       accessKey: ""
   extraArgs: []
   extraEnv: {}
+    # key: value
