@@ -46,21 +46,25 @@ spec:
           env:
             - name: CSI_ENDPOINT
               value: unix:///var/lib/csi/sockets/pluginproxy/csi.sock
+            {{- if and .Values.controller.awsEnv.secret.keyId  .Values.controller.awsEnv.secret.accessKey }}
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: aws-secret
-                  key: key_id
-                  optional: true
+                  name: {{ include "aws-ebs-csi-driver.controller.awsEnvSecretName" . }}
+                  key: keyId
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: aws-secret
-                  key: access_key
-                  optional: true
-            {{- if .Values.region }}
+                  name: {{ include "aws-ebs-csi-driver.controller.awsEnvSecretName" . }}
+                  key: accessKey
+            {{- end }}
+            {{- with .Values.region }}
             - name: AWS_REGION
-              value: {{ .Values.region }}
+              value: {{ . }}
+            {{- end }}
+            {{- range $key, $value := .Values.controller.extraEnv }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
             {{- end }}
           volumeMounts:
             - name: socket-dir

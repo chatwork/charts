@@ -90,6 +90,10 @@ nodeDriverRegistrar:
   logLevel: 5
 
 node:
+  serviceAccount:
+    annotations: {}
+    create: true
+    name:
   annotations: {}
   podAnnotations: {}
   tolerations: []
@@ -123,21 +127,37 @@ controller:
   annotations: {}
   podAnnotations: {}
   logLevel: 5
+  awsEnv:
+    secret:
+      existingSecretName:
+      # AWS_ACCESS_KEY_ID
+      keyId: ""
+      # AWS_SECRET_ACCESS_KEY
+      accessKey: ""
   extraArgs: []
+  extraEnv: {}
 
 snapshotController:
   image:
     repository: quay.io/k8scsi/snapshot-controller
     tag: "v3.0.0"
     pullPolicy: IfNotPresent
+  serviceAccount:
+    annotations: {}
+    create: true
+    name:
   replicas: 1
   leaderElection: false
   resources: {}
   annotations: {}
   podAnnotations: {}
   logLevel: 5
+  awsEnv:
+    secret:
+      existingSecretName:
+      # AWS_ACCESS_KEY_ID
+      keyId: ""
+      # AWS_SECRET_ACCESS_KEY
+      accessKey: ""
   extraArgs: []
-  serviceAccount:
-    annotations: {}
-    create: true
-    name:
+  extraEnv: {}

@@ -34,4 +34,25 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.snapshotController.resources | nindent 12 }}
+          env:
+            {{- if and .Values.snapshotController.awsEnv.secret.keyId .Values.snapshotController.awsEnv.secret.accessKey }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "aws-ebs-csi-driver.snapshotController.awsEnvSecretName" . }}
+                  key: keyId
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "aws-ebs-csi-driver.snapshotController.awsEnvSecretName" . }}
+                  key: accessKey
+            {{- end }}
+            {{- with .Values.region }}
+            - name: AWS_REGION
+              value: {{ . }}
+            {{- end }}
+            {{- range $key, $value := .Values.snapshotController.extraEnv }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
 {{- end }}

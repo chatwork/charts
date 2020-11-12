@@ -130,15 +130,15 @@ Create the name of the service account to use
 */}}
 {{- define "aws-ebs-csi-driver.controller.serviceAccountName" -}}
 {{- if .Values.controller.serviceAccount.create -}}
-    {{ default (printf "%s-controller" (include "aws-ebs-csi-driver.fullname" . )) .Values.controller.serviceAccount.name }}
+{{ default (printf "%s-controller" (include "aws-ebs-csi-driver.fullname" . )) .Values.controller.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.controller.serviceAccount.name }}
+{{ default "default" .Values.controller.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
 {{- define "aws-ebs-csi-driver.node.serviceAccountName" -}}
 {{- if .Values.node.serviceAccount.create -}}
-    {{ default (printf "%s-node" (include "aws-ebs-csi-driver.fullname" . )) .Values.node.serviceAccount.name }}
+{{ default (printf "%s-node" (include "aws-ebs-csi-driver.fullname" . )) .Values.node.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.node.serviceAccount.name }}
 {{- end -}}
@@ -146,8 +146,30 @@ Create the name of the service account to use
 
 {{- define "aws-ebs-csi-driver.snapshotController.serviceAccountName" -}}
 {{- if .Values.snapshotController.serviceAccount.create -}}
-    {{ default (printf "%s-snapshot-controller" (include "aws-ebs-csi-driver.fullname" . )) .Values.snapshotController.serviceAccount.name }}
+{{ default (printf "%s-snapshot-controller" (include "aws-ebs-csi-driver.fullname" . )) .Values.snapshotController.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.snapshotController.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return secret name to be used based on provided values.
+*/}}
+{{- define "aws-ebs-csi-driver.controller.awsEnvSecretName" -}}
+{{- if not .Values.controller.awsEnv.secret.existingSecretName -}}
+{{ default (printf "%s-controller-aws-secret" (include "aws-ebs-csi-driver.fullname" . )) }}
+{{- else -}}
+    {{ .Values.controller.awsEnv.secret.existingSecretName }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return secret name to be used based on provided values.
+*/}}
+{{- define "aws-ebs-csi-driver.snapshotController.awsEnvSecretName" -}}
+{{- if not .Values.snapshotController.awsEnv.secret.existingSecretName -}}
+{{ default (printf "%s-snapshot-controller-aws-secret" (include "aws-ebs-csi-driver.fullname" . )) }}
+{{- else -}}
+{{ .Values.snapshotController.awsEnv.secret.existingSecretName }}
 {{- end -}}
 {{- end -}}
