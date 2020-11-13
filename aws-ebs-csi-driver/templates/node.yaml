@@ -1,0 +1,121 @@
+# Node Service
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: {{ include "aws-ebs-csi-driver.fullname" . }}-node
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "aws-ebs-csi-driver.node.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.node.annotations | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "aws-ebs-csi-driver.node.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "aws-ebs-csi-driver.node.selectorLabels" . | nindent 8 }}
+      annotations:
+        {{- toYaml .Values.node.podAnnotations | nindent 8 }}
+    spec:
+      affinity:
+        {{- toYaml .Values.node.affinity | nindent 8 }}
+      nodeSelector:
+        {{- toYaml .Values.node.nodeSelector | nindent 8 }}
+      hostNetwork: true
+      priorityClassName: {{ .Values.node.priorityClassName }}
+      serviceAccountName: {{ include "aws-ebs-csi-driver.node.serviceAccountName" . }}
+      tolerations:
+        {{- toYaml .Values.node.tolerations | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-node
+          securityContext:
+            privileged: true
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          args:
+            - node
+            - --endpoint=$(CSI_ENDPOINT)
+            - --logtostderr
+            - --v={{ .Values.node.logLevel }}
+            {{- with .Values.node.extraArgs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          env:
+            - name: CSI_ENDPOINT
+              value: unix:/csi/csi.sock
+          volumeMounts:
+            - name: kubelet-dir
+              mountPath: /var/lib/kubelet
+              mountPropagation: "Bidirectional"
+            - name: plugin-dir
+              mountPath: /csi
+            - name: device-dir
+              mountPath: /dev
+          ports:
+            - name: healthz
+              containerPort: 9808
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: healthz
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+            failureThreshold: 5
+          resources:
+            {{- toYaml .Values.node.resources | nindent 12 }}
+        - name: node-driver-registrar
+          image: {{ .Values.nodeDriverRegistrar.image.repository }}:{{ .Values.nodeDriverRegistrar.image.tag }}
+          imagePullPolicy: {{ .Values.nodeDriverRegistrar.image.pullPolicy }}
+          args:
+            - --csi-address=$(ADDRESS)
+            - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+            - --v={{ .Values.nodeDriverRegistrar.logLevel }}
+            {{- with .Values.nodeDriverRegistrar.extraArgs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "rm -rf /registration/ebs.csi.aws.com-reg.sock /csi/csi.sock"]
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+            - name: DRIVER_REG_SOCK_PATH
+              value: /var/lib/kubelet/plugins/ebs.csi.aws.com/csi.sock
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi
+            - name: registration-dir
+              mountPath: /registration
+          resources:
+            {{- toYaml .Values.nodeDriverRegistrar.resources | nindent 12 }}
+        - name: liveness-probe
+          image: {{ .Values.livenessProbe.image.repository }}:{{ .Values.livenessProbe.image.tag }}
+          imagePullPolicy: {{ .Values.livenessProbe.image.pullPolicy }}
+          args:
+            - --csi-address=/csi/csi.sock
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi
+          resources:
+            {{- toYaml .Values.livenessProbe.resources | nindent 12 }}
+      volumes:
+        - name: kubelet-dir
+          hostPath:
+            path: /var/lib/kubelet
+            type: Directory
+        - name: plugin-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/ebs.csi.aws.com/
+            type: DirectoryOrCreate
+        - name: registration-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins_registry/
+            type: Directory
+        - name: device-dir
+          hostPath:
+            path: /dev
+            type: Directory
