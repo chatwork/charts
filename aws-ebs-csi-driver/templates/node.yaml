@@ -30,9 +30,10 @@ spec:
         {{- toYaml .Values.node.tolerations | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}-node
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             privileged: true
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           args:
             - node
             - --endpoint=$(CSI_ENDPOINT)
