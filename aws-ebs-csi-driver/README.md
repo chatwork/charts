@@ -34,33 +34,33 @@ The following table lists the configurable parameters of the Aws-ebs-csi-driver 
 | `region` | aws region | `""` |
 | `csiProvisoner.image.repository` | Image repository  | `"quay.io/k8scsi/csi-provisioner"` |
 | `csiProvisoner.image.tag` | Image tag   | `"v1.6.0"` |
-| `csiProvisoner.imagePullPolicy` | Image pullPolicy  | `"Always"` |
+| `csiProvisoner.image.pullPolicy` | Image pullPolicy  | `"Always"` |
 | `csiProvisoner.resources` | Set resources   | `{}` |
 | `csiProvisoner.leaderElection` | If true, enable leader-election | `true` |
 | `csiProvisoner.logLevel` | Set log-level  | `5` |
 | `csiProvisoner.extraArgs` | Set extraArgs https://github.com/kubernetes-csi/external-provisioner#command-line-options | `[]` |
 | `csiAttacher.image.repository` | Image repository | `"quay.io/k8scsi/csi-attacher"` |
 | `csiAttacher.image.tag` | Image tag  | `"v3.0.2"` |
-| `csiAttacher.imagePullPolicy` | Image pullPolicy  | `"Always"` |
+| `csiAttacher.image.pullPolicy` | Image pullPolicy  | `"Always"` |
 | `csiAttacher.resources` | Set resources  | `{}` |
 | `csiAttacher.leaderElection` | if true, enable leader-election | `true` |
 | `csiAttacher.logLevel` | Set log-level | `5` |
 | `csiAttacher.extraArgs` | Set extraArgs https://github.com/kubernetes-csi/external-attacher#command-line-options | `[]` |
 | `csiResizer.image.repository` | Image repository | `"quay.io/k8scsi/csi-resizer"` |
 | `csiResizer.image.tag` | Image tag  | `"v1.0.1"` |
-| `csiResizer.imagePullPolicy` | Image pullPolicy | `"Always"` |
+| `csiResizer.image.pullPolicy` | Image pullPolicy | `"Always"` |
 | `csiResizer.resources` | Set resources  | `{}` |
 | `csiResizer.logLevel` | Set log-level  | `5` |
 | `csiResizer.extraArgs` | Set extraArgs https://github.com/kubernetes-csi/external-resizer#command-line-options | `[]` |
 | `csiSnapshotter.image.repository` | Image repository | `"quay.io/k8scsi/csi-snapshotter"` |
 | `csiSnapshotter.image.tag` | Image tag | `"v3.0.2"` |
-| `csiSnapshotter.imagePullPolicy` | Image pullPolicy | `"Always"` |
+| `csiSnapshotter.image.pullPolicy` | Image pullPolicy | `"Always"` |
 | `csiSnapshotter.leaderElection` | If true, enable leader-election  | `true` |
 | `csiSnapshotter.extraArgs` | Set extraArgs https://github.com/kubernetes-csi/external-snapshotter#snapshot-controller-command-line-options | `[]` |
 | `csiSnapshotter.resources` | Set resources | `{}` |
 | `livenessProbe.image.repository` | Set image repository  | `"quay.io/k8scsi/livenessprobe"` |
 | `livenessProbe.image.tag` | Set image tag | `"v2.1.0"` |
-| `livenessProbe.imagePullPolicy` | Set image pullPolicy  | `"Always"` |
+| `livenessProbe.image.pullPolicy` | Set image pullPolicy  | `"Always"` |
 | `livenessProbe.resources` | Set resources  | `{}` |
 | `snapshotController.image.repository` | Image repository  | `"quay.io/k8scsi/snapshot-controller"` |
 | `snapshotController.image.tag` | Image tag  | `"v3.0.0"` |
