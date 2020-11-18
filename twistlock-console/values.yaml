@@ -20,9 +20,6 @@ port:
     https:
       name: "mgmt-https"
       port: 8083
-  highAvailability:
-    name: "ha"
-    port: 8086
 
 volumeMounts:
   data:
@@ -37,8 +34,6 @@ config:
   console:
     # common name
     cn: ""
-    # Subject Alternative Name
-    san: ""
     portalServer:
       cert: ""
       key: ""
@@ -50,20 +45,18 @@ config:
   runConsoleAsRoot:
     enabled: false
   docker:
-    tag: "_20_04_163"
+    tag: "_20_09_365"
     socket: "/var/run/docker.sock"
   recovery:
     enabled: true
   management:
     http:
       enabled: true
-  highAvailability:
-    enabled: false
-    state: "PRIMARY"
   scap:
     enabled: false
   selinux:
     label: "disable"
+  disableConsoleCgroupLimits: false
 
 resources:
   limits:
@@ -165,10 +158,6 @@ configmap:
     DEFENDER_CN={{ tpl .Values.config.defender.cn . }}
     {{- end }}
 
-    {{- if .Values.config.console.san }}
-    CONSOLE_SAN={{ tpl .Values.config.console.san . }}
-    {{- end }}
-
     #############################################
     #     Twistlock system configuration
     #############################################
@@ -213,14 +202,10 @@ configmap:
     # See https://docs.docker.com/engine/reference/run/#security-configuration
     SELINUX_LABEL={{ .Values.config.selinux.label }}
 
-    #############################################
-    #      High availability settings
-    #############################################
-    # Only to be used when the Console is deployed outside of a Kubernetes cluster
-    # This native HA capability uses Mongo clustering and requires 3 or more instances
-    HIGH_AVAILABILITY_ENABLED={{ .Values.config.highAvailability.enabled }}
-    HIGH_AVAILABILITY_STATE={{ .Values.config.highAvailability.state }}
-    HIGH_AVAILABILITY_PORT={{ .Values.port.highAvailability.port }}
+    #### Console cgroup limits ####
+    # Controls console container's resource constrains. Set to "false" to run without limits.
+    # See https://docs.docker.com/engine/reference/run/#runtime-constraints-on-resources
+    DISABLE_CONSOLE_CGROUP_LIMITS={{ .Values.config.disableConsoleCgroupLimits }}
 
     #############################################
     #      Twistlock repository configuration
