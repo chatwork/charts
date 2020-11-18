@@ -54,7 +54,7 @@ spec:
               mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
 {{- with .Values.extraVolumeMounts }}
 {{ toYaml . | indent 12 }}
-{{- end }}
+{{- end }}extraVolumes
 {{- with .Values.resources }}
           resources:
 {{ toYaml . | indent 12 }}
