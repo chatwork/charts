@@ -1,6 +1,0 @@
-[SAN]
-subjectAltName=@alt_names
-keyUsage= critical,keyEncipherment,digitalSignature
-extendedKeyUsage=serverAuth
-[alt_names]
-IP.1=10.96.10.96

@@ -1,31 +1,31 @@
-{{- if and .Values.rbac.create .Values.psp.create }}
+{{- if and .Values.rbac.create .Values.podSecurityPolicy.create }}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
+  annotations:
+    {{- range $k, $v := .Values.podSecurityPolicy.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
   labels:
     {{- include "php.labels" . | nindent 4 }}
-    {{- with .Values.psp.labels }}
-    {{- toYaml . | nindent 4}}
+    {{- range $k, $v := .Values.podSecurityPolicy.labels }}
+    {{ $k }}: {{ $v | quote }}
     {{- end }}
-  annotations:
-    {{- with .Values.psp.annotations }}
-    {{- toYaml . | nindent 4}}
-    {{- end }}
-  name: {{ template "php.pspName" . }}
+  name: {{ include "php.podSecurityPolicyName" . }}
 spec:
   privileged: false
   seLinux:
-    {{- toYaml .Values.psp.seLinux | nindent 4 }}
+    {{- toYaml .Values.podSecurityPolicy.seLinux | nindent 4 }}
   supplementalGroups:
-    {{- toYaml .Values.psp.supplementalGroups | nindent 4 }}
+    {{- toYaml .Values.podSecurityPolicy.supplementalGroups | nindent 4 }}
   runAsUser:
-    {{- toYaml .Values.psp.runAsUser | nindent 4 }}
+    {{- toYaml .Values.podSecurityPolicy.runAsUser | nindent 4 }}
   fsGroup:
-    {{- toYaml .Values.psp.fsGroup | nindent 4 }}
+    {{- toYaml .Values.podSecurityPolicy.fsGroup | nindent 4 }}
   volumes:
-    {{- toYaml .Values.psp.volumes | nindent 4 }}
+    {{- toYaml .Values.podSecurityPolicy.volumes | nindent 4 }}
   allowedUnsafeSysctls:
     {{- range .Values.securityContext.sysctls }}
-    - '{{ .name }}'
+    - {{ .name }}
     {{- end }}
 {{- end }}

@@ -1,42 +1,35 @@
 {{- $root := . -}}
 {{- if .Values.ingress.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ include "php.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
-  name: {{ template "php.fullname" . }}
+  annotations:
+    {{- range $k, $v := .Values.ingress.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
   labels:
     {{- include "php.labels" . | nindent 4 }}
-    {{- with .Values.ingress.labels }}
-    {{- toYaml . | nindent 4 }}
+    {{- range $k, $v := .Values.ingress.labels }}
+    {{ $k }}: {{ $v | quote }}
     {{- end }}
-  {{- with .Values.ingress.annotations }}
-  annotations:
-    {{- range $k, $v := . }}
-    {{ $k }}: {{ tpl $v $root | toYaml | indent 4 }}
-    {{- end }}
-  {{- end }}
+  name: {{ include "php.fullname" . }}
 spec:
-  backend:
-    serviceName: {{ template "php.fullname" . }}
-    {{- if .Values.nginx.enabled }}
-    servicePort: {{ .Values.service.port | default .Values.nginx.containerPort }}
-    {{- else }}
-    servicePort: {{ .Values.service.port | default .Values.fpm.containerPort }}
-    {{- end }}
-  {{- with .Values.ingress.tls }}
-  tls: {{ tpl (toYaml .) $root | nindent 4 }}
+  {{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion }}
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
   {{- end }}
+  tls:
+    {{- toYaml .Values.ingress.tls | nindent 4 }}
   rules:
-    {{- range $k, $host := .Values.ingress.hosts }}
-    - host: {{ tpl $host $root }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host }}
       http:
         paths:
-          {{- with $root.Values.ingress.preferPaths }}
-          {{- tpl (toYaml .) $root | nindent 10 }}
+          {{- with .extraPathes }}
+          {{- toYaml . | nindent 10 }}
           {{- end }}
-          - path: /*
+          - path: {{ .path }}
             backend:
-              serviceName: {{ template "php.fullname" $root }}
+              serviceName: {{ include "php.fullname" $root }}
               {{- if $root.Values.nginx.enabled }}
               servicePort: {{ $root.Values.service.port | default $root.Values.nginx.containerPort }}
               {{- else }}

@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    {{- with .Values.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "mailcatcher-mailcatcher.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: {{ include "mailcatcher.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "mailcatcher-mailcatcher.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "mailcatcher-mailcatcher.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      containers:
+        - command:
+            - mailcatcher
+            - --foreground
+            {{- with .Values.mailcatcher.ip }}
+            - --ip
+            - {{ . | quote }}
+            {{- end }}
+            {{- with .Values.mailcatcher.smtpIp }}
+            - --smtp-ip
+            - {{ . | quote }}
+            {{- end }}
+            {{- with .Values.mailcatcher.smtpPort }}
+            - --smtp-port
+            - {{ . | quote }}
+            {{- end }}
+            {{- with .Values.mailcatcher.httpIp }}
+            - --http-ip
+            - {{ . | quote }}
+            {{- end }}
+            {{- with .Values.mailcatcher.httpPort }}
+            - --http-port
+            - {{ . | quote }}
+            {{- end }}
+            {{- with .Values.mailcatcher.httpPath }}
+            - --http-path
+            - {{ . | quote }}
+            {{- end }}
+            {{- if .Values.mailcatcher.noQuit }}
+            - --no-quit
+            {{- end }}
+            {{- if .Values.mailcatcher.verbose }}
+            - --verbose
+            {{- end }}
+            {{- with .Values.extraCmmand }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          envFrom:
+            {{- toYaml .Values.envFrom | nindent 12 }}
+          name: {{ include "mailcatcher.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          lifecycle:
+            {{- toYaml .Values.lifecycle | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: smtp
+              containerPort: {{ .Values.mailcatcher.smtpPort }}
+              protocol: TCP
+            - name: http
+              containerPort: {{ .Values.mailcatcher.httpPort }}
+              protocol: TCP
+            {{- with .Values.extraPorts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe| nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      readinessGates:
+        {{- toYaml .Values.readinessGates | nindent 8 }}
+      restartPolicy: "{{ .Values.restartPolicy }}"
+      priorityClassName: {{ .Values.priorityClassName }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      serviceAccountName: "{{ include "mailcatcher.serviceAccountName" . }}"
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      volumes:
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}

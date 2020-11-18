@@ -42,56 +42,58 @@ The following table lists the configurable parameters of the PHP chart and their
 
 |  Parameter | Description | Default |
 | --- | --- | --- |
-|  `sharedPath` | Path shared by busybox/nginx/fpm | `/var/www/html` |
-|  `replicaCount` | Number of pods to start with deployment | `1` |
-|  `strategy` | Update strategy of pod in deployment | `type`: `RollingUpdate` |
-|  `labels` | Label specified for deployment | `{}` |
-|  `podLabels` | Label specified for pod in deployment | `{}` |
-|  `podAnnotations` | Annotation specified for pod in deployment | `{}` |
-|  `imagePullSecrets` | Name of Secret resource containing private registry credentials | `[]` |
-|  `readinessGates` | Pod readiness extensions | `{}` |
-|  `restartPolicy` | Container restart policy | `""` |
-|  `terminationGracePeriodSeconds` | Termination grace period (in seconds) | `nil` |
-|  `securityContext` | Enable security context | `{}` |
-|  `serviceAccountName` | Existing ServiceAccount to use | `""` |
-|  `extraVolumes` | Additional volumes to all container | `[]` |
-|  `extraVolumeMounts` | Additional volumeMounts to all container | `[]` |
-|  `tolerations` | Pod taint tolerations for deployment | `[]` |
-|  `affinity` | Node / Pod affinities | `{}` |
-|  `service.type` | Changes to ClusterIP automatically if ingress enabled | `LoadBalancer` |
-|  `service.port` | Port to advertise the main web service in LoadBalancer mode | `nil` |
-|  `service.extraPorts` | Additional ports | `[]` |
-|  `service.labels` | Label specified for service | `{}` |
-|  `service.annotations` | Annotation specified for service | `{}` |
-|  `ingress.enabled` | Enables Ingress | `false` |
-|  `ingress.labels` | Label specified for ingress | `{}` |
-|  `ingress.annotations` | Annotation specified for ingress | `{}` |
-|  `ingress.hosts` | Ingress accepted hostname | `[]` |
-|  `ingress.preferPaths` | Paths that takes precedence over the ingress.path | `nil` |
-|  `ingress.tls` | TLS Secret (certificates)  | `false` |
-|  `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
-|  `podDisruptionBudget.minAvailabled` | Minimum number / percentage of pods that should remain scheduled | `nil` |
-|  `podDisruptionBudget.maxAvailabled` | Minimum number / percentage of pods that should remain scheduled | `nil` |
-|  `autoscaling.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
-|  `autoscaling.minReplicas` | Min pods for HorizontalPodAutoscaler | `nil` |
-|  `autoscaling.maxReplicas` | Max pods for HorizontalPodAutoscaler | `nil` |
-|  `autoscaling.metrics` | Metrics used for autoscaling | `nil` |
-|  `rbac.create` | If true, create & use RBAC resources | `true` |
-|  `psp.create` |  | `false` |
-|  `psp.annotations` | Annotations for the created PSP  | `{}` |
-|  `psp.labels` | Labels for the created PSP | `{}` |
-|  `psp.name` | The name of the PSP to use. If not set and create is true, a name is generated using the fullname template | `nil` |
-|  `psp.seLinux` | The SELinux context of the container | `{"rule":"RunAsAny"}` |
-|  `psp.supplementalGroups` | The user and group IDs of the container | `{"rule":"RunAsAny"}` |
-|  `psp.runAsUser` | The user and group IDs of the container | `{"rule":"RunAsAny"}` |
-|  `psp.fsGroup` | The user and group IDs of the container | `{"rule":"RunAsAny"}` |
-|  `psp.volumes` | Usage of volume types | `['*']` |
-|  `serviceAccount.create` | If true, create a service account for the pod | `true` |
-|  `serviceAccount.annotations` | Annotations for the created service account | `{}` |
-|  `serviceAccount.labels` | Labels for the created service account | `{}` |
-|  `serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template | `` |
-|  `extras.templates` | Additional raw Kubernetes resources | `{}` |
-|  `test.enabled` | Enables helm test | `true` |
+| `sharedPath` | Path shared by busybox/nginx/fpm | `/var/www/html` |
+| `replicaCount` | Number of pods to start with deployment | `1` |
+| `strategy` | Update strategy of pod in deployment | `{"type":"RollingUpdate"}` |
+| `annotations` | Annotation specified for deployment  | `{}` |
+| `labels` | Label specified for deployment | `{}` |
+| `podLabels` | Label specified for pod in deployment | `{}` |
+| `podAnnotations` | Annotation specified for pod in deployment | `{}` |
+| `imagePullSecrets` | Name of Secret resource containing private registry credentials | `[]` |
+| `readinessGates` | Pod readiness extensions | `[]` |
+| `restartPolicy` | Container restart policy | `"Always"` |
+| `securityContext` | Enable security context | `{}` |
+| `terminationGracePeriodSeconds` | Termination grace period (in seconds) | `70` |
+| `tolerations` | Pod taint tolerations for deployment | `[]` |
+| `affinity` | Node / Pod affinities | `{}` |
+| `service.annotations` | Annotation specified for service | `{}` |
+| `service.labels` | Label specified for service | `{}` |
+| `service.type` | Changes to ClusterIP automatically if ingress enabled | `LoadBalancer` |
+| `service.port` | Port to advertise the main web service in LoadBalancer mode | `nil` |
+| `service.extraPorts` | Additional ports | `[]` |
+| `ingress.enabled` | Enables Ingress | `false` |
+| `ingress.annotations` | Annotation specified for ingress | `{}` |
+| `ingress.labels` | Label specified for ingress | `{}` |
+| `ingress.hosts` | Ingress accepted hostname | `[]` |
+| `ingress.tls` | TLS Secret (certificates)  | `[]` |
+| `ingress.ingressClassName` | Specifies ingressClass you use ingress controller. This feature is available since 1.18 and impremented by ingress controller | `""` |
+| `podDisruptionBudget.enabled` | If true, create a pod disruption budget for keeper pods | `false` |
+| `podDisruptionBudget.annotations` | Annotations for the pod disruption budget | `{}` |
+| `podDisruptionBudget.labels` | Labels for the pod disruption budget | `{}` |
+| `podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `nil` |
+| `podDisruptionBudget.maxUnavailable` | Minimum number / percentage of pods that should remain scheduled | `nil` |
+| `autoscaling.enabled` | If true, create a horizonal pod autoscaler | `false` |
+| `autoscaling.annotations` | Annotations for the horizonal pod autoscaler | `{}` |
+| `autoscaling.labels` | Annotations for the horizonal pod autoscaler | `{}` |
+| `autoscaling.minReplicas` | Min pods for horizontal pod autoscaler | `nil` |
+| `autoscaling.maxReplicas` | Max pods for Horizontal pod autoscaler | `nil` |
+| `autoscaling.metrics` | Metrics used for autoscaling | `{}` |
+| `autoscaling.behavior` | Behavior for HorizontalPodAutoscaler.  This feature is available since 1.18 | `{}` |
+| `rbac.create` | If true, create & use RBAC resources | `true` |
+| `podSecurityPolicy.create` |  | `false` |
+| `podSecurityPolicy.annotations` | Annotations for the created PSP  | `{}` |
+| `podSecurityPolicy.labels` | Labels for the created PSP | `{}` |
+| `podSecurityPolicy.name` | The name of the PSP to use. If not set and create is true, a name is generated using the fullname template | `nil` |
+| `podSecurityPolicy.seLinux` | The SELinux context of the container | `{"rule":"RunAsAny"}` |
+| `podSecurityPolicy.supplementalGroups` | The user and group IDs of the container | `{"rule":"RunAsAny"}` |
+| `podSecurityPolicy.runAsUser` | The user and group IDs of the container | `{"rule":"RunAsAny"}` |
+| `podSecurityPolicy.fsGroup` | The user and group IDs of the container | `{"rule":"RunAsAny"}` |
+| `podSecurityPolicy.volumes` | Usage of volume types | `['*']` |
+| `serviceAccount.create` | If true, create a service account for the pod | `true` |
+| `serviceAccount.annotations` | Annotations for the created service account | `{}` |
+| `serviceAccount.labels` | Labels for the created service account | `{}` |
+| `serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template | `` |
+| `test.enabled` | Enables helm test | `true` |
 
 ### Init containers
 
@@ -101,19 +103,19 @@ We recommend that you embed the source code in your container and copy it to the
 
 |  Parameter | Description | Default |
 | --- | --- | --- |
-|  `busybox.enabled` | Enables initial containers and share volume with busybox | `true` |
-|  `busybox.image.repository` | The image repository to pull from | `busybox` |
-|  `busybox.image.tag` | The image tag to pull | `latest` |
-|  `busybox,image.pullPolicy` | Image pull policy | `IfNotPresent` |
-|  `busybox.command` | Initialize command | `["sh", "-c", "echo '<?php phpinfo();' > /var/www/html/index.php"]` |
-|  `busybox.sharedPath` | Path of directory to mount | `sharePath` |
-|  `busybox.extraEnv` | Additional environment variables | `[]` |
-|  `busybox.extraEnvFrom` | Additional envFrom | `[]` |
-|  `busybox.extraVolumes` | Additional volumes | `[]` |
-|  `busybox.extraVolumeMounts` | Additional volumeMounts | `[]` |
-|  `busybox.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
-|  `busybox.templates` | Additional ConfigMap as a string to be passed to the tpl function. | `{}` |
-|  `busybox.annotations` | Grant annotations to ConfigMap of `busybox.templates`, Secrets of `busybox.secrets` | `{}` |
+| `busybox.enabled` | Enables initial containers and share volume with busybox | `true` |
+| `busybox.image.repository` | The image repository to pull from | `busybox` |
+| `busybox.image.tag` | The image tag to pull | `latest` |
+| `busybox,image.pullPolicy` | Image pull policy | `IfNotPresent` |
+| `busybox.command` | Initialize command | `["sh", "-c", "echo '<?php echo \"Hello World\";' > /var/www/html/index.php"]` |
+| `busybox.sharedPath` | Path of directory to mount | `nil` |
+| `busybox.extraEnv` | Additional environment variables | `[]` |
+| `busybox.extraEnvFrom` | Additional envFrom | `[]` |
+| `busybox.extraVolumes` | Additional volumes | `[]` |
+| `busybox.extraVolumeMounts` | Additional volumeMounts | `[]` |
+| `busybox.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
+| `busybox.enableAutoMountConfigMap` | If true, ConfigMap will be volume-mounted to the pod automatically | `true` |
+| `busybox.configMaps` | Additional ConfigMap as a string to be passed to the tpl function. | `{}` |
 
 ## Nginx containers
 
@@ -126,8 +128,9 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.command` | Command to execute | `[]` |
 |  `nginx.containerPort` | Listen port of NGINX container | `80` |
 |  `nginx.lifecycle` | NGINX container lifecycle hooks | `{}` |
-|  `nginx.livenessProbe` | Liveness probe settings | `{ "httpGet": { "path": "/status", "port": 7777 } "initialDelaySeconds": 15, "periodSeconds": 5, "timeoutSeconds": 1, "successThreshold": 1, "failureThreshold": 3 }` |
-|  `nginx.readinessProbe` | Readiness probe settings | `{ "httpGet": { "path": "/ping", "port": 7777 } "initialDelaySeconds": 15, "periodSeconds": 5, "timeoutSeconds": 1, "successThreshold": 1, "failureThreshold": 3 }` |
+|  `nginx.livenessProbe` | Liveness probe settings | `{ "httpGet": { "path": "/", "port": 80 } "initialDelaySeconds": 15, "periodSeconds": 5, "timeoutSeconds": 1, "successThreshold": 1, "failureThreshold": 3 }` |
+|  `nginx.readinessProbe` | Readiness probe settings | `{ "httpGet": { "path": "/", "port": 80 } "initialDelaySeconds": 15, "periodSeconds": 5, "timeoutSeconds": 1, "successThreshold": 1, "failureThreshold": 3 }` |
+|  `nginx.startupProbe` | Startup probes settings. This feature is available since 1.18 | `{}` |
 |  `nginx.resources` | NGINX resources requests & limits | `[]` |
 |  `nginx.extraEnv` | Additional environment variables | `{}` |
 |  `nginx.extraEnvFrom` | Additional envFrom | `[]` |
@@ -135,9 +138,8 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.extraVolumes` | Additional volumes | `[]` |
 |  `nginx.extraVolumeMounts` | Additional volumeMounts | `[]` |
 |  `nginx.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
-|  `nginx.disabledDefaultTemplatesMount` | If true, do not mount the default templates to the pod | `false` |
-|  `nginx.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `nginx.conf`, `conf.d/default.conf` |
-|  `nginx.annotations` | Grant annotations to ConfigMap of `nginx.templates`, Secrets of `nginx.secrets` | `{}` |
+|  `nginx.enableAutoMountConfigMap` | If true, ConfigMap will be volume-mounted to the pod automatically | `true` |
+|  `nginx.configMaps` | Additional ConfigMap as a string to be passed to the tpl function. | setting `nginx.conf`, `conf.d/default.conf` |
 
 ## PHP-FPM containers
 
@@ -151,6 +153,7 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.lifecycle` | PHP-FPM container lifecycle hooks | `{}` |
 |  `fpm.livenessProbe` | Liveness probe settings | `{}` |
 |  `fpm.readinessProbe` | Readiness probe settings | `{}` |
+|  `fpm.startupProbe` | Startup probes settings. This feature is available since 1.18 | `{}` |
 |  `fpm.resources` | PHP-FPM resources requests & limits | `{}` |
 |  `fpm.extraEnv` | Additional environment variables | `[]` |
 |  `fpm.extraEnvFrom` | Additional envFrom | `[]` |
@@ -158,9 +161,8 @@ We recommend that you embed the source code in your container and copy it to the
 |  `fpm.extraVolumes` | Additional volumes | `[]` |
 |  `fpm.extraVolumeMounts` | Additional volumeMounts | `[]` |
 |  `fpm.secrets` | Additional Secret as a string to be passed to the tpl function | `{}` |
-|  `fpm.disabledDefaultTemplatesMount` | If true, do not mount the default templates to the pod | `false` |
-|  `fpm.templates` | Additional ConfigMap as a string to be passed to the tpl function. | setting `php-fpm.conf`,`www.conf` |
-|  `fpm.annotations` | Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets` | `{}` |
+|  `fpm.enableAutoMountConfigMap` | If true, ConfigMap will be volume-mounted to the pod automatically | `true` |
+|  `fpm.configMaps` | Additional ConfigMap as a string to be passed to the tpl function. | setting `php-fpm.conf`,`www.conf` |
 
 ### Manage request timeout and graceful shutdown
 
@@ -193,7 +195,7 @@ fpm:
       process_control_timeout = {{ your_fpm_process_control_timeout }}
 
   lifecycle:
-    preStop: ["/bin/sh", "-c", "sleep 5; kill -QUIT 1; sleep {{ $fpm_request_timeout }} "]
+    preStop: ["/bin/sh", "-c", "sleep 5; kill -QUIT 1; sleep {{ your_fpm_process_control_timeout }} "]
 ```
 
 ### Manage PHP-FPM logging

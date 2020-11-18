@@ -1,24 +1,19 @@
 {{- $root := . -}}
-{{- range $name, $tmpl := .Values.fpm.templates }}
+{{- range $name, $tmpl := .Values.fpm.configMaps }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "php.fullname" $root }}-fpm-{{ $name | replace "." "-" | lower }}
-  labels: {{ include "php.labels" $root | nindent 4 }}
-  {{- with $root.Values.fpm.annotations }}
-  annotations:
-    {{- range $k, $v := . }}
-    {{ $k }}: {{ tpl $v $root | toYaml | indent 4 }}
-    {{- end }}
-  {{- end }}
+  labels:
+    {{- include "php.labels" $root | nindent 4 }}
+  name: {{ include "php.fullname" $root }}-fpm-{{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" | lower }}
 data:
   {{- if eq (kindOf $tmpl) "string" }}
-  {{ $name }}: |
-{{ tpl $tmpl $root | indent 4 }}
+  {{ $name | replace "/" "-" | replace "_" "-" | replace "." "-" }}: |
+    {{- tpl $tmpl $root | nindent 4 }}
   {{- else }}
   {{- range $k, $v := $tmpl }}
-  {{ $k }}: {{ tpl $v $root | toYaml | indent 2 }}
+  {{ $k | replace "/" "-" | replace "_" "-" | replace "." "-" }}: {{ tpl $v $root | quote }}
   {{- end }}
   {{- end }}
 {{- end }}

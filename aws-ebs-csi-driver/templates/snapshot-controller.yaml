@@ -1,0 +1,61 @@
+{{- if .Values.enableVolumeSnapshot }}
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: {{ include "aws-ebs-csi-driver.fullname" . }}-snapshot-controller
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "aws-ebs-csi-driver.snapshotController.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.snapshotController.annotations | nindent 4 }}
+spec:
+  replicas: {{ .Values.snapshotController.replicas }}
+  serviceName: {{ include "aws-ebs-csi-driver.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "aws-ebs-csi-driver.snapshotController.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "aws-ebs-csi-driver.snapshotController.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/secret: "{{ include (print $.Template.BasePath "/snapshot-controller-secrets.yaml") . | sha256sum }}"
+        {{- with .Values.controller.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "aws-ebs-csi-driver.snapshotController.serviceAccountName" .  }}
+      containers:
+        - name: {{ .Chart.Name }}-snapshot-controller
+          image: {{ .Values.snapshotController.image.repository }}:{{ .Values.snapshotController.image.tag }}
+          imagePullPolicy: {{ .Values.snapshotController.image.pullPolicy }}
+          args:
+            - --v={{ .Values.snapshotController.logLevel }}
+            - --leader-election={{ .Values.snapshotController.leaderElection }}
+            {{- with .Values.snapshotController.extraArgs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.snapshotController.resources | nindent 12 }}
+          env:
+            {{- if and .Values.snapshotController.awsEnv.secret.keyId .Values.snapshotController.awsEnv.secret.accessKey }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "aws-ebs-csi-driver.snapshotController.awsEnvSecretName" . }}
+                  key: keyId
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "aws-ebs-csi-driver.snapshotController.awsEnvSecretName" . }}
+                  key: accessKey
+            {{- end }}
+            {{- with .Values.region }}
+            - name: AWS_REGION
+              value: {{ . }}
+            {{- end }}
+            {{- range $key, $value := .Values.snapshotController.extraEnv }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+{{- end }}

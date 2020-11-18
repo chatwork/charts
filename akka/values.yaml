@@ -82,7 +82,7 @@ akka:
   # See: https://doc.akka.io/docs/akka-management/current/index.html
   management:
     # If true, enable akka-http.
-    # This setting affects container ports, services, and readiness/liveness probe.
+    # This setting affects container ports, services, and startup/readiness/liveness probe.
     enabled: true
     hostname: 0.0.0.0
     port: 8558
@@ -98,6 +98,7 @@ akka:
     healthChecks:
       livenessPath: alive
       readinessPath: ready
+      startupPath: ready
 
     # Service fo akka-management.
     service:
@@ -148,6 +149,24 @@ extraVolumeMounts: []
 labels: {}
 
 lifecycle: {}
+
+startupProbe:
+  # If true, enable the startup probe.
+  # The probe overrides the akka-management setting.
+  # If you don't use akka-management, you should set up httpGet or tcpSocket.
+  # This feature is available since 1.18
+  enabled: false
+  httpGet: {}
+  #   scheme: HTTP
+  #   path: [your http path]
+  #   port: [your http port]
+  tcpSocket: {}
+  #   port: [your tcp port]
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
 
 livenessProbe:
   # If true, enable the liveness probe.
@@ -260,6 +279,8 @@ autoscaling:
   minReplicas:
   maxReplicas:
   metrics: []
+  # This feature is available since 1.18
+  behavior: {}
 
 # Metrics Configuration.
 metrics:
@@ -322,10 +343,13 @@ configmaps:
             required-contact-point-nr = {{ .Values.akka.management.cluster.bootstrap.contactPointDiscovery.requiredContactPointNr }}
           }
         }
-        {{- with .Values.akka.management.healthChecks }}
+        {{- if .Values.akka.management.healthChecks }}
         health-checks {
-          readiness-path = "{{ .readinessPath }}"
-          liveness-path = "{{ .livenessPath }}"
+          {{- if .Values.startupProbe.enabled }}
+          startup-path = "{{ .Values.akka.management.healthChecks.startupPath }}"
+          {{- end }}
+          readiness-path = "{{ .Values.akka.management.healthChecks.readinessPath }}"
+          liveness-path = "{{ .Values.akka.management.healthChecks.livenessPath }}"
         }
         {{- end }}
       }
@@ -359,6 +383,10 @@ useResourceApplicationConf: true
 
 # Secret Configuration
 secrets: {}
+
+# This feature is available since 1.18
+# https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+topologySpreadConstraints: []
 
 test:
   enabled: false

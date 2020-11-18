@@ -6,10 +6,12 @@
 sharedPath: /var/www/html
 
 # DEPLOYMENT
-#replicaCount: 1
+replicaCount: 1
 
 strategy:
   type: RollingUpdate
+
+annotations: {}
 
 labels: {}
 
@@ -19,17 +21,11 @@ podAnnotations: {}
 
 imagePullSecrets: []
 
-readinessGates: {}
+readinessGates: []
 
-restartPolicy: ""
+restartPolicy: "Always"
 
 securityContext: {}
-
-serviceAccountName: ""
-
-extraVolumes: []
-
-extraVolumeMounts: []
 
 terminationGracePeriodSeconds: 70
 
@@ -39,33 +35,70 @@ affinity: {}
 
 # SERVICE
 service:
-  type: LoadBalancer
-  extraPorts: []
-  labels: {}
   annotations: {}
+  labels: {}
+  type: LoadBalancer
+  port: null
+  extraPorts: []
 
 # INGRESS
 ingress:
   enabled: false
   labels: {}
   annotations: {}
+  hosts: []
+  # - host: localhost
+  #   path: /
+  #   extraPathes:
+  #     path: /foo
+  #     backend:
+  #       serviceName: foo-service
+  #       servicePort: 80
+  tls: []
+  # - hosts:
+  #     - example.com
+  #       secretName: examplecret-tls
+  ingressClassName: ''
 
 # PDB
 podDisruptionBudget:
   enabled: false
+  annotations: {}
+  labels: {}
+  minAvailable:
+  maxUnavailable:
 
 # HPA
 autoscaling:
   enabled: false
-  #minReplicas:
-  #maxReplicas:
-  #metrics:
+  annotations: {}
+  labels: {}
+  minReplicas:
+  maxReplicas:
+  metrics: {}
   #  - type: Resource
   #    resource:
   #      name: cpu
   #      target:
   #        type: Utilization
   #        averageUtilization: 60
+  behavior: {}
+  #  scaleDown:
+  #    stabilizationWindowSeconds: 300
+  #    policies:
+  #      - type: Percent
+  #        value: 100
+  #        periodSeconds: 15
+  #  scaleUp:
+  #    stabilizationWindowSeconds: 0
+  #    policies:
+  #      - type: Percent
+  #        value: 100
+  #        periodSeconds: 15
+  #      - type: Pods
+  #        value: 4
+  #        periodSeconds: 15
+  #    selectPolicy: Max
 
 # RBAC
 rbac:
@@ -73,7 +106,7 @@ rbac:
   create: true
 
 # PSP
-psp:
+podSecurityPolicy:
   create: false
   annotations: {}
   labels: {}
@@ -111,14 +144,14 @@ busybox:
   # `busybox.command` is initialize command.
   # Copy the source code in busybox to `sharedPath` or `busybox.sharedPath`.
   # e.g. sh -c "cp -av /path/to/sources/* /path/to/share-path"
-  command: ["sh", "-c", "echo '<?php echo \"Hello World\";' > {{ .Values.sharedPath }}/index.php"]
+  command: ["sh", "-c", "echo '<?php echo \"Hello World\";' > /var/www/html/index.php"]
 
   # `busybox.sharedPath` is specifies the directory to mount.
   # Default is `sharedPath`, but if it conflicts with the source code directory, please specify it.
-  #sharedPath: {{ .Values.sharedPath }}
+  sharedPath:
 
   # `busybox.extraEnv` is additional environment variables.
-  extraEnv: {}
+  extraEnv: []
   #  KEY1: VALUE1
   #  KEY2: VALUE2
   #  KEY3: VALUE3
@@ -159,24 +192,24 @@ busybox:
   #    BAR: 2
   #    BAZ: 3
 
-  # `buxybox.templates` is additional ConfigMap as a string to be passed to the tpl function.
+  # If true, ConfigMap will be volume-mounted to the pod automatically.
+  enableAutoMountConfigMap: true
+
+  # `buxybox.configMaps` is additional ConfigMap as a string to be passed to the tpl function.
   # ConfigMap name created here is `[release-name]-busybox-[template-name]`.
-  templates: {}
-  #  file1.yaml: |
+  configMaps: {}
+  #  template-name1.yaml: |
   #    foo: 1
   #    bar: 2
   #    baz: 3
-  #  file2.yaml: |
+  #  template-name2.yaml: |
   #    foo: 1
   #    bar: 2
   #    baz: 3
-  #  envname:
+  #  template-name3:
   #    FOO: 1
   #    BAR: 2
   #    BAZ: 3
-
-  # Grant annotations to ConfigMap of `busybox.templates`, Secrets of `busybox.secrets`.
-  annotations: {}
 
 # NGINX
 nginx:
@@ -203,7 +236,7 @@ nginx:
 
   livenessProbe:
     httpGet:
-      path: /index.php
+      path: /
       port: 80
     initialDelaySeconds: 15
     periodSeconds: 5
@@ -213,7 +246,17 @@ nginx:
 
   readinessProbe:
     httpGet:
-      path: /index.php
+      path: /
+      port: 80
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
+  startupProbe:
+    httpGet:
+      path: /
       port: 80
     initialDelaySeconds: 15
     periodSeconds: 5
@@ -224,7 +267,7 @@ nginx:
   resources: {}
 
   # `nginx.extraEnv` is additional environment variables.
-  extraEnv: {}
+  extraEnv: []
   #  KEY1: VALUE1
   #  KEY2: VALUE2
   #  KEY3: VALUE3
@@ -272,13 +315,12 @@ nginx:
   #    BAR: 2
   #    BAZ: 3
 
-  # If true, do not mount the templates to the pod.
-  # This is for use in environment variables only, or to include when building containers.
-  disabledDefaultTemplatesMount: false
+  # If true, ConfigMap will be volume-mounted to the pod automatically.
+  enableAutoMountConfigMap: true
 
   # configuration NGINX templates.
   # If you can not be satisfied with the default settings you can change the template.
-  templates:
+  configMaps:
     nginx.conf: |
       user  nobody;
       worker_processes  auto;
@@ -306,13 +348,13 @@ nginx:
 
           include /etc/nginx/conf.d/*.conf;
       }
-    default.conf: |
+    conf.d/default.conf: |
       server {
           listen {{ .Values.nginx.containerPort }};
 
           location / {
               root   {{ .Values.sharedPath }};
-              index  index.html index.htm;
+              index  index.php index.html index.htm;
           }
           location ~ \.php$ {
               root           {{ .Values.sharedPath }};
@@ -322,9 +364,6 @@ nginx:
               include        fastcgi_params;
           }
       }
-
-  # Grant annotations to ConfigMap of `nginx.templates`, Secrets of `nginx.secrets`.
-  annotations: {}
 
 # PHP-FPM
 fpm:
@@ -352,6 +391,7 @@ fpm:
 
   livenessProbe: {}
   readinessProbe: {}
+  startupProbe: {}
   resources: {}
 
   # `fpm.extraEnv` is additional environment variables.
@@ -406,14 +446,13 @@ fpm:
   #    BAR: 2
   #    BAZ: 3
 
-  # If true, do not mount the templates to the pod.
-  # This is for use in environment variables only, or to include when building containers.
-  disabledDefaultTemplatesMount: false
+  # If true, ConfigMap will be volume-mounted to the pod automatically.
+  enableAutoMountConfigMap: true
 
   # configuration PHP-FPM templates
   # If you can not be satisfied with the default settings you can change the template.
-  templates:
-    zz-kubernetes.conf: |
+  configMaps:
+    php-fpm.d/zz-kubernetes.conf: |
       [www]
       {{- if .Values.fpm.containerPort }}
       listen = 127.0.0.1:{{ .Values.fpm.containerPort }}
@@ -430,27 +469,6 @@ fpm:
       php_admin_value[error_log] = /proc/self/fd/2
       php_admin_flag[log_errors] = on
       php_admin_value[log_errors_max_len] = 8192
-
-  # Grant annotations to ConfigMap of `fpm.templates`, Secrets of `fpm.secrets`.
-  annotations: {}
-
-# `extra` is additional Raw Kubernetes Config as a string to be passed to the tpl function.
-extras:
-  templates: {}
-#    secret1: |
-#     apiVersion: v1
-#     kind: Secret
-#     metadata:
-#       name: {{ template "php.fullname" . }}
-#       labels:
-#         app: {{ template "php.name" . }}
-#         chart: {{ template "php.chart" . }}
-#         release: {{ .Release.Name }}
-#         heritage: {{ .Release.Service }}
-#     type: Opaque
-#     data:
-#       hoge: {{ .Values.extras.hoge }}
-#  hoge: 1
 
 # TEST
 test:

@@ -1,6 +1,0 @@
-description: AWS Iam Role(with kube-aws-iam-controller) CRD
-name: kube-aws-iam-controller-crd
-version: 0.0.1
-maintainers:
-- name: cwsakamoto
-  email: sakamoto@chatwork.com

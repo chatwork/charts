@@ -2,15 +2,19 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "php.fullname" . }}
-  labels: {{ include "php.labels" . | nindent 4 }}
+  annotations:
+    {{- range $k, $v := .Values.podDisruptionBudget.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+    {{- range $k, $v := .Values.podDisruptionBudget.labels }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
+  name: {{ include "php.fullname" . }}
 spec:
-  {{- if .Values.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
-  {{- end }}
-  {{- if .Values.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "php.selectorLabels" . | nindent 6 }}

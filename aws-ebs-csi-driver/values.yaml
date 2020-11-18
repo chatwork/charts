@@ -1,0 +1,167 @@
+# Default values for aws-ebs-csi-driver.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: amazon/aws-ebs-csi-driver
+  tag: "v0.7.0"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# True if enable volume scheduling for dynamic volume provisioning
+enableVolumeScheduling: false
+
+# True if enable volume resizing
+enableVolumeResizing: false
+
+# True if enable volume snapshot
+enableVolumeSnapshot: false
+
+# Extra volume tags to attach to each dynamically provisioned volume.
+# ---
+# extraVolumeTags:
+#   key1: value1
+#   key2: value2
+extraVolumeTags: {}
+
+# AWS region to use. If not specified then the region will be looked up via the AWS EC2 metadata
+# service.
+# ---
+# region: us-east-1
+region: ""
+
+# sidecars
+csiProvisoner:
+  image:
+    repository: quay.io/k8scsi/csi-provisioner
+    tag: "v1.6.0"
+    pullPolicy: Always
+  resources: {}
+  leaderElection: true
+  logLevel: 5
+  extraArgs: []
+
+csiAttacher:
+  image:
+    repository: quay.io/k8scsi/csi-attacher
+    tag: "v3.0.2"
+    pullPolicy: Always
+  resources: {}
+  leaderElection: true
+  logLevel: 5
+  extraArgs: []
+
+csiResizer:
+  image:
+    repository: quay.io/k8scsi/csi-resizer
+    tag: "v1.0.1"
+    pullPolicy: Always
+  resources: {}
+  logLevel: 5
+  leaderElection: true
+  extraArgs: []
+
+csiSnapshotter:
+  image:
+    repository: quay.io/k8scsi/csi-snapshotter
+    tag: "v3.0.2"
+    pullPolicy: Always
+  leaderElection: true
+  extraArgs: []
+  resources: {}
+
+livenessProbe:
+  image:
+    repository: quay.io/k8scsi/livenessprobe
+    tag: "v2.1.0"
+    pullPolicy: Always
+  resources: {}
+
+nodeDriverRegistrar:
+  image:
+    repository: quay.io/k8scsi/csi-node-driver-registrar
+    tag: "v2.0.1"
+    pullPolicy: Always
+  resources: {}
+  extraArgs: []
+  logLevel: 5
+
+node:
+  serviceAccount:
+    annotations: {}
+    create: true
+    name:
+  annotations: {}
+  podAnnotations: {}
+  tolerations: []
+  logLevel: 5
+  extraArgs: []
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  priorityClassName: system-node-critical
+
+controller:
+  replicaCount: 2
+  serviceAccount:
+    annotations: {}
+    create: true
+    name:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  annotations: {}
+  podAnnotations: {}
+  logLevel: 5
+  awsEnv:
+    secret:
+      # if set this parameter, ignore keyId,accessKey
+      existingSecretName:
+      # AWS_ACCESS_KEY_ID
+      keyId: ""
+      # AWS_SECRET_ACCESS_KEY
+      accessKey: ""
+  extraArgs: []
+  extraEnv: {}
+    # key: value
+
+snapshotController:
+  image:
+    repository: quay.io/k8scsi/snapshot-controller
+    tag: "v3.0.0"
+    pullPolicy: Always
+  serviceAccount:
+    annotations: {}
+    create: true
+    name:
+  replicas: 1
+  leaderElection: false
+  resources: {}
+  annotations: {}
+  podAnnotations: {}
+  logLevel: 5
+  awsEnv:
+    secret:
+      # if set this parameter, ignore keyId,accessKey
+      existingSecretName:
+      # AWS_ACCESS_KEY_ID
+      keyId: ""
+      # AWS_SECRET_ACCESS_KEY
+      accessKey: ""
+  extraArgs: []
+  extraEnv: {}
+    # key: value

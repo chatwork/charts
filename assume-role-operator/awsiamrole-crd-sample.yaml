@@ -1,6 +1,0 @@
-apiVersion: amazonaws.com/v1
-kind: AWSIAMRole
-metadata:
-  name: aws-iam-assume-role-operator-role
-spec:
-  roleReference: arn:aws:iam::XXXXXX:role/assume-role-operator_role
