@@ -30,10 +30,6 @@ spec:
   - name: {{ .Values.port.management.http.name }}
     port: {{ .Values.port.management.http.port }}
   {{- end}}
-  {{- if .Values.config.highAvailability.enabled }}
-  - name: {{ .Values.port.highAvailability.name }}
-    port: {{ .Values.port.highAvailability.port }}
-  {{- end}}
   selector:
     app: {{ template "twistlock-console.fullname" $root }}
     release: {{ .Release.Name }}

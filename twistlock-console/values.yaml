@@ -20,9 +20,6 @@ port:
     https:
       name: "mgmt-https"
       port: 8083
-  highAvailability:
-    name: "ha"
-    port: 8086
 
 volumeMounts:
   data:
@@ -50,7 +47,7 @@ config:
   runConsoleAsRoot:
     enabled: false
   docker:
-    tag: "_20_09_345"
+    tag: "_20_09_365"
     socket: "/var/run/docker.sock"
   recovery:
     enabled: true

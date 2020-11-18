@@ -53,10 +53,6 @@ spec:
         {{- end }}
         - name: {{ .Values.port.communication.name }}
           containerPort: {{ .Values.port.communication.port }}
-        {{- if .Values.config.highAvailability.enabled }}
-        - name: ha
-          containerPort: {{ .Values.port.highAvailability.port }}
-        {{- end }}
         {{- with .Values.livenessProbe }}
         livenessProbe:{{ tpl (toYaml .) $root | nindent 10 }}
         {{- end }}
@@ -77,9 +73,12 @@ spec:
         {{- end }}
         {{- with .Values.extraEnv }}{{ toYaml . | nindent 8 }}
         {{- end }}
-        {{- with .Values.securityContext }}
-        securityContext:{{ toYaml . | nindent 8 }}
-        {{- end }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          privileged: true
+          {{- with .Values.securityContext }}
+          {{- toYaml . | nindent 8 }}
+          {{- end }}
         volumeMounts:
         - name: twistlock-config-volume
           mountPath: "/data/config/"
