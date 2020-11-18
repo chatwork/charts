@@ -3,33 +3,27 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: {{ template "twistlock-console.fullname" $root }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-  name: {{ template "twistlock-console.fullname" $root }}
-  {{- range $key, $value := .Values.service.annotations }}
+    {{- include "twistlock-console.labels" $root | nindent 4 }}
+  name: {{ include "twistlock-console.fullname" $root }}
   annotations:
-    {{ $key }}: {{ tpl $value $root | quote }}
-  {{- end }}
+    {{- toYaml .Values.service.annotations | nindent 4 }}
 spec:
   {{- with .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-{{ toYaml . | indent 2 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- if and .Values.service.clusterIP (eq "ClusterIP" .Values.service.type) }}
   clusterIP: {{ .Values.service.clusterIP }}
   {{- end}}
   type: {{ .Values.service.type }}
   ports:
-  - name: {{ .Values.port.communication.name }}
-    port: {{ .Values.port.communication.port }}
-  - name: {{ .Values.port.management.https.name }}
-    port: {{ .Values.port.management.https.port }}
+  - port: {{ .Values.port.communication.port }}
+    targetPort: {{ .Values.port.communication.name }}
+  - port: {{ .Values.port.management.https.port }}
+    targetPort: {{ .Values.port.management.https.name }}
   {{- if .Values.config.management.http.enabled }}
-  - name: {{ .Values.port.management.http.name }}
-    port: {{ .Values.port.management.http.port }}
+  - port: {{ .Values.port.management.http.port }}
+    targetPort: {{ .Values.port.management.http.name }}
   {{- end}}
   selector:
-    app: {{ template "twistlock-console.fullname" $root }}
-    release: {{ .Release.Name }}
+    {{- include "twistlock-console.selectorLabels" $root | nindent 4 }}

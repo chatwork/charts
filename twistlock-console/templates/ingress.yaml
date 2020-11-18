@@ -3,16 +3,11 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "twistlock-console.fullname" $root }}
+  name: {{ include "twistlock-console.fullname" $root }}
   labels:
-    app: {{ template "twistlock-console.fullname" $root }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-  {{- range $key, $value := .Values.ingress.annotations }}
+    {{- include "twistlock-console.labels" $root | nindent 4 }}
   annotations:
-    {{ $key }}: {{ tpl $value $root | quote }}
-  {{- end }}
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
 {{- with .Values.ingress.tls }}
   tls:{{ tpl (toYaml .) $root | nindent 2 }}
