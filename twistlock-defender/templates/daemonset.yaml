@@ -6,25 +6,33 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "twistlock-defender.labels" . | nindent 4 }}
+    {{- range $k, $v := .Values.labels }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
   annotations:
-    {{- toYaml .Values.annotations | nindent 4 }}
+    {{- range $k, $v := .Values.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
       {{- include "twistlock-defender.selectorLabels" . | nindent 6 }}
   updateStrategy:
-    {{ toYaml .Values.updateStrategy | nindent 4 }}
+    {{- toYaml .Values.updateStrategy | nindent 4 }}
   template:
     metadata:
       labels:
         {{- include "twistlock-defender.selectorLabels" . | nindent 8 }}
-      name: {{ template "twistlock-defender.fullname" $root }}
-      annotations:
-        checksum/config: {{ tpl (toYaml .Values.config) . | sha256sum | quote }}
-        checksum/secret: {{ tpl (toYaml .Values.secret) . | sha256sum | quote }}
-        {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
+        {{- range $k, $v := .Values.podLabels }}
+        {{ $k }}: {{ $v | quote }}
         {{- end }}
+      annotations:
+        checksum/config: {{ tpl (toYaml .Values.config) . | sha256sum }}
+        checksum/secret: "{{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}"
+        {{- range $k, $v := .Values.podAnnotations }}
+        {{ $k }}: {{ $v | quote }}
+        {{- end }}
+      name: {{ template "twistlock-defender.fullname" $root }}
     spec:
       {{- if or .Values.config.monitor.istio .Values.config.monitor.serviceAccounts }}
       serviceAccountName: {{ include "twistlock-defender.serviceAccountName" . }}
