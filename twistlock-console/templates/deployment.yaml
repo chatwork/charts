@@ -5,8 +5,13 @@ metadata:
   name: {{ template "twistlock-console.fullname" $root }}
   labels:
     {{- include "twistlock-console.labels" $root | nindent 4 }}
+    {{- range $k, $v := .Values.labels }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
   annotations:
-    {{- toYaml .Values.deployment.annotations | nindent 4 }}
+    {{- range $k, $v := .Values.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
   selector:
@@ -18,10 +23,14 @@ spec:
     metadata:
       labels:
         {{- include "twistlock-console.selectorLabels" $root | nindent 8 }}
+        {{- range $k, $v := .Values.podLabels }}
+        {{ $k }}: {{ $v | quote }}
+        {{- end }}
       annotations:
-        checksum/config: {{ tpl (toYaml .Values.configmap) . | sha256sum | quote }}
-        {{- with .Values.deployment.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
+        checksum/config: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
+        checksum/secret: "{{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}"
+        {{- range $k, $v := .Values.podAnnotations }}
+        {{ $k }}: {{ $v | quote }}
         {{- end }}
       name: {{ template "twistlock-console.fullname" $root }}
     spec:

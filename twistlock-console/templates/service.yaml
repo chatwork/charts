@@ -2,11 +2,13 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: {{ include "twistlock-console.fullname" $root }}
   labels:
     {{- include "twistlock-console.labels" $root | nindent 4 }}
-  name: {{ include "twistlock-console.fullname" $root }}
   annotations:
-    {{- toYaml .Values.service.annotations | nindent 4 }}
+    {{- range $k, $v := .Values.service.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
 spec:
   {{- with .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:

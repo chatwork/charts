@@ -7,12 +7,16 @@ metadata:
   labels:
     {{- include "twistlock-console.labels" $root | nindent 4 }}
   annotations:
-    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+    {{- range $k, $v := .Values.ingress.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
 spec:
-{{- with .Values.ingress.tls }}
-  tls:{{ tpl (toYaml .) $root | nindent 2 }}
-{{- end }}
-{{- with .Values.ingress.rules }}
-  rules:{{ tpl (toYaml .) $root | nindent 2 }}
-{{- end }}
+  {{- with .Values.ingress.tls }}
+  tls:
+    {{- tpl (toYaml .) $root | nindent 4 }}
+  {{- end }}
+  {{- with .Values.ingress.rules }}
+  rules:
+    {{- tpl (toYaml .) $root | nindent 4 }}
+  {{- end }}
 {{- end }}
