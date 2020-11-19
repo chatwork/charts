@@ -19,14 +19,17 @@ spec:
   {{- end}}
   type: {{ .Values.service.type }}
   ports:
-  - port: {{ .Values.port.communication.servicePort }}
+  - name: {{ .Values.port.communication.name }}
+    port: {{ .Values.port.communication.servicePort }}
     targetPort: {{ .Values.port.communication.name }}
     protocol: TCP
-  - port: {{ .Values.port.management.https.servicePort }}
+  - name: {{ .Values.port.management.https.name }}
+    port: {{ .Values.port.management.https.servicePort }}
     targetPort: {{ .Values.port.management.https.name }}
     protocol: TCP
   {{- if .Values.config.management.http.enabled }}
-  - port: {{ .Values.port.management.http.servicePort }}
+  - name: {{ .Values.port.management.http.name }}
+    port: {{ .Values.port.management.http.servicePort }}
     targetPort: {{ .Values.port.management.http.name }}
     protocol: TCP
   {{- end}}

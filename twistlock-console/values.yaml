@@ -12,20 +12,17 @@ image:
 port:
   communication:
     name: "communication"
-    port:
-      containerPort: 8084
-      servicePort: 8084
+    containerPort: 8084
+    servicePort: 8084
   management:
     http:
       name: "mgmt-http"
-      port:
-        containerPort: 8081
-        servicePort: 8081
+      containerPort: 8081
+      servicePort: 8081
     https:
       name: "mgmt-https"
-      port:
-        containerPort: 8083
-        servicePort: 8083
+      containerPort: 8083
+      servicePort: 8083
 
 volumeMounts:
   data:
@@ -78,12 +75,12 @@ resources:
 
 priorityClassName: ""
 
-deployment:
-  annotations: {}
-  replicas: 1
-  strategy:
-    rollingUpdate: null
-    type: Recreate
+annotations: {}
+labels: {}
+replicas: 1
+strategy:
+  rollingUpdate: null
+  type: Recreate
 
 podAnnotations: {}
 tolerations: []
@@ -114,10 +111,18 @@ secrets: {}
 livenessProbe:
   tcpSocket:
     port: "{{ .Values.port.management.https.name }}"
+  failureThreshold: 3
+  periodSeconds: 30
+  successThreshold: 1
+  timeoutSeconds: 1
 
 readinessProbe:
   tcpSocket:
     port: "{{ .Values.port.management.https.name }}"
+  failureThreshold: 3
+  periodSeconds: 30
+  successThreshold: 1
+  timeoutSeconds: 1
 
 serviceAccount:
   create: true
