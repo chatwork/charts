@@ -37,15 +37,15 @@ spec:
         imagePullPolicy: {{ .Values.image.imagePullPolicy }}
         ports:
         - name: {{ .Values.port.management.https.name }}
-          containerPort: {{ .Values.port.management.https.port }}
+          containerPort: {{ .Values.port.management.https.containerPort }}
           protocol: TCP
         {{- if .Values.config.management.http.enabled }}
         - name: {{ .Values.port.management.http.name }}
-          containerPort: {{ .Values.port.management.http.port }}
+          containerPort: {{ .Values.port.management.http.containerPort }}
           protocol: TCP
         {{- end }}
         - name: {{ .Values.port.communication.name }}
-          containerPort: {{ .Values.port.communication.port }}
+          containerPort: {{ .Values.port.communication.containerPort }}
           protocol: TCP
         {{- with .Values.livenessProbe }}
         livenessProbe:
@@ -71,12 +71,10 @@ spec:
         {{- with .Values.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- with .Values.securityContext }}
         securityContext:
-          readOnlyRootFilesystem: true
-          privileged: true
-          {{- with .Values.securityContext }}
-          {{- toYaml . | nindent 8 }}
-          {{- end }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: twistlock-config-volume
           mountPath: "/data/config/"

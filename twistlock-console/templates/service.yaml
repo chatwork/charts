@@ -17,13 +17,16 @@ spec:
   {{- end}}
   type: {{ .Values.service.type }}
   ports:
-  - port: {{ .Values.port.communication.port }}
+  - port: {{ .Values.port.communication.servicePort }}
     targetPort: {{ .Values.port.communication.name }}
-  - port: {{ .Values.port.management.https.port }}
+    protocol: TCP
+  - port: {{ .Values.port.management.https.servicePort }}
     targetPort: {{ .Values.port.management.https.name }}
+    protocol: TCP
   {{- if .Values.config.management.http.enabled }}
-  - port: {{ .Values.port.management.http.port }}
+  - port: {{ .Values.port.management.http.servicePort }}
     targetPort: {{ .Values.port.management.http.name }}
+    protocol: TCP
   {{- end}}
   selector:
     {{- include "twistlock-console.selectorLabels" $root | nindent 4 }}
