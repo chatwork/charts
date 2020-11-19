@@ -1,66 +1,65 @@
-{{- if and .Values.daemonset.enabled (not .Values.deployment.enabled) }}
 {{ $root := . }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ template "twistlock-defender.fullname" $root }}
+  name: {{ include "twistlock-defender.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "twistlock-defender.fullname" $root }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-  {{- range $key, $value := .Values.daemonset.annotations }}
+    {{- include "twistlock-defender.labels" . | nindent 4 }}
   annotations:
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+    {{- toYaml .Values.annotations | nindent 4 }}
 spec:
   selector:
     matchLabels:
-       app: {{ template "twistlock-defender.fullname" $root }}
-       release: {{ .Release.Name }}
-  {{- with .Values.daemonset.updateStrategy }}
-  updateStrategy:{{ toYaml . | nindent 4 }}
-  {{- end }}
+      {{- include "twistlock-defender.selectorLabels" . | nindent 6 }}
+  updateStrategy:
+    {{ toYaml .Values.updateStrategy | nindent 4 }}
   template:
     metadata:
       labels:
-        app: {{ template "twistlock-defender.fullname" $root }}
-        release: {{ .Release.Name }}
+        {{- include "twistlock-defender.selectorLabels" . | nindent 8 }}
       name: {{ template "twistlock-defender.fullname" $root }}
       annotations:
         checksum/config: {{ tpl (toYaml .Values.config) . | sha256sum | quote }}
         checksum/secret: {{ tpl (toYaml .Values.secret) . | sha256sum | quote }}
-        {{- range $key, $value := .Values.podAnnotations }}
-        {{ $key }}: {{ $value | quote }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
       {{- if or .Values.config.monitor.istio .Values.config.monitor.serviceAccounts }}
-      serviceAccountName: {{ template "twistlock-defender.fullname" $root }}
+      serviceAccountName: {{ include "twistlock-defender.serviceAccountName" . }}
       {{- end }}
-      {{- with .Values.image.imagePullSecrets }}
-      imagePullSecrets:{{ toYaml . | nindent 8 }}
-      {{- end }}
+      imagePullSecrets:
+        {{- toYaml .Values.image.imagePullSecrets | nindent 8 }}
       {{- with .Values.priorityClassName }}
       priorityClassName: {{ . }}
       {{- end }}
       containers:
       - name: twistlock-defender
         image: {{ tpl .Values.image.repository $root }}:{{ tpl .Values.image.tag $root }}
+        {{- if .Values.service.enabled }}
+        ports:
+        - name: https
+          containerPort: {{ .Values.port.https.containerPort }}
+          protocol: TCP
+        {{- end }}
         env:
-        - name: LOG_PROD
-          value: "true"
-        - name: SYSTEMD_ENABLED
-          value: "false"
         - name: WS_ADDRESS
           value: "{{ tpl .Values.config.console.wsAddress $root }}"
         - name: DEFENDER_TYPE
           value: "daemonset"
         - name: DEFENDER_LISTENER_TYPE
           value: "{{ .Values.config.defender.listenerType }}"
+        - name: LOG_PROD
+          value: "true"
+        - name: SYSTEMD_ENABLED
+          value: "false"
         - name: DOCKER_CLIENT_ADDRESS
           value: "{{ .Values.config.docker.clientAddress }}"
         - name: DEFENDER_CLUSTER_ID
           value: "{{ .Values.config.clusterId }}"
+        - name: DEFENDER_CLUSTER
+          value: "{{ .Values.config.cluster }}"
         - name: MONITOR_SERVICE_ACCOUNTS
           value: "{{ .Values.config.monitor.serviceAccounts }}"
         - name: MONITOR_ISTIO
@@ -69,19 +68,40 @@ spec:
           value: "{{ .Values.config.collectPodLabels }}"
         - name: INSTALL_BUNDLE
           value: "{{ .Values.config.installBundle }}"
-        {{- with .Values.extraEnv }}{{ toYaml . | nindent 8 }}
+        - name: HOST_CUSTOM_COMPLIANCE_ENABLED
+          value: "{{ .Values.config.hostCustomCompliance }}"
+        {{- if .Values.config.containerizedHost }}
+        - name: CONTAINERIZED_HOST
+          value: "true"
+        {{- end }}
+        {{- if .Values.config.microsegmentation }}
+        - name: ENFORCERD_KUBENODE
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: K8S_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: K8S_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        {{- end }}
+        {{- with .Values.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.livenessProbe }}
-        livenessProbe:{{ tpl (toYaml .) $root | nindent 10 }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- with .Values.readinessProbe }}
-        readinessProbe:{{ tpl (toYaml .) $root | nindent 10 }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
-        - name: host-root
-          mountPath: "/host"
         - name: data-path
-          mountPath: "{{ .Values.volumeMounts.data }}"
+          mountPath: "{{ .Values.volumeMounts.dataPath }}"
         - name: certificates
           mountPath: "{{ .Values.volumeMounts.certificates }}"
         - name: docker-sock-path
@@ -103,19 +123,18 @@ spec:
         {{- with .Values.extraVolumeMounts }}{{ toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.securityContext }}
-        securityContext:{{ toYaml . | nindent 10 }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         resources:{{ toYaml .Values.resources | nindent 10 }}
-      {{- with .Values.affinity }}
-      affinity:{{ tpl (toYaml .) $root | nindent 8 }}
-      {{- end }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
       tolerations:
-      {{- with .Values.tolerations }}{{ tpl (toYaml .) $root | nindent 8 }}
-      {{- end }}
+        {{- toYaml .Values.tolerations | nindent 8 }}
       volumes:
       - name: data-path
         hostPath:
-          path: "{{ .Values.volumes.data }}"
+          path: "{{ .Values.volumes.dataPath }}"
       - name: certificates
         secret:
           secretName: {{ template "twistlock-defender.fullname" . }}
@@ -123,9 +142,6 @@ spec:
       - name: syslog-socket
         hostPath:
           path: "{{ .Values.volumes.syslog }}"
-      - name: host-root
-        hostPath:
-          path: "/"
       - name: docker-sock-path
         hostPath:
           path: "{{ .Values.volumes.docker.sockPath }}"
@@ -152,4 +168,7 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-{{- end }}
+      {{- if .Values.config.microsegmentation }}
+      # Allow the enforcer and defender to complete their cleanup
+      terminationGracePeriodSeconds: 90
+      {{- end }}

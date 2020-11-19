@@ -2,19 +2,16 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ template "twistlock-defender.fullname" . }}
+  name: {{ include "twistlock-defender.fullname" . }}
   labels:
-    app: "{{ template "twistlock-defender.fullname" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
+    {{- include "twistlock-defender.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "twistlock-defender.fullname" . }}
+  name: {{ include "twistlock-defender.fullname" . }}
 subjects:
 - apiGroup:
   kind: ServiceAccount
-  name: {{ template "twistlock-defender.fullname" . }}
+  name: {{ include "twistlock-defender.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
-{{- end}}
+{{- end }}
