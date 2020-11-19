@@ -19,19 +19,19 @@ spec:
   {{- end}}
   type: {{ .Values.service.type }}
   ports:
-  - name: {{ .Values.port.communication.name }}
-    port: {{ .Values.port.communication.servicePort }}
-    targetPort: {{ .Values.port.communication.name }}
-    protocol: TCP
-  - name: {{ .Values.port.management.https.name }}
+  - name: mgmt-https
     port: {{ .Values.port.management.https.servicePort }}
-    targetPort: {{ .Values.port.management.https.name }}
+    targetPort: mgmt-https
     protocol: TCP
   {{- if .Values.config.management.http.enabled }}
-  - name: {{ .Values.port.management.http.name }}
+  - name: mgmt-http
     port: {{ .Values.port.management.http.servicePort }}
-    targetPort: {{ .Values.port.management.http.name }}
+    targetPort: mgmt-http
     protocol: TCP
-  {{- end}}
+  {{- end }}
+  - name: communication
+    port: {{ .Values.port.communication.servicePort }}
+    targetPort: communication
+    protocol: TCP
   selector:
     {{- include "twistlock-console.selectorLabels" $root | nindent 4 }}

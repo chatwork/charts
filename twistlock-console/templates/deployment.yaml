@@ -45,15 +45,15 @@ spec:
         image: {{ tpl .Values.image.repository $root }}:{{ tpl .Values.image.tag $root }}
         imagePullPolicy: {{ .Values.image.imagePullPolicy }}
         ports:
-        - name: {{ .Values.port.management.https.name }}
+        - name: mgmt-https
           containerPort: {{ .Values.port.management.https.containerPort }}
           protocol: TCP
         {{- if .Values.config.management.http.enabled }}
-        - name: {{ .Values.port.management.http.name }}
+        - name: mgmt-http
           containerPort: {{ .Values.port.management.http.containerPort }}
           protocol: TCP
         {{- end }}
-        - name: {{ .Values.port.communication.name }}
+        - name: communication
           containerPort: {{ .Values.port.communication.containerPort }}
           protocol: TCP
         {{- with .Values.livenessProbe }}
