@@ -45,7 +45,6 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `volumeMounts.backup.mountPath` | VolumeMounts path for backup directory | `"/var/lib/twistlock-backup"` |
 |  `volumeMounts.backup.subPath` | VolumeMounts subPath for backup directory | `"twistlock-backup"` |
 |  `config.console.cn` | Configuration console common name | `""` |
-|  `config.console.san` | Configuration console subject alternative name | `""` |
 |  `config.console.portalServer.cert` | Configuration console https custom cert | `""` |
 |  `config.console.portalServer.key` | Configuration console https custom key| `""` |
 |  `config.defender.cn` | Configuration defender common name | `""` |
