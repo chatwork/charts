@@ -13,7 +13,7 @@ metadata:
     {{ $k }}: {{ $v | quote }}
     {{- end }}
 spec:
-  replicas: {{ .Values.deployment.replicas }}
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       {{- include "twistlock-console.selectorLabels" $root | nindent 6 }}
@@ -58,11 +58,11 @@ spec:
           protocol: TCP
         {{- with .Values.livenessProbe }}
         livenessProbe:
-          {{- tpl (toYaml .) $root | nindent 10 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- with .Values.readinessProbe }}
         readinessProbe:
-          {{- tpl (toYaml .) $root | nindent 10 }}
+          {{- toYaml .  | nindent 10 }}
         {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}

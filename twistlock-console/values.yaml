@@ -11,16 +11,13 @@ image:
 
 port:
   communication:
-    name: "communication"
     containerPort: 8084
     servicePort: 8084
   management:
     http:
-      name: "mgmt-http"
       containerPort: 8081
       servicePort: 8081
     https:
-      name: "mgmt-https"
       containerPort: 8083
       servicePort: 8083
 
@@ -110,7 +107,7 @@ secrets: {}
 
 livenessProbe:
   tcpSocket:
-    port: "{{ .Values.port.management.https.name }}"
+    port: "mgmt-https"
   failureThreshold: 3
   periodSeconds: 30
   successThreshold: 1
@@ -118,7 +115,7 @@ livenessProbe:
 
 readinessProbe:
   tcpSocket:
-    port: "{{ .Values.port.management.https.name }}"
+    port: "mgmt-https"
   failureThreshold: 3
   periodSeconds: 30
   successThreshold: 1

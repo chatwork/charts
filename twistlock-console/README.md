@@ -34,14 +34,12 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `image.repository` | Defender image repository | `"registry-auth.twistlock.com/tw_{{ .Values.accessToken }}/twistlock/defender"` |
 |  `image.tag` | Defender image tag | `"defender{{ .Values.config.docker.tag }}"` |
 |  `image.imagePullPolicy` | Image pullpolicy  | `"IfNotPresent"` |
-|  `port.communication.name` | Console <-> Defener commutation port name | `"commutation"` |
-|  `port.communication.port` | Console <-> Defener commutation port  | `"8084"` |
-|  `port.management.http.name` | Console management http port name  | `"mgmt-http"` |
-|  `port.management.http.port` | Console management http port  | `"8081"` |
-|  `port.management.https.name` | Console management https port name  | `"mgmt-https"` |
-|  `port.management.https.port` | Console management https port  | `"8083"` |
-|  `port.highAvailability.name` | Console high availability port name | `"ha"` |
-|  `port.highAvailability.port` | Console high availability port  | `"8086"` |
+|  `port.communication.containerPort` | Console <-> Defener commutation port for container | `"8084"` |
+|  `port.communication.servicePort` | Console <-> Defener commutation port for service | `"8084"` |
+|  `port.management.http.containerPort` | Console management http port for container | `"8081"` |
+|  `port.management.http.servicePort` | Console management http port for service| `"8081"` |
+|  `port.management.https.containerPort` | Console management https port for container| `"8083"` |
+|  `port.management.https.servicePort` | Console management https port for service | `"8083"` |
 |  `volumeMounts.data.mountPath` | VolumeMounts path for data directory | `"/var/lib/twistlock"` |
 |  `volumeMounts.data.subPath` | VolumeMounts subPath for data directory | `"twistlock"` |
 |  `volumeMounts.backup.mountPath` | VolumeMounts path for backup directory | `"/var/lib/twistlock-backup"` |
@@ -54,25 +52,23 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `config.defender.listenerType` | Configuration defender listener type| `"none"` |
 |  `config.readOnlyFs` | Sets Twistlock containers' file-systems to read-only | `true` |
 |  `config.runConsoleAsRoot` | Run Twistlock Console processes as root (default, twistlock user account) | `false` |
-|  `config.docker.tag` | docker image tag| `"_20_04_163"` |
+|  `config.docker.tag` | docker image tag| `"_20_09_365"` |
 |  `config.docker.socket` | docker socket path| `"/var/run/docker.sock"` |
 |  `config.backup` | Enable backup (but same volume) | `"true"` |
 |  `config.management.http.enabled` | Enable management http | `"false"` |
-|  `config.highAvailability.enabled` | Enable console high availability | `"false"` |
-|  `config.highAvailability.state` | Console high availability state | `"PRIMARY"` |
 |  `config.scap.enabled` | Enable console scap | `"false"` |
 |  `config.selinux.label` | Configure selinux label | `"disable"` |
 |  `resources.limit.cpu` | Resources cpu limit | `"500m"` |
 |  `resources.limit.memory` | Resources memory limit | `"1024Mi"` |
 |  `resources.requests.cpu` | Resources cpu requests | `"250m"` |
 |  `resources.requests.memory` | Resources memory limit | `"1024Mi"` |
-|  `deployment.annotations` | Deployment annotations | `"{}"`|
-|  `deployment.replicas` | Deployment replicas | `1`|
-|  `deployment.strategy` | Deployment update strategy | `"{}"`|
+|  `annotations` | Deployment annotations | `"{}"`|
+|  `replicas` | Deployment replicas | `1`|
+|  `strategy` | Deployment update strategy | `"{}"`|
 |  `podAnnotations` | Pod annotations | `{}`|
 |  `tolerations` | Pod tolerations | `[]`|
-|  `livenessProve` | Pod livenessProve | `tcpSocket.port: {{ .Values.port.management.https.name }}`|
-|  `readinessProve` | Pod readinessProve | `tcpSocket.port: {{ .Values.port.management.https.name }}`|
+|  `livenessProve` | Pod livenessProve | `...`|
+|  `readinessProve` | Pod readinessProve | `...` |
 |  `extraEnv` | Pod extra environment value | `[]`|
 |  `extraVolumeMounts` | Pod extra volumeMounts | `[]`|
 |  `extraVolume` | Pod extra volume | `[]`|
