@@ -27,7 +27,7 @@ spec:
         {{ $k }}: {{ $v | quote }}
         {{- end }}
       annotations:
-        checksum/config: {{ tpl (toYaml .Values.config) . | sha256sum }}
+        checksum/config: "{{ tpl (toYaml .Values.config) . | sha256sum }}"
         checksum/secret: "{{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}"
         {{- range $k, $v := .Values.podAnnotations }}
         {{ $k }}: {{ $v | quote }}
