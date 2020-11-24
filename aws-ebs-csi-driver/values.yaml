@@ -38,7 +38,7 @@ csiProvisoner:
   image:
     repository: quay.io/k8scsi/csi-provisioner
     tag: "v1.6.0"
-  imagePullPolicy: Always
+    pullPolicy: Always
   resources: {}
   leaderElection: true
   logLevel: 5
@@ -48,7 +48,7 @@ csiAttacher:
   image:
     repository: quay.io/k8scsi/csi-attacher
     tag: "v3.0.2"
-  imagePullPolicy: Always
+    pullPolicy: Always
   resources: {}
   leaderElection: true
   logLevel: 5
@@ -58,7 +58,7 @@ csiResizer:
   image:
     repository: quay.io/k8scsi/csi-resizer
     tag: "v1.0.1"
-  imagePullPolicy: Always
+    pullPolicy: Always
   resources: {}
   logLevel: 5
   leaderElection: true
@@ -68,7 +68,7 @@ csiSnapshotter:
   image:
     repository: quay.io/k8scsi/csi-snapshotter
     tag: "v3.0.2"
-  imagePullPolicy: Always
+    pullPolicy: Always
   leaderElection: true
   extraArgs: []
   resources: {}
@@ -77,14 +77,14 @@ livenessProbe:
   image:
     repository: quay.io/k8scsi/livenessprobe
     tag: "v2.1.0"
-  imagePullPolicy: Always
+    pullPolicy: Always
   resources: {}
 
 nodeDriverRegistrar:
   image:
     repository: quay.io/k8scsi/csi-node-driver-registrar
     tag: "v2.0.1"
-  imagePullPolicy: Always
+    pullPolicy: Always
   resources: {}
   extraArgs: []
   logLevel: 5
@@ -143,7 +143,7 @@ snapshotController:
   image:
     repository: quay.io/k8scsi/snapshot-controller
     tag: "v3.0.0"
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   serviceAccount:
     annotations: {}
     create: true
