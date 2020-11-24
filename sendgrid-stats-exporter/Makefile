@@ -16,6 +16,10 @@ lint-default:
 	helm template . | kubeval --kubernetes-version $(KUBERNETES_VERSION)
 	@echo ""
 
+.PHONY: test
+test:
+	helm test --logs $(RELEASE)
+
 .PHONY: uninstall
 uninstall:
 	helm uninstall $(RELEASE)

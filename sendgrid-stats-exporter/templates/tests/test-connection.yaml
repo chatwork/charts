@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "sendgrid-stats-exporter.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "sendgrid-stats-exporter.fullname" . }}:{{ .Values.service.port }}/-/healthy']
   restartPolicy: Never
