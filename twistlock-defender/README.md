@@ -49,12 +49,12 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `image.repository` | Defender image repository | `"registry-auth.twistlock.com/tw_{{ .Values.accessToken }}/twistlock/defender"` |
 |  `image.tag` | Defender image tag | `"defender{{ .Values.config.docker.tag }}"` |
 |  `image.imagePullPolicy` | Image pullpolicy  | `"IfNotPresent"` |
-|  `volumeMounts.data` | VolumeMounts path for data directory | `"/var/lib/twistlock"` |
+|  `volumeMounts.dataPath` | VolumeMounts path for data directory | `"/var/lib/twistlock"` |
 |  `volumeMounts.certificates` | VolumeMounts path for certificates(secrets) | `"/var/lib/twistlock/certificates"` |
 |  `volumeMounts.docker.sockPath` | VolumeMounts path for docker sock root path | `"/var/run"` |
 |  `volumeMounts.docker.netns` | VolumeMounts path for docker netns(network namespace) | `"/var/run/docker/netns"` |
 |  `volumeMounts.iptablesFlockPath` | VolumeMounts path for iptables | `"/run"` |
-|  `volumes.data` | Host Path for data volume  | `"/var/lib/twistlock/defender"` |
+|  `volumes.dataPath` | Host Path for data volume  | `"/var/lib/twistlock/defender"` |
 |  `volumes.docker.sockPath` | Host Path for docker sock root  | `"/var/run"` |
 |  `volumes.docker.netns` | Host Path for docker netns | `"/var/run/docker/netns"` |
 |  `volumes.iptablesFlockPath` | Host Path for iptables | `"/run"` |
@@ -65,12 +65,15 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `config.defender.type` | Configuration defender type | `"daemonset"` |
 |  `config.defender.listenerType` | Configuration defender listener type | `"none"` |
 |  `config.clusterId` | Configuration defender clusterId which generate by console | `"CLUSTERID"` |
-|  `config.monitor.serviceAccounts` | Configuration monitor service accounts | `"true"` |
+|  `config.monitor.serviceAccounts` | Configuration monitor service accounts | `true` |
 |  `config.monitor.istio` | Configuration monitor istio | `"false"` |
 |  `config.installBundle` | Configuration installBundle for rasp | `""` |
 |  `config.docker.clientAddress` | Configuration docker client address path | `"/var/run/docker.sock"` |
 |  `config.docker.tag` | Configuration docker tag for image | `"_20_04_163"` |
-|  `config.collectPodLabels` | Configuration collect pod labels | `"true"` |
+|  `config.collectPodLabels` | Configuration collect pod labels | `true` |
+|  `config.hostCustomCompliance` | Configuration host custom compliance | `false` |
+|  `config.containerizedHost` | Configuration containerizedHost | `false` |
+|  `config.microsegmentation` | Configuration micro segmantation | `false` |
 |  `resources.limit.cpu` | Resources cpu limit | `"1000m"` |
 |  `resources.limit.memory` | Resources memory limit | `"512Mi"` |
 |  `resources.requests.cpu` | Resources cpu requests | `"250m"` |
@@ -84,13 +87,8 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `secret.service_parameter` | service parameter which genrated by console for defender | `"SERVICE_PARAMETER"` |
 |  `useHostNetwork` | Pod using hostNetwork | `true`|
 |  `useHostPID` | Pod using hostPID | `true`|
-|  `deployment.enabled` | Enable defender deployment | `false`|
-|  `deployment.annotations` | Deployment annotations | `"{}"`|
-|  `deployment.replicas` | Deployment replicas | `1`|
-|  `deployment.strategy` | Deployment update strategy | `"{}"`|
-|  `daemonset.enabled` | Enable defender daemonset| `true`|
-|  `daemonset.annotations` | Damonset annotations | `"{}"`|
-|  `daemonset.updateStrategy` | Daemonset update strategy | `"{}"`|
+|  `annotations` | Damonset annotations | `"{}"`|
+|  `updateStrategy` | Daemonset update strategy | `"{}"`|
 |  `podAnnotations` | Pod annotations | `{}`|
 |  `tolerations` | Pod tolerations | `[]`|
 |  `extraEnv` | Pod extra environment value | `[]`|

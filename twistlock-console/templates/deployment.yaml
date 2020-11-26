@@ -4,66 +4,68 @@ kind: Deployment
 metadata:
   name: {{ template "twistlock-console.fullname" $root }}
   labels:
-    app: {{ template "twistlock-console.fullname" $root }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-  {{- range $key, $value := .Values.deployment.annotations }}
+    {{- include "twistlock-console.labels" $root | nindent 4 }}
+    {{- range $k, $v := .Values.labels }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
   annotations:
-    {{ $key }}: {{ tpl $value $root | quote }}
-  {{- end }}
+    {{- range $k, $v := .Values.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
 spec:
-  replicas: {{ .Values.deployment.replicas }}
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-       app: {{ include "twistlock-console.fullname" $root }}
-       release: {{ .Release.Name }}
-  {{- with .Values.deployment.strategy }}
-  strategy:{{ toYaml . | nindent 4 }}
-  {{- end }}
+      {{- include "twistlock-console.selectorLabels" $root | nindent 6 }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 4 }}
   template:
     metadata:
       labels:
-        app: {{ template "twistlock-console.fullname" $root }}
-        release: {{ .Release.Name }}
-      name: {{ template "twistlock-console.fullname" $root }}
-      annotations:
-        checksum/config: {{ tpl (toYaml .Values.configmap) . | sha256sum | quote }}
-        {{- range $key, $value := .Values.podAnnotations }}
-        {{ $key }}: {{ tpl $value $root | quote }}
+        {{- include "twistlock-console.selectorLabels" $root | nindent 8 }}
+        {{- range $k, $v := .Values.podLabels }}
+        {{ $k }}: {{ $v | quote }}
         {{- end }}
+      annotations:
+        checksum/config: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
+        checksum/secret: "{{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}"
+        {{- range $k, $v := .Values.podAnnotations }}
+        {{ $k }}: {{ $v | quote }}
+        {{- end }}
+      name: {{ template "twistlock-console.fullname" $root }}
     spec:
-      {{- with .Values.image.imagePullSecrets }}
-      imagePullSecrets:{{ toYaml . | nindent 8 }}
-      {{- end }}
+      imagePullSecrets:
+        {{- toYaml .Values.image.imagePullSecrets | nindent 8 }}
       {{- with .Values.priorityClassName }}
       priorityClassName: {{ . }}
       {{- end }}
-      serviceAccountName: {{ template "twistlock-console.fullname" $root }}
+      serviceAccountName: {{ include "twistlock-console.serviceAccountName" $root }}
       containers:
       - name: twistlock-console
         image: {{ tpl .Values.image.repository $root }}:{{ tpl .Values.image.tag $root }}
         imagePullPolicy: {{ .Values.image.imagePullPolicy }}
         ports:
-        - name: {{ .Values.port.management.https.name }}
-          containerPort: {{ .Values.port.management.https.port }}
+        - name: mgmt-https
+          containerPort: {{ .Values.port.management.https.containerPort }}
+          protocol: TCP
         {{- if .Values.config.management.http.enabled }}
-        - name: {{ .Values.port.management.http.name }}
-          containerPort: {{ .Values.port.management.http.port }}
+        - name: mgmt-http
+          containerPort: {{ .Values.port.management.http.containerPort }}
+          protocol: TCP
         {{- end }}
-        - name: {{ .Values.port.communication.name }}
-          containerPort: {{ .Values.port.communication.port }}
-        {{- if .Values.config.highAvailability.enabled }}
-        - name: ha
-          containerPort: {{ .Values.port.highAvailability.port }}
-        {{- end }}
+        - name: communication
+          containerPort: {{ .Values.port.communication.containerPort }}
+          protocol: TCP
         {{- with .Values.livenessProbe }}
-        livenessProbe:{{ tpl (toYaml .) $root | nindent 10 }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- with .Values.readinessProbe }}
-        readinessProbe:{{ tpl (toYaml .) $root | nindent 10 }}
+        readinessProbe:
+          {{- toYaml .  | nindent 10 }}
         {{- end }}
-        resources:{{ toYaml .Values.resources | nindent 10 }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
         env:
         - name: CONFIG_PATH
           value: /data/config/twistlock.cfg
@@ -75,10 +77,12 @@ spec:
         - name: CONSOLE_PORTAL_SERVER_KEY
           value: "{{ .Values.config.console.portalServer.key }}"
         {{- end }}
-        {{- with .Values.extraEnv }}{{ toYaml . | nindent 8 }}
+        {{- with .Values.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.securityContext }}
-        securityContext:{{ toYaml . | nindent 8 }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
         - name: twistlock-config-volume
@@ -98,14 +102,13 @@ spec:
         {{- end}}
         - name: syslog-socket
           mountPath: "/dev/log"
-        {{- with .Values.extraVolumeMounts }}{{ toYaml . | nindent 8 }}
+        {{- with .Values.extraVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- with .Values.affinity }}
-      affinity:{{ tpl (toYaml .) $root | nindent 8 }}
-      {{- end }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
       tolerations:
-      {{- with .Values.tolerations }}{{ tpl (toYaml .) $root | nindent 8 }}
-      {{- end }}
+        {{- toYaml .Values.tolerations | nindent 8 }}
       volumes:
       - name: persistent-volume
         persistentVolumeClaim:
@@ -119,8 +122,9 @@ spec:
       {{- if .Values.secrets }}
       - name: portal-secrets-volume
         secret:
-          secretName: {{ template "twistlock-console.fullname" $root }}
+          secretName: {{ include "twistlock-console.fullname" $root }}
           defaultMode: 256
       {{- end}}
-      {{- with .Values.extraVolumes }}{{ toYaml . | nindent 6 }}
+      {{- with .Values.extraVolumes }}
+      {{- toYaml . | nindent 6 }}
       {{- end }}

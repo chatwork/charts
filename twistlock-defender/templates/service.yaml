@@ -1,0 +1,17 @@
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service # Expose the Defender as admission controller
+metadata:
+  name: {{ include "twistlock-defender.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "twistlock-defender.labels" . | nindent 4 }}
+spec:
+  ports:
+  - name: https
+    protocol: TCP
+    targetPort: https
+    port: {{ .Values.port.https.servicePort }}
+  selector:
+    {{- include "twistlock-defender.selectorLabels" . | nindent 4 }}
+{{- end }}

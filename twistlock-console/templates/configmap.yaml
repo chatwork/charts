@@ -1,11 +1,8 @@
-{{ $root := . }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "twistlock-console.fullname" $root }}
+  name: {{ include "twistlock-console.fullname" . }}
   labels:
-    app: {{ template "twistlock-console.fullname" $root }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-data:{{ tpl (toYaml .Values.configmap) $root | nindent 2 }}
+    {{- include "twistlock-console.labels" . | nindent 4 }}
+data:
+  {{- tpl (toYaml .Values.configmap) . | nindent 2 }}
