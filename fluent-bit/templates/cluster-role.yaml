@@ -8,9 +8,12 @@ rules:
   - apiGroups:
       - ""
     resources:
+      - namespaces
       - pods
     verbs:
-      - get
+      - "get"
+      - "list"
+      - "watch"
   - apiGroups:
       - policy
     resources:
