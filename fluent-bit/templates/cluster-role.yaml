@@ -11,9 +11,9 @@ rules:
       - namespaces
       - pods
     verbs:
-      - "get"
-      - "list"
-      - "watch"
+      - get
+      - list
+      - watch
   - apiGroups:
       - policy
     resources:
