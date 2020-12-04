@@ -234,35 +234,11 @@ nginx:
     #  exec:
     #    command: ["/bin/sh", "-c", "sleep 5; nginx -s quit; sleep 60"]
 
-  livenessProbe:
-    httpGet:
-      path: /
-      port: 80
-    initialDelaySeconds: 15
-    periodSeconds: 5
-    timeoutSeconds: 1
-    successThreshold: 1
-    failureThreshold: 3
+  livenessProbe: {}
 
-  readinessProbe:
-    httpGet:
-      path: /
-      port: 80
-    initialDelaySeconds: 15
-    periodSeconds: 5
-    timeoutSeconds: 1
-    successThreshold: 1
-    failureThreshold: 3
+  readinessProbe: {}
 
-  startupProbe:
-    httpGet:
-      path: /
-      port: 80
-    initialDelaySeconds: 15
-    periodSeconds: 5
-    timeoutSeconds: 1
-    successThreshold: 1
-    failureThreshold: 3
+  startupProbe: {}
 
   resources: {}
 
