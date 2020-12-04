@@ -128,8 +128,8 @@ We recommend that you embed the source code in your container and copy it to the
 |  `nginx.command` | Command to execute | `[]` |
 |  `nginx.containerPort` | Listen port of NGINX container | `80` |
 |  `nginx.lifecycle` | NGINX container lifecycle hooks | `{}` |
-|  `nginx.livenessProbe` | Liveness probe settings | `{ "httpGet": { "path": "/", "port": 80 } "initialDelaySeconds": 15, "periodSeconds": 5, "timeoutSeconds": 1, "successThreshold": 1, "failureThreshold": 3 }` |
-|  `nginx.readinessProbe` | Readiness probe settings | `{ "httpGet": { "path": "/", "port": 80 } "initialDelaySeconds": 15, "periodSeconds": 5, "timeoutSeconds": 1, "successThreshold": 1, "failureThreshold": 3 }` |
+|  `nginx.livenessProbe` | Liveness probe settings | `{}` |
+|  `nginx.readinessProbe` | Readiness probe settings | `{}` |
 |  `nginx.startupProbe` | Startup probes settings. This feature is available since 1.18 | `{}` |
 |  `nginx.resources` | NGINX resources requests & limits | `[]` |
 |  `nginx.extraEnv` | Additional environment variables | `{}` |
