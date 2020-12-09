@@ -403,7 +403,7 @@ The kubernetes cluster migration works as follows:
 2. Build an akka cluster on `Cluster B`
     - Since `Cluster A`'s DNS is registered, join `Cluster A` with `akka-dns`
     - Due to the external-dns specification, `Cluster B`'s DNS will not be registered
-3. Remobe an akka cluster on `Cluster A`
+3. Remove an akka cluster on `Cluster A`
     - The DNS for `Cluster A` will be removed
     - `Cluster A`'s DNS has disappeared, so `Cluster B`'s DNS is registered
 
