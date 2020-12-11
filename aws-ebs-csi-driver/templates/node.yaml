@@ -12,6 +12,8 @@ spec:
   selector:
     matchLabels:
       {{- include "aws-ebs-csi-driver.node.selectorLabels" . | nindent 6 }}
+  updateStrategy:
+    {{- toYaml .Values.node.updateStrategy | nindent 4 }}
   template:
     metadata:
       labels:

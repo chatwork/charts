@@ -107,6 +107,10 @@ node:
       cpu: 100m
       memory: 128Mi
   priorityClassName: system-node-critical
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
 
 controller:
   replicaCount: 2

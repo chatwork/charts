@@ -29,6 +29,10 @@ daemonset:
   affinity: {}
   nodeSelector: {}
   resources: {}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
 
 deployment:
   enabled: false

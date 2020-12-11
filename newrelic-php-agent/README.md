@@ -40,6 +40,7 @@ The following table lists the configurable parameters of the newrelic-php-agent 
 |  `daemonset.affinity` | Set Pod affinity | `{}`|
 |  `daemonset.nodeSelector` | Set Pod nodeSelector | `{}`|
 |  `daemonset.resources` | Pod resources | `{}`|
+|  `daemonset.updateStrategy` | Set updateStrategy | `{}`|
 |  `deployment.enabled` | Enables deployment | `false` |
 |  `deployment.replicaCount` | Deployment replicaCount | `1` |
 |  `deployment.extraPorts` | Extra ports | `[]` |

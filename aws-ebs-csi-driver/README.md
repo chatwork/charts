@@ -91,6 +91,7 @@ The following table lists the configurable parameters of the Aws-ebs-csi-driver 
 | `node.logLevel` | node plugin log-level | `5` |
 | `node.extraArgs` | node plugin extra args  | `[]` |
 | `node.resources` | node plugin resources | ... |
+| `node.updateStrategy` | node plugin updateStrategy | ... |
 | `node.priorityClassName` | node plugin priorityClassName | `"system-node-critical"` |
 | `controller.replicaCount` | controller replicaCount | `2` |
 | `controller.serviceAccount.annotations` | controller plugin serviceAccount annotations  | `{}` |

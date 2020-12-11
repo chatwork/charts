@@ -60,3 +60,4 @@ The following table lists the configurable parameters of the slime chart and the
 | `metrics.enabled` | If true, enable Prometheus metrics | `false` |
 | `configmaps` | Configuration file to be mounted under /fluent-bit/etc | `{"fluent-bit.conf":"..."}` |
 | `secrets` | Secret information file to be mounted under /secure | `{}` |
+| `updateStrategy` | updateStrategy of daemonset | ... |

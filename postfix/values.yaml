@@ -68,7 +68,10 @@ daemonset:
   podAnnotations: {}
   affinity: {}
   tolerations: []
-  updateStrategy: "RollingUpdate"
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
 
 deployment:
   enabled: false
