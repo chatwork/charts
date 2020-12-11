@@ -102,3 +102,8 @@ secrets: {}
   # These are mounted under /secure.
   # google_service_credentials.json: |
   #   ...
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
