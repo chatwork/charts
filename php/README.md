@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the PHP chart and their
 | `restartPolicy` | Container restart policy | `"Always"` |
 | `securityContext` | Enable security context | `{}` |
 | `terminationGracePeriodSeconds` | Termination grace period (in seconds) | `70` |
+| `topologySpreadConstraints` | Set topology spread constraints to control how Pods are spread across your cluster. This feature is available since 1.18 | `[]` |
 | `tolerations` | Pod taint tolerations for deployment | `[]` |
 | `affinity` | Node / Pod affinities | `{}` |
 | `service.annotations` | Annotation specified for service | `{}` |

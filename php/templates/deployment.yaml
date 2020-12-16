@@ -241,6 +241,17 @@ spec:
         {{- toYaml .Values.securityContext | nindent 8 }}
       serviceAccountName: {{ include "php.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion }}
+      topologySpreadConstraints:
+        {{- range .Values.topologySpreadConstraints }}
+        - maxSkew: {{ .maxSkew }}
+          topologyKey: {{ .topologyKey }}
+          whenUnsatisfiable: {{ .whenUnsatisfiable }}
+          labelSelector:
+            matchLabels:
+              {{- include "php.selectorLabels" $root | nindent 14 }}
+        {{- end }}
+      {{- end }}
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
       tolerations:
