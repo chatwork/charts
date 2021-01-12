@@ -178,6 +178,7 @@ spec:
           imagePullPolicy: {{ .Values.livenessProbe.image.pullPolicy }}
           args:
             - --csi-address=/csi/csi.sock
+            - --v={{ .Values.livenessProbe.logLevel }}
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
