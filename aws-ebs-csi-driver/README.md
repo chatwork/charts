@@ -63,6 +63,7 @@ The following table lists the configurable parameters of the Aws-ebs-csi-driver 
 | `livenessProbe.image.tag` | Set image tag | `"v2.1.0"` |
 | `livenessProbe.image.pullPolicy` | Set image pullPolicy  | `"Always"` |
 | `livenessProbe.resources` | Set resources  | `{}` |
+| `livenessProbe.logLevel` | Set liveness-prove log level  | `4` |
 | `snapshotController.image.repository` | Image repository  | `"quay.io/k8scsi/snapshot-controller"` |
 | `snapshotController.image.tag` | Image tag  | `"v3.0.0"` |
 | `snapshotController.image.pullPolicy` | Image pullPolicy | `"IfNotPresent"` |

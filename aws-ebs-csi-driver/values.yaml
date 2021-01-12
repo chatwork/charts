@@ -81,6 +81,7 @@ livenessProbe:
     tag: "v2.2.0"
     pullPolicy: Always
   resources: {}
+  logLevel: 4
 
 nodeDriverRegistrar:
   image:
