@@ -1,4 +1,4 @@
-# Node Service
+{{/* Node Service */}}
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
