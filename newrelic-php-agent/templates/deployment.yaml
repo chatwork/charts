@@ -50,7 +50,7 @@ spec:
 {{- end }}
 {{- with .Values.deployment.resources }}
         resources:
-          {{- toYaml . | nindent 12 }}
+          {{- toYaml . | nindent 10 }}
 {{- end }}
         livenessProbe:
 {{- with .Values.livenessProbe }}
@@ -122,7 +122,7 @@ spec:
 {{- else }}
 {{- with .Values.deployment.extraVolumes }}
       volumes:
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
 {{- end }}
 {{- end }}
 {{- with .Values.deployment.priorityClassName }}
