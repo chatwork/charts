@@ -18,7 +18,7 @@ err=$(for file in "${1}"/*.yaml; do
       fi
       # nindent should use {{ instead of {{-
       if ! (echo "$line" | grep '{{-') > /dev/null; then
-       printf "%s on line %d: \`{{-\` should be used for nindent:\n%s\n" "${file}" "${i}" "${line}"
+        printf "%s on line %d: \`{{-\` should be used for nindent:\n%s\n" "${file}" "${i}" "${line}"
       fi
     fi
   done < "${file}"
