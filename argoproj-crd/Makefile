@@ -12,6 +12,8 @@ lint: lint-default
 
 .PHONY: lint-default
 lint-default:
+	@echo "=> Indent check default values.yaml"
+	../.circleci/lint-indent.sh $$PWD/templates
 	@echo "=> Linting default values.yaml"
 	helm lint --strict
 	@echo ""

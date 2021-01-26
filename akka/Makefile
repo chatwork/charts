@@ -6,10 +6,12 @@ install:
 	helm upgrade -i --wait $(RELEASE) .
 
 .PHONY: lint
-lint: lint-local-akka-http lint-cluster-discovery-dns lint-cluster-discovery-kubernetes-api lint-cluster-discovery-aggregate lint-cluster-multi-eks-cluster lint-use-environment-variable-and-secret lint-default
+lint: lint-default lint-local-akka-http lint-cluster-discovery-dns lint-cluster-discovery-kubernetes-api lint-cluster-discovery-aggregate lint-cluster-multi-eks-cluster lint-use-environment-variable-and-secret
 
 .PHONY: lint-default
 lint-default:
+	@echo "=> Indent check default values.yaml"
+	../.circleci/lint-indent.sh $$PWD/templates
 	@echo "=> Linting default values.yaml"
 	helm lint --strict
 	@echo "=> Validating default value.yaml"

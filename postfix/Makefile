@@ -13,6 +13,8 @@ lint: lint-daemonset lint-daemonset-mailcatcher lint-deployment lint-deployment-
 
 .PHONY: lint-daemonset
 lint-daemonset:
+	@echo "=> Indent check default values.yaml"
+	../.circleci/lint-indent.sh $$PWD/templates
 	@echo "=> Linting default values.yaml"
 	helm lint --strict
 	@echo "=> Validating default value.yaml"
