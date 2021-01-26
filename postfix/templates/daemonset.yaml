@@ -3,13 +3,16 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ include "postfix.fullname" . }}
-  labels: {{ include "postfix.labels" . | nindent 4 }}
+  labels:
+    {{- include "postfix.labels" . | nindent 4 }}
 spec:
   selector:
-    matchLabels: {{ include "postfix.selectorLabels" . | nindent 6 }}
+    matchLabels:
+      {{- include "postfix.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels: {{ include "postfix.selectorLabels" . | nindent 8 }}
+      labels:
+        {{- include "postfix.selectorLabels" . | nindent 8 }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.postfix.secrets.sasl_passwd }}
@@ -32,9 +35,11 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- with .Values.resources }}
-        resources: {{ toYaml . | nindent 12 }}
+        resources:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
-        lifecycle: {{ toYaml .Values.daemonset.lifecycle | nindent 10 }}
+        lifecycle:
+          {{- toYaml .Values.daemonset.lifecycle | nindent 10 }}
         ports:
           - name: smtp
             containerPort: 25
@@ -43,10 +48,12 @@ spec:
             {{- end }}
             protocol: TCP
         {{- with .Values.livenessProbe }}
-        livenessProbe: {{ toYaml .| nindent 10 }}
+        livenessProbe:
+          {{- toYaml .| nindent 10 }}
         {{- end }}
         {{- with .Values.readinessProbe }}
-        readinessProbe: {{ toYaml . | nindent 10 }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
           - name: spool
@@ -73,31 +80,35 @@ spec:
         image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
         {{- with .Values.metrics.command }}
-        command: {{ toYaml . | nindent 12 }}
+        command:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- with .Values.metrics.resources }}
-        resources: {{ toYaml . | nindent 12 }}
+        resources:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         ports:
         - name: http
           containerPort: {{ .Values.metrics.port }}
           protocol: TCP
         {{- with .Values.metrics.livenessProbe }}
-        livenessProbe: {{ toYaml . | nindent 12 }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- with .Values.metrics.readinessProbe }}
-        readinessProbe: {{ toYaml . | nindent 12 }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
-        - name: spool
-          mountPath: /var/spool/postfix
-          {{- if .Values.persistence.subPath }}
-          subPath: {{ .Values.persistence.subPath }}
+          - name: spool
+            mountPath: /var/spool/postfix
+            {{- if .Values.persistence.subPath }}
+            subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
+            readOnly: true
+          {{- if .Values.extraVolumeMounts }}
+          {{- toYaml .Values.extraVolumeMounts | nindent 10 }}
           {{- end }}
-          readOnly: true
-        {{- if .Values.extraVolumeMounts }}
-        {{ toYaml .Values.extraVolumeMounts | nindent 12 }}
-        {{- end }}
       {{- end }}
       volumes:
         - name: spool
@@ -116,13 +127,15 @@ spec:
             secretName: {{ template "postfix.fullname" . }}-secret
         {{- end }}
         {{- if .Values.extraVolumes }}
-        {{ toYaml .Values.extraVolumes | nindent 8 }}
+        {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}
       {{- with .Values.daemonset.affinity }}
-      affinity: {{ toYaml . | nindent 8 }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.daemonset.tolerations }}
-      tolerations: {{ toYaml . | nindent 8 }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
   updateStrategy:
     {{- toYaml .Values.daemonset.updateStrategy | nindent 4 }}
