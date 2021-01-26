@@ -73,7 +73,7 @@ spec:
             readOnly: true
           {{- end }}
           {{- if .Values.extraVolumeMounts }}
-          {{ toYaml .Values.extraVolumeMounts | nindent 10 }}
+          {{- toYaml .Values.extraVolumeMounts | nindent 10 }}
           {{- end }}
       {{- if .Values.metrics.enabled }}
       - name: exporter
