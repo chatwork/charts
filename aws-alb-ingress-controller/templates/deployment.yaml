@@ -4,18 +4,23 @@ kind: Deployment
 metadata:
   name: {{ include "aws-alb-ingress-controller.fullname" $root }}
   namespace: {{ .Release.Namespace }}
-  labels: {{ include "aws-alb-ingress-controller.labels" $root | nindent 4 }}
+  labels:
+    {{- include "aws-alb-ingress-controller.labels" $root | nindent 4 }}
     {{- range $key, $value :=.Values.deployment.labels }}
     {{ $key }}: {{ tpl $value $root | quote }}
     {{- end }}
-  annotations: {{- with .Values.deployment.annotations }}{{- tpl (toYaml . ) $root | nindent 4 }}{{- end }}
+  annotations:
+    {{- with .Values.deployment.annotations }}
+    {{- tpl (toYaml . ) $root | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels: {{ include "aws-alb-ingress-controller.instance-labels" $root | nindent 6 }}
   template:
     metadata:
-      labels: {{ include "aws-alb-ingress-controller.instance-labels" $root | nindent 8 }}
+      labels:
+        {{- include "aws-alb-ingress-controller.instance-labels" $root | nindent 8 }}
         {{- range $key, $value := .Values.podLabels }}
         {{ $key }}: {{ tpl $value $root | quote }}
         {{- end }}
