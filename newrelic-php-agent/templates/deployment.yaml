@@ -26,26 +26,31 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- with .Values.image.pullSecrets }}
-      imagePullSecrets: {{ toYaml . | nindent 8 }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
       - name: "{{ include "newrelic-php-agent.fullname" . }}"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
 {{- with .Values.image.command }}
-        command: {{ toYaml . | nindent 10 }}
+        command:
+          {{- toYaml . | nindent 10 }}
 {{- end }}
 {{- if not (isAbs $.Values.newrelic.address) }}
         args: ["--address={{ $.Values.newrelic.address }}", "--watchdog-foreground"]
 {{- end }}
 {{- with .Values.deployment.extraEnv }}
-        env: {{ toYaml . | nindent 10 }}
+        env:
+          {{- toYaml . | nindent 10 }}
 {{- end }}
 {{- with .Values.deployment.extraEnvFrom }}
-        envFrom: {{ toYaml . | nindent 10 }}
+        envFrom:
+          {{- toYaml . | nindent 10 }}
 {{- end }}
 {{- with .Values.deployment.resources }}
-        resources: {{ toYaml . | nindent 12 }}
+        resources:
+          {{- toYaml . | nindent 12 }}
 {{- end }}
         livenessProbe:
 {{- with .Values.livenessProbe }}
@@ -90,11 +95,13 @@ spec:
 {{ toYaml . | indent 10 }}
 {{- end }}
 {{- with .Values.deployment.extraPorts }}
-        ports: {{ toYaml . | nindent 10 }}
+        ports:
+          {{- toYaml . | nindent 10 }}
 {{- end }}
 {{- else }}
 {{- with .Values.deployment.extraVolumeMounts }}
-        volumeMounts: {{ toYaml . | nindent 10 }}
+        volumeMounts:
+          {{- toYaml . | nindent 10 }}
 {{- end }}
         ports:
           - name: nw-daemon-port
@@ -114,19 +121,23 @@ spec:
 {{- end }}
 {{- else }}
 {{- with .Values.deployment.extraVolumes }}
-      volumes: {{ toYaml . | nindent 10 }}
+      volumes:
+        {{- toYaml . | nindent 10 }}
 {{- end }}
 {{- end }}
 {{- with .Values.deployment.priorityClassName }}
       priorityClassName: {{ . }}
 {{- end }}
 {{- with .Values.deployment.tolerations }}
-      tolerations: {{ toYaml . | nindent 8 }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
 {{- end }}
 {{- with .Values.deployment.affinity }}
-      affinity: {{ toYaml . | nindent 8 }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
 {{- end }}
 {{- with .Values.deployment.nodeSelector }}
-      nodeSelector: {{ toYaml . | nindent 8 }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
 {{- end }}
 {{- end }}
