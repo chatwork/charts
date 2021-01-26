@@ -1,4 +1,4 @@
-# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#deployment-v1-apps
+{{/* https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#deployment-v1-apps */}}
 {{- if .Values.deployment.enabled -}}
 {{- $root := . }}
 apiVersion: apps/v1

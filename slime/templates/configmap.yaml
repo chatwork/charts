@@ -1,4 +1,4 @@
-# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#configmap-v1-core
+{{/* https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#configmap-v1-core */}}
 {{- $root := . }}
 {{- range $index, $value := .Values.configmaps }}
 ---
