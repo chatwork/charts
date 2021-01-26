@@ -3,15 +3,18 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ include "fluent-bit.fullname" . }}
-  labels: {{ include "fluent-bit.labels" . | nindent 4 }}
+  labels:
+    {{- include "fluent-bit.labels" . | nindent 4 }}
 spec:
   selector:
-    matchLabels: {{ include "fluent-bit.selectorLabels" . | nindent 6 }}
+    matchLabels:
+      {{- include "fluent-bit.selectorLabels" . | nindent 6 }}
   updateStrategy:
     {{- toYaml .Values.updateStrategy | nindent 4 }}
   template:
     metadata:
-      labels: {{ include "fluent-bit.selectorLabels" . | nindent 8 }}
+      labels:
+        {{- include "fluent-bit.selectorLabels" . | nindent 8 }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
@@ -86,13 +89,13 @@ spec:
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}

@@ -3,7 +3,8 @@ apiVersion: {{ include "rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:
   name: {{ include "fluent-bit.fullname" . }}
-  labels: {{ include "fluent-bit.labels" . | nindent 4 }}
+  labels:
+    {{- include "fluent-bit.labels" . | nindent 4 }}
 rules:
   - apiGroups:
       - ""
