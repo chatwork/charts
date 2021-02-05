@@ -9,7 +9,7 @@ install:
 test:
 	@echo "=> Testing ci.yaml"
 	helm upgrade -i --wait -f ci.yaml $(RELEASE) .
-	kubectl exec -it nginx -- curl -I localhosta
+	kubectl exec -it nginx -- curl -I localhost
 	
 .PHONY: uninstall
 uninstall:
