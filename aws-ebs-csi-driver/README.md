@@ -36,7 +36,8 @@ The following table lists the configurable parameters of the Aws-ebs-csi-driver 
 | `csiProvisoner.image.tag` | Image tag   | `"v1.6.0"` |
 | `csiProvisoner.image.pullPolicy` | Image pullPolicy  | `"Always"` |
 | `csiProvisoner.resources` | Set resources   | `{}` |
-| `csiProvisoner.leaderElection` | If true, enable leader-election | `true` |
+| `csiProvisoner.leaderElection.enabled` | If true, enable leader-election | `true` |
+| `csiProvisoner.leaderElection.namespace` | leader-election namespace | `""` |
 | `csiProvisoner.logLevel` | Set log-level  | `5` |
 | `csiProvisoner.extraArgs` | Set extraArgs https://github.com/kubernetes-csi/external-provisioner#command-line-options | `[]` |
 | `csiAttacher.image.repository` | Image repository | `"quay.io/k8scsi/csi-attacher"` |
@@ -62,6 +63,7 @@ The following table lists the configurable parameters of the Aws-ebs-csi-driver 
 | `livenessProbe.image.tag` | Set image tag | `"v2.1.0"` |
 | `livenessProbe.image.pullPolicy` | Set image pullPolicy  | `"Always"` |
 | `livenessProbe.resources` | Set resources  | `{}` |
+| `livenessProbe.logLevel` | Set liveness-prove log level  | `4` |
 | `snapshotController.image.repository` | Image repository  | `"quay.io/k8scsi/snapshot-controller"` |
 | `snapshotController.image.tag` | Image tag  | `"v3.0.0"` |
 | `snapshotController.image.pullPolicy` | Image pullPolicy | `"IfNotPresent"` |

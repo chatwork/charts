@@ -29,6 +29,11 @@ securityContext: {}
 
 terminationGracePeriodSeconds: 70
 
+topologySpreadConstraints: []
+#  - maxSkew: 1
+#    topologyKey: topology.kubernetes.io/zone
+#    whenUnsatisfiable: DoNotSchedule
+
 tolerations: []
 
 affinity: {}

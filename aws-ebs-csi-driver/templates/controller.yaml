@@ -95,9 +95,11 @@ spec:
             {{- if .Values.enableVolumeScheduling }}
             - --feature-gates=Topology=true
             {{- end}}
-            {{- if .Values.csiProvisoner.leaderElection }}
-            - --enable-leader-election
-            - --leader-election-type=leases
+            {{- if .Values.csiProvisoner.leaderElection.enabled }}
+            - --leader-election
+            {{- end }}
+            {{- with .Values.csiProvisoner.leaderElection.namespace }}
+            - --leader-election-namespace={{ . }}
             {{- end }}
             {{- with .Values.csiProvisoner.extraArgs }}
             {{- toYaml . | nindent 12 }}
@@ -176,6 +178,7 @@ spec:
           imagePullPolicy: {{ .Values.livenessProbe.image.pullPolicy }}
           args:
             - --csi-address=/csi/csi.sock
+            - --v={{ .Values.livenessProbe.logLevel }}
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
