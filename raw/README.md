@@ -1,4 +1,5 @@
 This chart was copied from [helm/charts](https://github.com/helm/charts/tree/master/incubator/raw) because it is no longer updated.
+This software includes the work that is distributed in the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 # ⚠️ Repo Archive Notice
 
 As of Nov 13, 2020, charts in this repo will no longer be updated.
