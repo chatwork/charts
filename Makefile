@@ -10,7 +10,7 @@ apply:
 
 .PHONY: lint
 lint:
-	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make lint || exit 255";
+	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make lint -e KUBERNETES_VERSION=$(KUBERNETES_VERSION) || exit 255";
 
 .PHONY: test
 test:

@@ -1,5 +1,5 @@
-KUBERNETES_VERSION="1.18.1"
-RELEASE = "$$(basename $$PWD)"
+KUBERNETES_VERSION = $${KUBERNETES_VERSION:-"1.18.8"}
+RELEASE = $$(basename $$PWD)
 
 .PHONY: install
 install:

@@ -1,5 +1,5 @@
-KUBERNETES_VERSION="1.18.1"
-RELEASE = "$$(basename $$PWD)"
+KUBERNETES_VERSION = $${KUBERNETES_VERSION:-"1.18.8"}
+RELEASE = $$(basename $$PWD)
 
 .PHONY: install
 install:
@@ -16,7 +16,7 @@ lint-default:
 	@echo "=> Linting default values.yaml"
 	helm lint --strict
 	@echo "=> Validating default value.yaml"
-	helm template . | kubeval --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 	@echo ""
 
 .PHONY: test

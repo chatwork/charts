@@ -1,5 +1,5 @@
-KUBERNETES_VERSION="1.18.1"
-RELEASE = "$$(basename $$PWD)"
+KUBERNETES_VERSION = $${KUBERNETES_VERSION:-"1.18.8"}
+RELEASE = $$(basename $$PWD)
 
 .PHONY: install
 install:
@@ -47,7 +47,7 @@ lint-default:
 		--set 'deployment.enabled=true' \
 		--set 'deployment.pod.container[0].image=k8s.gcr.io/pause:latest' \
 		--set 'deployment.pod.container[0].name=pause' \
-		 . | kubeval --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+		 . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 	@echo ""
 
 .PHONY: test
