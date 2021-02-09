@@ -1,3 +1,4 @@
+apiVersion: v1
 description: GCP credentials
 name: gcp-credentials
 version: 0.0.2

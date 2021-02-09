@@ -3,7 +3,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: {{ include "aws-alb-ingress-controller.fullname" . }}
-  labels: {{ include "aws-alb-ingress-controller.labels" . | nindent 4 }}
+  labels:
+    {{- include "aws-alb-ingress-controller.labels" . | nindent 4 }}
 rules:
   - apiGroups:
       - ""

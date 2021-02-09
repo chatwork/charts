@@ -13,7 +13,7 @@ spec:
     {{- include "argoproj-crd.repositories" . | splitList "," | uniq | toYaml | nindent 4 }}
 
   destinations:
-  {{- toYaml .Values.project.destinations | nindent 4}}
+    {{- toYaml .Values.project.destinations | nindent 4}}
 
   clusterResourceWhitelist:
     {{- toYaml .Values.project.clusterResourceWhitelist | nindent 4}}

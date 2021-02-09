@@ -32,5 +32,5 @@ spec:
         - /bin/sh
         - -c
         - |
-          aws sqs create-queue --queue-name test --endpoint-url ${ENDPOINT_URL} | grep "${ENDPOINT_URL}/queue/test"
+          aws sqs create-queue --queue-name test --endpoint-url ${ENDPOINT_URL}
   restartPolicy: Never

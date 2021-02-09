@@ -1,5 +1,21 @@
 version: 2
 jobs:
+  lint:
+    machine: true
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            v1-binary
+      - run: make ci:enable:helm
+      - run: make ci:enable:kubeval
+      - run: make ci:diff
+      - run: make ci:diff:chart | xargs -I{} /bin/bash -c "cd ./{} && ../.circleci/check-version.sh || exit 255"
+      - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && make lint || exit 255"
+      - save_cache:
+          key: v1-binary
+          paths:
+            - .bin/
   test:
     machine: true
     steps:
@@ -10,7 +26,6 @@ jobs:
       - run: make ci:enable:k8s
       - run: make ci:enable:helm
       - run: make ci:diff
-      - run: make ci:diff:chart | xargs -I{} /bin/bash -c "cd ./{} && ../.circleci/check-version.sh || exit 255"
       - run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && kubectl create namespace {} --dry-run -o yaml | kubectl apply -f - || exit 255"
       - run: RC=0; for target in `make ci:diff`;do cd ./$target; kubectl config set-context --current --namespace=$target; make install && make test && make uninstall || RC=255; cd ..; done; exit $RC
       - save_cache:
@@ -55,7 +70,13 @@ workflows:
   version: 2
   integration:
     jobs:
+      - lint:
+          filters:
+            branches:
+              ignore: gh-pages
       - test:
+          requires:
+            - lint
           filters:
             branches:
               ignore: gh-pages
