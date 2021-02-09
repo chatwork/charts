@@ -1,9 +1,32 @@
 resources:
-- apiVersion: v1
-  kind: Pod
+- apiVersion: apps/v1
+  kind: Deployment
   metadata:
     name: nginx
   spec:
-    containers:
-    - name: nginx
-      image: nginx
+    selector:
+      matchLabels:
+        run: nginx
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          run: nginx
+      spec:
+        containers:
+        - name: nginx
+          image: nginx
+          ports:
+          - containerPort: 80
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: nginx
+    labels:
+      run: nginx
+  spec:
+    ports:
+    - port: 80
+      protocol: TCP
+    selector:
+      run: nginx

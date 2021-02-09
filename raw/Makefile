@@ -3,13 +3,12 @@ RELEASE = "$$(basename $$PWD)"
 
 .PHONY: install
 install:
-	helm upgrade -i --wait $(RELEASE) .
+	helm upgrade -i --wait -f ci.yaml $(RELEASE) .
 
 .PHONY: test
 test:
 	@echo "=> Testing ci.yaml"
-	helm upgrade -i --wait -f ci.yaml $(RELEASE) .
-	kubectl exec -it nginx -- curl -I localhost
+	helm test --logs $(RELEASE)
 	
 .PHONY: uninstall
 uninstall:
