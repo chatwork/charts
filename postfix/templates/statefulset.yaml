@@ -3,22 +3,25 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "postfix.fullname" . }}
-  labels: {{ include "postfix.labels" . | nindent 4 }}
+  labels:
+    {{- include "postfix.labels" . | nindent 4 }}
 spec:
   selector:
-    matchLabels: {{ include "postfix.selectorLabels" . | nindent 6 }}
+    matchLabels:
+      {{- include "postfix.selectorLabels" . | nindent 6 }}
   serviceName: {{ include "postfix.fullname" . }}
   replicas: {{ .Values.statefulSet.replicas }}
   template:
     metadata:
-      labels: {{ include "postfix.selectorLabels" . | nindent 8 }}
+      labels:
+        {{- include "postfix.selectorLabels" . | nindent 8 }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.postfix.secrets.sasl_passwd }}
         checksum/sasl_passwd: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
         {{- with .Values.statefulSet.podAnnotations }}
-        {{ toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
       containers:
@@ -26,19 +29,23 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.resources }}
-          resources: {{ toYaml . | nindent 12 }}
+          resources:
+            {{- toYaml . | nindent 12 }}
           {{- end }}
-          lifecycle: {{ toYaml .Values.statefulSet.lifecycle | nindent 12 }}
+          lifecycle:
+            {{- toYaml .Values.statefulSet.lifecycle | nindent 12 }}
           ports:
             - name: smtp
               containerPort: 25
               hostPort: 25
               protocol: TCP
           {{- with .Values.livenessProbe }}
-          livenessProbe: {{ toYaml .| nindent 12 }}
+          livenessProbe:
+            {{- toYaml .| nindent 12 }}
           {{- end }}
           {{- with .Values.readinessProbe }}
-          readinessProbe: {{ toYaml . | nindent 12 }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: {{ template "postfix.fullname" . }}-spool
@@ -57,27 +64,31 @@ spec:
               mountPath: /etc/postfix/sasl_passwd
             {{- end }}
             {{- if .Values.extraVolumeMounts }}
-            {{ toYaml .Values.extraVolumeMounts . | nindent 10 }}
+            {{- toYaml .Values.extraVolumeMounts . | nindent 12 }}
             {{- end }}
         {{- if .Values.metrics.enabled }}
         - name: exporter
           image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
           {{- with .Values.metrics.command }}
-          command: {{ toYaml . | nindent 12 }}
+          command:
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.metrics.resources }}
-          resources: {{ toYaml . | nindent 12 }}
+          resources:
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.metrics.port }}
               protocol: TCP
           {{- with .Values.metrics.livenessProbe }}
-          livenessProbe: {{ toYaml . | nindent 12 }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.metrics.readinessProbe }}
-          readinessProbe: {{ toYaml . | nindent 12 }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: {{ template "postfix.fullname" . }}-spool
@@ -87,7 +98,7 @@ spec:
               {{- end }}
               readOnly: true
             {{- if .Values.extraVolumeMounts }}
-            {{ toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
         {{- end }}
       volumes:
@@ -103,10 +114,12 @@ spec:
         {{ toYaml .Values.extraVolumes . | indent 8 }}
         {{- end }}
       {{- with .Values.statefulSet.affinity }}
-      affinity: {{ toYaml . | nindent 8 }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.statefulSet.tolerations }}
-      tolerations: {{ toYaml . | nindent 8 }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.priorityClassName }}
       priorityClassName: {{ . }}
@@ -117,9 +130,11 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: {{ template "postfix.fullname" . }}-spool
-        labels: {{ include "postfix.labels" . | nindent 10 }}
+        labels:
+          {{- include "postfix.labels" . | nindent 10 }}
         {{- with .Values.persistence.annotations  }}
-        annotations: {{ toYaml . | nindent 4 }}
+        annotations:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
       spec:
         accessModes:

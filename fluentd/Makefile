@@ -1,5 +1,5 @@
-KUBERNETES_VERSION="1.15.7"
-RELEASE = "$$(basename $$PWD)"
+KUBERNETES_VERSION = $${KUBERNETES_VERSION:-"1.18.8"}
+RELEASE = $$(basename $$PWD)
 
 .PHONY: install
 install:
@@ -10,10 +10,12 @@ lint: lint-daemonset lint-statefulset lint-use-udp lint-use-udp
 
 .PHONY: lint-default
 lint-default:
+	@echo "=> Indent check default values.yaml"
+	../.circleci/lint-chart.sh $$PWD/templates
 	@echo "=> Linting default values.yaml"
 	helm lint --strict
 	@echo "=> Validating default value.yaml"
-	helm template . | kubeval --kubernetes-version $(KUBERNETES_VERSION)
+	helm template . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 	@echo ""
 
 .PHONY: lint-daemonset
@@ -21,21 +23,21 @@ lint-daemonset:
 	@echo "=> Linting examples/daemonset.yaml"
 	helm lint --strict -f examples/daemonset.yaml
 	@echo "=> Validating examples/daemonset.yaml"
-	helm template -f examples/daemonset.yaml . | kubeval --kubernetes-version $(KUBERNETES_VERSION)
+	helm template -f examples/daemonset.yaml . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: lint-statefulset
 lint-statefulset:
 	@echo "=> Linting examples/statefulset.yaml"
 	helm lint --strict -f examples/statefulset.yaml
 	@echo "=> Validating examples/statefulset.yaml"
-	helm template -f examples/statefulset.yaml . | kubeval --kubernetes-version $(KUBERNETES_VERSION)
+	helm template -f examples/statefulset.yaml . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: lint-use-udp
 lint-use-udp:
 	@echo "=> Linting examples/use-udp.yaml"
 	helm lint --strict -f examples/use-udp.yaml
 	@echo "=> Validating examples/use-udp.yaml"
-	helm template -f examples/use-udp.yaml . | kubeval --kubernetes-version $(KUBERNETES_VERSION)
+	helm template -f examples/use-udp.yaml . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: test
 test: test-daemonset test-statefulset test-use-udp test-default

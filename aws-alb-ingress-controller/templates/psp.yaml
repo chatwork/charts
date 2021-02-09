@@ -4,7 +4,8 @@ kind: PodSecurityPolicy
 metadata:
   name: {{ include "aws-alb-ingress-controller.fullname" . }}
   namespace: {{ .Release.Namespace }}
-  labels: {{ include "aws-alb-ingress-controller.labels" . | nindent 4 }}
+  labels:
+    {{- include "aws-alb-ingress-controller.labels" . | nindent 4 }}
 spec:
   allowPrivilegeEscalation: false
   hostIPC: false
