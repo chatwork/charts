@@ -2,10 +2,15 @@ KIND_VERSION = 0.9.0
 KUBERNETES_VERSION = 1.18.8
 KIND_NODE_HASH = f4bcc97a0ad6e7abaf3f643d890add7efe6ee4ab90baeb374b4f41a4c95567eb
 HELM_VERSION = 3.3.4
+KUBEVAL_VERSION = 0.15.0
 
 .PHONY: apply
 apply:
 	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make apply || exit 255";
+
+.PHONY: lint
+lint:
+	@ls -d */ | xargs -I{} /bin/bash -c "cd ./{} && make lint -e KUBERNETES_VERSION=$(KUBERNETES_VERSION) || exit 255";
 
 .PHONY: test
 test:
@@ -35,6 +40,15 @@ ci\:enable\:helm:
 	    chmod +x ./.bin/helm; \
 	fi
 	@sudo mv ./.bin/helm /usr/local/bin/helm;
+
+.PHONY: ci\:enable\:kubeval
+ci\:enable\:kubeval:
+	@mkdir -p .bin/
+	@if [ ! -f "./.bin/kubeval" ]; then \
+	    curl -sSL https://github.com/instrumenta/kubeval/releases/download/$(KUBEVAL_VERSION)/kubeval-linux-amd64.tar.gz | tar zxvf - -O linux-amd64/kubeval > ./.bin/kubeval; \
+	    chmod +x ./.bin/kubeval; \
+	fi
+	@sudo mv ./.bin/kubeval /usr/local/bin/kubeval;
 
 .PHONY: ci\:diff\:from
 ci\:diff\:from:

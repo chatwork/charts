@@ -4,9 +4,11 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "postfix.fullname" . }}
-  labels: {{ include "postfix.labels" . | nindent 4 }}
+  labels:
+    {{- include "postfix.labels" . | nindent 4 }}
   {{- with .Values.persistence.annotations  }}
-  annotations: {{ toYaml . | nindent 4 }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   accessModes:

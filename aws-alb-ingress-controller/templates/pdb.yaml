@@ -4,9 +4,11 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ template "aws-alb-ingress-controller.fullname" . }}
   namespace: {{ .Release.Namespace }}
-  labels: {{ include "aws-alb-ingress-controller.labels" . | nindent 4 }}
+  labels:
+    {{- include "aws-alb-ingress-controller.labels" . | nindent 4 }}
 spec:
   {{- toYaml .Values.podDisruptionBudget | nindent 2 }}
   selector:
-    matchLabels: {{ include "aws-alb-ingress-controller.instance-labels" . | nindent 6 }}
+    matchLabels:
+      {{- include "aws-alb-ingress-controller.instance-labels" . | nindent 6 }}
 {{- end }}
