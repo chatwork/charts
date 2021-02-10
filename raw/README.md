@@ -1,10 +1,6 @@
 This chart was copied from [helm/charts](https://github.com/helm/charts/tree/master/incubator/raw) because it is no longer updated.
 
 This software includes the work that is distributed in the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
-# ⚠️ Repo Archive Notice
-
-As of Nov 13, 2020, charts in this repo will no longer be updated.
-For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
 
 # incubator/raw
 
@@ -19,10 +15,6 @@ maintenance of resources of kinds:
 - LimitRange
 - PriorityClass
 - Secret
-
-## DEPRECATION NOTICE
-
-This chart is deprecated and no longer supported.
 
 ## Usage
 
@@ -103,7 +95,7 @@ resources:
 #### STEP 2: Install your raw resources.
 
 ```
-helm install --name raw-priority-classes incubator/raw -f raw-priority-classes.yaml
+helm install --name raw-priority-classes chatwork/raw -f raw-priority-classes.yaml
 ```
 
 ### Templated resources
@@ -137,5 +129,5 @@ $ helm secrets enc secrets.yaml
 #### STEP 2: Install your templated resources.
 
 ```
-helm secrets install --name mysecret incubator/raw -f values.yaml -f secrets.yaml
+helm secrets install --name mysecret chatwork/raw -f values.yaml -f secrets.yaml
 ```
