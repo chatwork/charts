@@ -1,19 +1,10 @@
-This chart was copied from [helm/charts](https://github.com/helm/charts/tree/master/incubator/raw) because it is no longer updated.
+This chart was copied from [helm/charts](https://github.com/helm/charts/tree/master/stable/docker-registry) because it is no longer updated.
 
 This software includes the work that is distributed in the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
-
-# ⚠️ Repo Archive Notice
-
-As of Nov 13, 2020, charts in this repo will no longer be updated.
-For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
 
 # Docker Registry Helm Chart
 
 This directory contains a Kubernetes chart to deploy a private Docker Registry.
-
-## DEPRECATION NOTICE
-
-This chart is deprecated and no longer supported.
 
 ## Prerequisites Details
 
@@ -30,7 +21,7 @@ This chart will do the following:
 To install the chart, use the following:
 
 ```console
-$ helm install stable/docker-registry
+$ helm install chatwork/docker-registry
 ```
 
 ## Configuration
