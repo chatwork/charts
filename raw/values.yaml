@@ -78,3 +78,4 @@ templates: []
 #      name: common-secret
 #    stringData:
 #      mykey: {{ .Values.mysecret }}
+test: false

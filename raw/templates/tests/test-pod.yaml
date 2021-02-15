@@ -1,3 +1,4 @@
+{{ if .Values.test }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -22,3 +23,4 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
   restartPolicy: Never
+{{ end }}
