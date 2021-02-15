@@ -30,3 +30,4 @@ resources:
       protocol: TCP
     selector:
       run: nginx
+test: true
