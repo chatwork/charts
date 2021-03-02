@@ -42,9 +42,16 @@ spec:
     spec:
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
-      {{- with .Values.topologySpreadConstraints }}
+      {{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion }}
       topologySpreadConstraints:
-        {{- toYaml . | nindent 8 }}
+        {{- range .Values.topologySpreadConstraints }}
+        - maxSkew: {{ .maxSkew }}
+          topologyKey: {{ .topologyKey }}
+          whenUnsatisfiable: {{ .whenUnsatisfiable }}
+          labelSelector:
+            matchLabels:
+              {{- include "akka.selectorLabels" $root | nindent 14 }}
+        {{- end }}
       {{- end }}
       containers:
         - args:

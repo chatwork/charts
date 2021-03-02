@@ -387,6 +387,9 @@ secrets: {}
 # This feature is available since 1.18
 # https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
 topologySpreadConstraints: []
+#  - maxSkew: 1
+#    topologyKey: topology.kubernetes.io/zone
+#    whenUnsatisfiable: DoNotSchedule
 
 test:
   enabled: false
