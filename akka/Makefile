@@ -15,7 +15,7 @@ lint-default:
 	@echo "=> Linting default values.yaml"
 	helm lint --strict
 	@echo "=> Validating default value.yaml"
-	helm template . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template . | kubeval --strict --ignore-missing-schemas  --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 	@echo ""
 
 .PHONY: lint-local-akka-http
@@ -23,42 +23,42 @@ lint-local-akka-http:
 	@echo "=> Linting examples/local-akka-http.yaml"
 	helm lint --strict -f examples/local-akka-http.yaml
 	@echo "=> Validating examples/local-akka-http.yaml"
-	helm template -f examples/local-akka-http.yaml . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template -f examples/local-akka-http.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: lint-cluster-discovery-dns
 lint-cluster-discovery-dns:
 	@echo "=> Linting examples/cluster-discovery-dns.yaml"
 	helm lint --strict -f examples/cluster-discovery-dns.yaml
 	@echo "=> Validating examples/cluster-discovery-dns.yaml"
-	helm template -f examples/cluster-discovery-dns.yaml . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template -f examples/cluster-discovery-dns.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: lint-cluster-discovery-kubernetes-api
 lint-cluster-discovery-kubernetes-api:
 	@echo "=> Linting examples/cluster-discovery-kubernetes-api.yaml"
 	helm lint --strict -f examples/cluster-discovery-kubernetes-api.yaml
 	@echo "=> Validating examples/cluster-discovery-kubernetes-api.yaml"
-	helm template -f examples/cluster-discovery-kubernetes-api.yaml . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template -f examples/cluster-discovery-kubernetes-api.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: lint-cluster-discovery-aggregate
 lint-cluster-discovery-aggregate:
 	@echo "=> Linting examples/cluster-discovery-aggregate.yaml"
 	helm lint --strict -f examples/cluster-discovery-aggregate.yaml
 	@echo "=> Validating examples/cluster-discovery-aggregate.yaml"
-	helm template -f examples/cluster-discovery-aggregate.yaml . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template -f examples/cluster-discovery-aggregate.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: lint-cluster-multi-eks-cluster
 lint-cluster-multi-eks-cluster:
 	@echo "=> Linting examples/cluster-multi-eks-cluster.yaml"
 	helm lint --strict -f examples/cluster-multi-eks-cluster.yaml
 	@echo "=> Validating examples/cluster-multi-eks-cluster.yaml"
-	helm template -f examples/cluster-multi-eks-cluster.yaml . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template -f examples/cluster-multi-eks-cluster.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: lint-use-environment-variable-and-secret
 lint-use-environment-variable-and-secret:
 	@echo "=> Linting examples/use-environment-variable-and-secret.yaml"
 	helm lint --strict -f examples/use-environment-variable-and-secret.yaml
 	@echo "=> Validating examples/use-environment-variable-and-secret.yaml"
-	helm template -f examples/use-environment-variable-and-secret.yaml . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template -f examples/use-environment-variable-and-secret.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: test
 test: test-local-akka-http test-cluster-discovery-dns test-cluster-discovery-kubernetes-api test-use-environment-variable-and-secret test-default
