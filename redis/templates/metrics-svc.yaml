@@ -9,10 +9,11 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- if .Values.metrics.service.labels -}}
-    {{ toYaml .Values.metrics.service.labels | nindent 4 }}
+    {{- toYaml .Values.metrics.service.labels | nindent 4 }}
     {{- end -}}
   {{- if .Values.metrics.service.annotations }}
-  annotations: {{ toYaml .Values.metrics.service.annotations | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.metrics.service.annotations | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.metrics.service.type }}

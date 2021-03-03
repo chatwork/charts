@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- if .Values.sentinel.service.labels }}
-    {{ toYaml .Values.sentinel.service.labels | nindent 4 }}
+    {{- toYaml .Values.sentinel.service.labels | nindent 4 }}
     {{- end }}
 {{- if .Values.sentinel.service.annotations }}
   annotations:
