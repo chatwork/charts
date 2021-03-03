@@ -47,7 +47,7 @@ lint-default:
 		--set 'deployment.enabled=true' \
 		--set 'deployment.pod.container[0].image=k8s.gcr.io/pause:latest' \
 		--set 'deployment.pod.container[0].name=pause' \
-		 . | kubeval --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+		 . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 	@echo ""
 
 .PHONY: test
