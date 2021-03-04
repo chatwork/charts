@@ -36,7 +36,6 @@ spec:
                 port:
                   number: {{ $root.Values.service.port | default $root.Values.nginx.containerPort }}
               {{- else }}
-              service:
                 port:
                   number: {{ $root.Values.service.port | default $root.Values.fpm.containerPort }}
               {{- end }}
