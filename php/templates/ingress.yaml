@@ -29,11 +29,23 @@ spec:
           {{- end }}
           - path: {{ .path }}
             backend:
+              {{- if semverCompare ">=1.19-0" $root.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ include "php.fullname" $root }}
+              {{- if $root.Values.nginx.enabled }}
+                port:
+                  number: {{ $root.Values.service.port | default $root.Values.nginx.containerPort }}
+              {{- else }}
+                port:
+                  number: {{ $root.Values.service.port | default $root.Values.fpm.containerPort }}
+              {{- end }}
+              {{- else }}
               serviceName: {{ include "php.fullname" $root }}
               {{- if $root.Values.nginx.enabled }}
               servicePort: {{ $root.Values.service.port | default $root.Values.nginx.containerPort }}
               {{- else }}
               servicePort: {{ $root.Values.service.port | default $root.Values.fpm.containerPort }}
+              {{- end }}
               {{- end }}
     {{- end }}
 {{- end }}
