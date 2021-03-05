@@ -10,4 +10,7 @@ spec:
     plural: awssecrets
     singular: awssecret
   scope: Namespaced
-  version: v1
+  versions:
+  - name: v1alpha1
+    served: true
+    deprecated: false
