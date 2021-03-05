@@ -33,15 +33,30 @@ spec:
   tolerations:
 {{ toYaml . | indent 4 }}
   {{- end }}
+  initContainers:
+  - name: {{ .Release.Name }}-test-framework
+    image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
+    command:
+    - "bash"
+    - "-c"
+    - |
+      set -ex
+      # copy bats to tools dir
+      cp -R /opt/bats /tools/bats
+    volumeMounts:
+    - mountPath: /tools
+      name: tools
+
   containers:
     - name: {{ .Release.Name }}-test
-      image: "{{ .Values.testFramework.image }}:{{ .Values.testFramework.tag }}"
-      imagePullPolicy: "{{ .Values.testFramework.imagePullPolicy}}"
-      command: ["/opt/bats/bin/bats", "-t", "/tests/run.sh"]
+      image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+      command: ["/tools/bats/bin/bats", "-t", "/tests/run.sh"]
       volumeMounts:
       - mountPath: /tests
         name: tests
         readOnly: true
+      - mountPath: /tools
+        name: tools
       {{- if .Values.ssl.enabled }}
       - name: certificates
         mountPath: /ssl
@@ -50,6 +65,8 @@ spec:
   - name: tests
     configMap:
       name: {{ template "mysql.fullname" . }}-test
+  - name: tools
+    emptyDir: {}
   {{- if .Values.ssl.enabled }}
   - name: certificates
     secret:
