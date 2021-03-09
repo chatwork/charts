@@ -28,6 +28,9 @@ spec:
           {{- toYaml . | nindent 10 }}
           {{- end }}
           - path: {{ .path }}
+            {{- if semverCompare ">=1.19-0" $root.Capabilities.KubeVersion.GitVersion }}
+            pathType: ImplementationSpecific
+            {{- end }}
             backend:
               {{- if semverCompare ">=1.19-0" $root.Capabilities.KubeVersion.GitVersion }}
               service:
