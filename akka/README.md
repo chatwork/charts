@@ -102,16 +102,16 @@ The following table lists the configurable parameters of the akka chart and thei
 | `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | `15` |
 | `livenessProbe.periodSeconds` | How often to perform the probe | `5` |
 | `livenessProbe.timeoutSeconds` | When the probe times out | `1` |
-| `livenessProbe.successThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded | `1` |
-| `livenessProbe.failureThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed | `3` |
+| `livenessProbe.successThreshold` | Minimum number of consecutive successes for a probe to be considered successful after a probe has failed | `1` |
+| `livenessProbe.failureThreshold` | Minimum number of consecutive successes for the probe to be considered successful after having failed | `3` |
 | `startupProbe.enabled` | Enable startup probes. This feature is available since 1.18 | `false` |
 | `startupProbe.httpGet` | Specify the endpoint to check the startup probe with http. This can be omitted if akka.management.enabled is true | `{}` |
 | `startupProbe.tcpSocket` | Specify the endpoint to check the startup probe with tco. This can be omitted if akka.management.enabled is true | `{}` |
 | `startupProbe.initialDelaySeconds` | Delay before start probe is initiated | `15` |
 | `startupProbe.periodSeconds` | How often to perform the probe | `5` |
 | `startupProbe.timeoutSeconds` | When the probe times out | `1` |
-| `startupProbe.successThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded | `1` |
-| `startupProbe.failureThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed | `3` |
+| `startupProbe.successThreshold` | Minimum number of consecutive successes for a probe to be considered successful after a probe has failed | `1` |
+| `startupProbe.failureThreshold` | Minimum number of consecutive successes for the probe to be considered successful after having failed | `3` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `podAnnotations` | Annotations to be added to pods | `{}` |
 | `podLabels` | Labels to be added to pods | `{}` |
@@ -124,8 +124,8 @@ The following table lists the configurable parameters of the akka chart and thei
 | `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | `15` |
 | `readinessProbe.periodSeconds` | How often to perform the probe | `5` |
 | `readinessProbe.timeoutSeconds` | When the probe times out | `1` |
-| `readinessProbe.successThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded | `1` |
-| `readinessProbe.failureThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed | `3` |
+| `readinessProbe.successThreshold` | Minimum number of consecutive successes for a probe to be considered successful after a probe has failed | `1` |
+| `readinessProbe.failureThreshold` | Minimum number of consecutive successes for the probe to be considered successful after having failed | `3` |
 | `replicaCount` | Number of replicas | `3` |
 | `resources` | Pod resource requests & limits | `{}` |
 | `restartPolicy` | Container restart policy | `"Always"` |
