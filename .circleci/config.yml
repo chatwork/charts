@@ -81,6 +81,7 @@ workflows:
             branches:
               ignore: gh-pages
       - publish:
+          context: "chatwork_api_token@circleci"       
           requires:
             - test
           filters:
