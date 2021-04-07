@@ -162,6 +162,8 @@ startupProbe:
   #   port: [your http port]
   tcpSocket: {}
   #   port: [your tcp port]
+  exec: {}
+  #   command: [your command]
   initialDelaySeconds: 30
   periodSeconds: 5
   timeoutSeconds: 5
@@ -179,6 +181,8 @@ livenessProbe:
   #   port: [your http port]
   tcpSocket: {}
   #   port: [your tcp port]
+  exec: {}
+  #   command: [your command]
   initialDelaySeconds: 60
   periodSeconds: 5
   timeoutSeconds: 5
@@ -209,6 +213,8 @@ readinessProbe:
   #   port: [your http port]
   tcpSocket: {}
   #   port: [your tcp port]
+  exec: {}
+  #   command: [your command]
   initialDelaySeconds: 60
   periodSeconds: 5
   timeoutSeconds: 5
