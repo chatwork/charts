@@ -99,6 +99,7 @@ The following table lists the configurable parameters of the akka chart and thei
 | `livenessProbe.enabled` | Enable liveness probes | `true` |
 | `livenessProbe.httpGet` | Specify the endpoint to check the liveness probe with http. This can be omitted if akka.management.enabled is true | `{}` |
 | `livenessProbe.tcpSocket` | Specify the endpoint to check the liveness probe with tco. This can be omitted if akka.management.enabled is true | `{}` |
+| `livenessProbe.exec` | Specify the command to check the liveness probe with exec. This can be omitted if akka.management.enabled is true | `{}` |
 | `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | `15` |
 | `livenessProbe.periodSeconds` | How often to perform the probe | `5` |
 | `livenessProbe.timeoutSeconds` | When the probe times out | `1` |
@@ -107,6 +108,7 @@ The following table lists the configurable parameters of the akka chart and thei
 | `startupProbe.enabled` | Enable startup probes. This feature is available since 1.18 | `false` |
 | `startupProbe.httpGet` | Specify the endpoint to check the startup probe with http. This can be omitted if akka.management.enabled is true | `{}` |
 | `startupProbe.tcpSocket` | Specify the endpoint to check the startup probe with tco. This can be omitted if akka.management.enabled is true | `{}` |
+| `startupProbe.exec` | Specify the command to check the startup probe with exec. This can be omitted if akka.management.enabled is true | `{}` |
 | `startupProbe.initialDelaySeconds` | Delay before start probe is initiated | `15` |
 | `startupProbe.periodSeconds` | How often to perform the probe | `5` |
 | `startupProbe.timeoutSeconds` | When the probe times out | `1` |
@@ -121,6 +123,7 @@ The following table lists the configurable parameters of the akka chart and thei
 | `readinessProbe.enabled` | Enable readiness probes | `true` |
 | `readinessProbe.httpGet` | Specify the endpoint to check the readiness probe with http. This can be omitted if akka.management.enabled is true | `{}` |
 | `readinessProbe.tcpSocket` | Specify the endpoint to check the readiness probe with tcp. This can be omitted if akka.management.enabled is true | `{}` |
+| `readinessProbe.exec` | Specify the command to check the readiness probe with exec. This can be omitted if akka.management.enabled is true | `{}` |
 | `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | `15` |
 | `readinessProbe.periodSeconds` | How often to perform the probe | `5` |
 | `readinessProbe.timeoutSeconds` | When the probe times out | `1` |

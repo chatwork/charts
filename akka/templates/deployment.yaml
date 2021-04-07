@@ -88,6 +88,10 @@ spec:
             tcpSocket:
               {{- toYaml . | nindent 14 }}
             {{- end }}
+            {{- with .Values.livenessProbe.exec }}
+            exec:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
             initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.startupProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
@@ -113,6 +117,10 @@ spec:
             {{- end }}
             {{- with .Values.livenessProbe.tcpSocket }}
             tcpSocket:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.livenessProbe.exec }}
+            exec:
               {{- toYaml . | nindent 14 }}
             {{- end }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
@@ -168,6 +176,10 @@ spec:
             {{- end }}
             {{- with .Values.readinessProbe.tcpSocket }}
             tcpSocket:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.readinessProbe.exec }}
+            exec:
               {{- toYaml . | nindent 14 }}
             {{- end }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
