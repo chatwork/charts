@@ -88,7 +88,7 @@ spec:
             tcpSocket:
               {{- toYaml . | nindent 14 }}
             {{- end }}
-            {{- with .Values.livenessProbe.exec }}
+            {{- with .Values.startupProbe.exec }}
             exec:
               {{- toYaml . | nindent 14 }}
             {{- end }}
