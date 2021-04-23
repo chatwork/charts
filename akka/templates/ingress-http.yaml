@@ -3,7 +3,7 @@
 {{- range $i, $ingress := .Values.akka.http.ingresses }}
 {{- $fullName := include "akka.fullname" $root -}}
 {{- $svcPort := $ingress.targetPort }}
-{{- $apiVersion := include "akka.ingress.apiVersion" $root -}}
+{{- $apiVersion := include "akka.ingress.apiVersion" $root }}
 ---
 apiVersion: "{{ $apiVersion }}"
 kind: Ingress
