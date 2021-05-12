@@ -14,6 +14,9 @@ spec:
       targetPort: {{ .Values.dynamodb.port }}
       protocol: TCP
       name: dynamodb
+{{- if (and (eq .Values.service.type "NodePort") ( .Values.service.nodePort)) }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end }}
   selector:
     app: {{ template "dynamodb.name" . }}
     release: {{ .Release.Name }}
