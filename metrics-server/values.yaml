@@ -1,7 +1,6 @@
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
-  pspEnabled: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -18,6 +17,9 @@ apiService:
   # work with this release.
   create: true
 
+  # need k8s version >= 1.19.0
+  apiVersion: apiregistration.k8s.io/v1
+
 hostNetwork:
   # Specifies if metrics-server should be started in hostNetwork mode.
   #
@@ -27,20 +29,29 @@ hostNetwork:
   enabled: false
 
 image:
-  repository: k8s.gcr.io/metrics-server-amd64
-  tag: v0.3.6
+  repository: k8s.gcr.io/metrics-server/metrics-server
+  tag: v0.5.0
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
 # - registrySecretName
 
-args: []
-# enable this if you have self-signed certificates, see: https://github.com/kubernetes-incubator/metrics-server
-#  - --kubelet-insecure-tls
+args:
+  # https://github.com/kubernetes-sigs/metrics-server/blob/master/manifests/base/deployment.yaml#L26-L28
+  - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+  - --kubelet-use-node-status-port
+  - --metric-resolution=15s
 
-resources: {}
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+  limits:
+    cpu: 100m
+    memory: 200Mi
 
-nodeSelector: {}
+nodeSelector:
+  kubernetes.io/os: linux
 
 tolerations: []
 
@@ -58,7 +69,7 @@ podAnnotations: {}
 #  scheduler.alpha.kubernetes.io/critical-pod: ''
 
 ## Set a pod priorityClassName
-# priorityClassName: system-node-critical
+priorityClassName: system-cluster-critical
 
 extraVolumeMounts: []
 #  - name: secrets
@@ -72,26 +83,25 @@ extraVolumes: []
 
 livenessProbe:
   httpGet:
-    path: /healthz
+    path: /livez
     port: https
     scheme: HTTPS
-  initialDelaySeconds: 20
+  periodSeconds: 10
+  failureThreshold: 3
 
 readinessProbe:
   httpGet:
-    path: /healthz
+    path: /readyz
     port: https
     scheme: HTTPS
   initialDelaySeconds: 20
+  periodSeconds: 10
+  failureThreshold: 3
 
 securityContext:
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop: ["all"]
   readOnlyRootFilesystem: true
-  runAsGroup: 10001
   runAsNonRoot: true
-  runAsUser: 10001
+  runAsUser: 1000
 
 service:
   annotations: {}

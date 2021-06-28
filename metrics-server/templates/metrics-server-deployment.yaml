@@ -20,7 +20,7 @@ spec:
         app: {{ template "metrics-server.name" . }}
         release: {{ .Release.Name }}
         {{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 8 }}
+        {{- toYaml .Values.podLabels | nindent 8 }}
         {{- end }}
       {{- with .Values.podAnnotations }}
       annotations:
@@ -29,8 +29,8 @@ spec:
       {{- end }}
       {{- end }}
     spec:
-    {{- if .Values.priorityClassName }}
-      priorityClassName: "{{ .Values.priorityClassName }}"
+    {{- with .Values.priorityClassName }}
+      priorityClassName: "{{ . }}"
     {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -39,9 +39,9 @@ spec:
       {{- end }}
     {{- end }}
       serviceAccountName: {{ template "metrics-server.serviceAccountName" . }}
-{{- if .Values.hostNetwork.enabled }}
+      {{- if .Values.hostNetwork.enabled }}
       hostNetwork: true
-{{- end }}
+      {{- end }}
       containers:
         {{- if .Values.extraContainers }}
         {{- ( tpl (toYaml .Values.extraContainers) . ) | nindent 8 }}
@@ -49,10 +49,8 @@ spec:
         - name: metrics-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - /metrics-server
+          args:
             - --cert-dir=/tmp
-            - --logtostderr
             - --secure-port=8443
             {{- range .Values.args }}
             - {{ . }}
