@@ -51,12 +51,12 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - --cert-dir=/tmp
-            - --secure-port=8443
+            - --secure-port=443
             {{- range .Values.args }}
             - {{ . }}
             {{- end }}
           ports:
-          - containerPort: 8443
+          - containerPort: 443
             name: https
           livenessProbe:
             {{- toYaml .Values.livenessProbe | trim | nindent 12 }}
