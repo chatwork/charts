@@ -25,7 +25,7 @@ Parameter | Description | Default
 `args` | Command line arguments | `[]`
 `resources` | CPU/Memory resource requests/limits. | `{}`
 `tolerations` | List of node taints to tolerate (requires Kubernetes >=1.6) | `[]`
-`nodeSelector` | Node labels for pod assignment | `kubernetes.io/os: linux`
+`nodeSelector` | Node labels for pod assignment | `{}`
 `affinity` | Node affinity | `{}`
 `replicas` | Number of replicas | `1`
 `extraVolumeMounts` | Ability to provide volume mounts to the pod | `[]`
