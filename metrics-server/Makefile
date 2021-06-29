@@ -3,7 +3,10 @@ RELEASE = "$$(basename $$PWD)"
 
 .PHONY: install
 install:
-	helm upgrade -i --wait $(RELEASE) .
+	helm upgrade -i --wait \
+		--set 'args[0]="--kubelet-insecure-tls" \
+		--set 'args[1]="--kubelet-preferred-address-types=InternalIP"
+		$(RELEASE) .
 
 .PHONY: lint
 lint: lint-default
