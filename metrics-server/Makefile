@@ -5,7 +5,7 @@ RELEASE = "$$(basename $$PWD)"
 install:
 	helm upgrade -i --wait \
 		--set 'args[0]=--kubelet-insecure-tls' \
-		--set 'args[1]=--kubelet-preferred-address-types=InternalIP'
+		--set 'args[1]=--kubelet-preferred-address-types=InternalIP' \
 		$(RELEASE) .
 
 .PHONY: lint
