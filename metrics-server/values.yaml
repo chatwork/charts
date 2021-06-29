@@ -122,3 +122,6 @@ testImage:
   repository: busybox
   tag: latest
   pullPolicy: IfNotPresent
+
+helmTest:
+  enabled: true
