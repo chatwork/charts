@@ -18,6 +18,7 @@ spec:
     - port: {{ .Values.service.port }}
       protocol: TCP
       targetPort: https
+      name: https
   selector:
     app: {{ template "metrics-server.name" . }}
     release: {{ .Release.Name }}

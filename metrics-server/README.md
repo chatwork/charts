@@ -13,16 +13,16 @@ This software includes the work that is distributed in the [Apache License 2.0](
 Parameter | Description | Default
 --- | --- | ---
 `rbac.create` | Enable Role-based authentication | `true`
-`rbac.pspEnabled` | Enable pod security policy support | `false`
 `serviceAccount.create` | If `true`, create a new service account | `true`
 `serviceAccount.name` | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | ``
 `apiService.create` | Create the v1beta1.metrics.k8s.io API service | `true`
+`apiService.apiVersion` | Kind: APIService's apiVersion | `apiregistration.k8s.io/v1`
 `hostNetwork.enabled` | Enable hostNetwork mode | `false`
-`image.repository` | Image repository | `k8s.gcr.io/metrics-server-amd64`
-`image.tag` | Image tag | `v0.3.2`
+`image.repository` | Image repository | `k8s.gcr.io/metrics-server/metrics-server`
+`image.tag` | Image tag | `v0.5.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `imagePullSecrets` | Image pull secrets | `[]`
-`args` | Command line arguments | `[]`
+`extraArgs` | Command line arguments | `[]`
 `resources` | CPU/Memory resource requests/limits. | `{}`
 `tolerations` | List of node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeSelector` | Node labels for pod assignment | `{}`
