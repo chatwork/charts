@@ -22,7 +22,7 @@ Parameter | Description | Default
 `image.tag` | Image tag | `v0.5.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `imagePullSecrets` | Image pull secrets | `[]`
-`args` | Command line arguments | `[]`
+`extraArgs` | Command line arguments | `[]`
 `resources` | CPU/Memory resource requests/limits. | `{}`
 `tolerations` | List of node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeSelector` | Node labels for pod assignment | `{}`

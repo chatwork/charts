@@ -52,7 +52,7 @@ spec:
           args:
             - --cert-dir=/tmp
             - --secure-port=443
-            {{- range .Values.args }}
+            {{- range .Values.extraArgs }}
             - {{ . }}
             {{- end }}
           ports:

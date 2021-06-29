@@ -36,7 +36,7 @@ image:
 imagePullSecrets: []
 # - registrySecretName
 
-args:
+extraArgs:
   # https://github.com/kubernetes-sigs/metrics-server/blob/master/manifests/base/deployment.yaml#L26-L28
   - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
   - --kubelet-use-node-status-port
