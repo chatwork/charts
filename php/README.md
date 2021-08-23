@@ -90,6 +90,7 @@ The following table lists the configurable parameters of the PHP chart and their
 | `podSecurityPolicy.runAsUser` | The user and group IDs of the container | `{"rule":"RunAsAny"}` |
 | `podSecurityPolicy.fsGroup` | The user and group IDs of the container | `{"rule":"RunAsAny"}` |
 | `podSecurityPolicy.volumes` | Usage of volume types | `['*']` |
+| `priorityClassName` | Set a name for a priorityClass | `nil` |
 | `serviceAccount.create` | If true, create a service account for the pod | `true` |
 | `serviceAccount.annotations` | Annotations for the created service account | `{}` |
 | `serviceAccount.labels` | Labels for the created service account | `{}` |
