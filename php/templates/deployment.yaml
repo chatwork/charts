@@ -43,6 +43,9 @@ spec:
         {{ $k }}: {{ $v | quote }}
         {{- end }}
     spec:
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       initContainers:
         {{- if .Values.busybox.enabled }}
         - name: {{ include "php.fullname" . }}-busybox
