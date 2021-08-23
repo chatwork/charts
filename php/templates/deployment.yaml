@@ -43,8 +43,8 @@ spec:
         {{ $k }}: {{ $v | quote }}
         {{- end }}
     spec:
-      {{- if .Values.priorityClassName }}
-      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
       {{- end }}
       initContainers:
         {{- if .Values.busybox.enabled }}
