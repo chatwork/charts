@@ -61,6 +61,7 @@ spec:
             {{- with .Values.command }}
             {{- toYaml . | nindent 12 }}
             {{- else }}
+            - /docker-entrypoint.sh
             - --config-path
             - /etc/envoy/envoy.yaml
             {{- end }}
