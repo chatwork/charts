@@ -1,0 +1,23 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  annotations:
+    {{- toYaml .Values.podDisruptionBudget.annotations | nindent 4}}
+  labels:
+    {{- include "envoy.labels" . | nindent 4 }}
+    {{- with .Values.podDisruptionBudget.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: "{{ template "envoy.fullname" . }}"
+spec:
+  {{- with .Values.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ . }}
+  {{- end }}
+  {{- with .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ . }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "envoy.selectorLabels" . | nindent 6 }}
+{{- end }}

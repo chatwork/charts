@@ -1,0 +1,229 @@
+# Default values for envoy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  repository: envoyproxy/envoy
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v1.19.1"
+
+imagePullSecrets: []
+
+annotations: {}
+labels: {}
+
+command: []
+
+env: []
+
+envFrom: []
+
+
+ports:
+  - name: http
+    protocol: TCP
+    containerPort: 10000
+  # - name: admin
+  #   protocol: TCP
+  #   containerPort: 9901
+
+lifecycle: {}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # Label to add to the service account
+  labels: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+rbac:
+  create: false
+  rules:
+    # - apiGroups: [""]
+    #   resources: ["configmaps"]
+    #   verbs: ["get", "list", "watch"]
+
+podAnnotations: {}
+
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+startupProbe: {}
+
+livenessProbe: {}
+  # tcpSocket:
+  #   port: 9901
+  # initialDelaySeconds: 30
+  # periodSeconds: 10
+  # timeoutSeconds: 5
+  # failureThreshold: 3
+  # successThreshold: 1
+
+readinessProbe: {}
+  # tcpSocket:
+  #   port: 9901
+  # initialDelaySeconds: 30
+  # periodSeconds: 10
+  # timeoutSeconds: 5
+  # failureThreshold: 3
+  # successThreshold: 1
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+readinessGate: []
+
+restartPoliy: "Always"
+
+strategy: {}
+
+topologySpreadConstraints: []
+
+terminationGracePeriodSeconds: 60
+
+service:
+  annotations: {}
+  labels: {}
+  type: ClusterIP
+  port: 8081
+  targetPort: 10000
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  labels: {}
+  hosts: []
+#    - host: chart-example.local
+#      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+  ingressClassName: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+podDisruptionBudget:
+  # If true, enable PDB.
+  enabled: false
+  annotations: {}
+  labels: {}
+  maxUnavailable:
+  minAvailable:
+
+# HPA Configurattion
+autoscaling:
+  # If true, enable HPA.
+  enabled: false
+  annotations: {}
+  labels: {}
+  minReplicas:
+  maxReplicas:
+  metrics: []
+  # This feature is available since 1.18
+  behavior: {}
+
+metrics:
+  enabled: false
+  port: 9901
+  path: /stats
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+initContainers: []
+
+extraVolumeMounts: []
+
+extraVolumes: []
+
+extraContainers: []
+
+configmaps:
+  # ref: https://www.envoyproxy.io/docs/envoy/latest/start/quick-start/configuration-static
+  envoy.yaml: |
+    admin:
+      address:
+        socket_address: { address: 0.0.0.0, port_value: 9901 }
+    static_resources:
+      listeners:
+      - name: listener_0
+        address:
+          socket_address:
+            address: 0.0.0.0
+            port_value: 10000
+        filter_chains:
+        - filters:
+          - name: envoy.filters.network.http_connection_manager
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+              stat_prefix: ingress_http
+              access_log:
+              - name: envoy.access_loggers.stdout
+                typed_config:
+                  "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
+              http_filters:
+              - name: envoy.filters.http.router
+              route_config:
+                name: local_route
+                virtual_hosts:
+                - name: local_service
+                  domains: ["*"]
+                  routes:
+                  - match:
+                      prefix: "/"
+                    route:
+                      host_rewrite_literal: www.envoyproxy.io
+                      cluster: service_envoyproxy_io
+
+      clusters:
+      - name: service_envoyproxy_io
+        type: LOGICAL_DNS
+        # Comment out the following line to test on v6 networks
+        dns_lookup_family: V4_ONLY
+        load_assignment:
+          cluster_name: service_envoyproxy_io
+          endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: www.envoyproxy.io
+                    port_value: 443
+        transport_socket:
+          name: envoy.transport_sockets.tls
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+            sni: www.envoyproxy.io
