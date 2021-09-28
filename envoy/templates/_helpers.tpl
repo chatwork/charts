@@ -60,3 +60,11 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "envoy.ingress.apiVersion" -}}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+networking.k8s.io/v1
+{{- else -}}
+networking.k8s.io/v1beta1
+{{- end }}
+{{- end -}}
