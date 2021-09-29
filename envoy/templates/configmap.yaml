@@ -1,0 +1,13 @@
+{{- $root := . -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    {{- include "envoy.labels" . | nindent 4 }}
+  name: "{{ template "envoy.fullname" $root }}"
+data:
+{{- range $name, $config := .Values.configmaps }}
+  {{ $name }}: |
+    {{- tpl $config $root | nindent 4 }}
+{{- end }}

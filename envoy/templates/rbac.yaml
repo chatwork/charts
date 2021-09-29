@@ -1,0 +1,23 @@
+{{- if .Values.rbac.create }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: "{{ include "envoy.fullname" . }}"
+rules:
+  {{- with .Values.rbac.rules }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: "{{ include "envoy.fullname" . }}"
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "envoy.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ include "envoy.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
