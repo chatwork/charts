@@ -12,12 +12,4 @@ rules:
       - pods
     verbs:
       - get
-  - apiGroups:
-      - policy
-    resources:
-      - podsecuritypolicies
-    resourceNames:
-      - {{ template "fluentd.fullname" . }}
-    verbs:
-      - use
 {{- end }}
