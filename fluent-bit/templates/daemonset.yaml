@@ -5,6 +5,8 @@ metadata:
   name: {{ include "fluent-bit.fullname" . }}
   labels:
     {{- include "fluent-bit.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.annotations | nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -22,6 +24,10 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.useKubelet }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -70,6 +76,9 @@ spec:
               mountPath: /secure/{{ $name }}
               subPath: {{ $name }}
             {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
       volumes:
         - name: varlog
           hostPath:
@@ -86,6 +95,9 @@ spec:
         - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
           secret:
             secretName: {{ include "fluent-bit.fullname" $root }}-{{ $name | replace "." "-" | replace "_" "-" | lower }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

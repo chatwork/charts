@@ -11,16 +11,12 @@ rules:
     resources:
       - namespaces
       - pods
+    {{- if .Values.useKubelet }}
+      - nodes
+      - nodes/proxy
+    {{- end }}
     verbs:
       - get
       - list
       - watch
-  - apiGroups:
-      - policy
-    resources:
-      - podsecuritypolicies
-    resourceNames:
-      - {{ template "fluent-bit.fullname" . }}
-    verbs:
-      - use
 {{- end }}
