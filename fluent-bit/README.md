@@ -44,6 +44,7 @@ The following table lists the configurable parameters of the slime chart and the
 | `command` | Additional command arguments | `[]` |
 | `nameOverride` | Override name of app | `""` |
 | `fullnameOverride` | Override full name of app | `""` |
+| `annotations` | Annotations to be added to daemonset | `{}` |
 | `podAnnotations` | Annotations to be added to pods | `{}` |
 | `serviceAccount.create` | If true, create a service account for the pod | `false` |
 | `serviceAccount.annotations` | Annotations for the created service account | `{}` |
@@ -61,3 +62,6 @@ The following table lists the configurable parameters of the slime chart and the
 | `configmaps` | Configuration file to be mounted under /fluent-bit/etc | `{"fluent-bit.conf":"..."}` |
 | `secrets` | Secret information file to be mounted under /secure | `{}` |
 | `updateStrategy` | updateStrategy of daemonset | ... |
+| `extraVolumeMounts` | Extra volume mounts variables that will be passed onto pods | `[]` |
+| `extraVolumes` | Extra volumes variables that will be passed onto pods | `[]` |
+| `useKubelet` | If true, set `hostNetwork:true`, and `dnsPolicy` to `ClusterFirstWithHostNet` FYI: [this page](https://docs.fluentbit.io/manual/pipeline/filters/kubernetes#optional-feature-using-kubelet-to-get-metadata) | `false` |
