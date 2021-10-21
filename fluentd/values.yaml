@@ -4,7 +4,7 @@
 
 image:
   repository: chatwork/fluentd
-  tag: 1.10.4
+  tag: 1.14.1
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -29,7 +29,28 @@ fluentd:
     respondWithEmptyImg: false
     tls:
       enabled: false
-      certPath: ""
+      config:
+        version: ""
+        minVersion: ""
+        maxVersion: ""
+        ciphers: ""
+        insecure: ""
+        caPath: ""
+        certPath: ""
+        privateKeyPath: ""
+        privateKeyPassphrase: ""
+        clientCertAuth: ""
+        certVerifier: ""
+        caCertPath: ""
+        caPrivateKeyPath: ""
+        caPrivateKeyPassphrase: ""
+        generatePrivateKeyLength: ""
+        generateCertCountry: ""
+        generateCertState: ""
+        generateCertLocality: ""
+        generateCertCommonName: ""
+        generateCertExpiration: ""
+        generateCertDigest: ""
     service:
       enabled: false
       annotations: {}
@@ -56,7 +77,28 @@ fluentd:
     sourceHostnameKey:
     tls:
       enabled: false
-      path: ""
+      config:
+        version: ""
+        minVersion: ""
+        maxVersion: ""
+        ciphers: ""
+        insecure: ""
+        caPath: ""
+        certPath: ""
+        privateKeyPath: ""
+        privateKeyPassphrase: ""
+        clientCertAuth: ""
+        certVerifier: ""
+        caCertPath: ""
+        caPrivateKeyPath: ""
+        caPrivateKeyPassphrase: ""
+        generatePrivateKeyLength: ""
+        generateCertCountry: ""
+        generateCertState: ""
+        generateCertLocality: ""
+        generateCertCommonName: ""
+        generateCertExpiration: ""
+        generateCertDigest: ""
     service:
       enabled: false
       annotations: {}
@@ -112,9 +154,6 @@ nodeSelector: {}
 podAnnotations: {}
 
 podLabels: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
 
 priorityClassName: ""
 
@@ -285,9 +324,72 @@ configmaps:
       {{- with .Values.fluentd.http.respondWithEmptyImg }}
       respond_with_empty_img {{ . }}
       {{- end }}
+      # https://docs.fluentd.org/configuration/transport-section
       {{- if .Values.fluentd.http.tls.enabled }}
       <transport tls>
-        cert_path {{ .Values.fluentd.http.tls.certPath }}
+        {{- with .Values.fluentd.http.tls.config.version }}
+        version {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.minVersion }}
+        min_version {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.maxVersion }}
+        max_version {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.ciphers }}
+        ciphers {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.insecure }}
+        insecure {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.caPath }}
+        ca_path {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.certPath }}
+        cert_path {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.privateKeyPath }}
+        private_key_path {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.privateKeyPassphrase }}
+        private_key_passphrase {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.clientCertAuth }}
+        client_cert_auth {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.certVerifier }}
+        cert_verifier {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.caCertPath }}
+        ca_cert_path {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.caPrivateKeyPath }}
+        ca_private_key_path {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.caPrivateKeyPassphrase }}
+        ca_private_key_passphrase {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.generatePrivateKeyLength }}
+        generate_private_key_length {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.generateCertCountry }}
+        generate_cert_country {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.generateCertState }}
+        generate_cert_state {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.generateCertLocality }}
+        generate_cert_locality {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.generateCertCommonName }}
+        generate_cert_common_name {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.generateCertExpiration }}
+        generate_cert_expiration {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.http.tls.config.generateCertDigest }}
+        generate_cert_digest {{ . }}
+        {{- end }}
       </transport>
       {{- end }}
     </source>
@@ -337,9 +439,72 @@ configmaps:
       {{- with .Values.fluentd.forward.sourceHostnameKey }}
       source_hostname_key {{ . }}
       {{- end }}
+      # https://docs.fluentd.org/configuration/transport-section
       {{- if .Values.fluentd.forward.tls.enabled }}
       <transport tls>
-        cert_path {{ .Values.fluentd.forward.tls.certPath }}
+        {{- with .Values.fluentd.forward.tls.config.version }}
+        version {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.minVersion }}
+        min_version {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.manVersion }}
+        man_version {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.ciphers }}
+        ciphers {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.insecure }}
+        insecure {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.caPath }}
+        ca_path {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.certPath }}
+        cert_path {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.privateKeyPath }}
+        private_key_path {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.privateKeyPassphrase }}
+        private_key_passphrase {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.clientCertAuth }}
+        client_cert_auth {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.certVerifier }}
+        cert_verifier {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.caCertPath }}
+        ca_cert_path {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.caPrivateKeyPath }}
+        ca_private_key_path {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.caPrivateKeyPassphrase }}
+        ca_private_key_passphrase {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.generatePrivateKeyLength }}
+        generate_private_key_length {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.generateCertCountry }}
+        generate_cert_country {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.generateCertState }}
+        generate_cert_state {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.generateCertLocality }}
+        generate_cert_locality {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.generateCertCommonName }}
+        generate_cert_common_name {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.generateCertExpiration }}
+        generate_cert_expiration {{ . }}
+        {{- end }}
+        {{- with .Values.fluentd.forward.tls.config.generateCertDigest }}
+        generate_cert_digest {{ . }}
+        {{- end }}
       </transport>
       {{- end }}
     </source>
