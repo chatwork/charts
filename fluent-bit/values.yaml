@@ -4,7 +4,7 @@
 
 image:
   repository: fluent/fluent-bit
-  tag: 1.6.5
+  tag: 1.8.8
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -29,9 +29,6 @@ serviceAccount:
 rbac:
   # Specifies whether a role & rolebinding should be created
   create: false
-
-podSecurityContext: {}
-  # fsGroup: 2000
 
 securityContext: {}
   # capabilities:
@@ -66,6 +63,9 @@ affinity: {}
 metrics:
   # Enable HTTP endpoint to return metrics with fluent bit
   enabled: false
+
+# https://docs.fluentbit.io/manual/pipeline/filters/kubernetes#optional-feature-using-kubelet-to-get-metadata
+useKubelet: false
 
 configmaps:
   # Define fluent-bit configuration files such as fluent-bit.conf and parsers.conf.
@@ -107,3 +107,14 @@ updateStrategy:
   type: RollingUpdate
   rollingUpdate:
     maxUnavailable: 1
+
+# Any extra volumeMounts
+extraVolumeMounts: []
+  # - name: volume-name
+  #   mountPath: /path/to
+
+# Any extra volumes
+extraVolumes: []
+  # - name: volime-name
+  #   hostPath:
+  #     path: /path/to
