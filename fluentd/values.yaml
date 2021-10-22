@@ -324,8 +324,8 @@ configmaps:
       {{- with .Values.fluentd.http.respondWithEmptyImg }}
       respond_with_empty_img {{ . }}
       {{- end }}
-      # https://docs.fluentd.org/configuration/transport-section
       {{- if .Values.fluentd.http.tls.enabled }}
+      # https://docs.fluentd.org/configuration/transport-section
       <transport tls>
         {{- with .Values.fluentd.http.tls.config.version }}
         version {{ . }}
@@ -439,8 +439,8 @@ configmaps:
       {{- with .Values.fluentd.forward.sourceHostnameKey }}
       source_hostname_key {{ . }}
       {{- end }}
-      # https://docs.fluentd.org/configuration/transport-section
       {{- if .Values.fluentd.forward.tls.enabled }}
+      # https://docs.fluentd.org/configuration/transport-section
       <transport tls>
         {{- with .Values.fluentd.forward.tls.config.version }}
         version {{ . }}
