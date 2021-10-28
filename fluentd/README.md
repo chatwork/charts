@@ -168,6 +168,7 @@ The following table lists the configurable parameters of the fluentd chart and t
 | `fluentd.http.service.labels` | Labels to be added to daemonset | `{}` |
 | `fluentd.http.service.port` | The service port for http input | `9880` |
 | `fluentd.http.service.type` | The service type for http input | `"ClusterIP"` |
+| `fluentd.http.service.clusterIP` | If you set `service.type` to `ClusterIP` and `clusterIP` to `NONE`, its service is `headless`. | `nil` |
 | `fluentd.forward.enabled` | If true, use forward input | `true` |
 | `fluentd.forward.id` | Used to add the unique name of plugin configuration | `nil` |
 | `fluentd.forward.label` | Route input events to <label> sections | `nil` |
@@ -212,6 +213,7 @@ The following table lists the configurable parameters of the fluentd chart and t
 | `fluentd.forward.service.labels` | Labels to be added to service | `{}` |
 | `fluentd.forward.service.port` | The service port for forward input | `"24224"` |
 | `fluentd.forward.service.type` | The service type for forward input | `"ClusterIP"` |
+| `fluentd.forward.service.clusterIP` | If you set `service.type` to `ClusterIP` and `clusterIP` to `NONE`, its service is `headless`. | `nil` |
 | `affinity` | Node/Pod affinities | `{}` |
 | `annotations` | Annotations to be added to daemonset or statefulset | `{}` |
 | `args` | Additional arguments | `[]` |
