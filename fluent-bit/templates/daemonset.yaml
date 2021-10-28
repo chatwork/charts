@@ -38,6 +38,30 @@ spec:
       serviceAccountName: {{ include "fluent-bit.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.initContainers.enabled }}
+      initContainers:
+        - name: {{ include "fluent-bit.fullname" . }}-init
+          image: {{ .Values.initContainers.image.repository }}:{{ .Values.initContainers.image.tag }}
+          imagePullPolicy: {{ .Values.initContainers.image.pullPolicy }}
+          command:
+            {{- toYaml .Values.initContainers.command | nindent 12 }}
+          env:
+            {{- toYaml .Values.initContainers.extraEnv | nindent 12 }}
+          volumeMounts:
+            {{- range $name, $tmpl := .Values.configmaps }}
+            - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
+              mountPath: /fluent-bit/etc/{{ $name }}
+              subPath: {{ $name }}
+            {{- end }}
+            {{- range $name, $secret := .Values.secrets }}
+            - name: {{ $name | replace "." "-" | replace "_" "-" | lower }}
+              mountPath: /secure/{{ $name }}
+              subPath: {{ $name }}
+            {{- end }}
+            {{- with .Values.initContainers.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
