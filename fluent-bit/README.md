@@ -38,7 +38,7 @@ The following table lists the configurable parameters of the slime chart and the
 
 |  Parameter | Description | Default |
 | --- | --- | --- |
-| `image.repository` | The image repository to pull from | `"fluent/fluent-bit` |
+| `image.repository` | The image repository to pull from | `"fluent/fluent-bit"` |
 | `image.pullPolicy` | Image pull policy | `"IfNotPresent` |
 | `imagePullSecrets` | Image pull secrets | `[]` |
 | `command` | Additional command arguments | `[]` |
@@ -52,7 +52,7 @@ The following table lists the configurable parameters of the slime chart and the
 | `rbac.create` | If true, create & use RBAC resources | `false` |
 | `podSecurityContext` | Security context policies to add to the controller pod | `{}` |
 | `securityContext` | Allows you to overwrite the default securityContext applied to the container | `{}` |
-| `env` | Extra environment variables that will be passed onto pods | `{}` |
+| `env` | Extra environment variables that will be passed onto pods | `[]` |
 | `resources` | Pod resource requests & limits | `{}` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node taints to tolerate | `[]` |
@@ -65,3 +65,11 @@ The following table lists the configurable parameters of the slime chart and the
 | `extraVolumeMounts` | Extra volume mounts variables that will be passed onto pods | `[]` |
 | `extraVolumes` | Extra volumes variables that will be passed onto pods | `[]` |
 | `useKubelet` | If true, set `hostNetwork:true`, and `dnsPolicy` to `ClusterFirstWithHostNet` FYI: [this page](https://docs.fluentbit.io/manual/pipeline/filters/kubernetes#optional-feature-using-kubelet-to-get-metadata) | `false` |
+| `initContainers.enabled` | Enable initContainers | `false` |
+| `initContainers.image.repository` | The image repository to pull from | `"busybox"` |
+| `initContainers.image.tag` | The image tag | `"latest"` |
+| `initContainers.image.pullPolicy` | Image pull policy | `"Always` |
+| `initContainers.command` | Additional command arguments | `['sh', '-c', "until nslookup fluentd-forward.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for fluentd-forward; sleep 2; done"]`|
+| `initContainers.env` | Extra environment variables that will be passed onto pods | `[]` |
+| `initContainers.volumeMounts` | Extra volume mounts variables that will be passed onto pods | `[]` |
+

@@ -38,7 +38,7 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-env: {}
+env: []
   #- name: FOO
   #  value: "Hello World"
 
@@ -118,3 +118,19 @@ extraVolumes: []
   # - name: volime-name
   #   hostPath:
   #     path: /path/to
+
+initContainers:
+  enabled: false
+  image:
+    repository: busybox
+    tag: latest
+    pullPolicy: Always
+  command:
+    - 'sh'
+    - '-c'
+    - "until nslookup fluentd-forward.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for fluentd-forward; sleep 2; done"
+  env: []
+  # Any extra volumeMounts
+  extraVolumeMounts: []
+    # - name: volume-name
+    #   mountPath: /path/to
