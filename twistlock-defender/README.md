@@ -85,6 +85,8 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `secret.client_cert` | client cert for defender | `"CLIENT_CERT"` |
 |  `secret.client_key` | client key for defender | `"CLIENT_KEY"` |
 |  `secret.service_parameter` | service parameter which genrated by console for defender | `"SERVICE_PARAMETER"` |
+|  `secret.admission_cert` | admission cert for defender | `nil` |
+|  `secret.admission_key` | admission key for defender | `nil` |
 |  `useHostNetwork` | Pod using hostNetwork | `true`|
 |  `useHostPID` | Pod using hostPID | `true`|
 |  `annotations` | Damonset annotations | `"{}"`|

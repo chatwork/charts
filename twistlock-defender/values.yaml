@@ -80,6 +80,8 @@ secret:
   client_cert: "CLIENT_CERT"
   client_key: "CLIENT_KEY"
   service_parameter: "SERVICE_PARAMETER"
+  admission_cert:
+  admission_key:
 
 useHostNetwork: true
 useHostPID: true
