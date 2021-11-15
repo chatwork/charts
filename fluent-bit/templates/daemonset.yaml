@@ -79,7 +79,7 @@ spec:
           {{- if .Values.metrics.enabled }}
           ports:
           - name: metrics
-            containerPort: 2020
+            containerPort: {{ .Values.metrics.port }}
             protocol: TCP
           {{- end }}
           resources:

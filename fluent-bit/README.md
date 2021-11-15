@@ -59,6 +59,7 @@ The following table lists the configurable parameters of the slime chart and the
 | `affinity` | Node/Pod affinities | `{}` |
 | `priorityClassName` | Priority Class Name | `""` |
 | `metrics.enabled` | If true, enable Prometheus metrics | `false` |
+| `metrics.port` | Prometheus metrics port | `2020` |
 | `configmaps` | Configuration file to be mounted under /fluent-bit/etc | `{"fluent-bit.conf":"..."}` |
 | `secrets` | Secret information file to be mounted under /secure | `{}` |
 | `updateStrategy` | updateStrategy of daemonset | ... |
