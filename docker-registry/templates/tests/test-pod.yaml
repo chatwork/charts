@@ -22,7 +22,7 @@ spec:
         - /bin/sh
         - -c
         - |
-          curl -I {{ tpl .Values.test.url . }}:5000
+          curl -I {{ tpl .Values.test.url . }}
       env:
         - name: NAMESPACE
           valueFrom:
