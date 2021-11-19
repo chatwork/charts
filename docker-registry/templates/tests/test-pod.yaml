@@ -15,7 +15,7 @@ spec:
         - -c
         - |
           sleep 5
-          curl -I http://docker-registry.$(NAMESPACE).svc.cluster.local:5000
+          curl -I http://{{ template "docker-registry.fullname" . }}.$(NAMESPACE).svc.cluster.local:5000
       env:
         - name: NAMESPACE
           valueFrom:
