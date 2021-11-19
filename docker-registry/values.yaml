@@ -130,6 +130,9 @@ affinity: {}
 
 tolerations: []
 
+test:
+  url: '{{ template "docker-registry.fullname" . }}.$(NAMESPACE).svc.cluster.local'
+
 extraVolumeMounts: []
 ## Additional volumeMounts to the registry container.
 #  - mountPath: /secret-data
@@ -145,6 +148,3 @@ extraVolumes: []
 #        - key: cloudfront.pem
 #          path: cloudfront.pem
 #          mode: 511
-
-test:
-  url: {{ template "docker-registry.fullname" . }}.$(NAMESPACE).svc.cluster.local

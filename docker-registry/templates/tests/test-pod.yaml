@@ -13,7 +13,6 @@ spec:
         - /bin/sh
         - -c
         - until nslookup {{ tpl .Values.test.url . }}; do echo waiting for myservice; sleep 2; done; sleep 30;
-      imagePullPolicy: Always
       name: {{ template "docker-registry.fullname" . }}-test-init
   containers:
     - name: {{ template "docker-registry.fullname" . }}-test
