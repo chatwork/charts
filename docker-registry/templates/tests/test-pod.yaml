@@ -22,7 +22,7 @@ spec:
         - /bin/sh
         - -c
         - |
-          curl -I {{ tpl .Values.test.url . }}
+          curl -I http://{{ tpl .Values.test.url . }}:{{ .Values.service.port }}
       env:
         - name: NAMESPACE
           valueFrom:

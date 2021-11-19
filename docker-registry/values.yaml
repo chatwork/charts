@@ -147,4 +147,4 @@ extraVolumes: []
 #          mode: 511
 
 test:
-  url: http://{{ template "docker-registry.fullname" . }}.$(NAMESPACE).svc.cluster.local:{{ .Values.service.port }}
+  url: {{ template "docker-registry.fullname" . }}.$(NAMESPACE).svc.cluster.local
