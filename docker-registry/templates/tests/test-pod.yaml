@@ -12,7 +12,7 @@ spec:
       command:
         - /bin/sh
         - -c
-        - until nslookup {{ tpl .Values.test.url . }}; do echo waiting for myservice; sleep 2; done; sleep 30;
+        - until nslookup {{ tpl .Values.test.url . }}; do echo waiting for {{ tpl .Values.test.url . }}; sleep 2; done; sleep 30;
       name: {{ template "docker-registry.fullname" . }}-test-init
   containers:
     - name: {{ template "docker-registry.fullname" . }}-test
