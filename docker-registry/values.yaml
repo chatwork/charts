@@ -145,3 +145,6 @@ extraVolumes: []
 #        - key: cloudfront.pem
 #          path: cloudfront.pem
 #          mode: 511
+
+test:
+  url: http://{{ template "docker-registry.fullname" . }}.$(NAMESPACE).svc.cluster.local:5000

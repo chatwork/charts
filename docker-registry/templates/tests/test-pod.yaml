@@ -1,21 +1,28 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ .Chart.Name }}-test
+  name: {{ template "docker-registry.fullname" . }}-test
   labels:
-    app: {{ .Chart.Name }}-test
+    app: {{ template "docker-registry.fullname" . }}-test
   annotations:
     "helm.sh/hook": test-success
 spec:
+  initContainers:
+    - image: busybox:stable
+      command:
+        - /bin/sh
+        - -c
+        - until nslookup {{ tpl .Values.test.url . }}; do echo waiting for myservice; sleep 2; done; sleep 30;
+      imagePullPolicy: Always
+      name: {{ template "docker-registry.fullname" . }}-test-init
   containers:
-    - name: {{ .Chart.Name }}-test
+    - name: {{ template "docker-registry.fullname" . }}-test
       image: curlimages/curl
       command:
         - /bin/sh
         - -c
         - |
-          sleep 5
-          curl -I http://{{ template "docker-registry.fullname" . }}.$(NAMESPACE).svc.cluster.local:5000
+          curl -I {{ tpl .Values.test.url . }}:5000
       env:
         - name: NAMESPACE
           valueFrom:
