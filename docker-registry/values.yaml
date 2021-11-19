@@ -130,6 +130,9 @@ affinity: {}
 
 tolerations: []
 
+test:
+  url: '{{ template "docker-registry.fullname" . }}.$(NAMESPACE).svc.cluster.local'
+
 extraVolumeMounts: []
 ## Additional volumeMounts to the registry container.
 #  - mountPath: /secret-data
