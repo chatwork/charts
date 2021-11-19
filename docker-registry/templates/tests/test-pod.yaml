@@ -7,13 +7,6 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
-  initContainers:
-    - image: busybox:stable
-      command:
-        - /bin/sh
-        - -c
-        - until nslookup {{ tpl .Values.test.url . }}; do echo waiting for {{ tpl .Values.test.url . }}; sleep 2; done; sleep 30;
-      name: {{ template "docker-registry.fullname" . }}-test-init
   containers:
     - name: {{ template "docker-registry.fullname" . }}-test
       image: curlimages/curl
@@ -21,6 +14,7 @@ spec:
         - /bin/sh
         - -c
         - |
+          sleep 30
           curl -I http://{{ tpl .Values.test.url . }}:{{ .Values.service.port }}
       env:
         - name: NAMESPACE
