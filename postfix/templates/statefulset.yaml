@@ -1,10 +1,15 @@
 {{- if .Values.statefulSet.enabled }}
+{{- $root := . -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "postfix.fullname" . }}
   labels:
     {{- include "postfix.labels" . | nindent 4 }}
+  annotations:
+     {{- with .Values.statefulSet.annotations }}
+     {{- toYaml . | nindent 4 }}
+     {{- end }}
 spec:
   selector:
     matchLabels:
@@ -36,17 +41,32 @@ spec:
             {{- toYaml .Values.statefulSet.lifecycle | nindent 12 }}
           ports:
             - name: smtp
-              containerPort: 25
-              hostPort: 25
+              containerPort: {{ .Values.containerPort }}
               protocol: TCP
-          {{- with .Values.livenessProbe }}
+          {{- if .Values.livenessProbe }}
           livenessProbe:
-            {{- toYaml .| nindent 12 }}
+            tcpSocket:
+              port: {{ .Values.containerPort }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           {{- end }}
-          {{- with .Values.readinessProbe }}
+          {{- if .Values.readinessProbe }}
           readinessProbe:
-            {{- toYaml . | nindent 12 }}
+            tcpSocket:
+              port: {{ .Values.containerPort }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           {{- end }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          envFrom:
+            {{- toYaml .Values.envFrom | nindent 12 }}
           volumeMounts:
             - name: {{ template "postfix.fullname" . }}-spool
               mountPath: /var/spool/postfix
@@ -64,7 +84,7 @@ spec:
               mountPath: /etc/postfix/sasl_passwd
             {{- end }}
             {{- if .Values.extraVolumeMounts }}
-            {{- toYaml .Values.extraVolumeMounts . | nindent 12 }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
         {{- if .Values.metrics.enabled }}
         - name: exporter
@@ -110,13 +130,22 @@ spec:
           secret:
             secretName: {{ template "postfix.fullname" . }}-secret
         {{- end }}
-        {{- if .Values.extraVolumes }}
-        {{ toYaml .Values.extraVolumes . | indent 8 }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
       {{- with .Values.statefulSet.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      topologySpreadConstraints:
+        {{- range .Values.topologySpreadConstraints }}
+        - maxSkew: {{ .maxSkew }}
+          topologyKey: {{ .topologyKey }}
+          whenUnsatisfiable: {{ .whenUnsatisfiable }}
+          labelSelector:
+            matchLabels:
+              {{- include "postfix.selectorLabels" $root | nindent 14 }}
+        {{- end }}
       {{- with .Values.statefulSet.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

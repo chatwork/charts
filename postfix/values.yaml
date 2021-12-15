@@ -4,7 +4,7 @@
 
 image:
   repository: chatwork/postfix
-  tag: 3.4.8
+  tag: 3.6.3
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -13,18 +13,21 @@ fullnameOverride: ""
 # Duration in seconds the pod needs to terminate gracefully.
 terminationGracePeriodSeconds: 60
 
+containerPort: 25
+
 livenessProbe:
-  tcpSocket:
-    port: 25
-  failureThreshold: 2
   initialDelaySeconds: 10
-  periodSeconds: 60
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 2
 
 readinessProbe:
-  tcpSocket:
-    port: 25
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
   failureThreshold: 2
-  periodSeconds: 5
 
 persistence:
   enabled: false
@@ -52,6 +55,7 @@ extraVolumes: []
 
 daemonset:
   enabled: true
+  annotations: {}
   # If you set it to true, Daemonset use hostNetwork
   useHostNetwork: true
 
@@ -74,6 +78,7 @@ daemonset:
       maxUnavailable: 1
 
 deployment:
+  annotations: {}
   enabled: false
   replicaCount: 1
 
@@ -99,6 +104,7 @@ deployment:
 
 statefulSet:
   enabled: false
+  annotations: {}
 
   replicas: 1
 
@@ -114,7 +120,9 @@ statefulSet:
 
 service:
   type: ClusterIP
+  #ClusterIP: None
   port: 25
+  annotations: {}
 
 postfix:
   templates:
@@ -399,7 +407,7 @@ postfix:
       #
       #mynetworks = 168.100.189.0/28, 127.0.0.0/8
       #mynetworks = $config_directory/mynetworks
-      #mynetworks = hash:/etc/postfix/network_table
+      #mynetworks = lmdb:/etc/postfix/network_table
       mynetworks = 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 127.0.0.1/32
 
       # The relay_domains parameter restricts what destinations this system will
@@ -465,7 +473,7 @@ postfix:
       # In the left-hand side, specify an @domain.tld wild-card, or specify
       # a user@domain.tld address.
       #
-      #relay_recipient_maps = hash:/etc/postfix/relay_recipients
+      #relay_recipient_maps = lmdb:/etc/postfix/relay_recipients
 
       # INPUT RATE CONTROL
       #
@@ -520,8 +528,8 @@ postfix:
       # "postfix reload" to eliminate the delay.
       #
       #alias_maps = dbm:/etc/aliases
-      #alias_maps = hash:/etc/aliases
-      #alias_maps = hash:/etc/aliases, nis:mail.aliases
+      #alias_maps = lmdb:/etc/aliases
+      #alias_maps = lmdb:/etc/aliases, nis:mail.aliases
       #alias_maps = netinfo:/aliases
 
       # The alias_database parameter specifies the alias database(s) that
@@ -531,8 +539,8 @@ postfix:
       #
       #alias_database = dbm:/etc/aliases
       #alias_database = dbm:/etc/mail/aliases
-      #alias_database = hash:/etc/aliases
-      #alias_database = hash:/etc/aliases, hash:/opt/majordomo/aliases
+      #alias_database = lmdb:/etc/aliases
+      #alias_database = lmdb:/etc/aliases, lmdb:/opt/majordomo/aliases
 
       # ADDRESS EXTENSIONS (e.g., user+foo)
       #

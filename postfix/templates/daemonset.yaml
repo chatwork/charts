@@ -5,6 +5,10 @@ metadata:
   name: {{ include "postfix.fullname" . }}
   labels:
     {{- include "postfix.labels" . | nindent 4 }}
+  annotations:
+     {{- with .Values.daemonset.annotations }}
+     {{- toYaml . | nindent 4 }}
+     {{- end }}
 spec:
   selector:
     matchLabels:
@@ -42,19 +46,35 @@ spec:
           {{- toYaml .Values.daemonset.lifecycle | nindent 10 }}
         ports:
           - name: smtp
-            containerPort: 25
+            containerPort: {{ .Values.containerPort }}
             {{- with .Values.daemonset.hostPort }}
             hostPort: {{ . }}
             {{- end }}
             protocol: TCP
-        {{- with .Values.livenessProbe }}
+        {{- if .Values.livenessProbe }}
         livenessProbe:
-          {{- toYaml .| nindent 10 }}
+          tcpSocket:
+            port: {{ .Values.containerPort }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
         {{- end }}
-        {{- with .Values.readinessProbe }}
+        {{- if .Values.readinessProbe }}
         readinessProbe:
-          {{- toYaml . | nindent 10 }}
+          tcpSocket:
+            port: {{ .Values.containerPort }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         {{- end }}
+        env:
+          {{- toYaml .Values.env | nindent 10 }}
+        envFrom:
+          {{- toYaml .Values.envFrom | nindent 10 }}
         volumeMounts:
           - name: spool
             mountPath: /var/spool/postfix
