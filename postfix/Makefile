@@ -65,17 +65,17 @@ test-daemonset-mailcatcher:
 .PHONY: test-deployment
 test-deployment:
 	-helm uninstall $(RELEASE) && kubectl delete pod $(RELEASE)-test && kubectl wait --all --for="delete" pod
-	# kubeadm-dind-cluster 環境で Service を利用する場合、type=LoadBalancer だと 起動しない。ClusterIP を指定して回避。
+	# If you use Service in kubeadm-dind-cluster environment, it will not start if type=LoadBalancer. So ClusterIP is set.
 	# @see https://github.com/kubernetes-sigs/kubeadm-dind-cluster/issues/74
-	helm upgrade $(helmInstallOptions) --set deployment.enabled=true --set daemonset.enabled=false --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP $(RELEASE) .
+	helm upgrade $(helmInstallOptions) --set deployment.enabled=true --set daemonset.enabled=false --set deployment.service.type=ClusterIP $(RELEASE) .
 	kubectl wait --all --for="condition=Ready" --timeout="300s" pod
 	helm test --logs $(RELEASE)
 
 .PHONY: test-deployment-mailcatcher
 test-deployment-mailcatcher:
-	# Chart を削除して再生成すると、test-pod では古い Service の IP を引いてしまうので削除しない。
+	# If you delete the Chart and regenerate it, test-pod will pull the old Service IP, so don't delete it.
 	-kubectl delete pod $(RELEASE)-test && kubectl wait --all --for="delete" pod
-	# kubeadm-dind-cluster 環境で Service を利用する場合、type=LoadBalancer だと 起動しない。ClusterIP を指定して回避。
+	# If you use Service in kubeadm-dind-cluster environment, it will not start if type=LoadBalancer. So ClusterIP is set.
 	# @see https://github.com/kubernetes-sigs/kubeadm-dind-cluster/issues/74
 	helm upgrade $(helmInstallOptions) --set deployment.enabled=true --set daemonset.enabled=false $(mailcatcher) --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP  $(RELEASE) .
 	kubectl wait --all --for="condition=Ready" --timeout="300s" pod

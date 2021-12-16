@@ -19,7 +19,7 @@ $ helm install chatwork/postfix
 To install the chart with the release name `my-release`:
 
 ```
-$ helm install --name my-release chatwork/postfix
+$ helm install my-release chatwork/postfix
 ```
 
 The command deploys the postfix on the Kubernetes cluster in the default configuration. The [configuration](https://github.com/chatwork/charts/tree/master/postfix#configuration) section lists the parameters that can be configured during installation.
