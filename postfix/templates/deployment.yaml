@@ -47,7 +47,7 @@ spec:
         - name: smtp
           containerPort: {{ .Values.containerPort }}
           protocol: TCP
-          {{- if .Values.livenessProbe }}
+        {{- if .Values.livenessProbe }}
         livenessProbe:
           tcpSocket:
             port: {{ .Values.containerPort }}
