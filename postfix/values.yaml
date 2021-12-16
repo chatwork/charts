@@ -72,21 +72,14 @@ daemonset:
   podAnnotations: {}
   affinity: {}
   tolerations: []
-  updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
+  updateStrategy: {}
 
 deployment:
   annotations: {}
   enabled: false
   replicaCount: 1
 
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+  strategy: {}
 
   lifecycle:
     preStop:
@@ -105,6 +98,7 @@ deployment:
 statefulSet:
   enabled: false
   annotations: {}
+  podManagementPolicy: Parallel
 
   replicas: 1
 
@@ -835,15 +829,10 @@ metrics:
 
 # for helm test
 test:
-  # helm test でテスト送信する宛先
+  # helm test mail address
   toEmail: "a@example.com"
 
-# for dev
-# mailcatcher.enabled=true にすると以下が有効になる。
-# - MailCatcher サービス（templates/dev-mailcatcher.yaml）が起動する。
-# - 全てのメールが MailCatcher にリレーされる。
-#
-# 開発環境、helm test 用の機能なので、本番運用では false にしておく。
+# for dev config
 mailcatcher:
   enabled: false
   image:
@@ -865,8 +854,8 @@ mailcatcher:
       scheme: HTTP
     failureThreshold: 2
     periodSeconds: 5
-  # MailCatcher HTTP ポート
-  # Docker for Mac では http://localhost:1080/ でアクセスできる
+  # MailCatcher HTTP port
+  # You can access http://localhost:1080/ on Docker for Mac
   service:
     type: LoadBalancer
     httpPort: 1080

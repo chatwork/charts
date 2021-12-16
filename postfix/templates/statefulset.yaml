@@ -16,6 +16,7 @@ spec:
       {{- include "postfix.selectorLabels" . | nindent 6 }}
   serviceName: {{ include "postfix.fullname" . }}
   replicas: {{ .Values.statefulSet.replicas }}
+  podManagementPolicy: {{ .Values.statefulSet.podManagementPolicy }}
   template:
     metadata:
       labels:
@@ -153,8 +154,10 @@ spec:
       {{- with .Values.priorityClassName }}
       priorityClassName: {{ . }}
       {{- end }}
+  {{- with .Values.statefulSet.updateStrategy }}
   updateStrategy:
-    type: {{ .Values.statefulSet.updateStrategy }}
+    type: {{ . }}
+  {{- end }}
   {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
