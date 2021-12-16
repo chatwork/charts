@@ -7,9 +7,9 @@ metadata:
   labels:
     {{- include "postfix.labels" . | nindent 4 }}
   annotations:
-     {{- with .Values.statefulSet.annotations }}
-     {{- toYaml . | nindent 4 }}
-     {{- end }}
+    {{- with .Values.statefulSet.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:

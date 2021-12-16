@@ -7,9 +7,9 @@ metadata:
   labels:
     {{- include "postfix.labels" . | nindent 4 }}
   annotations:
-     {{- with .Values.deployment.annotations }}
-     {{- toYaml . | nindent 4 }}
-     {{- end }}
+    {{- with .Values.deployment.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
   {{- with .Values.deployment.strategy }}
