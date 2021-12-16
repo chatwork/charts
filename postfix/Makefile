@@ -73,8 +73,6 @@ test-deployment:
 
 .PHONY: test-deployment-mailcatcher
 test-deployment-mailcatcher:
-	# If you delete the Chart and regenerate it, test-pod will pull the old Service IP, so don't delete it.
-	#-kubectl delete pod $(RELEASE)-test && kubectl wait --all --for="delete" pod
 	helm uninstall $(RELEASE) && kubectl delete pod $(RELEASE)-test && kubectl wait --all --for="delete" pod
 	# If you use Service in kubeadm-dind-cluster environment, it will not start if type=LoadBalancer. So ClusterIP is set.
 	# @see https://github.com/kubernetes-sigs/kubeadm-dind-cluster/issues/74
