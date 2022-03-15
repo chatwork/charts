@@ -130,6 +130,7 @@ The following table lists the configurable parameters of the akka chart and thei
 | `readinessProbe.successThreshold` | Minimum number of consecutive successes for a probe to be considered successful after a probe has failed | `1` |
 | `readinessProbe.failureThreshold` | Minimum number of consecutive successes for the probe to be considered successful after having failed | `3` |
 | `replicaCount` | Number of replicas | `3` |
+| `revisionHistoryLimit` | The number of old ReplicaSets to retain to allow rollback. | `10` |
 | `resources` | Pod resource requests & limits | `{}` |
 | `restartPolicy` | Container restart policy | `"Always"` |
 | `securityContext` | Allows you to overwrite the default securityContext applied to the container | `{}` |
@@ -430,4 +431,3 @@ NOTE: `-XX` is supported by a docker image create with sbt-native-packager. If t
 ## CPU
 
 Akka recommends that you specify [only resource.request](https://doc.akka.io/docs/akka/current/additional/deploying.html#deploying-to-kubernetes).
-
