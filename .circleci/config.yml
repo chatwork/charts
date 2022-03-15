@@ -6,7 +6,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            v1-binary
+           - v1-binary
       - run: make ci:enable:helm
       - run: make ci:enable:kubeval
       - run: make ci:diff
@@ -81,7 +81,7 @@ workflows:
             branches:
               ignore: gh-pages
       - publish:
-          context: "chatwork_api_token@circleci"       
+          context: "chatwork_api_token@circleci"
           requires:
             - test
           filters:
