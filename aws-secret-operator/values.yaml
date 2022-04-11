@@ -21,6 +21,8 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+command: ""
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -57,3 +59,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+priorityClassName: ""
