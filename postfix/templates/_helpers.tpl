@@ -75,3 +75,14 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return true if we can enable Service Internal Traffic Policy
+*/}}
+{{- define "enable-service-internal-traffic-policy" -}}
+{{- if and (semverCompare "^1.22-0" .Capabilities.KubeVersion.GitVersion) .Values.daemonset.enabled -}}
+true
+{{- else -}}
+false
+{{- end -}}
+{{- end -}}
