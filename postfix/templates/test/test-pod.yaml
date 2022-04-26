@@ -10,27 +10,13 @@ spec:
     - name: {{ .Chart.Name }}-test
       image: php:7.2-alpine
       env:
-      {{- if .Values.daemonset.enabled }}
-        - name: NODE_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.hostIP
-      {{- end }}
         - name: TO_EMAIL
           value: {{ .Values.test.toEmail }}
       command:
         - /bin/sh
         - -c
         - |
-          {{- if .Values.daemonset.enabled }}
-          export SMTPHOST="${NODE_IP}:{{ .Values.daemonset.hostPort }}" \
-          {{- end }}
-          {{- if .Values.deployment.enabled }}
           export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.service.port }}" \
-          {{- end }}
-          {{- if .Values.statefulSet.enabled }}
-          export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.service.port }}" \
-          {{- end }}
           && /usr/local/bin/php -r "\$ret = mail(\"${TO_EMAIL}\", \"Hello\", \"Body\"); var_dump(\$ret);" | grep true
   restartPolicy: Never
 {{- end }}
