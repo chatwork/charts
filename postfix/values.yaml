@@ -57,7 +57,7 @@ daemonset:
   enabled: true
   annotations: {}
   # If you set it to true, Daemonset use hostNetwork
-  useHostNetwork: true
+  useHostNetwork: false
 
   hostPort: 25
 

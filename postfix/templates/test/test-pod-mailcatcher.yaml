@@ -10,12 +10,6 @@ spec:
     - name: {{ .Chart.Name }}-test
       image: php:7.2-alpine
       env:
-      {{- if .Values.daemonset.enabled }}
-        - name: NODE_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.hostIP
-      {{- end }}
         - name: MAILCATCHER_HOST
           value: {{ include "postfix.fullname" . }}-mailcatcher
         - name: MAILCATCHER_HTTP_PORT
@@ -26,15 +20,7 @@ spec:
         - /bin/sh
         - -c
         - |
-          {{- if .Values.daemonset.enabled }}
-          export SMTPHOST="${NODE_IP}:{{ .Values.daemonset.hostPort | default 25 }}" \
-          {{- end }}
-          {{- if .Values.deployment.enabled }}
           export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.service.port }}" \
-          {{- end }}
-          {{- if .Values.statefulSet.enabled }}
-          export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.service.port }}" \
-          {{- end }}
           && /usr/local/bin/php -r "\$ret = mail(\"${TO_EMAIL}\", \"Hello\", \"Body\"); var_dump(\$ret);" | grep true \
           && sleep 3 \
           && BODY=$(curl --retry 100 --connect-timeout 10 --retry-connrefused http://${MAILCATCHER_HOST}:${MAILCATCHER_HTTP_PORT}/messages) \

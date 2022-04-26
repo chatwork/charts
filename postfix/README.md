@@ -68,7 +68,7 @@ The following table lists the configurable parameters of the Postfix chart and t
 | `extraVolumes` | extra VolumeMounts | `[]` |
 | `daemonset.enabled` | if true, postfix deployed as daemonset | `true` |
 | `daemonset.annotations` | daemonset annotations  | `{}` |
-| `daemonset.useHostNetwork` | if true, postfix daemonset use hostNetwork | `true` |
+| `daemonset.useHostNetwork` | if true, postfix daemonset use hostNetwork | `false` |
 | `daemonset.hostPort` | If you enter a value, hostPort is enabled and the value is set. | `25` |
 | `daemonset.lifecycle.preStop.exec.command` | postfix preStop command | `["/usr/sbin/postfix", "flush"]` |
 | `daemonset.podAnnotations` | daemonset Pod annotations | `{}` |
