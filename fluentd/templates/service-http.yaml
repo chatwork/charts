@@ -12,7 +12,7 @@ metadata:
     {{- end }}
   name: {{ include "fluentd.fullname" . }}-http
   {{- if (and (eq .Values.fluentd.http.service.type "ClusterIP") (not (empty .Values.fluentd.http.service.clusterIP))) }}
-  clusterIP: {{ .Values.fluentd.forward.service.clusterIP }}
+  clusterIP: {{ .Values.fluentd.http.service.clusterIP }}
   {{- end }}
 spec:
   type: {{ .Values.fluentd.http.service.type }}
