@@ -4,7 +4,6 @@
 
 image:
   repository: chatwork/postfix
-  tag: 3.6.3
   pullPolicy: IfNotPresent
 
 nameOverride: ""
