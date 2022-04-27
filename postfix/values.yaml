@@ -4,7 +4,6 @@
 
 image:
   repository: chatwork/postfix
-  tag: 3.6.3
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -114,7 +113,6 @@ statefulSet:
 
 service:
   type: ClusterIP
-  #ClusterIP: None
   port: 25
   annotations: {}
 
