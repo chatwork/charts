@@ -14,8 +14,8 @@ metadata:
   name: {{ include "fluentd.fullname" $root }}-{{ $service.name }}
 spec:
   type: {{ $service.type }}
-  {{- if (and (eq $service.type "ClusterIP") (not (empty $service.clusterIP))) }}
-  clusterIP: {{ $service.clusterIP }}
+  {{- if (and (eq $service.type "ClusterIP") (eq $service.clusterIP "None")) }}
+  clusterIP: None
   {{- end }}
   ports:
     {{- range $ii, $port := $service.ports }}
