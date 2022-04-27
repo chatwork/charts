@@ -11,8 +11,8 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
   name: {{ include "fluentd.fullname" . }}-http
-  {{- if (and (eq .Values.fluentd.http.service.type "ClusterIP") (not (empty .Values.fluentd.http.service.clusterIP))) }}
-  clusterIP: {{ .Values.fluentd.http.service.clusterIP }}
+  {{- if (and (eq .Values.fluentd.http.service.type "ClusterIP") (eq .Values.fluentd.http.service.clusterIP "None" )) }}
+  clusterIP: None
   {{- end }}
 spec:
   type: {{ .Values.fluentd.http.service.type }}

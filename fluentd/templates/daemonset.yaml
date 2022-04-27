@@ -38,7 +38,7 @@ spec:
             {{- toYaml .Values.command | nindent 12 }}
           env:
             {{- toYaml .Values.env | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if and .Values.livenessProbe.enabled .Values.fluentd.http.enabled }}
           livenessProbe:

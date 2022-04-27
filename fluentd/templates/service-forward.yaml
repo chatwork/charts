@@ -13,8 +13,8 @@ metadata:
   name: {{ include "fluentd.fullname" . }}-forward
 spec:
   type: {{ .Values.fluentd.forward.service.type }}
-  {{- if (and (eq .Values.fluentd.forward.service.type "ClusterIP") (not (empty .Values.fluentd.forward.service.clusterIP))) }}
-  clusterIP: {{ .Values.fluentd.forward.service.clusterIP }}
+  {{- if (and (eq .Values.fluentd.forward.service.type "ClusterIP") (eq .Values.fluentd.forward.service.clusterIP "None" )) }}
+  clusterIP: None
   {{- end }}
   ports:
     - port: {{ .Values.fluentd.forward.service.port }}
