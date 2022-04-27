@@ -56,7 +56,6 @@ fluentd:
       labels: {}
       port: 9880
       type: ClusterIP
-      clusterIP: ""
   # https://docs.fluentd.org/input/forward
   forward:
     enabled: true
@@ -105,7 +104,6 @@ fluentd:
       labels: {}
       port: 24224
       type: ClusterIP
-      clusterIP: ""
 
 # Pod settings
 affinity: {}
