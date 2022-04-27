@@ -8,8 +8,8 @@ metadata:
     {{- toYaml .Values.service.annotations | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
-  {{- if (eq .Values.service.type "ClusterIP") }}
-  clusterIP: {{ .Values.service.clusterIP }}
+  {{- if (and (eq .Values.service.type "ClusterIP") (eq .Values.service.clusterIP "None" )) }}
+  clusterIP: None
   {{- end }}
   ports:
     - port: {{ .Values.service.port }}

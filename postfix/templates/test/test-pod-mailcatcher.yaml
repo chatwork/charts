@@ -22,7 +22,7 @@ spec:
         - |
           export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.service.port }}" \
           && /usr/local/bin/php -r "\$ret = mail(\"${TO_EMAIL}\", \"Hello\", \"Body\"); var_dump(\$ret);" | grep true \
-          && sleep 3 \
+          && sleep 15 \
           && BODY=$(curl --retry 100 --connect-timeout 10 --retry-connrefused http://${MAILCATCHER_HOST}:${MAILCATCHER_HTTP_PORT}/messages) \
           && echo ${BODY} 1>&2 \
           && echo ${BODY} | grep ${TO_EMAIL}
