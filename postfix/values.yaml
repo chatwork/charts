@@ -114,7 +114,7 @@ statefulSet:
 
 service:
   type: ClusterIP
-  #ClusterIP: None
+  #clusterIP: None
   port: 25
   annotations: {}
 

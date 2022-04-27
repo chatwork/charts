@@ -17,6 +17,7 @@ spec:
         - -c
         - |
           export SMTPHOST="{{ template "postfix.fullname" . }}:{{ .Values.service.port }}" \
+          && sleep 15 \
           && /usr/local/bin/php -r "\$ret = mail(\"${TO_EMAIL}\", \"Hello\", \"Body\"); var_dump(\$ret);" | grep true
   restartPolicy: Never
 {{- end }}
