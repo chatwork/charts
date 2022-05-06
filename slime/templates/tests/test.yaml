@@ -1,0 +1,39 @@
+{{- if .Values.test.enabled -}}
+{{- $root := . }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "slime.fullname" . }}-test"
+  labels:
+    {{- include "slime.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    {{- range $container := .Values.test.containers }}
+    - name: {{ include "slime.fullname" $root }}-{{ $container.name }}-test
+      image: {{ $container.image.repository }}:{{ $container.image.tag }}
+      {{- with $container.image.pullPolicy }}
+      imagePullPolicy: {{ . }}
+      {{- end }}
+      {{- with $container.command }}
+      command:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      env:
+        - name: RELEASE_NAME
+          value: {{ include "slime.fullname" $root }}
+        {{- with $container.env }}
+        {{- toYaml $container.env | nindent 8 }}
+        {{- end }}
+      {{- with $container.envFrom }}
+      envFrom:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $container.resources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  {{- end }}
+  restartPolicy: Never
+{{- end }}

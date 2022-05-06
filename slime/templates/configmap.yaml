@@ -1,8 +1,25 @@
-{{/* https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#configmap-v1-core */}}
 {{- $root := . }}
 {{- range $index, $value := .Values.configmaps }}
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    {{- include "slime.labels" $root | nindent 4 }}
+  {{- range $key, $val := $value.metadata }}
+    {{- if eq $key "labels" }}
+    {{- range $k, $v := $value.metadata.labels }}
+    {{ $k }}: {{ $v }}
+    {{- end }}
+  {{- else }}
+  {{- if regexMatch "^(string|bool|int|float64)$" (printf "%T" $val) }}
+  {{ $key }}: {{ $val }}
+  {{- else }}
+  {{ $key }}:
+    {{- toYaml $val | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
 {{- with $value.binaryData }}
 binaryData:
   {{- . | toYaml | nindent 2 }}
@@ -10,28 +27,5 @@ binaryData:
 {{- with $value.data }}
 data:
   {{- . | toYaml | nindent 2 }}
-{{- end }}
-kind: ConfigMap
-metadata:
-  labels:
-    app: {{ template "slime.name" $root }}
-    chart: {{ template "slime.chart" $root }}
-    release: {{ $root.Release.Name }}
-    heritage: {{ $root.Release.Service }}
-{{- range $key, $val := $value.metadata }}
-{{- if eq $key "labels" }}
-{{- range $k, $v := $value.metadata.labels }}
-{{- if not (regexMatch "^(app|chart|release|heritage)$" $k) }}
-    {{ $k }}: {{ $v }}
-{{- end }}
-{{- end }}
-{{- else }}
-{{- if regexMatch "^(string|bool|int|float64)$" (printf "%T" $val) }}
-  {{ $key }}: {{ $val }}
-{{- else }}
-  {{ $key }}:
-    {{- toYaml $val | nindent 4 }}
-{{- end }}
-{{- end }}
 {{- end }}
 {{- end }}

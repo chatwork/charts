@@ -1,0 +1,123 @@
+fullnameOverride: nginx-example
+nameOverride: nginx-example
+
+deployment:
+  enabled: true
+
+strategy:
+  type: RollingUpdate
+
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+
+replicas: 2
+
+annotations:
+  a.b: c
+
+labels:
+  a/b: c
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 10
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                  - nginx-example
+          topologyKey: kubernetes.io/hostname
+
+volumes:
+  - name: config-vol
+    configMap:
+      name: log-config
+      items:
+        - key: log_level
+          path: log_level
+
+configmaps:
+- metadata:
+    name: log-config
+  data:
+    log_level: "ERROR"
+
+secrets:
+- metadata:
+    name: aws-credentials
+  data:
+    AWS_ACCESS_KEY: "YWZiY2RlYTEyMzQzCg=="
+
+containers:
+  - name: nginx
+    image:
+      repository: nginx
+      tag: latest
+
+    volumeMounts:
+      - name: config-vol
+        mountPath: /etc/config
+
+    lifecycle:
+      preStop:
+        exec:
+          command: ["sh", "-c", "sleep 60"]
+
+    ports:
+      - name: http
+        containerPort: 80
+        protocol: TCP
+
+    resources:
+      requests:
+        cpu: 0.1
+        memory: 128Mi
+      limits:
+        cpu: 0.1
+        memory: 128Mi
+
+  - name: ubuntu-sleep-infinity
+    image:
+      repository: ubuntu
+      tag: latest
+
+    command: ["sh", "-c", "sleep infinity"]
+
+    envFrom:
+      - secretRef:
+          name: aws-credentials
+
+    resources:
+      requests:
+        cpu: 0.1
+        memory: 64Mi
+      limits:
+        cpu: 0.1
+        memory: 64Mi
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    http:
+      targetPort: 80
+      port: 80
+      protocol: TCP
+
+autoscaling:
+  enabled: false
+
+test:
+  enabled: true
+  containers:
+  - name: test
+
+    image:
+      repository: curlimages/curl
+      tag: latest
+
+    command: ["sh","-c","sleep 60; curl http://${RELEASE_NAME}"]

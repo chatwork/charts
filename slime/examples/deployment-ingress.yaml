@@ -1,0 +1,79 @@
+fullnameOverride: nginx-example
+nameOverride: nginx-example
+
+deployment:
+  enabled: true
+
+strategy:
+  type: RollingUpdate
+
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+
+replicas: 2
+
+containers:
+  - name: nginx
+    image:
+      repository: nginx
+      tag: latest
+
+    ports:
+      - name: http
+        containerPort: 80
+        protocol: TCP
+
+    resources:
+      requests:
+        cpu: 0.1
+        memory: 128Mi
+      limits:
+        cpu: 0.1
+        memory: 128Mi
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    http:
+      targetPort: 80
+      port: 80
+      protocol: TCP
+
+ingress:
+  enabled: true
+  ingresses:
+    - ingressClassName: alb
+      name: http
+      annotations:
+        alb.ingress.kubernetes.io/backend-protocol: HTTP
+        alb.ingress.kubernetes.io/healthcheck-path: /
+        alb.ingress.kubernetes.io/healthcheck-port: '80'
+        alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+        alb.ingress.kubernetes.io/inbound-cidrs: '0.0.0.0/0'
+        alb.ingress.kubernetes.io/listen-ports: |-
+          [
+            {
+              "HTTP": 80
+            }
+          ]
+        alb.ingress.kubernetes.io/scheme: internal
+        alb.ingress.kubernetes.io/target-type: ip
+      hosts:
+        - host: example.com
+          paths:
+            - path: "/*"
+              pathType: ImplementationSpecific
+              portNumber: 80
+
+test:
+  enabled: true
+  containers:
+  - name: test
+
+    image:
+      repository: curlimages/curl
+      tag: latest
+
+    command: ["sh","-c","sleep 60; curl http://${RELEASE_NAME}"]

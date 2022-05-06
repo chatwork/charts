@@ -12,7 +12,7 @@ $ helm install chatwork/slime
 
 ## Prerequisites
 
-* Kubernetes 1.11+
+* Kubernetes 1.18+
 
 ## Installing the Chart
 

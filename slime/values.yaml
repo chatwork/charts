@@ -2,6 +2,162 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# nameOverride -- Override name of app
+nameOverride:  # ""
+
+# fullnameOverride -- Override the full qualified app name
+fullnameOverride:  # ""
+
+deployment:
+  enabled: false
+
+# for deployment, daemonset, cronjob, statefulset
+## rolling update strategy for deployment, statefulset, daemonset
+strategy: {}
+
+## annotations
+annotations: {}
+
+## labels
+labels: {}
+#  name: value
+
+## replicas for deployment, statefulset
+replicas: 1
+
+## revisionHistoryLimit
+revisionHistoryLimit: ""
+
+## pod annotations
+podAnnotations: {}
+
+## pod labels
+podLabels: {}
+
+## pod securityContext
+podSecurityContext: {}
+
+## affinity
+affinity: {}
+
+## nodeSelector
+nodeSelector: {}
+
+## imagePullSecrets
+imagePullSecrets: []
+
+## readinessGates
+readinessGates: []
+
+## priorityClassName
+priorityClassName: ""
+
+## progressDeadlineSeconds
+progressDeadlineSeconds: ""
+
+## volumes
+### this parameter pod volumes(include initContainers, containers)
+volumes: []
+
+containers:
+  - name: app1
+
+    image:
+      repository: chatwork/app1
+      tag: latest
+      pullPolicy: Always
+
+    command: []
+
+    securityContext: {}
+
+    ports: []
+
+    env: []
+      # - name: DEMO_GREETING
+      #   value: "Hello from the environment"
+
+    envFrom: []
+      # - configMapRef:
+      #     name: special-config
+
+    lifecycle: {}
+
+    startupProbe: {}
+      #httpGet: {}
+      #   scheme: HTTP
+      #   path: [your http path]
+      #   port: [your http port]
+      #tcpSocket: {}
+      #   port: [your tcp port]
+      #exec: {}
+      #   command: [your command]
+      #initialDelaySeconds: 30
+      #periodSeconds: 5
+      #timeoutSeconds: 5
+      #successThreshold: 1
+      #failureThreshold: 3
+
+    readinessProbe: {}
+      #httpGet: {}
+      #   scheme: HTTP
+      #   path: [your http path]
+      #   port: [your http port]
+      #tcpSocket: {}
+      #   port: [your tcp port]
+      #exec: {}
+      #   command: [your command]
+      #initialDelaySeconds: 60
+      #periodSeconds: 5
+      #timeoutSeconds: 5
+      #successThreshold: 1
+      #failureThreshold: 3
+
+    livenessProbe: {}
+      # If true, enable the liveness probe.
+      #httpGet: {}
+      #   scheme: HTTP
+      #   path: [your http path]
+      #   port: [your http port]
+      #tcpSocket: {}
+      #   port: [your tcp port]
+      #exec: {}
+      #   command: [your command]
+      #initialDelaySeconds: 60
+      #periodSeconds: 5
+      #timeoutSeconds: 5
+      #successThreshold: 1
+      #failureThreshold: 3
+
+    resources: {}
+
+    volumeMounts: []
+      # - name: volume-name
+      #   mountPath: /path/to
+
+initContainers:
+  enabled: false
+
+  containers:
+    - name: init
+
+      image:
+        repository: chatwork/init
+        tag: latest
+
+      command: []
+
+      env: []
+      # - name: DEMO_GREETING
+      #   value: "Hello from the environment"
+
+      envFrom: []
+      # - configMapRef:
+      #     name: special-config
+      volumeMounts: []
+      # - name: volume-name
+      #   mountPath: /path/to
+
 configmaps: []
 #- metadata:
 #    name: slime
@@ -18,36 +174,86 @@ secrets: []
 #  data:
 #    slime: '₍Ꙭ̂₎'
 
+autoscaling:
+  enabled: false
+  behavior: {}
+  metrics: []
+  maxReplicas: 2
+  minReplicas: 1
+
 service:
   enabled: false
   type: ClusterIP
   ports: {}
   #  http:
-  #    internal: 8080
-  #    external: 80
+  #    # container port
+  #    targetPort: 8080
+  #    # svc port
+  #    port: 80
   #    protocol: TCP
 
-deployment:
+clusterRole:
   enabled: false
-  strategy: {}
-  annotations: {}
-  #   name: value
+  rules:
+    - apiGroups:
+      - ""
+      resources:
+      - nodes
+      verbs:
+      - get
+      - list
+      - watch
+
+role:
+  enabled: false
+  rules:
+    - apiGroups:
+      - ""
+      resources:
+      - pods
+      verbs:
+      - watch
+
+serviceAccount:
+  create: false
   labels: {}
-  #   name: value
-  replicaCount: 1
-  extraField: {}
-  #  revisionHistoryLimit: 10
-  pod:
-    annotations: {}
-    labels: {}
-    affinity: {}
-    extraField: {}
-    # dnsPolicy: ClusterFirst
-    container: []
-    #- image: k8s.gcr.io/pause:latest
-    #  imagePullPolicy: Always
-    #  name: pause
-    #  resources: {}
-    #  env: []
-    #  #- name: SAMPLE
-    #  #  value: "{{ .Values.service.type }}"
+  annotations: {}
+
+podDisruptionBudget:
+  enabled: false
+  annotations: {}
+  labels: {}
+  maxUnavailable:
+  minAvailable:
+
+ingress:
+  enabled: false
+  ingresses: []
+    # - annotations: {}
+    #   labels: {}
+    #   name: "your-ingress-name"
+    #   tls: []
+    #     - hosts: []
+    #       secretName: ""
+    #   hosts: []
+    #     - host:
+    #       paths:
+    #         path: "/*"
+    #         pathType: ImplementationSpecific
+    #         portNumber: 80
+
+test:
+  enabled: false
+  containers:
+  - name: app1-test
+
+    image:
+      repository: curl
+      tag: latest
+      pullPolicy: Always
+
+    command: ["curl","http://svc"]
+
+    env: []
+
+    envFrom: []
