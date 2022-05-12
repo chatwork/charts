@@ -24,8 +24,8 @@ subjects:
   - kind: ServiceAccount
     name: {{ include "slime.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
-{{- end }}
 ---
+{{- end }}
 {{- if .Values.role.enabled }}
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
@@ -54,8 +54,8 @@ subjects:
   - kind: ServiceAccount
     name: {{ include "slime.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
-{{- end }}
 ---
+{{- end }}
 {{- if .Values.serviceAccount.create -}}
 apiVersion: v1
 kind: ServiceAccount

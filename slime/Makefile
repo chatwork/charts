@@ -3,7 +3,7 @@ RELEASE = $$(basename $$PWD)
 
 .PHONY: install
 install:
-	helm upgrade -i -f example/deployment.yaml --wait $(RELEASE) .
+	helm upgrade -i -f examples/deployment.yaml --wait $(RELEASE) .
 
 .PHONY: lint
 lint: lint-deployment lint-deployment-ingress lint-deployment-hpa
