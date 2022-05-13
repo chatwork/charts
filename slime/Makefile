@@ -44,7 +44,8 @@ test-deployment:
 	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi
 	@echo "=> Testing examples/deployment.yaml"
 	helm upgrade -i --wait -f examples/deployment.yaml $(RELEASE)-deployment .
-	helm test --logs $(RELEASE)-deployment
+	sleep 30
+	helm test $(RELEASE)-deployment --logs
 	helm uninstall $(RELEASE)-deployment
 
 .PHONY: uninstall
