@@ -1,5 +1,5 @@
-fullnameOverride: nginx-example
-nameOverride: nginx-example
+#fullnameOverride: nginx-example
+#nameOverride: nginx-example
 
 deployment:
   enabled: true
@@ -32,16 +32,22 @@ affinity:
                   - nginx-example
           topologyKey: kubernetes.io/hostname
 
+configmap:
+  name1: log-config1
+
+secret:
+  name1: aws-credentials1
+
 volumes:
   - name: config-vol
     configMap:
-      name: nginx-example-log-config1
+      name: '{{ include "slime.fullname" . }}-{{ .Values.configmap.name1 }}'
       items:
         - key: log_level
           path: log_level
 
 configmaps:
-  log-config1:
+  "{{ .Values.configmap.name1 }}":
     labels:
       hoge: "1"
     annotations:
@@ -56,7 +62,7 @@ configmaps:
        log_level: "ERROR"
 
 secrets:
-  aws-credentials1:
+  "{{ .Values.secret.name1 }}":
     labels:
       hoge: "1"
     annotations:
@@ -108,7 +114,7 @@ containers:
 
     envFrom:
       - secretRef:
-          name: nginx-example-aws-credentials1
+          name: '{{ include "slime.fullname" . }}-{{ .Values.secret.name1 }}'
 
     resources:
       requests:
@@ -139,4 +145,4 @@ test:
       repository: curlimages/curl
       tag: latest
 
-    command: ["sh","-c","sleep 30; echo $APP_NAME.$NAMESPACE; curl http://$APP_NAME.$NAMESPACE"]
+    command: ["sh","-c","sleep 30; echo $APP_FULLNAME.$NAMESPACE; curl $APP_FULLNAME.$NAMESPACE"]

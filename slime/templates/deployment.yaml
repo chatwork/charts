@@ -62,11 +62,11 @@ spec:
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (. | toYaml) $root | nindent 8 }}
       {{- end }}
       {{- with .Values.readinessGates }}
       readinessGates:
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (. | toYaml) $root | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "slime.serviceAccountName" . }}
       {{- with .Values.podSecurityContext }}
@@ -75,11 +75,11 @@ spec:
       {{- end }}
       {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (. | toYaml) $root | nindent 8 }}
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
-        {{- toYaml .Values.tolerations | nindent 8 }}
+        {{- tpl (. | toYaml) $root | nindent 8 }}
       {{- end }}
       {{- with .Values.restartPolicy }}
       restartPolicy: {{ . }}
@@ -106,7 +106,7 @@ spec:
       {{- end }}
       {{- with .Values.volumes }}
       volumes:
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (. | toYaml) $root | nindent 8 }}
       {{- end }}
       {{- if .Values.initContainers.enabled }}
       initContainers:
@@ -122,15 +122,15 @@ spec:
           {{- end }}
           {{- with $container.env }}
           env:
-            {{- toYaml . | nindent 12 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
           {{- with $container.envFrom }}
           envFrom:
-            {{- toYaml . | nindent 12 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
           {{- with $container.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 12 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
         {{- end }}
       {{- end }}
@@ -147,7 +147,7 @@ spec:
           {{- end }}
           {{- with $container.ports }}
           ports:
-            {{- toYaml . | nindent 12 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
           {{- with $container.command }}
           command:
@@ -155,11 +155,11 @@ spec:
           {{- end }}
           {{- with $container.env }}
           env:
-            {{- toYaml . | nindent 12 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
           {{- with $container.envFrom }}
           envFrom:
-            {{- toYaml . | nindent 12 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
           {{- with $container.lifecycle }}
           lifecycle:
@@ -167,15 +167,15 @@ spec:
           {{- end }}
           {{- with $container.startupProbe }}
           startupProbe:
-            {{- toYaml . | nindent 12 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
           {{- with $container.readinessProbe }}
           readinessProbe:
-            {{- toYaml . | nindent 12 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
           {{- with $container.livenessProbe }}
           livenessProbe:
-            {{- toYaml . | nindent 12 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
           {{- with $container.resources }}
           resources:
@@ -183,7 +183,7 @@ spec:
           {{- end }}
           {{- with $container.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 12 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
       {{- end }}
 {{- end }}

@@ -6,7 +6,8 @@ metadata:
   name: "{{ include "slime.fullname" . }}-test"
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "slime.labels" . | nindent 4 }}
+    helm.sh/chart: {{ include "slime.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
     "helm.sh/hook": test
 spec:
@@ -26,18 +27,18 @@ spec:
           value: {{ $root.Release.Name }}
         - name: NAMESPACE
           value: {{ $root.Release.Namespace }}
-        - name: APP_NAME
+        - name: APP_FULLNAME
           value: {{ include "slime.fullname" $root }}
         {{- with $container.env }}
         {{- toYaml $container.env | nindent 8 }}
         {{- end }}
       {{- with $container.envFrom }}
       envFrom:
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (. | toYaml) $root | nindent 8 }}
       {{- end }}
       {{- with $container.resources }}
       resources:
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (. | toYaml) $root | nindent 8 }}
       {{- end }}
   {{- end }}
   restartPolicy: Never
