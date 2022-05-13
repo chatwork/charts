@@ -50,4 +50,4 @@ test-deployment:
 
 .PHONY: uninstall
 uninstall:
-	helm uninstall $(RELEASE)
+	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi
