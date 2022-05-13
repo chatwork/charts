@@ -158,21 +158,21 @@ initContainers:
       # - name: volume-name
       #   mountPath: /path/to
 
-configmaps: []
-#- metadata:
-#    name: slime
+configmaps: {}
+#  your-configmap-name:
+#    labels:
+#      a: b
 #    annotations:
 #      foo: bar
-#  data:
-#    slime: '₍Ꙭ̂₎'
+#    data:
+#      slime: '₍Ꙭ̂₎'
 
-secrets: []
-#- metadata:
-#    name: slime
+secrets: {}
+#  your-secret-name:
 #    annotations:
 #      foo: bar
 #  data:
-#    slime: '₍Ꙭ̂₎'
+#    slime: 4oKN6pmszILigo4K
 
 autoscaling:
   enabled: false
