@@ -1,0 +1,72 @@
+{{- if .Values.clusterRole.enabled }}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    {{- include "slime.labels" . | nindent 4 }}
+  name: {{ include "slime.fullname" . }}
+rules:
+  {{- with .Values.clusterRole.rules }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    {{- include "slime.labels" . | nindent 4 }}
+  name: {{ include "slime.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "slime.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "slime.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+---
+{{- end }}
+{{- if .Values.role.enabled }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    {{- include "slime.labels" . | nindent 4 }}
+  name: {{ include "slime.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+rules:
+  {{- with .Values.role.rules }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    {{- include "slime.labels" . | nindent 4 }}
+  name: {{ include "slime.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "slime.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "slime.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+---
+{{- end }}
+{{- if .Values.serviceAccount.create -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    {{- toYaml .Values.serviceAccount.annotations | nindent 4 }}
+  labels:
+    {{- include "slime.labels" . | nindent 4 }}
+    {{- with .Values.serviceAccount.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: {{ include "slime.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end -}}

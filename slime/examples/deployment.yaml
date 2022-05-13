@@ -1,0 +1,148 @@
+#fullnameOverride: nginx-example
+#nameOverride: nginx-example
+
+deployment:
+  enabled: true
+
+strategy:
+  type: RollingUpdate
+
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+
+replicas: 2
+
+annotations:
+  a.b: c
+
+labels:
+  a/b: c
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 10
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                  - nginx-example
+          topologyKey: kubernetes.io/hostname
+
+configmap:
+  name1: log-config1
+
+secret:
+  name1: aws-credentials1
+
+volumes:
+  - name: config-vol
+    configMap:
+      name: '{{ include "slime.fullname" . }}-{{ .Values.configmap.name1 }}'
+      items:
+        - key: log_level
+          path: log_level
+
+configmaps:
+  "{{ .Values.configmap.name1 }}":
+    labels:
+      hoge: "1"
+    annotations:
+      foo: a
+    data:
+       log_level: "ERROR"
+
+  log-config2:
+    labels:
+      hoge: "2"
+    data:
+       log_level: "ERROR"
+
+secrets:
+  "{{ .Values.secret.name1 }}":
+    labels:
+      hoge: "1"
+    annotations:
+      foo: a
+
+    data:
+      AWS_ACCESS_KEY: "YWZiY2RlYTEyMzQzCg=="
+
+  aws-credentials2:
+    annotations:
+      foo: a
+    data:
+      AWS_ACCESS_KEY: "YWZiY2RlYTEyMzQzCg=="
+
+containers:
+  - name: nginx
+    image:
+      repository: nginx
+      tag: latest
+
+    volumeMounts:
+      - name: config-vol
+        mountPath: /etc/config
+
+    lifecycle:
+      preStop:
+        exec:
+          command: ["sh", "-c", "sleep 10"]
+
+    ports:
+      - name: http
+        containerPort: 80
+        protocol: TCP
+
+    resources:
+      requests:
+        cpu: 0.1
+        memory: 128Mi
+      limits:
+        cpu: 0.1
+        memory: 128Mi
+
+  - name: ubuntu-sleep-infinity
+    image:
+      repository: ubuntu
+      tag: latest
+
+    command: ["sh", "-c", "sleep infinity"]
+
+    envFrom:
+      - secretRef:
+          name: '{{ include "slime.fullname" . }}-{{ .Values.secret.name1 }}'
+
+    resources:
+      requests:
+        cpu: 0.1
+        memory: 64Mi
+      limits:
+        cpu: 0.1
+        memory: 64Mi
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    http:
+      targetPort: 80
+      port: 80
+      protocol: TCP
+
+autoscaling:
+  enabled: false
+
+test:
+  enabled: true
+  containers:
+  - name: test
+
+    image:
+      repository: curlimages/curl
+      tag: latest
+
+    command: ["sh","-c","sleep 30; echo $APP_FULLNAME.$NAMESPACE; curl $APP_FULLNAME.$NAMESPACE"]

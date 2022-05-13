@@ -2,52 +2,243 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-configmaps: []
-#- metadata:
-#    name: slime
-#    annotations:
-#      foo: bar
-#  data:
-#    slime: '₍Ꙭ̂₎'
+nameOverride:  # Override name of app
 
-secrets: []
-#- metadata:
-#    name: slime
-#    annotations:
-#      foo: bar
-#  data:
-#    slime: '₍Ꙭ̂₎'
-
-service:
-  enabled: false
-  type: ClusterIP
-  ports: {}
-  #  http:
-  #    internal: 8080
-  #    external: 80
-  #    protocol: TCP
+fullnameOverride:  # Override the full qualified app name
 
 deployment:
-  enabled: false
-  strategy: {}
-  annotations: {}
-  #   name: value
-  labels: {}
-  #   name: value
-  replicaCount: 1
-  extraField: {}
-  #  revisionHistoryLimit: 10
-  pod:
-    annotations: {}
-    labels: {}
-    affinity: {}
-    extraField: {}
-    # dnsPolicy: ClusterFirst
-    container: []
-    #- image: k8s.gcr.io/pause:latest
-    #  imagePullPolicy: Always
-    #  name: pause
-    #  resources: {}
-    #  env: []
-    #  #- name: SAMPLE
-    #  #  value: "{{ .Values.service.type }}"
+  enabled: false # Enable deployment
+
+strategy: {} # rolling update strategy for deployment
+
+annotations: {} # annotations for  deployment
+
+labels: {} # labels for  deployment
+#  name: value
+
+replicas: 1 # replicas for deployment
+
+revisionHistoryLimit: "" # revisionHistoryLimit
+
+podAnnotations: {} # pod annotations
+
+podLabels: {} # pod labels
+
+podSecurityContext: {} # pod securityContext
+
+affinity: {} # affinity
+
+nodeSelector: {} # nodeSelector
+
+imagePullSecrets: [] # imagePullSecrets
+
+readinessGates: [] # readinessGates
+
+priorityClassName: "" # priorityClassName
+
+progressDeadlineSeconds: "" # progressDeadlineSeconds
+
+volumes: [] # pod volumes(initContainers, containers)
+
+containers: [] # application containers
+#  - name: app1
+#
+#    image:
+#      repository: chatwork/app1
+#      tag: latest
+#      pullPolicy: Always
+#
+#    command: []
+#
+#    securityContext: {}
+#
+#    ports: []
+#
+#    env: []
+#      # - name: DEMO_GREETING
+#      #   value: "Hello from the environment"
+#
+#    envFrom: []
+#      # - configMapRef:
+#      #     name: special-config
+#
+#    lifecycle: {}
+#
+#    startupProbe: {}
+#      #httpGet: {}
+#      #   scheme: HTTP
+#      #   path: [your http path]
+#      #   port: [your http port]
+#      #tcpSocket: {}
+#      #   port: [your tcp port]
+#      #exec: {}
+#      #   command: [your command]
+#      #initialDelaySeconds: 30
+#      #periodSeconds: 5
+#      #timeoutSeconds: 5
+#      #successThreshold: 1
+#      #failureThreshold: 3
+#
+#    readinessProbe: {}
+#      #httpGet: {}
+#      #   scheme: HTTP
+#      #   path: [your http path]
+#      #   port: [your http port]
+#      #tcpSocket: {}
+#      #   port: [your tcp port]
+#      #exec: {}
+#      #   command: [your command]
+#      #initialDelaySeconds: 60
+#      #periodSeconds: 5
+#      #timeoutSeconds: 5
+#      #successThreshold: 1
+#      #failureThreshold: 3
+#
+#    livenessProbe: {}
+#      # If true, enable the liveness probe.
+#      #httpGet: {}
+#      #   scheme: HTTP
+#      #   path: [your http path]
+#      #   port: [your http port]
+#      #tcpSocket: {}
+#      #   port: [your tcp port]
+#      #exec: {}
+#      #   command: [your command]
+#      #initialDelaySeconds: 60
+#      #periodSeconds: 5
+#      #timeoutSeconds: 5
+#      #successThreshold: 1
+#      #failureThreshold: 3
+#
+#    resources: {}
+#
+#    volumeMounts: []
+#      # - name: volume-name
+#      #   mountPath: /path/to
+
+initContainers:
+  enabled: false # if true, you can use initContainers
+
+  containers: [] # initContainers config
+  #  - name: init
+  #
+  #    image:
+  #      repository: chatwork/init
+  #      tag: latest
+  #
+  #     command: []
+  #
+  #    env: []
+  #    # - name: DEMO_GREETING
+  #    #   value: "Hello from the environment"
+  #
+  #    envFrom: []
+  #    # - configMapRef:
+  #    #     name: special-config
+  #    volumeMounts: []
+  #    # - name: volume-name
+  #    #   mountPath: /path/to
+
+configmaps: {} # transform ConfigMap manifest. You can set `binaryData`, `data`
+#  your-configmap-name:
+#    labels:
+#      a: b
+#    annotations:
+#      foo: bar
+#    data:
+#      slime: '₍Ꙭ̂₎'
+
+secrets: {} # transform Secret's manifest. You can set `data`, `stringData` and `type`
+#  your-secret-name:
+#    annotations:
+#      foo: bar
+#  data:
+#    slime: 4oKN6pmszILigo4K
+
+autoscaling:
+  enabled: false # if true, you can use hpa
+  behavior: {} # autscaling behavior https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior
+  metrics: [] # autoscaling metrics
+  maxReplicas: 2 # autoscaling maxReplicas
+  minReplicas: 1 # autoscaling minReplicas
+
+service:
+  enabled: false # if true, you can use service
+  type: ClusterIP # service type(ClusterIP, NodePort, LoadBalancer)
+  ports: {} # service ports
+  #  http:
+  #    # container port
+  #    targetPort: 8080
+  #    # svc port
+  #    port: 80
+  #    protocol: TCP
+
+clusterRole:
+  enabled: false # if true, you can use clusterRole
+  rules: [] # clusterRole rules
+  #  - apiGroups:
+  #    - ""
+  #    resources:
+  #    - nodes
+  #    verbs:
+  #    - get
+  #    - list
+  #    - watch
+
+role:
+  enabled: false # if true, you can use role
+  rules: [] # role rules
+  #  - apiGroups:
+  #    - ""
+  #    resources:
+  #    - pods
+  #    verbs:
+  #    - watch
+
+serviceAccount:
+  create: false # if true, you can create serviceAccount
+  name: # if you create serviceAccount, you can set name
+  labels: {} # service account labels
+  annotations: {} # serviceAccount annotations
+
+podDisruptionBudget:
+  enabled: false # if ture, you can use podDisruptionBudget
+  annotations: {} # podDisruptionBudget annotations
+  labels: {} # podDisruptionBudget labels
+  maxUnavailable: # podDisruptionBudget maxUnavailable
+  minAvailable: # podDisruptionBudget minAvailable
+
+ingress:
+  enabled: false # if true, you can use ingress
+  ingresses: {} # ingresses config
+    # your-ingress-name:
+    #   annotations: {}
+    #   labels: {}
+    #   tls: []
+    #     - hosts: []
+    #       secretName: ""
+    #   hosts: []
+    #     - host:
+    #       paths:
+    #         path: "/*"
+    #         pathType: ImplementationSpecific
+    #         portNumber: 80
+
+extraResources: [] # you can create any resources with this parameter
+
+#
+test:
+  enabled: false # if true, you can use helm test
+  containers: [] # helm test container config
+  #- name: app1-test
+  #
+  #  image:
+  #    repository: curl
+  #    tag: latest
+  #    pullPolicy: Always
+  #  # you can use environment vairables $RELEASE_NAME, $NAMESPACE, $APP_FULLNAME
+  #  command: ["curl","$RELEASE_NAME.$NAMESPACE"]
+  #
+  #  env: []
+  #
+  #  envFrom: []

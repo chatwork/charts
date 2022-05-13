@@ -1,0 +1,30 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+{{- if semverCompare ">=1.21-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: policy/v1
+{{- else }}
+apiVersion: policy/v1beta1
+{{- end }}
+kind: PodDisruptionBudget
+metadata:
+  {{- with .Values.podDisruptionBudget.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4}}
+  {{- end }}
+  labels:
+    {{- include "slime.labels" . | nindent 4 }}
+    {{- with .Values.podDisruptionBudget.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: {{ template "slime.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  {{- with .Values.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ . }}
+  {{- end }}
+  {{- with .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ . }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "slime.selectorLabels" . | nindent 6 }}
+{{- end }}
