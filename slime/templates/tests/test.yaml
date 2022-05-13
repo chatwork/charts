@@ -23,6 +23,10 @@ spec:
       {{- end }}
       env:
         - name: RELEASE_NAME
+          value: {{ $root.Release.Name }}
+        - name: NAMESPACE
+          value: {{ $root.Release.Namespace }}
+        - name: APP_NAME
           value: {{ include "slime.fullname" $root }}
         {{- with $container.env }}
         {{- toYaml $container.env | nindent 8 }}

@@ -1,5 +1,5 @@
 {{ $root := . }}
-{{- range .Values.extraDeploy }}
+{{- range .Values.extraResources }}
 ---
 {{ tpl (. | toYaml) $root }}
 {{- end }}

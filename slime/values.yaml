@@ -242,7 +242,7 @@ ingress:
     #         pathType: ImplementationSpecific
     #         portNumber: 80
 
-extraDeploy: []
+extraResources: []
 
 test:
   enabled: false

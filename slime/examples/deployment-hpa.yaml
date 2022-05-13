@@ -95,12 +95,4 @@ podDisruptionBudget:
   maxUnavailable: 1
 
 test:
-  enabled: true
-  containers:
-  - name: test
-
-    image:
-      repository: curlimages/curl
-      tag: latest
-
-    command: ["sh","-c","sleep 60; curl http://${RELEASE_NAME}"]
+  enabled: false

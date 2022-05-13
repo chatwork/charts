@@ -139,4 +139,4 @@ test:
       repository: curlimages/curl
       tag: latest
 
-    command: ["sh","-c","sleep 60; curl http://${RELEASE_NAME}"]
+    command: ["sh","-c","sleep 30; echo $APP_NAME.$NAMESPACE; curl http://$APP_NAME.$NAMESPACE"]

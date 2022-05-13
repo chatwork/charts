@@ -28,6 +28,7 @@ lint-deployment-hpa:
 	helm lint --strict -f examples/deployment-hpa.yaml
 	@echo "=> Validating examples/deployment-hpa.yaml"
 	helm template -f examples/deployment-hpa.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+
 .PHONY: test
 test: test-deployment
 
@@ -40,6 +41,7 @@ lint-extra:
 
 .PHONY: test-deployment
 test-deployment:
+	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi
 	@echo "=> Testing examples/deployment.yaml"
 	helm upgrade -i --wait -f examples/deployment.yaml $(RELEASE)-deployment .
 	helm test --logs $(RELEASE)-deployment
