@@ -44,7 +44,7 @@ service:
 ingress:
   enabled: true
   ingresses:
-    - name: example1
+    example1:
       ingressClassName: alb
       annotations:
         alb.ingress.kubernetes.io/backend-protocol: HTTP
@@ -67,7 +67,7 @@ ingress:
               pathType: ImplementationSpecific
               portNumber: 80
 
-    - name: example2
+    example2:
       ingressClassName: alb
       annotations:
         alb.ingress.kubernetes.io/backend-protocol: HTTP

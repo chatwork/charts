@@ -2,163 +2,144 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# nameOverride -- Override name of app
-nameOverride:  # ""
+nameOverride:  # Override name of app
 
-# fullnameOverride -- Override the full qualified app name
-fullnameOverride:  # ""
+fullnameOverride:  # Override the full qualified app name
 
 deployment:
-  enabled: false
+  enabled: false # Enable deployment
 
-# for deployment, daemonset, cronjob, statefulset
-## rolling update strategy for deployment, statefulset, daemonset
-strategy: {}
+strategy: {} # rolling update strategy for deployment
 
-## annotations
-annotations: {}
+annotations: {} # annotations for  deployment
 
-## labels
-labels: {}
+labels: {} # labels for  deployment
 #  name: value
 
-## replicas for deployment, statefulset
-replicas: 1
+replicas: 1 # replicas for deployment
 
-## revisionHistoryLimit
-revisionHistoryLimit: ""
+revisionHistoryLimit: "" # revisionHistoryLimit
 
-## pod annotations
-podAnnotations: {}
+podAnnotations: {} # pod annotations
 
-## pod labels
-podLabels: {}
+podLabels: {} # pod labels
 
-## pod securityContext
-podSecurityContext: {}
+podSecurityContext: {} # pod securityContext
 
-## affinity
-affinity: {}
+affinity: {} # affinity
 
-## nodeSelector
-nodeSelector: {}
+nodeSelector: {} # nodeSelector
 
-## imagePullSecrets
-imagePullSecrets: []
+imagePullSecrets: [] # imagePullSecrets
 
-## readinessGates
-readinessGates: []
+readinessGates: [] # readinessGates
 
-## priorityClassName
-priorityClassName: ""
+priorityClassName: "" # priorityClassName
 
-## progressDeadlineSeconds
-progressDeadlineSeconds: ""
+progressDeadlineSeconds: "" # progressDeadlineSeconds
 
-## volumes
-### this parameter pod volumes(include initContainers, containers)
-volumes: []
+volumes: [] # pod volumes(initContainers, containers)
 
-containers:
-  - name: app1
-
-    image:
-      repository: chatwork/app1
-      tag: latest
-      pullPolicy: Always
-
-    command: []
-
-    securityContext: {}
-
-    ports: []
-
-    env: []
-      # - name: DEMO_GREETING
-      #   value: "Hello from the environment"
-
-    envFrom: []
-      # - configMapRef:
-      #     name: special-config
-
-    lifecycle: {}
-
-    startupProbe: {}
-      #httpGet: {}
-      #   scheme: HTTP
-      #   path: [your http path]
-      #   port: [your http port]
-      #tcpSocket: {}
-      #   port: [your tcp port]
-      #exec: {}
-      #   command: [your command]
-      #initialDelaySeconds: 30
-      #periodSeconds: 5
-      #timeoutSeconds: 5
-      #successThreshold: 1
-      #failureThreshold: 3
-
-    readinessProbe: {}
-      #httpGet: {}
-      #   scheme: HTTP
-      #   path: [your http path]
-      #   port: [your http port]
-      #tcpSocket: {}
-      #   port: [your tcp port]
-      #exec: {}
-      #   command: [your command]
-      #initialDelaySeconds: 60
-      #periodSeconds: 5
-      #timeoutSeconds: 5
-      #successThreshold: 1
-      #failureThreshold: 3
-
-    livenessProbe: {}
-      # If true, enable the liveness probe.
-      #httpGet: {}
-      #   scheme: HTTP
-      #   path: [your http path]
-      #   port: [your http port]
-      #tcpSocket: {}
-      #   port: [your tcp port]
-      #exec: {}
-      #   command: [your command]
-      #initialDelaySeconds: 60
-      #periodSeconds: 5
-      #timeoutSeconds: 5
-      #successThreshold: 1
-      #failureThreshold: 3
-
-    resources: {}
-
-    volumeMounts: []
-      # - name: volume-name
-      #   mountPath: /path/to
+containers: [] # application containers
+#  - name: app1
+#
+#    image:
+#      repository: chatwork/app1
+#      tag: latest
+#      pullPolicy: Always
+#
+#    command: []
+#
+#    securityContext: {}
+#
+#    ports: []
+#
+#    env: []
+#      # - name: DEMO_GREETING
+#      #   value: "Hello from the environment"
+#
+#    envFrom: []
+#      # - configMapRef:
+#      #     name: special-config
+#
+#    lifecycle: {}
+#
+#    startupProbe: {}
+#      #httpGet: {}
+#      #   scheme: HTTP
+#      #   path: [your http path]
+#      #   port: [your http port]
+#      #tcpSocket: {}
+#      #   port: [your tcp port]
+#      #exec: {}
+#      #   command: [your command]
+#      #initialDelaySeconds: 30
+#      #periodSeconds: 5
+#      #timeoutSeconds: 5
+#      #successThreshold: 1
+#      #failureThreshold: 3
+#
+#    readinessProbe: {}
+#      #httpGet: {}
+#      #   scheme: HTTP
+#      #   path: [your http path]
+#      #   port: [your http port]
+#      #tcpSocket: {}
+#      #   port: [your tcp port]
+#      #exec: {}
+#      #   command: [your command]
+#      #initialDelaySeconds: 60
+#      #periodSeconds: 5
+#      #timeoutSeconds: 5
+#      #successThreshold: 1
+#      #failureThreshold: 3
+#
+#    livenessProbe: {}
+#      # If true, enable the liveness probe.
+#      #httpGet: {}
+#      #   scheme: HTTP
+#      #   path: [your http path]
+#      #   port: [your http port]
+#      #tcpSocket: {}
+#      #   port: [your tcp port]
+#      #exec: {}
+#      #   command: [your command]
+#      #initialDelaySeconds: 60
+#      #periodSeconds: 5
+#      #timeoutSeconds: 5
+#      #successThreshold: 1
+#      #failureThreshold: 3
+#
+#    resources: {}
+#
+#    volumeMounts: []
+#      # - name: volume-name
+#      #   mountPath: /path/to
 
 initContainers:
-  enabled: false
+  enabled: false # if true, you can use initContainers
 
-  containers:
-    - name: init
+  containers: [] # initContainers config
+  #  - name: init
+  #
+  #    image:
+  #      repository: chatwork/init
+  #      tag: latest
+  #
+  #     command: []
+  #
+  #    env: []
+  #    # - name: DEMO_GREETING
+  #    #   value: "Hello from the environment"
+  #
+  #    envFrom: []
+  #    # - configMapRef:
+  #    #     name: special-config
+  #    volumeMounts: []
+  #    # - name: volume-name
+  #    #   mountPath: /path/to
 
-      image:
-        repository: chatwork/init
-        tag: latest
-
-      command: []
-
-      env: []
-      # - name: DEMO_GREETING
-      #   value: "Hello from the environment"
-
-      envFrom: []
-      # - configMapRef:
-      #     name: special-config
-      volumeMounts: []
-      # - name: volume-name
-      #   mountPath: /path/to
-
-configmaps: {}
+configmaps: {} # transform ConfigMap manifest. You can set `binaryData`, `data`
 #  your-configmap-name:
 #    labels:
 #      a: b
@@ -167,7 +148,7 @@ configmaps: {}
 #    data:
 #      slime: '₍Ꙭ̂₎'
 
-secrets: {}
+secrets: {} # transform Secret's manifest. You can set `data`, `stringData` and `type`
 #  your-secret-name:
 #    annotations:
 #      foo: bar
@@ -175,16 +156,16 @@ secrets: {}
 #    slime: 4oKN6pmszILigo4K
 
 autoscaling:
-  enabled: false
-  behavior: {}
-  metrics: []
-  maxReplicas: 2
-  minReplicas: 1
+  enabled: false # if true, you can use hpa
+  behavior: {} # autscaling behavior https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior
+  metrics: [] # autoscaling metrics
+  maxReplicas: 2 # autoscaling maxReplicas
+  minReplicas: 1 # autoscaling minReplicas
 
 service:
-  enabled: false
-  type: ClusterIP
-  ports: {}
+  enabled: false # if true, you can use service
+  type: ClusterIP # service type(ClusterIP, NodePort, LoadBalancer)
+  ports: {} # service ports
   #  http:
   #    # container port
   #    targetPort: 8080
@@ -193,45 +174,46 @@ service:
   #    protocol: TCP
 
 clusterRole:
-  enabled: false
-  rules:
-    - apiGroups:
-      - ""
-      resources:
-      - nodes
-      verbs:
-      - get
-      - list
-      - watch
+  enabled: false # if true, you can use clusterRole
+  rules: [] # clusterRole rules
+  #  - apiGroups:
+  #    - ""
+  #    resources:
+  #    - nodes
+  #    verbs:
+  #    - get
+  #    - list
+  #    - watch
 
 role:
-  enabled: false
-  rules:
-    - apiGroups:
-      - ""
-      resources:
-      - pods
-      verbs:
-      - watch
+  enabled: false # if true, you can use role
+  rules: [] # role rules
+  #  - apiGroups:
+  #    - ""
+  #    resources:
+  #    - pods
+  #    verbs:
+  #    - watch
 
 serviceAccount:
-  create: false
-  labels: {}
-  annotations: {}
+  create: false # if true, you can create serviceAccount
+  name: # if you create serviceAccount, you can set name
+  labels: {} # service account labels
+  annotations: {} # serviceAccount annotations
 
 podDisruptionBudget:
-  enabled: false
-  annotations: {}
-  labels: {}
-  maxUnavailable:
-  minAvailable:
+  enabled: false # if ture, you can use podDisruptionBudget
+  annotations: {} # podDisruptionBudget annotations
+  labels: {} # podDisruptionBudget labels
+  maxUnavailable: # podDisruptionBudget maxUnavailable
+  minAvailable: # podDisruptionBudget minAvailable
 
 ingress:
-  enabled: false
-  ingresses: []
-    # - annotations: {}
+  enabled: false # if true, you can use ingress
+  ingresses: {} # ingresses config
+    # your-ingress-name:
+    #   annotations: {}
     #   labels: {}
-    #   name: "your-ingress-name"
     #   tls: []
     #     - hosts: []
     #       secretName: ""
@@ -242,20 +224,21 @@ ingress:
     #         pathType: ImplementationSpecific
     #         portNumber: 80
 
-extraResources: []
+extraResources: [] # you can create any resources with this parameter
 
+#
 test:
-  enabled: false
-  containers:
-  - name: app1-test
-
-    image:
-      repository: curl
-      tag: latest
-      pullPolicy: Always
-
-    command: ["curl","http://svc"]
-
-    env: []
-
-    envFrom: []
+  enabled: false # if true, you can use helm test
+  containers: [] # helm test container config
+  #- name: app1-test
+  #
+  #  image:
+  #    repository: curl
+  #    tag: latest
+  #    pullPolicy: Always
+  #  # you can use environment vairables $RELEASE_NAME, $NAMESPACE, $APP_FULLNAME
+  #  command: ["curl","$RELEASE_NAME.$NAMESPACE"]
+  #
+  #  env: []
+  #
+  #  envFrom: []

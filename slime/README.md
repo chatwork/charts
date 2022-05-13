@@ -39,20 +39,58 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the slime chart and their default values.
 
-|  Parameter | Description | Default |
-| --- | --- | --- |
-|  `configmaps` | Transform ConfigMap manifest. You can set `binaryData`, `data` and `metadata` | `[]` |
-|  `secret` | Transform Secret's manifest. You can set `data`, `metadata`, `stringData` and `type` | `[]` |
-| `service.enabled` | Enable service | `false` |
-| `service.type` | Service type | `ClusterIP` |
-| `service.ports` | Service port setting | `{} `|
+| Parameter                | Description             | Default        |
+| ------------------------ | ----------------------- | -------------- |
+| `nameOverride` | Override name of app | `null` |
+| `fullnameOverride` | Override the full qualified app name | `null` |
 | `deployment.enabled` | Enable deployment | `false` |
-| `deployment.strategy` | Deployment pod update starategy | `{}` |
-| `deployment.annotations` | Deployment annotations | `{}` |
-| `deployment.labels` | Deployment labels | `{}` |
-| `deployment.replicaCount` | Deployment replicacount for pod | `1`|
-| `deployment.extraField` | Deployment extra field (ex. revisionHistoryLimit) | `{}`|
-| `deployment.pod.annotations` | Deployment pod annotations | `{}`|
-| `deployment.pod.labels` | Deployment pod labels | `{}`|
-| `deployment.pod.extraField` | Deployment pod extra field (ex. dnsPolicy) | `{}`|
-| `deployment.pod.container` | Deployment pod container spec | `[]`|
+| `strategy` | rolling update strategy for deployment | `{}` |
+| `annotations` | annotations for  deployment | `{}` |
+| `labels` | labels for  deployment | `{}` |
+| `replicas` | replicas for deployment | `1` |
+| `revisionHistoryLimit` | revisionHistoryLimit | `""` |
+| `podAnnotations` | pod annotations | `{}` |
+| `podLabels` | pod labels | `{}` |
+| `podSecurityContext` | pod securityContext | `{}` |
+| `affinity` | affinity | `{}` |
+| `nodeSelector` | nodeSelector | `{}` |
+| `imagePullSecrets` | imagePullSecrets | `[]` |
+| `readinessGates` | readinessGates | `[]` |
+| `priorityClassName` | priorityClassName | `""` |
+| `progressDeadlineSeconds` | progressDeadlineSeconds | `""` |
+| `volumes` | pod volumes(initContainers, containers) | `[]` |
+| `containers` | application containers | `[]` |
+| `initContainers.enabled` | if true, you can use initContainers | `false` |
+| `initContainers.containers` | initContainers config | `[]` |
+| `configmaps` | transform ConfigMap manifest. You can set `binaryData`, `data` | `{}` |
+| `secrets` | transform Secret's manifest. You can set `data`, `stringData` and `type` | `{}` |
+| `autoscaling.enabled` | if true, you can use hpa | `false` |
+| `autoscaling.behavior` | autscaling behavior https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior | `{}` |
+| `autoscaling.metrics` | autoscaling metrics | `[]` |
+| `autoscaling.maxReplicas` | autoscaling maxReplicas | `2` |
+| `autoscaling.minReplicas` | autoscaling minReplicas | `1` |
+| `service.enabled` | if true, you can use service | `false` |
+| `service.type` | service type(ClusterIP, NodePort, LoadBalancer) | `"ClusterIP"` |
+| `service.ports` | service ports | `{}` |
+| `clusterRole.enabled` | if true, you can use clusterRole | `false` |
+| `clusterRole.rules` | clusterRole rules | `[]` |
+| `role.enabled` | if true, you can use role | `false` |
+| `role.rules` | role rules | `[]` |
+| `serviceAccount.create` | if true, you can create serviceAccount | `false` |
+| `serviceAccount.name` | if you create serviceAccount, you can set name | `null` |
+| `serviceAccount.labels` | service account labels | `{}` |
+| `serviceAccount.annotations` | serviceAccount annotations | `{}` |
+| `podDisruptionBudget.enabled` | if ture, you can use podDisruptionBudget | `false` |
+| `podDisruptionBudget.annotations` | podDisruptionBudget annotations | `{}` |
+| `podDisruptionBudget.labels` | podDisruptionBudget labels | `{}` |
+| `podDisruptionBudget.maxUnavailable` | podDisruptionBudget maxUnavailable | `null` |
+| `podDisruptionBudget.minAvailable` | podDisruptionBudget minAvailable | `null` |
+| `ingress.enabled` | if true, you can use ingress | `false` |
+| `ingress.ingresses` | ingresses config | `{}` |
+| `extraResources` | you can create any resources with this parameter | `[]` |
+| `test.enabled` | if true, you can use helm test | `false` |
+| `test.containers` | helm test container config | `[]` |
+
+# generate README
+
+This README is generated with https://github.com/rapidsai/frigate
