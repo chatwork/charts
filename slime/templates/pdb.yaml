@@ -16,6 +16,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
   name: {{ template "slime.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   {{- with .Values.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ . }}
