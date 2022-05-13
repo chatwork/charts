@@ -35,22 +35,41 @@ affinity:
 volumes:
   - name: config-vol
     configMap:
-      name: log-config
+      name: nginx-example-log-config1
       items:
         - key: log_level
           path: log_level
 
 configmaps:
-- metadata:
-    name: log-config
-  data:
-    log_level: "ERROR"
+  log-config1:
+    labels:
+      hoge: "1"
+    annotations:
+      foo: a
+    data:
+       log_level: "ERROR"
+
+  log-config2:
+    labels:
+      hoge: "2"
+    data:
+       log_level: "ERROR"
 
 secrets:
-- metadata:
-    name: aws-credentials
-  data:
-    AWS_ACCESS_KEY: "YWZiY2RlYTEyMzQzCg=="
+  aws-credentials1:
+    labels:
+      hoge: "1"
+    annotations:
+      foo: a
+
+    data:
+      AWS_ACCESS_KEY: "YWZiY2RlYTEyMzQzCg=="
+
+  aws-credentials2:
+    annotations:
+      foo: a
+    data:
+      AWS_ACCESS_KEY: "YWZiY2RlYTEyMzQzCg=="
 
 containers:
   - name: nginx
@@ -65,7 +84,7 @@ containers:
     lifecycle:
       preStop:
         exec:
-          command: ["sh", "-c", "sleep 60"]
+          command: ["sh", "-c", "sleep 10"]
 
     ports:
       - name: http
@@ -89,7 +108,7 @@ containers:
 
     envFrom:
       - secretRef:
-          name: aws-credentials
+          name: nginx-example-aws-credentials1
 
     resources:
       requests:

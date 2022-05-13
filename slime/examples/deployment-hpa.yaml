@@ -1,5 +1,5 @@
-fullnameOverride: nginx-example
-nameOverride: nginx-example
+fullnameOverride: nginx-example-hpa
+nameOverride: nginx-example-hpa
 
 deployment:
   enabled: true
@@ -30,40 +30,16 @@ affinity:
                   - nginx-example
           topologyKey: kubernetes.io/hostname
 
-volumes:
-  - name: config-vol
-    configMap:
-      name: log-config
-      items:
-        - key: log_level
-          path: log_level
-
-configmaps:
-- metadata:
-    name: log-config
-  data:
-    log_level: "ERROR"
-
-secrets:
-- metadata:
-    name: aws-credentials
-  data:
-    AWS_ACCESS_KEY: "YWZiY2RlYTEyMzQzCg=="
-
 containers:
   - name: nginx
     image:
       repository: nginx
       tag: latest
 
-    volumeMounts:
-      - name: config-vol
-        mountPath: /etc/config
-
     lifecycle:
       preStop:
         exec:
-          command: ["sh", "-c", "sleep 60"]
+          command: ["sh", "-c", "sleep 10"]
 
     ports:
       - name: http

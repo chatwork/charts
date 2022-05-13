@@ -1,5 +1,5 @@
-fullnameOverride: nginx-example
-nameOverride: nginx-example
+fullnameOverride: nginx-example-ingress
+nameOverride: nginx-example-ingress
 
 deployment:
   enabled: true
@@ -44,8 +44,8 @@ service:
 ingress:
   enabled: true
   ingresses:
-    - ingressClassName: alb
-      name: http
+    - name: example1
+      ingressClassName: alb
       annotations:
         alb.ingress.kubernetes.io/backend-protocol: HTTP
         alb.ingress.kubernetes.io/healthcheck-path: /
@@ -63,7 +63,30 @@ ingress:
       hosts:
         - host: example.com
           paths:
-            - path: "/*"
+            - path: "/path1/*"
+              pathType: ImplementationSpecific
+              portNumber: 80
+
+    - name: example2
+      ingressClassName: alb
+      annotations:
+        alb.ingress.kubernetes.io/backend-protocol: HTTP
+        alb.ingress.kubernetes.io/healthcheck-path: /
+        alb.ingress.kubernetes.io/healthcheck-port: '80'
+        alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+        alb.ingress.kubernetes.io/inbound-cidrs: '0.0.0.0/0'
+        alb.ingress.kubernetes.io/listen-ports: |-
+          [
+            {
+              "HTTP": 80
+            }
+          ]
+        alb.ingress.kubernetes.io/scheme: internal
+        alb.ingress.kubernetes.io/target-type: ip
+      hosts:
+        - host: example.com
+          paths:
+            - path: "/path2/*"
               pathType: ImplementationSpecific
               portNumber: 80
 
