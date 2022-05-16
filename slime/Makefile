@@ -6,7 +6,7 @@ install:
 	helm upgrade -i -f examples/deployment.yaml --wait $(RELEASE) .
 
 .PHONY: lint
-lint: lint-deployment lint-deployment-ingress lint-deployment-hpa lint-extra
+lint: lint-deployment lint-deployment-ingress lint-deployment-hpa
 
 .PHONY: lint-deployment
 lint-deployment:
@@ -31,13 +31,6 @@ lint-deployment-hpa:
 
 .PHONY: test
 test: test-deployment
-
-.PHONY: lint-extra
-lint-extra:
-	@echo "=> Linting examples/extra.yaml"
-	helm lint --strict -f examples/extra.yaml
-	@echo "=> Validating examples/extra.yaml"
-	helm template -f examples/extra.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: test-deployment
 test-deployment:

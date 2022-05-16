@@ -224,9 +224,6 @@ ingress:
     #         pathType: ImplementationSpecific
     #         portNumber: 80
 
-extraResources: [] # you can create any resources with this parameter
-
-#
 test:
   enabled: false # if true, you can use helm test
   containers: [] # helm test container config

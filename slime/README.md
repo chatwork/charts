@@ -87,7 +87,6 @@ The following table lists the configurable parameters of the slime chart and the
 | `podDisruptionBudget.minAvailable` | podDisruptionBudget minAvailable | `null` |
 | `ingress.enabled` | if true, you can use ingress | `false` |
 | `ingress.ingresses` | ingresses config | `{}` |
-| `extraResources` | you can create any resources with this parameter | `[]` |
 | `test.enabled` | if true, you can use helm test | `false` |
 | `test.containers` | helm test container config | `[]` |
 
