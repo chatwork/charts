@@ -35,6 +35,14 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Difference from raw chart
+
+[raw chart](https://github.com/chatwork/charts/tree/master/raw) is is very useful, but it is too flexible and can be difficult to write if you are not used to helm.
+Therefore, this chart has some format for writing. If it is a simple `deployment` + `service` + `ingress`, this chart is surely easier to write than `raw chart`,
+but it does not allow you to define any resources(CRDS, cert-manager,...) freely.
+
+Use each charts as needed or use them together.
+
 ## Configuration
 
 The following table lists the configurable parameters of the slime chart and their default values.
