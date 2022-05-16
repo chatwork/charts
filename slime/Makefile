@@ -3,57 +3,44 @@ RELEASE = $$(basename $$PWD)
 
 .PHONY: install
 install:
-	helm upgrade -i --wait \
-		--set 'configmaps[0].data.slime=₍Ꙭ̂₎' \
-		--set 'configmaps[0].metadata.name=slime' \
-		--set 'service.enabled=true' \
-		--set 'service.type=ClusterIP' \
-		--set 'service.ports.http.internal=8080' \
-		--set 'service.ports.http.external=80' \
-		--set 'service.ports.http.protocol=TCP' \
-		--set 'deployment.enabled=true' \
-		--set 'deployment.pod.container[0].image=k8s.gcr.io/pause:latest' \
-		--set 'deployment.pod.container[0].name=pause' \
-		$(RELEASE) .
+	helm upgrade -i -f examples/deployment.yaml --wait $(RELEASE) .
 
 .PHONY: lint
-lint: lint-default
+lint: lint-deployment lint-deployment-ingress lint-deployment-hpa
 
-.PHONY: lint-default
-lint-default:
-	@echo "=> Indent check default values.yaml"
-	../.circleci/lint-chart.sh $$PWD/templates
-	@echo "=> Linting default values.yaml"
-	helm lint --strict \
-		--set 'configmaps[0].data.slime=₍Ꙭ̂₎' \
-		--set 'configmaps[0].metadata.name=slime' \
-		--set 'service.enabled=true' \
-		--set 'service.type=ClusterIP' \
-		--set 'service.ports.http.internal=8080' \
-		--set 'service.ports.http.external=80' \
-		--set 'service.ports.http.protocol=TCP' \
-		--set 'deployment.enabled=true' \
-		--set 'deployment.pod.container[0].image=k8s.gcr.io/pause:latest' \
-		--set 'deployment.pod.container[0].name=pause'
-	@echo "=> Validating default value.yaml"
-	helm template \
-		--set 'configmaps[0].data.slime=₍Ꙭ̂₎' \
-		--set 'configmaps[0].metadata.name=slime' \
-		--set 'service.enabled=true' \
-		--set 'service.type=ClusterIP' \
-		--set 'service.ports.http.internal=8080' \
-		--set 'service.ports.http.external=80' \
-		--set 'service.ports.http.protocol=TCP' \
-		--set 'deployment.enabled=true' \
-		--set 'deployment.pod.container[0].image=k8s.gcr.io/pause:latest' \
-		--set 'deployment.pod.container[0].name=pause' \
-		 . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
-	@echo ""
+.PHONY: lint-deployment
+lint-deployment:
+	@echo "=> Linting examples/deployment.yaml"
+	helm lint --strict -f examples/deployment.yaml
+	@echo "=> Validating examples/deployment.yaml"
+	helm template -f examples/deployment.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+
+.PHONY: lint-deployment-ingress
+lint-deployment-ingress:
+	@echo "=> Linting examples/deployment-ingress.yaml"
+	helm lint --strict -f examples/deployment-ingress.yaml
+	@echo "=> Validating examples/deployment-ingress.yaml"
+	helm template -f examples/deployment-ingress.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+
+.PHONY: lint-deployment-hpa
+lint-deployment-hpa:
+	@echo "=> Linting examples/deployment-hpa.yaml"
+	helm lint --strict -f examples/deployment-hpa.yaml
+	@echo "=> Validating examples/deployment-hpa.yaml"
+	helm template -f examples/deployment-hpa.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: test
-test:
-	echo "no test"
+test: test-deployment
+
+.PHONY: test-deployment
+test-deployment:
+	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi
+	@echo "=> Testing examples/deployment.yaml"
+	helm upgrade -i --wait -f examples/deployment.yaml $(RELEASE)-deployment .
+	sleep 30
+	helm test $(RELEASE)-deployment --logs
+	helm uninstall $(RELEASE)-deployment
 
 .PHONY: uninstall
 uninstall:
-	helm uninstall $(RELEASE)
+	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi

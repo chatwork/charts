@@ -1,0 +1,45 @@
+{{- if .Values.test.enabled -}}
+{{- $root := . }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "slime.fullname" . }}-test"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    helm.sh/chart: {{ include "slime.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    {{- range $container := .Values.test.containers }}
+    - name: {{ include "slime.fullname" $root }}-{{ $container.name }}-test
+      image: {{ $container.image.repository }}:{{ $container.image.tag }}
+      {{- with $container.image.pullPolicy }}
+      imagePullPolicy: {{ . }}
+      {{- end }}
+      {{- with $container.command }}
+      command:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      env:
+        - name: RELEASE_NAME
+          value: {{ $root.Release.Name }}
+        - name: NAMESPACE
+          value: {{ $root.Release.Namespace }}
+        - name: APP_FULLNAME
+          value: {{ include "slime.fullname" $root }}
+        {{- with $container.env }}
+        {{- toYaml $container.env | nindent 8 }}
+        {{- end }}
+      {{- with $container.envFrom }}
+      envFrom:
+        {{- tpl (. | toYaml) $root | nindent 8 }}
+      {{- end }}
+      {{- with $container.resources }}
+      resources:
+        {{- tpl (. | toYaml) $root | nindent 8 }}
+      {{- end }}
+  {{- end }}
+  restartPolicy: Never
+{{- end }}
