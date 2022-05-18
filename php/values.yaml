@@ -80,7 +80,7 @@ autoscaling:
   labels: {}
   minReplicas:
   maxReplicas:
-  metrics: {}
+  metrics: []
   #  - type: Resource
   #    resource:
   #      name: cpu
@@ -252,9 +252,12 @@ nginx:
 
   # `nginx.extraEnv` is additional environment variables.
   extraEnv: []
-  #  KEY1: VALUE1
-  #  KEY2: VALUE2
-  #  KEY3: VALUE3
+  #- name: key1
+  #  value: value1
+  #- name: HOST_IP
+  #  valueFrom:
+  #    fieldRef:
+  #      fieldPath: status.hostIP
 
   # `nginx.extraEnvFrom` is addtional envFrom.
   # Specify ConfigMap created in `nginx.templates` or Secret created in `nginx.secrets`.
@@ -358,7 +361,6 @@ fpm:
 
   # custom command for php-fpm image execution
   command: []
-  # command:
   # - php-fpm
   # - -d zend_extension=xdebug.so
 

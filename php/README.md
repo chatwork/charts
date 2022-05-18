@@ -78,7 +78,7 @@ The following table lists the configurable parameters of the PHP chart and their
 | `autoscaling.labels` | Annotations for the horizonal pod autoscaler | `{}` |
 | `autoscaling.minReplicas` | Min pods for horizontal pod autoscaler | `nil` |
 | `autoscaling.maxReplicas` | Max pods for Horizontal pod autoscaler | `nil` |
-| `autoscaling.metrics` | Metrics used for autoscaling | `{}` |
+| `autoscaling.metrics` | Metrics used for autoscaling | `[]` |
 | `autoscaling.behavior` | Behavior for HorizontalPodAutoscaler.  This feature is available since 1.18 | `{}` |
 | `rbac.create` | If true, create & use RBAC resources | `true` |
 | `podSecurityPolicy.create` |  | `false` |
