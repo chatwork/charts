@@ -1,7 +1,7 @@
 apiVersion: v2
 name: twistlock-defender
-version: "0.2.0"
-appVersion: "20.09.365"
+version: "0.3.0"
+appVersion: "22.01.882"
 description: Chart for Twistlock Defender
 home: https://www.twistlock.com/
 maintainers:

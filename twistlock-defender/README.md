@@ -52,35 +52,29 @@ The following table lists the configurable parameters of the gaurd chart and the
 |  `volumeMounts.dataPath` | VolumeMounts path for data directory | `"/var/lib/twistlock"` |
 |  `volumeMounts.certificates` | VolumeMounts path for certificates(secrets) | `"/var/lib/twistlock/certificates"` |
 |  `volumeMounts.docker.sockPath` | VolumeMounts path for docker sock root path | `"/var/run"` |
-|  `volumeMounts.docker.netns` | VolumeMounts path for docker netns(network namespace) | `"/var/run/docker/netns"` |
-|  `volumeMounts.iptablesFlockPath` | VolumeMounts path for iptables | `"/run"` |
 |  `volumes.dataPath` | Host Path for data volume  | `"/var/lib/twistlock/defender"` |
 |  `volumes.docker.sockPath` | Host Path for docker sock root  | `"/var/run"` |
-|  `volumes.docker.netns` | Host Path for docker netns | `"/var/run/docker/netns"` |
-|  `volumes.iptablesFlockPath` | Host Path for iptables | `"/run"` |
 |  `volumes.passwd` | Host Path for passwd | `"/etc/passwd"` |
 |  `volumes.auditlog` | Host Path for auditd path | `"/var/log/audit"` |
 |  `volumes.syslog` | Host Path for syslog | `"/dev/log"` |
 |  `config.console.wsAddress` | Configuration twistlock-console web socket address | `"wss://{{ .Values.console.dnsName }}:{{ .Values.console.port }}"` |
-|  `config.defender.type` | Configuration defender type | `"daemonset"` |
+|  `config.defender.type` | Configuration defender type | `"cri"` |
 |  `config.defender.listenerType` | Configuration defender listener type | `"none"` |
 |  `config.clusterId` | Configuration defender clusterId which generate by console | `"CLUSTERID"` |
 |  `config.monitor.serviceAccounts` | Configuration monitor service accounts | `true` |
 |  `config.monitor.istio` | Configuration monitor istio | `"false"` |
 |  `config.installBundle` | Configuration installBundle for rasp | `""` |
+|  `config.cloudHostnameEnabled` | Configuration cloudHostnameEnabled | `"false"` |
 |  `config.docker.clientAddress` | Configuration docker client address path | `"/var/run/docker.sock"` |
-|  `config.docker.tag` | Configuration docker tag for image | `"_20_04_163"` |
+|  `config.docker.tag` | Configuration docker tag for image | `"_22_01_882"` |
 |  `config.collectPodLabels` | Configuration collect pod labels | `true` |
-|  `config.hostCustomCompliance` | Configuration host custom compliance | `false` |
-|  `config.containerizedHost` | Configuration containerizedHost | `false` |
-|  `config.microsegmentation` | Configuration micro segmantation | `false` |
 |  `resources.limit.cpu` | Resources cpu limit | `"1000m"` |
 |  `resources.limit.memory` | Resources memory limit | `"512Mi"` |
 |  `resources.requests.cpu` | Resources cpu requests | `"250m"` |
 |  `resources.requests.memory` | Resources memory limit | `"256Mi"` |
 |  `securityContext.readOnlyRootFileSystem` | Security Context for read only root | `"true"` |
 |  `securityContext.privileged` | Security Context for read privileged | `"true"` |
-|  `securityContext.capabilities.add` | Security Context for capabilities | `"[NET_ADMIN, SYS_ADMIN, SYS_PTRACE, AUDIT_CONTROL]"` |
+|  `securityContext.capabilities.add` | Security Context for capabilities | `"[NET_ADMIN, NET_RAW, SYS_ADMIN, SYS_PTRACE, SYS_CHROOT, MKNOD, SETFCAP, IPC_LOCK]"` |
 |  `secret.ca_cert` | ca cert for defender | `"CA_CERT"` |
 |  `secret.client_cert` | client cert for defender | `"CLIENT_CERT"` |
 |  `secret.client_key` | client key for defender | `"CLIENT_KEY"` |
