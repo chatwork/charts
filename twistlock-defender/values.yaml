@@ -18,15 +18,11 @@ volumeMounts:
   certificates: "/var/lib/twistlock/certificates"
   docker:
     sockPath: "/var/run"
-    netns: "/var/run/docker/netns"
-  iptablesFlockPath: "/run"
 
 volumes:
   dataPath: "/var/lib/twistlock/defender"
   docker:
     sockPath: "/var/run"
-    netns: "/var/run/docker/netns"
-  iptablesFlockPath: "/run"
   passwd: "/etc/passwd"
   auditLog: "/var/log/audit"
   syslog: "/dev/log"
@@ -35,9 +31,11 @@ config:
   console:
     wsAddress: wss://{{ .Values.console.dnsName }}:{{ .Values.console.port }}
   defender:
-    type: "daemonset"
+    type: "cri"
     listenerType: "none"
   clusterId: "CLUSTERID"
+  cri:
+    dataVolumeName: cri-data
   monitor:
     serviceAccounts: true
     istio: false
@@ -46,10 +44,9 @@ config:
   collectPodLabels: true
   docker:
     clientAddress: "/var/run/docker.sock"
-    tag: "_20_09_345"
+    tag: "_22_01_882"
   hostCustomCompliance: false
-  containerizedHost: false
-  microsegmentation: false
+  cloudHostnameEnabled: false
 
 resources:
   limits:
@@ -65,15 +62,13 @@ securityContext:
   capabilities:
     add:
       - NET_ADMIN  # Required for process monitoring
+      - NET_RAW    # Required for iptables (CNNF, runtime DNS, WAAS). See: https://bugzilla.redhat.com/show_bug.cgi?id=1895032
       - SYS_ADMIN  # Required for filesystem monitoring
       - SYS_PTRACE # Required for local audit monitoring
+      - SYS_CHROOT # Required for changing mount namespace using setns
       - MKNOD # A capability to create special files using mknod(2), used by docker-less registry scanning
       - SETFCAP # A capability to set file capabilities, used by docker-less registry scanning
-      ## If you set microsegmentation to true, you need this capabilities
-      #- NET_RAW # Required for using raw sockets by UDP datapath and in diagnostic ping implementations
-      #- SYS_RESOURCE # Required for setting resource limits (setrlimit syscall)
-      #- SYS_MODULE # Required for loading kernel modules
-      #- IPC_LOCK # Required for defender to use perf events on systems with insufficient mlock limit, since microsegmentation agent consumes it too. (See https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html#unprivileged-users)
+      - IPC_LOCK   # Required for perf events monitoring, allowing to ignore memory lock limits
 
 secret:
   ca_cert: "CA_CERT"

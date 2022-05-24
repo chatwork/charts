@@ -55,7 +55,7 @@ spec:
         - name: WS_ADDRESS
           value: "{{ tpl .Values.config.console.wsAddress $root }}"
         - name: DEFENDER_TYPE
-          value: "daemonset"
+          value: {{ .Values.config.defender.type }}
         - name: DEFENDER_LISTENER_TYPE
           value: "{{ .Values.config.defender.listenerType }}"
         - name: LOG_PROD
@@ -76,26 +76,10 @@ spec:
           value: "{{ .Values.config.collectPodLabels }}"
         - name: INSTALL_BUNDLE
           value: "{{ .Values.config.installBundle }}"
+        - name: CLOUD_HOSTNAME_ENABLED
+          value: "{{ .Values.config.cloudHostnameEnabled }}"
         - name: HOST_CUSTOM_COMPLIANCE_ENABLED
           value: "{{ .Values.config.hostCustomCompliance }}"
-        {{- if .Values.config.containerizedHost }}
-        - name: CONTAINERIZED_HOST
-          value: "true"
-        {{- end }}
-        {{- if .Values.config.microsegmentation }}
-        - name: ENFORCERD_KUBENODE
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.nodeName
-        - name: K8S_POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: K8S_POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        {{- end }}
         {{- with .Values.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -117,17 +101,12 @@ spec:
         - name: passwd
           mountPath: "/etc/passwd"
           readOnly: true
-        - name: docker-netns
-          mountPath: "{{ .Values.volumeMounts.docker.netns }}"
-          readOnly: true
         - name: syslog-socket
           mountPath: "/dev/log"
-        - name: auditd-log
-          mountPath: "/var/log/audit"
-        {{- if and .Values.volumes.iptablesFlockPath .Values.volumeMounts.iptablesFlockPath }}
-        - name: iptables-lock
-          mountPath: "{{ .Values.volumeMounts.iptablesFlockPath }}"
-        {{- end }}
+        {{- if eq .Values.config.defender.type "cri" }}
+        - name: {{ .Values.config.cri.dataVolumeName }}
+          mountPath: "/var/lib/containers"
+        {{- end}}
         {{- with .Values.extraVolumeMounts }}{{ toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.securityContext }}
@@ -154,20 +133,14 @@ spec:
       - name: docker-sock-path
         hostPath:
           path: "{{ .Values.volumes.docker.sockPath }}"
-      - name: docker-netns
-        hostPath:
-          path: "{{ .Values.volumes.docker.netns }}"
       - name: passwd
         hostPath:
           path: "{{ .Values.volumes.passwd }}"
-      - name: auditd-log
+      {{- if eq .Values.config.defender.type "cri" }}
+      - name: {{ .Values.config.cri.dataVolumeName }}
         hostPath:
-          path: "{{ .Values.volumes.auditLog }}"
-      {{- if and .Values.volumes.iptablesFlockPath .Values.volumeMounts.iptablesFlockPath }}
-      - name: iptables-lock
-        hostPath:
-          path: "{{ .Values.volumes.iptablesFlockPath }}"
-      {{- end }}
+          path: "/var/lib/containers"
+      {{- end}}
       {{- with .Values.extraVolumes }}{{ toYaml . | nindent 6 }}
       {{- end }}
       {{- if .Values.useHostPID }}
@@ -176,8 +149,4 @@ spec:
       {{- if .Values.useHostNetwork }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      {{- end }}
-      {{- if .Values.config.microsegmentation }}
-      # Allow the enforcer and defender to complete their cleanup
-      terminationGracePeriodSeconds: 90
       {{- end }}

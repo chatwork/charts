@@ -33,15 +33,4 @@ rules:
   resources: ["namespaces", "pods"] # Allow Defenders to get Namespaces and Pods
   verbs: ["get"]
 {{- end }}
-{{- if .Values.config.microsegmentation}}
-- apiGroups: [""]
-  resources: ["nodes"]
-  verbs: ["get"]
-- apiGroups: [""]
-  resources: ["pods"]
-  verbs: ["get", "list", "watch"]
-- apiGroups: [""]
-  resources: ["events"]
-  verbs: ["create", "patch", "update"]
-{{- end }}
 {{- end }}
