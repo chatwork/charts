@@ -106,7 +106,7 @@ spec:
         {{- if eq .Values.config.defender.type "cri" }}
         - name: {{ .Values.config.cri.dataVolumeName }}
           mountPath: "/var/lib/containers"
-        {{- end}}
+        {{- end }}
         {{- with .Values.extraVolumeMounts }}{{ toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.securityContext }}
@@ -140,7 +140,7 @@ spec:
       - name: {{ .Values.config.cri.dataVolumeName }}
         hostPath:
           path: "/var/lib/containers"
-      {{- end}}
+      {{- end }}
       {{- with .Values.extraVolumes }}{{ toYaml . | nindent 6 }}
       {{- end }}
       {{- if .Values.useHostPID }}
