@@ -120,6 +120,13 @@ spec:
           command:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- with $container.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $container.workingDir }}
+          workingDir: {{ . }}
+          {{- end }}
           {{- with $container.env }}
           env:
             {{- tpl (. | toYaml) $root | nindent 12 }}
@@ -152,6 +159,13 @@ spec:
           {{- with $container.command }}
           command:
             {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $container.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $container.workingDir }}
+          workingDir: {{ . }}
           {{- end }}
           {{- with $container.env }}
           env:

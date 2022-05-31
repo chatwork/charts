@@ -59,11 +59,8 @@ containers:
       repository: ubuntu
       tag: latest
 
-    command: ["sh", "-c", "sleep infinity"]
-
-    envFrom:
-      - secretRef:
-          name: aws-credentials
+    command: ["sleep"]
+    args: ["infinity"]
 
 service:
   enabled: true

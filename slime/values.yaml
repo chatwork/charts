@@ -49,10 +49,12 @@ containers: [] # application containers
 #      pullPolicy: Always
 #
 #    command: []
+#    args: []
 #
 #    securityContext: {}
 #
 #    ports: []
+#    workingDir: /workingDir
 #
 #    env: []
 #      # - name: DEMO_GREETING
@@ -126,7 +128,8 @@ initContainers:
   #      repository: chatwork/init
   #      tag: latest
   #
-  #     command: []
+  #    command: []
+  #    args: []
   #
   #    env: []
   #    # - name: DEMO_GREETING
