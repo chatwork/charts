@@ -121,6 +121,10 @@ env: []
   # - name: FOO
   #   value: "Hello World"
 
+envFrom: []
+  # - configMapRef:
+  #     name: special-config
+
 # Any extra port
 extraPort: []
   # - name: other-port
