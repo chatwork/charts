@@ -219,6 +219,7 @@ The following table lists the configurable parameters of the fluentd chart and t
 | `args` | Additional arguments | `[]` |
 | `command` | Additional command arguments | `[]` |
 | `env` | Extra environment variables that will be passed onto pods	| `[]` |
+| `envFrom` | Extra environment from that will be passed onto pods | `[]` |
 | `extraPort` | Extra port variables that will be passed onto pods | `[]` |
 | `extraVolumeMounts` | Extra volume mounts variables that will be passed onto pods	 | `[]` |
 | `extraVolumes` | Extra volumes variables that will be passed onto pods	 | `[]` |
