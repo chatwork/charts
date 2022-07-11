@@ -65,7 +65,8 @@ The following table lists the configurable parameters of the slime chart and the
 | `updateStrategy` | updateStrategy of daemonset | ... |
 | `extraVolumeMounts` | Extra volume mounts variables that will be passed onto pods | `[]` |
 | `extraVolumes` | Extra volumes variables that will be passed onto pods | `[]` |
-| `useKubelet` | If true, set `hostNetwork:true`, and `dnsPolicy` to `ClusterFirstWithHostNet` FYI: [this page](https://docs.fluentbit.io/manual/pipeline/filters/kubernetes#optional-feature-using-kubelet-to-get-metadata) | `false` |
+| `useKubelet` | If true, set nodes,nodes/proxy for RBAC | `false` |
+| `useHostNetwork` | If true, set `hostNetwork:true`, and `dnsPolicy` to `ClusterFirstWithHostNet` | `false` |
 | `initContainers.enabled` | Enable initContainers | `false` |
 | `initContainers.image.repository` | The image repository to pull from | `"busybox"` |
 | `initContainers.image.tag` | The image tag | `"latest"` |

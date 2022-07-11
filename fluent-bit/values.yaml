@@ -4,7 +4,7 @@
 
 image:
   repository: fluent/fluent-bit
-  tag: 1.8.9
+  tag: 1.9.6
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -66,7 +66,10 @@ metrics:
   port: 2020
 
 # https://docs.fluentbit.io/manual/pipeline/filters/kubernetes#optional-feature-using-kubelet-to-get-metadata
+# https://github.com/fluent/fluent-bit/pull/5291
 useKubelet: false
+
+useHostNetwork: false
 
 configmaps:
   # Define fluent-bit configuration files such as fluent-bit.conf and parsers.conf.
