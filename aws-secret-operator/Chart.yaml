@@ -2,8 +2,8 @@ apiVersion: v2
 name: aws-secret-operator
 description: A Helm chart for aws-secret-operator
 type: application
-version: 0.2.2
-appVersion: 0.5.0
+version: 0.2.3
+appVersion: 0.5.2
 sources:
   - https://github.com/mumoshu/aws-secret-operator
 maintainers:
