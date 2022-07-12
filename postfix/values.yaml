@@ -58,7 +58,7 @@ daemonset:
   # If you set it to true, Daemonset use hostNetwork
   useHostNetwork: false
 
-  hostPort: 25
+  #hostPort: 25
 
   lifecycle:
     preStop:
@@ -115,6 +115,7 @@ service:
   type: ClusterIP
   port: 25
   annotations: {}
+  #internalTrafficPolicy: Local
 
 postfix:
   templates:
