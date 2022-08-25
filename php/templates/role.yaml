@@ -6,7 +6,7 @@ metadata:
     {{- include "php.labels" . | nindent 4 }}
   name: {{ include "php.fullname" . }}
 rules:
-  {{- if .Values.podSecurityPolicy.create }}
+  {{- if eq (include "php.enablePodSecurityPolicy" .) "true" }}
   - apiGroups:
       - policy
     resources:
