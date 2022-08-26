@@ -75,6 +75,17 @@ extensions/v1beta1
 {{- end -}}
 
 {{/*
+Return true if we can enable Pod Security Policy
+*/}}
+{{- define "php.enablePodSecurityPolicy" -}}
+{{- if and (semverCompare "<=1.22-0" .Capabilities.KubeVersion.GitVersion) .Values.podSecurityPolicy.create -}}
+true
+{{- else -}}
+false
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create the name of the PSP to use
 */}}
 {{- define "php.podSecurityPolicyName" -}}
