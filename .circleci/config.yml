@@ -1,7 +1,8 @@
 version: 2
 jobs:
   lint:
-    machine: true
+    machine:
+      image: ubuntu-2004:2022.07.1
     steps:
       - checkout
       - restore_cache:
@@ -17,7 +18,8 @@ jobs:
           paths:
             - .bin/
   test:
-    machine: true
+    machine:
+      image: ubuntu-2004:2022.07.1
     steps:
       - checkout
       - restore_cache:
@@ -34,7 +36,8 @@ jobs:
             - .bin/
 
   publish:
-    machine: true
+    machine:
+      image: ubuntu-2004:2022.07.1
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -81,7 +84,7 @@ workflows:
             branches:
               ignore: gh-pages
       - publish:
-          context: "chatwork_api_token@circleci"       
+          context: "chatwork_api_token@circleci"
           requires:
             - test
           filters:
