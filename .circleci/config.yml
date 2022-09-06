@@ -2,7 +2,7 @@ version: 2
 jobs:
   lint:
     machine:
-      image: ubuntu-2204:2022.07.1
+      image: ubuntu-2004:2022.07.1
     steps:
       - checkout
       - restore_cache:
@@ -19,7 +19,7 @@ jobs:
             - .bin/
   test:
     machine:
-      image: ubuntu-2204:2022.07.1
+      image: ubuntu-2004:2022.07.1
     steps:
       - checkout
       - restore_cache:
@@ -37,7 +37,7 @@ jobs:
 
   publish:
     machine:
-      image: ubuntu-2204:2022.07.1
+      image: ubuntu-2004:2022.07.1
     steps:
       - add_ssh_keys:
           fingerprints:
