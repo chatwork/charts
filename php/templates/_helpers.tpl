@@ -78,7 +78,7 @@ extensions/v1beta1
 Return true if we can enable Pod Security Policy
 */}}
 {{- define "php.enablePodSecurityPolicy" -}}
-{{- if and (semverCompare "<=1.22-0" .Capabilities.KubeVersion.GitVersion) .Values.podSecurityPolicy.create -}}
+{{- if and (semverCompare "<=1.24-0" .Capabilities.KubeVersion.GitVersion) .Values.podSecurityPolicy.create -}}
 true
 {{- else -}}
 false
