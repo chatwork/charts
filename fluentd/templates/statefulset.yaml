@@ -40,8 +40,8 @@ spec:
     spec:
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
-      {{- range .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
+      {{- range .Values.topologySpreadConstraints }}
         - maxSkew: {{ .maxSkew }}
           topologyKey: {{ .topologyKey }}
           whenUnsatisfiable: {{ .whenUnsatisfiable }}
