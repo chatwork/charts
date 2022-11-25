@@ -40,6 +40,15 @@ spec:
     spec:
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
+      topologySpreadConstraints:
+      {{- range .Values.topologySpreadConstraints }}
+        - maxSkew: {{ .maxSkew }}
+          topologyKey: {{ .topologyKey }}
+          whenUnsatisfiable: {{ .whenUnsatisfiable }}
+          labelSelector:
+            matchLabels:
+              {{- include "fluentd.selectorLabels" $root | nindent 14 }}
+      {{- end }}
       containers:
         - args:
             {{- toYaml .Values.args | nindent 12 }}
