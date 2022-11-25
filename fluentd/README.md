@@ -215,6 +215,7 @@ The following table lists the configurable parameters of the fluentd chart and t
 | `fluentd.forward.service.type` | The service type for forward input | `"ClusterIP"` |
 | `fluentd.forward.service.clusterIP` | If you set `service.type` to `ClusterIP` and `clusterIP` to `NONE`, its service is `headless`. | `nil` |
 | `affinity` | Node/Pod affinities | `{}` |
+| `topologySpreadConstraints` | topologySpreadConstraints(only StatefulSet) | `[]` |
 | `annotations` | Annotations to be added to daemonset or statefulset | `{}` |
 | `args` | Additional arguments | `[]` |
 | `command` | Additional command arguments | `[]` |
