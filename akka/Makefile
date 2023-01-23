@@ -66,7 +66,7 @@ test: test-local-akka-http test-cluster-discovery-dns test-cluster-discovery-kub
 .PHONY: test-default
 test-default:
 	@echo "=> Testing default values.yaml"
-	helm upgrade -i --wait $(RELEASE) .
+	helm upgrade -i --set replicaCount=3 --wait $(RELEASE) .
 	helm test --logs $(RELEASE)
 
 .PHONY: test-local-akka-http
