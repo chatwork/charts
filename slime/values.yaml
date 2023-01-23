@@ -16,7 +16,8 @@ annotations: {} # annotations for  deployment
 labels: {} # labels for  deployment
 #  name: value
 
-replicas: 1 # replicas for deployment
+# If you want fix replicaCount, disable autoscaling.enabled and uncomment the following line
+#replicas: 1 # replicas for deployment
 
 revisionHistoryLimit: "" # revisionHistoryLimit
 
