@@ -3,6 +3,8 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+replicaCount: 3
+
 akka:
   cluster:
     enabled: false
