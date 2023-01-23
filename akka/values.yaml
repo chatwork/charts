@@ -221,7 +221,8 @@ readinessProbe:
   successThreshold: 1
   failureThreshold: 3
 
-replicaCount: 3
+# If you want fix replicaCount, disable autoscaling.enabled and uncomment the following line
+#replicaCount: 3
 
 revisionHistoryLimit: 10
 
