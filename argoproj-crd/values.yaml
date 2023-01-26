@@ -128,17 +128,18 @@ applications: []
   # plugin:
   #  name: helmfile
 
+  # destination:
   # Destination cluster to deploy the application.
-  # server: https://kubernetes.default.svc
+  #   server: https://kubernetes.default.svc
 
   # Destination namespace to deploy the application.
-  # namespace: guestbook
+  #   namespace: guestbook
   #   or
-  # namespace:
-  #   metadata:
-  #     name: guestbook
-  #     annotations:
-  #       iam.amazonaws.com/permitted: ".*"
+  #   namespace:
+  #     metadata:
+  #       name: guestbook
+  #       annotations:
+  #         iam.amazonaws.com/permitted: ".*"
 
   # Sync policy.
   # syncPolicy:

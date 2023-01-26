@@ -29,6 +29,7 @@ The following table lists the configurable parameters of the argoproj-crd chart 
 | `project.roles` | Roles are user defined RBAC roles associated with this project | `""` |
 | `project.syncWindows` | SyncWindows controls when syncs can be run for apps in this project | `""` |
 | `applications[].name` | Application name in Argo CD | `nil` |
+| `applications[].namespace` | Application resource namespace Argo CD must be 2.5 or higher | `nil` |
 | `applications[].repoURL` | Repository URL to be the source of the application | `nil` |
 | `applications[].targetRevision` | HEAD/branch/tag/commit hash | `nil` |
 | `applications[].path` | Path from the root of the repository that will be the source of the application | `nil` |
@@ -36,8 +37,8 @@ The following table lists the configurable parameters of the argoproj-crd chart 
 | `applications[].kustomize` | kustomize specific config | `nil` |
 | `applications[].directory` | directory | `nil` |
 | `applications[].plugin` | plugin specific config | `nil` |
-| `applications[].server` | Destination cluster to deploy the application | `nil` |
-| `applications[].namespace` | Destination namespace to deploy the application | `nil` |
+| `applications[].destination.server` | Destination cluster to deploy the application | `nil` |
+| `applications[].Destination.namespace` | Destination namespace to deploy the application | `nil` |
 | `applications[].syncPolicy` | Sync policy | `automated: {}` |
 | `applications[].ignoreDifferences` | Ignore differences at the specified json pointers | `[]`  |
 
