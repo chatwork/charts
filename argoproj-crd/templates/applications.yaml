@@ -5,6 +5,9 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ $app.name }}
+  {{- with $app.namespace }}
+  namespace: {{ $app.namespace }}
+  {{- end }}
   labels:
     {{- include "argoproj-crd.labels" $root | nindent 4 }}
     {{- with $app.labels }}
@@ -21,9 +24,11 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
   {{- end }}
 spec:
+  {{- with $app.destination }}
   destination:
-    server: {{ $app.server }}
-    namespace: {{ $app.namespace }}
+    server: {{ .server }}
+    namespace: {{ .namespace }}
+  {{- end }}
 
 {{- with $app.ignoreDifferences }}
   ignoreDifferences:
