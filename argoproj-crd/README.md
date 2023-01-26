@@ -38,7 +38,7 @@ The following table lists the configurable parameters of the argoproj-crd chart 
 | `applications[].directory` | directory | `nil` |
 | `applications[].plugin` | plugin specific config | `nil` |
 | `applications[].destination.server` | Destination cluster to deploy the application | `nil` |
-| `applications[].Destination.namespace` | Destination namespace to deploy the application | `nil` |
+| `applications[].destination.namespace` | Destination namespace to deploy the application | `nil` |
 | `applications[].syncPolicy` | Sync policy | `automated: {}` |
 | `applications[].ignoreDifferences` | Ignore differences at the specified json pointers | `[]`  |
 
