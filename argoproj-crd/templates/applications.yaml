@@ -24,9 +24,11 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
   {{- end }}
 spec:
+  {{- with $app.destination }}
   destination:
-    server: {{ $app.destination.server }}
-    namespace: {{ $app.destination.namespace }}
+    server: {{ .server }}
+    namespace: {{ .namespace }}
+  {{- end }}
 
 {{- with $app.ignoreDifferences }}
   ignoreDifferences:
