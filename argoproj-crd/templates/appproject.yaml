@@ -10,7 +10,9 @@ metadata:
 spec:
   description: {{ .Values.project.description }}
   sourceRepos:
-    {{- include "argoproj-crd.repositories" . | splitList "," | uniq | toYaml | nindent 4 }}
+    {{- include "argoproj-crd.sourceRepos" . | splitList "," | uniq | toYaml | nindent 4 }}
+  sourceNamespaces:
+    {{- include "argoproj-crd.sourceNamespaces" . | splitList "," | uniq | toYaml | nindent 4 }}
 
   destinations:
     {{- toYaml .Values.project.destinations | nindent 4}}

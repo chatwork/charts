@@ -3,6 +3,7 @@ RELEASE = $$(basename $$PWD)
 
 .PHONY: install
 install:
+	kubectl create namespace guestbook
 	helm repo add argo https://argoproj.github.io/argo-helm
 	helm upgrade -i --wait $(RELEASE)-argo-cd argo/argo-cd
 	helm upgrade -i --wait -f ci.yaml $(RELEASE) .

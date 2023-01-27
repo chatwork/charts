@@ -1,6 +1,6 @@
 apiVersion: v2
 name: argoproj-crd
-version: 0.3.0
+version: 0.4.0
 appVersion: 2.5.0
 description: Manage AppProject and Application that you define for Argo CD.
 maintainers:
