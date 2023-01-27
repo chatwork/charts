@@ -71,9 +71,17 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
-{{- define "argoproj-crd.repositories" -}}
+{{- define "argoproj-crd.sourceRepos" -}}
 {{- range $index, $app := .Values.applications -}}
 {{ if ne $index 0 }},{{ end -}}{{- $app.repoURL }}
+{{- end -}}
+{{- end -}}
+
+{{- define "argoproj-crd.sourceNamespaces" -}}
+{{- range $index, $app := .Values.applications -}}
+{{- if $app.namespace -}}
+{{ if ne $index 0 }},{{ end -}}{{- $app.namespace }}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
