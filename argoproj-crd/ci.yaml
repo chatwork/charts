@@ -6,7 +6,7 @@ applications:
   repoURL: https://github.com/argoproj/argocd-example-apps.git
   targetRevision: master
   path: guestbook/
-  namespace: default
+  namespace: guestbook
   destination:
     server: https://kubernetes.default.svc
     namespace: guestbook
