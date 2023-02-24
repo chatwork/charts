@@ -14,7 +14,7 @@ podLabels: {}
 
 image:
   repository: registry
-  tag: 2.7.1
+  tag: 2.8.1
   pullPolicy: IfNotPresent
 # imagePullSecrets:
     # - name: docker
@@ -30,7 +30,8 @@ service:
   # foo.io/bar: "true"
 ingress:
   enabled: false
-  path: /
+  path: "/*"
+  pathType: ImplementationSpecific
   # Used to create an Ingress record.
   hosts:
     - chart-example.local
