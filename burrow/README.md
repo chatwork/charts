@@ -21,8 +21,8 @@ The following table lists the configurable parameters of the Burrow chart and th
 | `replicaCount` | replica count | `1` |
 | `annotations` | deployment annotations | `{}` |
 | `labels` | deployment labels | `{}` |
-| `image.repository` | image repository | `"docker.pkg.github.com/linkedin/burrow/burrow"` |
-| `image.tag` | image tag | `"v1.3.4"` |
+| `image.repository` | image repository | `"ghcr.io/linkedin/burrow/burrow"` |
+| `image.tag` | image tag | `"v1.6.0"` |
 | `image.pullPolicy` | image pull policy | `"IfNotPresent"` |
 | `imagePullSecrets` | image pull secrets  | `[]` |
 | `serviceAccount.create` | if true, a service account will be created  | `true` |
