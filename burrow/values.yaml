@@ -5,16 +5,15 @@
 replicaCount: 1
 
 image:
-  # if you use official image, you need imagePullSecrets for github packages docker
-  # https://docs.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-docker-for-use-with-github-packages
-  repository: docker.pkg.github.com/linkedin/burrow/burrow
-  tag: v1.3.4
+  repository: ghcr.io/linkedin/burrow/burrow
+  tag: v1.6.0
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 annotations: {}
+labels: {}
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -26,6 +25,7 @@ serviceAccount:
   name: ""
 
 podAnnotations: {}
+podLabels: {}
 
 podSecurityContext: {}
   # fsGroup: 2000
