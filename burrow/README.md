@@ -19,6 +19,8 @@ The following table lists the configurable parameters of the Burrow chart and th
 | Parameter                | Description             | Default        |
 | ------------------------ | ----------------------- | -------------- |
 | `replicaCount` | replica count | `1` |
+| `annotations` | deployment annotations | `{}` |
+| `labels` | deployment labels | `{}` |
 | `image.repository` | image repository | `"docker.pkg.github.com/linkedin/burrow/burrow"` |
 | `image.tag` | image tag | `"v1.3.4"` |
 | `image.pullPolicy` | image pull policy | `"IfNotPresent"` |
@@ -27,6 +29,7 @@ The following table lists the configurable parameters of the Burrow chart and th
 | `serviceAccount.annotations` | service account annotations | `{}` |
 | `serviceAccount.name` | existing ServiceAccount to use (ignored if serviceAccount.create=true) | `""` |
 | `podAnnotations` | pod annotations | `{}` |
+| `podLabels` | pod labels | `{}` |
 | `podSecurityContext` | pod security context | `{}` |
 | `securityContext` | security context | `{}` |
 | `resources` | pod resources  | `{}` |

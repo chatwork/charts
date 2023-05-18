@@ -5,7 +5,7 @@ RELEASE = $$(basename $$PWD)
 install:
 	helm repo add bitnami https://charts.bitnami.com/bitnami
 	helm install --wait sample-kafka bitnami/kafka
-	helm upgrade -i --wait --set image.repository=cwsakamoto/burrow --set readinessProbe.enable=false --set livenessProbe.enable=false $(RELEASE) .
+	helm upgrade -i --wait --set readinessProbe.enable=false --set livenessProbe.enable=false $(RELEASE) .
 
 .PHONY: lint
 lint: lint-default
