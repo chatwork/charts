@@ -3,8 +3,7 @@ RELEASE = $$(basename $$PWD)
 
 .PHONY: install
 install:
-	helm repo add bitnami https://charts.bitnami.com/bitnami
-	helm install --wait sample-kafka bitnami/kafka
+	helm install --wait sample-kafka oci://registry-1.docker.io/bitnamicharts/kafka
 	helm upgrade -i --wait --set readinessProbe.enable=false --set livenessProbe.enable=false $(RELEASE) .
 
 .PHONY: lint
