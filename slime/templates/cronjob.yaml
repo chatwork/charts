@@ -1,4 +1,4 @@
-{{- if .Values.cronjob.enabled -}}
+{{- if .Values.cronjob.enabled | default false  -}}
 {{- $root := . }}
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#cronjob-v1-batch
 apiVersion: batch/v1
@@ -17,10 +17,13 @@ metadata:
     {{- end }}
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#cronjobspec-v1-batch
 spec:
-  schedule: "{{ .Values.schedule }}"
   {{- with .Values.concurrencyPolicy }}
   concurrencyPolicy: {{ . }}
   {{- end }}
+  {{- with .Values.failedJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ . }}
+  {{- end }}
+  schedule: "{{ .Values.schedule }}"
   {{- with .Values.startingDeadlineSeconds }}
   startingDeadlineSeconds: {{ . }}
   {{- end }}
