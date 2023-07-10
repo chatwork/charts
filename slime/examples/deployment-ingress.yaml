@@ -4,6 +4,9 @@ nameOverride: nginx-example-ingress
 deployment:
   enabled: true
 
+cronjob:
+  enabled: false
+
 strategy:
   type: RollingUpdate
 
