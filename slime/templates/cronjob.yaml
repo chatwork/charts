@@ -1,4 +1,4 @@
-{{- if .Values.cronjob.enabled | default false  -}}
+{{- if .Values.cronjob.enabled -}}
 {{- $root := . }}
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#cronjob-v1-batch
 apiVersion: batch/v1
@@ -33,6 +33,8 @@ spec:
   {{- with .Values.suspend }}
   suspend: {{ . }}
   {{- end }}
+  # Available in 1.27 or later
+  # https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-job-limitations
   {{- with .Values.timeZone }}
   timeZone: {{ . }}
   {{- end }}

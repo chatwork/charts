@@ -1,0 +1,19 @@
+deployment:
+  enabled: false
+
+cronjob:
+  enabled: true
+
+strategy: {}
+
+schedule: "* * * * *"
+concurrencyPolicy: "Forbid"
+failedJobsHistoryLimit: 3
+startingDeadlineSeconds: 10
+successfulJobsHistoryLimit: 5
+suspend: false
+
+containers:
+- name: hello world
+  image: hello-world:latest
+  imagePullPolicy: "IfNotPresent"

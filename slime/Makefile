@@ -29,6 +29,13 @@ lint-deployment-hpa:
 	@echo "=> Validating examples/deployment-hpa.yaml"
 	helm template -f examples/deployment-hpa.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
+.PHONY: cronjob
+lint-cronjob:
+	@echo "=> Linting examples/cronjob.yaml"
+	helm lint --strict -f examples/cronjob.yaml
+	@echo "=> Validating examples/cronjob.yaml"
+	helm template -f examples/cronjob.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+
 .PHONY: test
 test: test-deployment
 
