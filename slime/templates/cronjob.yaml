@@ -1,0 +1,284 @@
+{{- if .Values.cronjob.enabled -}}
+{{- $root := . }}
+# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#cronjob-v1-batch
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "slime.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "slime.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#cronjobspec-v1-batch
+spec:
+  schedule: "{{ .Values.schedule }}"
+  {{- with .Values.concurrencyPolicy }}
+  concurrencyPolicy: {{ . }}
+  {{- end }}
+  {{- with .Values.startingDeadlineSeconds }}
+  startingDeadlineSeconds: {{ . }}
+  {{- end }}
+  {{- with .Values.successfulJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ . }}
+  {{- end }}
+  {{- with .Values.suspend }}
+  suspend: {{ . }}
+  {{- end }}
+  {{- with .Values.timeZone }}
+  timeZone: {{ . }}
+  {{- end }}
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#jobtemplatespec-v1-batch
+  jobTemplate:
+    metadata:
+      annotations:
+        checksum/configmap: '{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}'
+        checksum/secret: '{{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}'
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 10 }}
+      {{- end }}
+      labels:
+      {{- include "slime.labels" . | nindent 8 }}
+      {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 10 }}
+      {{- end }}
+    spec:
+      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#jobspec-v1-batch
+      {{- with .Values.activeDeadlineSeconds }}
+      activeDeadlineSeconds: {{ . }}
+      {{- end }}
+      {{- with .Values.backoffLimit }}
+      backoffLimit: {{ . }}
+      {{- end }}
+      {{- with .Values.completionMode }}
+      completionMode: {{ . }}
+      {{- end }}
+      {{- with .Values.completions }}
+      completions: {{ . }}
+      {{- end }}
+      {{- with .Values.manualSelector }}
+      manualSelector: {{ . }}
+      {{- end }}
+      {{- with .Values.parallelism }}
+      parallelism: {{ . }}
+      {{- end }}
+      {{- with .Values.podFailurePolicy }}
+      podFailurePolicy:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      selector:
+        matchLabels:
+          {{- include "slime.selectorLabels" . | nindent 10 }}
+      {{- with .Values.suspend }}
+      suspend: {{ . }}
+      {{- end }}
+      {{- with .Values.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ . }}
+      {{- end }}
+      template:
+        metadata:
+          annotations:
+            checksum/configmap: '{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}'
+            checksum/secret: '{{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}'
+          {{- with .Values.podAnnotations }}
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          labels:
+          {{- include "slime.labels" . | nindent 8 }}
+          {{- with .Values.podLabels }}
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+        spec:
+          {{- with .Values.activeDeadlineSeconds }}
+          activeDeadlineSeconds: {{ .Values.activeDeadlineSeconds }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- tpl (. | toYaml) $root | nindent 14 }}
+          {{- end }}
+          {{- with .Values.automountServiceAccountToken }}
+          automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+          {{- end }}
+          containers:
+            {{- range $container := .Values.containers }}
+            - name: {{ include "slime.fullname" $root }}-{{ $container.name }}
+              {{- with $container.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              image: {{ $container.image.repository }}:{{ $container.image.tag }}
+              {{- with $container.image.pullPolicy }}
+              imagePullPolicy: {{ . }}
+              {{- end }}
+              {{- with $container.ports }}
+              ports:
+                {{- tpl (. | toYaml) $root | nindent 16 }}
+              {{- end }}
+              {{- with $container.command }}
+              command:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with $container.args }}
+              args:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with $container.workingDir }}
+              workingDir: {{ . }}
+              {{- end }}
+              {{- with $container.env }}
+              env:
+                {{- tpl (. | toYaml) $root | nindent 16 }}
+              {{- end }}
+              {{- with $container.envFrom }}
+              envFrom:
+                {{- tpl (. | toYaml) $root | nindent 16 }}
+              {{- end }}
+              {{- with $container.lifecycle }}
+              lifecycle:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with $container.startupProbe }}
+              startupProbe:
+                {{- tpl (. | toYaml) $root | nindent 16 }}
+              {{- end }}
+              {{- with $container.readinessProbe }}
+              readinessProbe:
+                {{- tpl (. | toYaml) $root | nindent 16 }}
+              {{- end }}
+              {{- with $container.livenessProbe }}
+              livenessProbe:
+                {{- tpl (. | toYaml) $root | nindent 16 }}
+              {{- end }}
+              {{- with $container.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with $container.volumeMounts }}
+              volumeMounts:
+                {{- tpl (. | toYaml) $root | nindent 16 }}
+              {{- end }}
+            {{- end }}
+          {{- with .Values.dnsConfig }}
+          dnsConfig:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          {{- if .Values.useHostNetwork }}
+          hostNetwork: {{ .Values.useHostNetwork }}
+          dnsPolicy: ClusterFirstWithHostNet
+          {{- end }}
+          {{- if and (not .Values.useHostNetwork) .Values.dnsPolicy }}
+          dnsPolicy: {{ .Values.dnsPolicy }}
+          {{- end }}
+          {{- with .Values.enableServiceLinks }}
+          enableServiceLinks: {{ . }}
+          {{- end }}
+          {{- with .Values.hostAliases }}
+          hostAliases:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          {{- with .Values.hostIPC }}
+          hostIPC: {{ . }}
+          {{- end }}
+          {{- with .Values.hostPID }}
+          hostPID: {{ . }}
+          {{- end }}
+          {{- with .Values.hostUsers }}
+          hostUsers: {{ . }}
+          {{- end }}
+          {{- with .Values.hostname }}
+          hostname: {{ . }}
+          {{- end }}
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- tpl (. | toYaml) $root | nindent 14 }}
+          {{- end }}
+          initContainers:
+          {{- range $container := .Values.initContainers.containers }}
+            - name: {{ include "slime.fullname" $root }}-{{ $container.name }}
+              image: {{ $container.image.repository }}:{{ $container.image.tag }}
+              {{- with $container.image.pullPolicy }}
+              imagePullPolicy: {{ . }}
+              {{- end }}
+              {{- with $container.command }}
+              command:
+                {{- toYaml . | nindent 14 }}
+              {{- end }}
+              {{- with $container.args }}
+              args:
+                {{- toYaml . | nindent 14 }}
+              {{- end }}
+              {{- with $container.workingDir }}
+              workingDir: {{ . }}
+              {{- end }}
+              {{- with $container.env }}
+              env:
+                {{- tpl (. | toYaml) $root | nindent 16 }}
+              {{- end }}
+              {{- with $container.envFrom }}
+              envFrom:
+                {{- tpl (. | toYaml) $root | nindent 14 }}
+              {{- end }}
+              {{- with $container.volumeMounts }}
+              volumeMounts:
+                {{- tpl (. | toYaml) $root | nindent 14 }}
+              {{- end }}
+          {{- end }}
+          {{- with .Values.nodeName }}
+          nodeName: {{ . }}
+          {{- end }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- tpl (. | toYaml) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessGates }}
+          readinessGates:
+            {{- tpl (. | toYaml) $root | nindent 12 }}
+          {{- end }}
+          {{- with .Values.restartPolicy }}
+          restartPolicy: {{ .Values.restartPolicy }}
+          {{- end }}
+          {{- with .Values.schedulerName }}
+          schedulerName: {{ . }}
+          {{- end }}
+          serviceAccountName: {{ include "slime.serviceAccountName" . }}
+          {{- with .Values.podSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with .Values.setHostnameAsFQDN }}
+          setHostnameAsFQDN: {{ . }}
+          {{- end }}
+          {{- with .Values.shareProcessNamespace }}
+          shareProcessNamespace: {{ . }}
+          {{- end }}
+          {{- with .Values.subdomain }}
+          subdomain: {{ . }}
+          {{- end }}
+          {{- with .Values.terminationGracePeriodSeconds }}
+          terminationGracePeriodSeconds: {{ . }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- tpl (. | toYaml) $root | nindent 8 }}
+          {{- end }}
+          {{- if .Values.topologySpreadConstraints }}
+          topologySpreadConstraints:
+            {{- range .Values.topologySpreadConstraints }}
+            - maxSkew: {{ .maxSkew }}
+              topologyKey: {{ .topologyKey }}
+              whenUnsatisfiable: {{ .whenUnsatisfiable }}
+              labelSelector:
+                matchLabels:
+                  {{- include "slime.selectorLabels" $root | nindent 14 }}
+            {{- end }}
+          {{- end }}
+          {{- with .Values.volumes }}
+          volumes:
+            {{- tpl (. | toYaml) $root | nindent 8 }}
+          {{- end }}
+{{- end }}
