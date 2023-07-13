@@ -76,9 +76,6 @@ spec:
       podFailurePolicy:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      selector:
-        matchLabels:
-          {{- include "slime.selectorLabels" . | nindent 10 }}
       {{- with .Values.suspend }}
       suspend: {{ . }}
       {{- end }}
@@ -245,7 +242,7 @@ spec:
             {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
           {{- with .Values.restartPolicy }}
-          restartPolicy: {{ .Values.restartPolicy }}
+          restartPolicy: {{ . }}
           {{- end }}
           {{- with .Values.schedulerName }}
           schedulerName: {{ . }}
