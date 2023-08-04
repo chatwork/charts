@@ -75,9 +75,6 @@ spec:
       {{- with .Values.suspend }}
       suspend: {{ . }}
       {{- end }}
-      selector:
-        matchLabels:
-          {{- include "slime.selectorLabels" . | nindent 10 }}
       {{- with .Values.ttlSecondsAfterFinished }}
       ttlSecondsAfterFinished: {{ . }}
       {{- end }}
@@ -238,6 +235,15 @@ spec:
           nodeSelector:
             {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
+          {{- with .Values.preemptionPolicy }}
+          preemptionPolicy: {{ . }}
+          {{- end }}
+          {{- with .Values.priority }}
+          priority: {{ . }}
+          {{- end }}
+          {{- with .Values.priorityClassName }}
+          priorityClassName: {{ . }}
+          {{- end }}
           {{- with .Values.readinessGates }}
           readinessGates:
             {{- tpl (. | toYaml) $root | nindent 12 }}
@@ -249,9 +255,9 @@ spec:
           schedulerName: {{ . }}
           {{- end }}
           serviceAccountName: {{ include "slime.serviceAccountName" . }}
-          {{- with .Values.podSecurityContext }}
+          {{- with .Values.jobSecurityContext }}
           securityContext:
-            {{- toYaml . | nindent 8 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.setHostnameAsFQDN }}
           setHostnameAsFQDN: {{ . }}
@@ -267,7 +273,7 @@ spec:
           {{- end }}
           {{- with .Values.tolerations }}
           tolerations:
-            {{- tpl (. | toYaml) $root | nindent 8 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
           {{- if .Values.topologySpreadConstraints }}
           topologySpreadConstraints:
@@ -277,11 +283,11 @@ spec:
               whenUnsatisfiable: {{ .whenUnsatisfiable }}
               labelSelector:
                 matchLabels:
-                  {{- include "slime.selectorLabels" $root | nindent 14 }}
+                  {{- include "slime.selectorLabels" $root | nindent 18 }}
             {{- end }}
           {{- end }}
           {{- with .Values.volumes }}
           volumes:
-            {{- tpl (. | toYaml) $root | nindent 8 }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
 {{- end }}
