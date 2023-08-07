@@ -247,11 +247,11 @@ test:
 # CronJob
 cronJob:
   enabled: false # Enable CronJob
-  concurrencyPolicy: ""
-  failedJobsHistoryLimit: ""
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
   schedule: "" # Schedule to run CronJob
-  startingDeadlineSeconds: ""
-  successfulJobsHistoryLimit: ""
+  #startingDeadlineSeconds:
+  successfulJobsHistoryLimit: 3
   suspend: "false"
   #timeZone: "Etc/UTC"
   jobTemplate: {}
