@@ -1,18 +1,30 @@
+autoscaling:
+  enabled: false
+
 deployment:
   enabled: false
 
-strategy: {}
+podDisruptionBudget:
+  enabled: false
+
+service:
+  enabled: false
+
+serviceAccount:
+  create: false
+
+fullnameOverride: {{ .Release.Name }}
+nameOverride: {{ .Release.Name }}
 
 cronJob:
   enabled: true
-  schedule: "* * * * *"
-  concurrencyPolicy: "Forbid"
-  failedJobsHistoryLimit: 3
-  startingDeadlineSeconds: 10
-  successfulJobsHistoryLimit: 5
-  suspend: "false"
-
-containers:
-- name: hello world
-  image: hello-world:latest
-  imagePullPolicy: "IfNotPresent"
+  schedule: "*/5 * * * *"
+  restartPolicy: OnFailure
+  jobTemplate:
+    containers:
+      - name: job
+        image:
+          repository: hello-world
+          tag: latest
+        imagePullPolicy: IfNotPresent
+    restartPolicy: Never
