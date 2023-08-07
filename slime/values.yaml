@@ -228,20 +228,6 @@ ingress:
     #         pathType: ImplementationSpecific
     #         portNumber: 80
 
-
-# If you want fix replicaCount, disable autoscaling.enabled and uncomment the following line
-#concurrencyPolicy: ""
-
-schedule: ""
-
-#failedJobsHistoryLimit: 1
-
-#startingDeadlineSeconds: 100
-
-#successfulJobsHistoryLimit: 3
-
-#suspend: false
-
 test:
   enabled: false # if true, you can use helm test
   containers: [] # helm test container config
