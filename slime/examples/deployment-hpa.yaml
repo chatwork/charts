@@ -4,9 +4,6 @@ nameOverride: nginx-example-hpa
 deployment:
   enabled: true
 
-cronjob:
-  enabled: false
-
 strategy:
   type: RollingUpdate
 

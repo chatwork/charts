@@ -1,18 +1,3 @@
-autoscaling:
-  enabled: false
-
-deployment:
-  enabled: false
-
-podDisruptionBudget:
-  enabled: false
-
-service:
-  enabled: false
-
-serviceAccount:
-  create: false
-
 fullnameOverride: {{ .Release.Name }}
 nameOverride: {{ .Release.Name }}
 
