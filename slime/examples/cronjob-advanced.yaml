@@ -1,3 +1,5 @@
+fullnameOverride: "slime-advanced"
+
 cronJob:
   enabled: true
   schedule: "* * * * *"
@@ -21,14 +23,14 @@ cronJob:
             value: 'slime-advanced'
         envFrom:
           - secretRef:
-              name: 'advanced-slime-env'
+              name: 'slime-advanced-env'
         volumeMounts:
           - name: configs
             mountPath: /configs
     volumes:
       - name: configs
         configMap:
-          name: "slime-cronjob-advanced-config"
+          name: "slime-advanced-config"
           defaultMode: 0644
     restartPolicy: Never
 
