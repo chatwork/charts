@@ -68,7 +68,7 @@ test-cronjob:
 test-cronjob-advanced:
 	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi
 	@echo "=> Testing examples/cronjob-advanced.yaml"
-	helm upgrade -i --wait -f examples/cronjob-advanced.yaml $(RELEASE)-cronjob .
+	helm upgrade -i --wait -f examples/cronjob-advanced.yaml $(RELEASE)-cronjob-advanced .
 	sleep 30
 	helm test $(RELEASE)-cronjob-advanced --logs
 	helm uninstall $(RELEASE)-cronjob-advanced
