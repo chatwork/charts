@@ -6,7 +6,7 @@ install:
 	helm upgrade -i -f examples/deployment.yaml --wait $(RELEASE) .
 
 .PHONY: lint
-lint: lint-deployment lint-deployment-ingress lint-deployment-hpa lint-cronjob
+lint: lint-deployment lint-deployment-ingress lint-deployment-hpa lint-cronjob lint-cronjob-advanced
 
 .PHONY: lint-deployment
 lint-deployment:
@@ -29,15 +29,22 @@ lint-deployment-hpa:
 	@echo "=> Validating examples/deployment-hpa.yaml"
 	helm template -f examples/deployment-hpa.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
-.PHONY: cronjob
+.PHONY: lint-cronjob
 lint-cronjob:
 	@echo "=> Linting examples/cronjob.yaml"
 	helm lint --strict -f examples/cronjob.yaml
 	@echo "=> Validating examples/cronjob.yaml"
 	helm template -f examples/cronjob.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
+.PHONY: lint-cronjob-advanced
+lint-cronjob-advanced:
+	@echo "=> Linting examples/cronjob-advanced.yaml"
+	helm lint --strict -f examples/cronjob-advanced.yaml
+	@echo "=> Validating examples/cronjob-advanced.yaml"
+	helm template -f examples/cronjob-advanced.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+
 .PHONY: test
-test: test-deployment test-cronjob
+test: test-deployment test-cronjob test-cronjob-advanced
 
 .PHONY: test-deployment
 test-deployment:
@@ -56,6 +63,15 @@ test-cronjob:
 	sleep 30
 	helm test $(RELEASE)-cronjob --logs
 	helm uninstall $(RELEASE)-cronjob
+
+.PHONY: test-cronjob-advanced
+test-cronjob-advanced:
+	@if helm ls | grep -v "NAME" | cut -f1 | grep -e "^$(RELEASE)$$" > /dev/null; then helm uninstall $(RELEASE); fi
+	@echo "=> Testing examples/cronjob-advanced.yaml"
+	helm upgrade -i --wait -f examples/cronjob-advanced.yaml $(RELEASE)-cronjob .
+	sleep 30
+	helm test $(RELEASE)-cronjob-advanced --logs
+	helm uninstall $(RELEASE)-cronjob-advanced
 
 .PHONY: uninstall
 uninstall:
