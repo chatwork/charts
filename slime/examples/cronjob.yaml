@@ -1,6 +1,3 @@
-fullnameOverride: {{ .Release.Name }}
-nameOverride: {{ .Release.Name }}
-
 cronJob:
   enabled: true
   schedule: "*/5 * * * *"
