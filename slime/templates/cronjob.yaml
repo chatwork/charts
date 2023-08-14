@@ -244,10 +244,6 @@ spec:
           {{- with .Values.cronJob.jobTemplate.priorityClassName }}
           priorityClassName: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.readinessGates }}
-          readinessGates:
-            {{- tpl (. | toYaml) $root | nindent 12 }}
-          {{- end }}
           {{- if .Values.cronJob.jobTemplate.restartPolicy }}
           restartPolicy: {{ .Values.cronJob.jobTemplate.restartPolicy }}
           {{- else }}
