@@ -243,3 +243,29 @@ test:
   #  env: []
   #
   #  envFrom: []
+
+# CronJob
+cronJob:
+  enabled: false # Enable CronJob
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  schedule: "" # Schedule to run CronJob
+  #startingDeadlineSeconds:
+  successfulJobsHistoryLimit: 3
+  suspend: "false"
+  #timeZone: "Etc/UTC"
+  jobTemplate: {}
+  #  activeDeadlineSeconds: 60
+  #  backoffLimit: 60
+  #  parallelism: 60
+  #  ttlSecondsAfterFinished: 60
+  #  containers:
+  #  - name: job-app
+  #    image:
+  #      repository: hello-world
+  #      tag: latest
+  #      pullPolicy: IfNotPresent
+  #      command: ["/hello"]
+  #      env: []
+  #      envFrom: []
+  #  restartPolicy: "OnFailure"

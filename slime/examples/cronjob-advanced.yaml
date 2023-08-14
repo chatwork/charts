@@ -1,0 +1,50 @@
+fullnameOverride: "slime-advanced"
+
+cronJob:
+  enabled: true
+  schedule: "* * * * *"
+  restartPolicy: OnFailure
+  concurrencyPolicy: Replace
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 60
+  successfulJobsHistoryLimit: 5
+  timeZone: Asia/Tokyo
+  jobTemplate:
+    podAnnotations:
+      checksum/test: test
+    activeDeadlineSeconds: 30
+    backoffLimit: 10
+    containers:
+      - name: job
+        image:
+          repository: hello-world
+          tag: latest
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: APP_NAME
+            value: 'slime-advanced'
+        envFrom:
+          - secretRef:
+              name: 'slime-advanced-env'
+        volumeMounts:
+          - name: configs
+            mountPath: /configs
+    volumes:
+      - name: configs
+        configMap:
+          name: "slime-advanced-config"
+          defaultMode: 0644
+    restartPolicy: Never
+
+secrets:
+  env:
+    type: Opaque
+    data:
+      SECRET_VALUE: 'slime-advanced'
+
+configmaps:
+  config:
+    data:
+      greeting: "Hello slime."
+      properties: |
+        mode=default
