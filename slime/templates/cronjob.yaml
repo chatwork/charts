@@ -41,15 +41,13 @@ spec:
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#jobtemplatespec-v1-batch
   jobTemplate:
     metadata:
+      {{- with .Values.cronJob.jobTemplate.podAnnotations }}
       annotations:
-        checksum/configmap: '{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}'
-        checksum/secret: '{{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}'
-      {{- with .Values.cronJob.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
       {{- include "slime.labels" . | nindent 8 }}
-      {{- with .Values.cronJob.jobTemplatelabels }}
+      {{- with .Values.cronJob.jobTemplate.jobTemplatelabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
@@ -80,10 +78,8 @@ spec:
       {{- end }}
       template:
         metadata:
-          annotations:
-            checksum/configmap: '{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}'
-            checksum/secret: '{{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}'
           {{- with .Values.cronJob.jobTemplate.podAnnotations }}
+          annotations:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           labels:

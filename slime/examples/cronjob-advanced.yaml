@@ -10,6 +10,8 @@ cronJob:
   successfulJobsHistoryLimit: 5
   timeZone: Asia/Tokyo
   jobTemplate:
+    podAnnotations:
+      checksum/test: test
     activeDeadlineSeconds: 30
     backoffLimit: 10
     containers:
