@@ -254,18 +254,40 @@ cronJob:
   successfulJobsHistoryLimit: 3
   suspend: "false"
   #timeZone: "Etc/UTC"
-  jobTemplate: {}
-  #  activeDeadlineSeconds: 60
-  #  backoffLimit: 60
-  #  parallelism: 60
-  #  ttlSecondsAfterFinished: 60
-  #  containers:
-  #  - name: job-app
-  #    image:
-  #      repository: hello-world
-  #      tag: latest
-  #      pullPolicy: IfNotPresent
-  #      command: ["/hello"]
-  #      env: []
-  #      envFrom: []
-  #  restartPolicy: "OnFailure"
+  jobTemplate:
+    #  activeDeadlineSeconds: 60
+    #  backoffLimit: 60
+    #  parallelism: 60
+    #  ttlSecondsAfterFinished: 60
+    containers: [] # application containers
+    #  - name: job-app
+    #    image:
+    #      repository: hello-world
+    #      tag: latest
+    #      pullPolicy: IfNotPresent
+    #      command: ["/hello"]
+    #      env: []
+    #      envFrom: []
+    #  restartPolicy: "OnFailure"
+    initContainers:
+      enabled: false
+      containers: []
+      #  - name: init
+      #
+      #    image:
+      #      repository: chatwork/init
+      #      tag: latest
+      #
+      #    command: []
+      #    args: []
+      #
+      #    env: []
+      #    # - name: DEMO_GREETING
+      #    #   value: "Hello from the environment"
+      #
+      #    envFrom: []
+      #    # - configMapRef:
+      #    #     name: special-config
+      #    volumeMounts: []
+      #    # - name: volume-name
+      #    #   mountPath: /path/to
