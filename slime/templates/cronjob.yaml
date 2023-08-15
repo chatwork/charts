@@ -191,9 +191,9 @@ spec:
           imagePullSecrets:
             {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
-          {{- if .Values.cronJob.jobTemplate.initContainers.enabled }}
+          {{- with .Values.cronJob.jobTemplate.initContainers.enabled }}
           initContainers:
-          {{- range $container := .Values.cronJob.jobTemplate.initContainers.containers }}
+          {{- range $container := . }}
             - name: {{ include "slime.fullname" $root }}-{{ $container.name }}
               image: {{ $container.image.repository }}:{{ $container.image.tag }}
               {{- with $container.image.pullPolicy }}
