@@ -29,6 +29,13 @@ cronJob:
         volumeMounts:
           - name: configs
             mountPath: /configs
+    initContainers:
+      enabled: true
+      containers:
+        - name: init
+          image:
+            repository: busybox
+            tag: latest
     volumes:
       - name: configs
         configMap:
