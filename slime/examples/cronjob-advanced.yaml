@@ -2,46 +2,55 @@ fullnameOverride: "slime-advanced"
 
 cronJob:
   enabled: true
-  schedule: "* * * * *"
-  restartPolicy: OnFailure
-  concurrencyPolicy: Replace
-  failedJobsHistoryLimit: 3
-  startingDeadlineSeconds: 60
-  successfulJobsHistoryLimit: 5
-  timeZone: Asia/Tokyo
-  jobTemplate:
-    podAnnotations:
-      checksum/test: test
-    activeDeadlineSeconds: 30
-    backoffLimit: 10
-    containers:
-      - name: job
-        image:
-          repository: hello-world
-          tag: latest
-        imagePullPolicy: IfNotPresent
-        env:
-          - name: APP_NAME
-            value: 'slime-advanced'
-        envFrom:
-          - secretRef:
-              name: 'slime-advanced-env'
-        volumeMounts:
-          - name: configs
-            mountPath: /configs
-    initContainers:
-      enabled: true
-      containers:
-        - name: init
-          image:
-            repository: busybox
-            tag: latest
-    volumes:
+
+schedule: "* * * * *"
+restartPolicy: OnFailure
+concurrencyPolicy: Replace
+failedJobsHistoryLimit: 3
+startingDeadlineSeconds: 60
+successfulJobsHistoryLimit: 5
+timeZone: Asia/Tokyo
+
+cronJobTemplateAnnotations:
+  slime/annotation: "advanced"
+
+cronJobTemplateLabels:
+  slime/label: "advanced"
+
+activeDeadlineSeconds: 30
+backoffLimit: 10
+
+cronJobContainers:
+  - name: job
+    image:
+      repository: hello-world
+      tag: latest
+    imagePullPolicy: IfNotPresent
+    env:
+      - name: APP_NAME
+        value: 'slime-advanced'
+    envFrom:
+      - secretRef:
+        name: 'slime-advanced-env'
+    volumeMounts:
       - name: configs
-        configMap:
-          name: "slime-advanced-config"
-          defaultMode: 0644
-    restartPolicy: Never
+        mountPath: /configs
+
+cronJobInitContainers:
+  enabled: true
+  containers:
+    - name: init
+      image:
+        repository: busybox
+        tag: latest
+
+cronJobVolumes:
+  - name: configs
+    configMap:
+      name: "slime-advanced-config"
+      defaultMode: 0644
+
+cronJobRestartPolicy: Never
 
 secrets:
   env:
