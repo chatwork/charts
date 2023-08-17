@@ -31,7 +31,7 @@ cronJobContainers:
         value: 'slime-advanced'
     envFrom:
       - secretRef:
-        name: 'slime-advanced-env'
+          name: 'slime-advanced-env'
     volumeMounts:
       - name: configs
         mountPath: /configs
