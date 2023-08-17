@@ -3,8 +3,13 @@ fullnameOverride: "slime-advanced"
 cronJob:
   enabled: true
 
+cronJobAnnotations:
+  release/cronjob-annotation: advanced
+
+cronJobLabels:
+  release/cronjob-label: advanced
+
 schedule: "* * * * *"
-restartPolicy: OnFailure
 concurrencyPolicy: Replace
 failedJobsHistoryLimit: 3
 startingDeadlineSeconds: 60
@@ -12,13 +17,62 @@ successfulJobsHistoryLimit: 5
 timeZone: Asia/Tokyo
 
 cronJobTemplateAnnotations:
-  slime/annotation: "advanced"
+  slime/cronjob-template-annotation: advanced
 
 cronJobTemplateLabels:
-  slime/label: "advanced"
+  slime/cronjob-template-label: advanced
 
 activeDeadlineSeconds: 30
 backoffLimit: 10
+
+
+#completionMode: NonIndexed
+#completions: 1
+#manualSelector: true
+#parallelism: 1
+#jobTemplateSuspend: "false"
+#ttlSecondsAfterFinished: 300
+
+cronJobPodActiveDeadlineSeconds: 15
+
+#cronJobAffinity:
+# podAffinity:
+#    requiredDuringSchedulingIgnoredDuringExecution:
+#    - labelSelector:
+#        matchExpressions:
+#        - key: security
+#          operator: In
+#          values:
+#          - S1
+
+#automountServiceAccountToken: true
+
+#cronJobDnsConfig:
+#  nameservers:
+#    - 127.0.0.1
+#  searches:
+#    - ns1.svc.cluster.local
+
+#cronJobUseHostNetwork: true
+#cronJobEnableServiceLinks: true
+#cronJobHostAliases:
+#- ip: "127.0.0.1"
+#  hostnames:
+#  - "foo.local"
+#  - "bar.local"
+#cronJobHostIPC: true
+#cronJobHostPID: true
+#cronJobHostUsers: true
+#cronJobHostname: test
+
+#cronJobImagePullSecrets:
+#  - name: slime-secret
+
+cronJobPodAnnotations:
+  slime/cronjob-pod-annotation: advanced
+
+cronJobPodLabels:
+  slime/cronjob-pod-label: advanced
 
 cronJobContainers:
   - name: job
@@ -50,7 +104,48 @@ cronJobVolumes:
       name: "slime-advanced-config"
       defaultMode: 0644
 
-cronJobRestartPolicy: Never
+
+#cronJobNodeName: slime
+
+#cronJobPreemptionPolicy: Never
+
+#cronJobNodeSelector:
+#  disktype: ssd
+
+#cronJobPriority: 1
+
+#cronJobPriorityClassName: system-node-critical
+
+#cronJobRestartPolicy: Never
+
+#cronJobSchedulerName: slime
+
+#cronJobSecurityContext:
+#  runAsUser: 1000
+#  fsGroup: 2000
+
+#cronJobSetHostnameAsFQDN: "false"
+
+#cronJobShareProcessNamespace: "false"
+
+#cronJobSubdomain: hostname.subdomain.pod-namespace.svc.cluster-domain
+
+cronJobTerminationGracePeriodSeconds: 120
+
+#cronJobTolerations:
+#- key: "key1"
+#  operator: "Equal"
+#  value: "value1"
+#  effect: "NoSchedule"
+
+#cronJobTopologySpreadConstraints:
+#  enabled: true
+#  constraints:
+#    - maxSkew: 1
+#      topologyKey: topology.kubernetes.io/zone
+#      whenUnsatisfiable: DoNotSchedule
+#      labelSelector:
+#        app: myapp
 
 secrets:
   env:

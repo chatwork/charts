@@ -88,7 +88,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         spec:
-          {{- with .Values.activeDeadlineSeconds }}
+          {{- with .Values.cronJobPodActiveDeadlineSeconds }}
           activeDeadlineSeconds: {{ . }}
           {{- end }}
           {{- with .Values.cronJobAffinity }}
@@ -269,9 +269,9 @@ spec:
           tolerations:
             {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
-          {{- if .Values.cronJobTopologySpreadConstraints }}
+          {{- if .Values.cronJobTopologySpreadConstraints.enabled }}
           topologySpreadConstraints:
-            {{- range $constraint := .Values.cronJob.jobTemplate.topologySpreadConstraints }}
+            {{- range $constraint := .Values.cronJobTopologySpreadConstraints.constraints }}
             - maxSkew: {{ $constraint.maxSkew }}
               topologyKey: {{ $constraint.topologyKey }}
               whenUnsatisfiable: {{ $constraint.whenUnsatisfiable }}
