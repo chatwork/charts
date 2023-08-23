@@ -244,50 +244,84 @@ test:
   #
   #  envFrom: []
 
-# CronJob
+#
+# If you use CronJob, configure the following sections
+#
+# CronJob and deployment keys are completely separated so as not to mix them up.
+#
 cronJob:
   enabled: false # Enable CronJob
-  concurrencyPolicy: Allow
-  failedJobsHistoryLimit: 1
-  schedule: "" # Schedule to run CronJob
-  #startingDeadlineSeconds:
-  successfulJobsHistoryLimit: 3
-  suspend: "false"
-  #timeZone: "Etc/UTC"
-  jobTemplate:
-    #  activeDeadlineSeconds: 60
-    #  backoffLimit: 60
-    #  parallelism: 60
-    #  ttlSecondsAfterFinished: 60
-    containers: [] # application containers
-    #  - name: job-app
-    #    image:
-    #      repository: hello-world
-    #      tag: latest
-    #      pullPolicy: IfNotPresent
-    #      command: ["/hello"]
-    #      env: []
-    #      envFrom: []
-    #  restartPolicy: "OnFailure"
-    initContainers:
-      enabled: false
-      containers: []
-      #  - name: init
-      #
-      #    image:
-      #      repository: chatwork/init
-      #      tag: latest
-      #
-      #    command: []
-      #    args: []
-      #
-      #    env: []
-      #    # - name: DEMO_GREETING
-      #    #   value: "Hello from the environment"
-      #
-      #    envFrom: []
-      #    # - configMapRef:
-      #    #     name: special-config
-      #    volumeMounts: []
-      #    # - name: volume-name
-      #    #   mountPath: /path/to
+
+cronJobContainers: []
+#  - name: job-app
+#    image:
+#      repository: hello-world
+#      tag: latest
+#      pullPolicy: IfNotPresent
+#      command: ["/hello"]
+#      env: []
+#      envFrom: []
+#  restartPolicy: "OnFailure"
+
+cronJobInitContainers:
+  enabled: false
+  containers: []
+  #  - name: init
+  #
+  #    image:
+  #      repository: chatwork/init
+  #      tag: latest
+  #
+  #    command: []
+  #    args: []
+  #
+  #    env: []
+  #    # - name: DEMO_GREETING
+  #    #   value: "Hello from the environment"
+  #
+  #    envFrom: []
+  #    # - configMapRef:
+  #    #     name: special-config
+  #    volumeMounts: []
+  #    # - name: volume-name
+  #    #   mountPath: /path/to
+
+cronJobVolumes: [] # CronJob's pod volumes(initContainers, containers)
+
+cronJobImagePullSecrets: [] # annotations for imagePullSecrets
+
+cronJobAnnotations: {} # annotations for CronJob
+
+cronJobLabels: {} # labels for CronJob
+
+concurrencyPolicy: Allow
+
+failedJobsHistoryLimit: 1
+
+schedule: "" # Schedule to run CronJob
+
+#startingDeadlineSeconds:
+
+successfulJobsHistoryLimit: 3
+
+suspend: "false"
+
+# Available in 1.27 or later
+# https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-job-limitations
+#timeZone: "Etc/UTC"
+
+cronJobTemplateAnnotations: {}
+
+cronJobTemplateLabels: {}
+
+cronJobPodAnnotations: {}
+
+cronJobPodLabels: {}
+
+cronJobAffinity: {} # affinity for CronJob
+
+cronJobDnsConfig: {}
+
+cronJobTopologySpreadConstraints:
+  enabled: false
+  constraints: []

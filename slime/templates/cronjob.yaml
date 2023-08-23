@@ -6,100 +6,100 @@ kind: CronJob
 metadata:
   name: {{ include "slime.fullname" . }}
   namespace: {{ .Release.Namespace }}
-  {{- with .Values.cronJob.annotations }}
+  {{- with .Values.cronJobAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
     {{- include "slime.labels" . | nindent 4 }}
-    {{- with .Values.cronJob.labels }}
+    {{- with .Values.cronJobLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#cronjobspec-v1-batch
 spec:
-  {{- with .Values.cronJob.concurrencyPolicy }}
+  {{- with .Values.concurrencyPolicy }}
   concurrencyPolicy: {{ . }}
   {{- end }}
-  {{- with .Values.cronJob.failedJobsHistoryLimit }}
+  {{- with .Values.failedJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ . }}
   {{- end }}
-  schedule: "{{ .Values.cronJob.schedule }}"
-  {{- with .Values.cronJob.startingDeadlineSeconds }}
+  schedule: "{{ .Values.schedule }}"
+  {{- with .Values.startingDeadlineSeconds }}
   startingDeadlineSeconds: {{ . }}
   {{- end }}
-  {{- with .Values.cronJob.successfulJobsHistoryLimit }}
+  {{- with .Values.successfulJobsHistoryLimit }}
   successfulJobsHistoryLimit: {{ . }}
   {{- end }}
-  {{- with .Values.cronJob.suspend }}
+  {{- with .Values.suspend }}
   suspend: {{ . }}
   {{- end }}
   # Available in 1.27 or later
   # https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-job-limitations
-  {{- with .Values.cronJob.timeZone }}
+  {{- with .Values.timeZone }}
   timeZone: {{ . }}
   {{- end }}
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#jobtemplatespec-v1-batch
   jobTemplate:
     metadata:
-      {{- with .Values.cronJob.jobTemplate.podAnnotations }}
+      {{- with .Values.cronJobTemplateAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
       {{- include "slime.labels" . | nindent 8 }}
-      {{- with .Values.cronJob.jobTemplate.jobTemplatelabels }}
+      {{- with .Values.cronJobTemplateLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
       # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#jobspec-v1-batch
-      {{- with .Values.cronJob.jobTemplate.activeDeadlineSeconds }}
+      {{- with .Values.activeDeadlineSeconds }}
       activeDeadlineSeconds: {{ . }}
       {{- end }}
-      {{- with .Values.cronJob.jobTemplate.backoffLimit }}
+      {{- with .Values.backoffLimit }}
       backoffLimit: {{ . }}
       {{- end }}
-      {{- with .Values.cronJob.jobTemplate.completionMode }}
+      {{- with .Values.completionMode }}
       completionMode: {{ . }}
       {{- end }}
-      {{- with .Values.cronJob.jobTemplate.completions }}
+      {{- with .Values.completions }}
       completions: {{ . }}
       {{- end }}
-      {{- with .Values.cronJob.jobTemplate.manualSelector }}
+      {{- with .Values.manualSelector }}
       manualSelector: {{ . }}
       {{- end }}
-      {{- with .Values.cronJob.jobTemplate.parallelism }}
+      {{- with .Values.parallelism }}
       parallelism: {{ . }}
       {{- end }}
-      {{- with .Values.cronJob.jobTemplate.suspend }}
+      {{- with .Values.jobTemplateSuspend }}
       suspend: {{ . }}
       {{- end }}
-      {{- with .Values.cronJob.jobTemplate.ttlSecondsAfterFinished }}
+      {{- with .Values.ttlSecondsAfterFinished }}
       ttlSecondsAfterFinished: {{ . }}
       {{- end }}
       template:
         metadata:
-          {{- with .Values.cronJob.jobTemplate.podAnnotations }}
+          {{- with .Values.cronJobPodAnnotations }}
           annotations:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           labels:
           {{- include "slime.labels" . | nindent 12 }}
-          {{- with .Values.cronJob.jobTemplate.podLabels }}
+          {{- with .Values.cronJobPodLabels }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
         spec:
-          {{- with .Values.cronJob.jobTemplate.activeDeadlineSeconds }}
+          {{- with .Values.cronJobPodActiveDeadlineSeconds }}
           activeDeadlineSeconds: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.affinity }}
+          {{- with .Values.cronJobAffinity }}
           affinity:
             {{- tpl (. | toYaml) $root | nindent 14 }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.automountServiceAccountToken }}
+          {{- with .Values.automountServiceAccountToken }}
           automountServiceAccountToken: {{ . }}
           {{- end }}
           containers:
-            {{- range $container := .Values.cronJob.jobTemplate.containers }}
+            {{- range $container := .Values.cronJobContainers }}
             - name: {{ include "slime.fullname" $root }}-{{ $container.name }}
               {{- with $container.securityContext }}
               securityContext:
@@ -157,43 +157,43 @@ spec:
                 {{- tpl (. | toYaml) $root | nindent 16 }}
               {{- end }}
             {{- end }}
-          {{- with .Values.cronJob.jobTemplate.dnsConfig }}
+          {{- with .Values.cronJobDnsConfig }}
           dnsConfig:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.cronJob.jobTemplate.useHostNetwork }}
-          hostNetwork: {{ .Values.cronJob.jobTemplate.useHostNetwork }}
+          {{- if .Values.cronJobUseHostNetwork }}
+          hostNetwork: {{ .Values.cronJobUseHostNetwork }}
           dnsPolicy: ClusterFirstWithHostNet
           {{- end }}
-          {{- if and (not .Values.cronJob.jobTemplate.useHostNetwork) .Values.cronJob.jobTemplate.dnsPolicy }}
-          dnsPolicy: {{ .Values.cronJob.jobTemplate.dnsPolicy }}
+          {{- if and (not .Values.cronJobUseHostNetwork) .Values.cronJobDnsPolicy }}
+          dnsPolicy: {{ .Values.cronJobDnsPolicy }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.enableServiceLinks }}
+          {{- with .Values.cronJobEnableServiceLinks }}
           enableServiceLinks: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.hostAliases }}
+          {{- with .Values.cronJobHostAliases }}
           hostAliases:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.hostIPC }}
+          {{- with .Values.cronJobHostIPC }}
           hostIPC: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.hostPID }}
+          {{- with .Values.cronJobHostPID }}
           hostPID: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.hostUsers }}
+          {{- with .Values.cronJobHostUsers }}
           hostUsers: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.hostname }}
+          {{- with .Values.cronJobHostname }}
           hostname: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.imagePullSecrets }}
+          {{- with .Values.cronJobImagePullSecrets }}
           imagePullSecrets:
             {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
-          {{- if .Values.cronJob.jobTemplate.initContainers.enabled }}
+          {{- if .Values.cronJobInitContainers.enabled }}
           initContainers:
-          {{- range $container := .Values.cronJob.jobTemplate.initContainers.containers }}
+          {{- range $container := .Values.cronJobInitContainers.containers }}
             - name: {{ include "slime.fullname" $root }}-{{ $container.name }}
               image: {{ $container.image.repository }}:{{ $container.image.tag }}
               {{- with $container.image.pullPolicy }}
@@ -224,54 +224,54 @@ spec:
               {{- end }}
           {{- end }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.nodeName }}
+          {{- with .Values.cronJobNodeName }}
           nodeName: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.nodeSelector }}
+          {{- with .Values.cronJobNodeSelector }}
           nodeSelector:
             {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.preemptionPolicy }}
+          {{- with .Values.cronJobPreemptionPolicy }}
           preemptionPolicy: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.priority }}
+          {{- with .Values.cronJobPriority }}
           priority: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.priorityClassName }}
+          {{- with .Values.cronJobPriorityClassName }}
           priorityClassName: {{ . }}
           {{- end }}
-          {{- if .Values.cronJob.jobTemplate.restartPolicy }}
-          restartPolicy: {{ .Values.cronJob.jobTemplate.restartPolicy }}
+          {{- if .Values.cronJobRestartPolicy }}
+          restartPolicy: {{ .Values.cronJobRestartPolicy }}
           {{- else }}
           restartPolicy: "OnFailure"
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.schedulerName }}
+          {{- with .Values.cronJobSchedulerName }}
           schedulerName: {{ . }}
           {{- end }}
           serviceAccountName: {{ include "slime.serviceAccountName" . }}
-          {{- with .Values.cronJob.jobSecurityContext }}
+          {{- with .Values.cronJobSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.setHostnameAsFQDN }}
+          {{- with .Values.cronJobSetHostnameAsFQDN }}
           setHostnameAsFQDN: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.shareProcessNamespace }}
+          {{- with .Values.cronJobShareProcessNamespace }}
           shareProcessNamespace: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.subdomain }}
+          {{- with .Values.cronJobSubdomain }}
           subdomain: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.terminationGracePeriodSeconds }}
+          {{- with .Values.cronJobTerminationGracePeriodSeconds }}
           terminationGracePeriodSeconds: {{ . }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.tolerations }}
+          {{- with .Values.cronJobTolerations }}
           tolerations:
             {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
-          {{- if .Values.cronJob.jobTemplate.topologySpreadConstraints }}
+          {{- if .Values.cronJobTopologySpreadConstraints.enabled }}
           topologySpreadConstraints:
-            {{- range $constraint := .Values.cronJob.jobTemplate.topologySpreadConstraints }}
+            {{- range $constraint := .Values.cronJobTopologySpreadConstraints.constraints }}
             - maxSkew: {{ $constraint.maxSkew }}
               topologyKey: {{ $constraint.topologyKey }}
               whenUnsatisfiable: {{ $constraint.whenUnsatisfiable }}
@@ -280,7 +280,7 @@ spec:
                   {{- include "slime.selectorLabels" $root | nindent 18 }}
             {{- end }}
           {{- end }}
-          {{- with .Values.cronJob.jobTemplate.volumes }}
+          {{- with .Values.cronJobVolumes }}
           volumes:
             {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}

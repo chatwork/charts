@@ -1,12 +1,14 @@
 cronJob:
   enabled: true
-  schedule: "*/5 * * * *"
-  restartPolicy: OnFailure
-  jobTemplate:
-    containers:
-      - name: job
-        image:
-          repository: hello-world
-          tag: latest
-        imagePullPolicy: IfNotPresent
-    restartPolicy: Never
+
+schedule: "*/5 * * * *"
+restartPolicy: OnFailure
+
+cronJobContainers:
+  - name: job
+    image:
+      repository: hello-world
+      tag: latest
+    imagePullPolicy: IfNotPresent
+
+cronJobRestartPolicy: Never
