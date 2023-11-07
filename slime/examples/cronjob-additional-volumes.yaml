@@ -1,0 +1,26 @@
+cronJob:
+  enabled: true
+
+schedule: "*/5 * * * *"
+restartPolicy: OnFailure
+
+cronJobContainers:
+  - name: job
+    image:
+      repository: hello-world
+      tag: latest
+    imagePullPolicy: IfNotPresent
+
+cronJobRestartPolicy: Never
+
+cronJobVolumes:
+  - name: configs
+    configMap:
+      name: "slime-config"
+      defaultMode: 0644
+
+additionalCronJobVolumes:
+  - name: additional-configs
+    configMap:
+      name: "slime-additional-config"
+      defaultMode: 0644
