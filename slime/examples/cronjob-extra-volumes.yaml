@@ -19,8 +19,8 @@ cronJobVolumes:
       name: "slime-config"
       defaultMode: 0644
 
-additionalCronJobVolumes:
-  - name: additional-configs
+extraCronJobVolumes:
+  - name: extra-configs
     configMap:
-      name: "slime-additional-config"
+      name: "slime-extra-config"
       defaultMode: 0644

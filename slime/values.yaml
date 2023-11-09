@@ -288,7 +288,7 @@ cronJobInitContainers:
 
 cronJobVolumes: [] # CronJob's pod volumes(initContainers, containers)
 
-additionalCronJobVolumes: [] # CronJob's pod additional volumes. Use when you want to add volume other than the common settings for each application. (initContainers, containers)
+extraCronJobVolumes: [] # CronJob's pod extra volumes. Use when you want to add volume other than the common settings for each application. (initContainers, containers)
 
 cronJobImagePullSecrets: [] # annotations for imagePullSecrets
 
