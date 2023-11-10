@@ -280,8 +280,13 @@ spec:
                   {{- include "slime.selectorLabels" $root | nindent 18 }}
             {{- end }}
           {{- end }}
-          {{- with .Values.cronJobVolumes }}
+          {{- if or (.Values.cronJobVolumes) (.Values.extraCronJobVolumes) }}
           volumes:
+            {{- with .Values.cronJobVolumes }}
             {{- tpl (. | toYaml) $root | nindent 12 }}
+            {{- end }}
+            {{- with .Values.extraCronJobVolumes }}
+            {{- tpl (. | toYaml) $root | nindent 12 }}
+            {{- end }}
           {{- end }}
 {{- end }}
