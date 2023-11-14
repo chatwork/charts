@@ -60,3 +60,14 @@ resources: {}
 tolerations: []
 
 affinity: {}
+
+test:
+  image:
+    repository: chatwork/aws
+    tag: 2.13.20
+  command:
+    - /bin/sh
+    - -c
+    - |
+      aws sqs create-queue --queue-name test --endpoint-url ${ENDPOINT_URL}
+
