@@ -1,4 +1,4 @@
-KUBERNETES_VERSION = $${KUBERNETES_VERSION:-"1.24.7"}
+KUBERNETES_VERSION = $${KUBERNETES_VERSION:-"1.28.0"}
 RELEASE = $$(basename $$PWD)
 
 helmInstallOptions = -i --wait --set "terminationGracePeriodSeconds=0"
