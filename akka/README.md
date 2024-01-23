@@ -165,6 +165,12 @@ The following table lists the configurable parameters of the akka chart and thei
 | `test.annotations` | Annotations for the created test pods | `{}` |
 | `test.labeld` | Labels for the created test pods | `{}` |
 | `test.spec` | Test pod spec | `{}` |
+| `rollout.enabled` | If true, create a rollout resource | `false` |
+| `rollout.workloadRef.enabled` | If true, it refers to the Pod template of the Deployment | `true` |
+| `rollout.template` | Pod template for the rollout | `{}` |
+| `rollout.replicaCount` | Number of replicas for the rollout | `3` |
+| `rollout.revisionHistoryLimit` | The number of old ReplicaSets to retain to allow rollback for the rollout | `10` |
+| `rollout.strategy` | Specifies the strategy used to replace old pods by new ones for the rollout | `{}` |
 
 ## Akka Configuration file
 

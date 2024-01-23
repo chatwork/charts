@@ -405,3 +405,13 @@ test:
   annotations: {}
   labels: {}
   spec: {}
+
+# Rollout configurations
+rollout:
+  enabled: false
+  workloadRef:
+    enabled: false
+  template: {}
+  replicaCount: 3
+  revisionHistoryLimit: 10
+  strategy: {}
