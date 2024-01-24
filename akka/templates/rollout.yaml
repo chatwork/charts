@@ -10,7 +10,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  {{- if .rollout.workloadRef.enabled -}}
+  {{- if .Values.rollout.workloadRef.enabled -}}
   workloadRef:
     apiVersion: apps/v1
     kind: Deployment
