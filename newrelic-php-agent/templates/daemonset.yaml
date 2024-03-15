@@ -38,7 +38,7 @@ spec:
         command:
           {{- toYaml . | nindent 10 }}
 {{- end }}
-{{- if not (isAbs $.Values.newrelic.address) }}
+{{- if isAbs $.Values.newrelic.address }}
         args: ["--address={{ $.Values.newrelic.address }}", "--watchdog-foreground"]
 {{- end }}
 {{- with .Values.daemonset.extraEnv }}
