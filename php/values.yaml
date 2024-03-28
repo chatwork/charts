@@ -54,7 +54,9 @@ ingress:
   annotations: {}
   hosts: []
   # - host: localhost
-  #   path: /
+  #   paths:
+  #   - /foo
+  #   - /bar
   #   extraPathes:
   #     path: /foo
   #     backend:

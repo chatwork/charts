@@ -27,7 +27,8 @@ spec:
           {{- with .extraPathes }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
-          - path: {{ .path }}
+          {{- range .paths }}
+          - path: {{ . }}
             {{- if semverCompare ">=1.19-0" $root.Capabilities.KubeVersion.GitVersion }}
             pathType: ImplementationSpecific
             {{- end }}
@@ -50,5 +51,6 @@ spec:
               servicePort: {{ $root.Values.service.port | default $root.Values.fpm.containerPort }}
               {{- end }}
               {{- end }}
+          {{- end }}
     {{- end }}
 {{- end }}
