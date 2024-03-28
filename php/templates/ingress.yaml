@@ -27,7 +27,10 @@ spec:
           {{- with .extraPathes }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
-          {{- range .paths }}
+          {{- $paths := list }}
+          {{- with .path }}{{- $paths = append $paths . }}{{- end }}
+          {{- range .paths }}{{- $paths = append $paths . }}{{- end }}
+          {{- range $paths }}
           - path: {{ . }}
             {{- if semverCompare ">=1.19-0" $root.Capabilities.KubeVersion.GitVersion }}
             pathType: ImplementationSpecific

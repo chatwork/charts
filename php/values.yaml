@@ -54,6 +54,8 @@ ingress:
   annotations: {}
   hosts: []
   # - host: localhost
+  #   # The "path" field is deprecated and will be removed in the next major release. Use "paths" instead.
+  #   path: /
   #   paths:
   #   - /foo
   #   - /bar
