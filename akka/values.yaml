@@ -290,6 +290,9 @@ autoscaling:
   metrics: []
   # This feature is available since 1.18
   behavior: {}
+  scaleTargetRef:
+    kind: Deployment
+    apiVersion: apps/v1
 
 # Metrics Configuration.
 metrics:
