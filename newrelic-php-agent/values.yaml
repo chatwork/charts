@@ -4,11 +4,11 @@
 newrelic:
   # ref. https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-configuration#inivar-daemon-settings
   address: /tmp/.newrelic.sock
-  port: 
+  port:
 
 image:
   repository: chatwork/newrelic-php-agent
-  tag: 9.7.0.258
+  tag: 9.20.0.310
   pullPolicy: IfNotPresent
   command: []
   pullSecrets: []
