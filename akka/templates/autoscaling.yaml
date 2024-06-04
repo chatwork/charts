@@ -26,6 +26,6 @@ spec:
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   scaleTargetRef:
     kind: {{ .Values.autoscaling.scaleTargetRef.kind }}
-    apiVersion: {{ .Values.autoscaling.scaleTargetRef.kind }}
+    apiVersion: {{ .Values.autoscaling.scaleTargetRef.apiVersion }}
     name: "{{ template "akka.fullname" . }}"
 {{- end }}
