@@ -21,6 +21,6 @@ spec:
   {{- end }}
   replicas: {{ .Values.rollout.replicaCount }}
   revisionHistoryLimit: {{ .Values.rollout.revisionHistoryLimit }}
-  strategy:
+  strategy: 
     {{- toYaml .Values.rollout.strategy | nindent 4 }}
 {{- end }}
