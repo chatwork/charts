@@ -1,0 +1,71 @@
+name: Publish Helm Chart
+
+on:
+  workflow_run:
+    workflows: ["Test Helm Chart"]
+    types:
+      - completed
+    branches:
+      - "master"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env: 
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Helm
+        run: make ci:enable:helm
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: .dist
+
+      - name: Check diff chart
+        run: make ci:diff:chart | xargs -I{} helm package {} -d .dist/
+
+      - name: Helm repo index
+        run: helm repo index .dist/ --url https://chatwork.github.io/charts
+
+      - name: Commit and push
+        working-directory: .dist
+        run: |
+          git add . 
+          git commit --allow-empty-message -m "$GITHUB_SHA"
+          git push origin gh-pages
+
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
+      - name: Notification success
+        if: success()
+        run: |
+          make ci:diff:chart | xargs -I{} /bin/bash -c '
+            version=$(helm inspect chart ./{} | awk "/^version:/ {print $NF}");
+            changelog=$(make ci:changelog -e DIR="{}/");
+            make ci:notify -e TITLE="Release chatwork/charts {}:${version} (gogo)" \
+                           -e BODY="$(echo -e "changelog\n${changelog}")";
+          '
+      
+      - name: Notification failed
+        if: failure()
+        run: |
+          make ci:diff:chart | xargs -I{} /bin/bash -c '
+            version=$(helm inspect chart ./{} | awk '/^version:/ {print $NF}');
+            make ci:notify -e TITLE="CircleCI: Failed push chatwork/charts {}:${version} (devil)" \
+                           -e BODY="$(git log -1 --pretty=format:"%h - %an : %s" ${CIRCLE_BRANCH})";
+          '
+       
