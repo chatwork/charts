@@ -5,18 +5,20 @@ on:
     workflows: ["Lint Helm Chart"]
     types:
       - completed
-    branches:
-      - "!gh-pages"
+    branches-ignore:
+      - "gh-pages"
 
 permissions:
   contents: read
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup K8s
         run: make ci:enable:k8s

@@ -14,13 +14,15 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    env: 
+    env:
       DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Helm
         run: make ci:enable:helm
@@ -40,7 +42,11 @@ jobs:
       - name: Commit and push
         working-directory: .dist
         run: |
-          git add . 
+          # https://github.com/orgs/community/discussions/26560
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+          git add .
           git commit --allow-empty-message -m "$GITHUB_SHA"
           git push origin gh-pages
 
@@ -59,7 +65,7 @@ jobs:
             make ci:notify -e TITLE="Release chatwork/charts {}:${version} (gogo)" \
                            -e BODY="$(echo -e "changelog\n${changelog}")";
           '
-      
+
       - name: Notification failed
         if: failure()
         run: |
@@ -68,4 +74,4 @@ jobs:
             make ci:notify -e TITLE="CircleCI: Failed push chatwork/charts {}:${version} (devil)" \
                            -e BODY="$(git log -1 --pretty=format:"%h - %an : %s" ${CIRCLE_BRANCH})";
           '
-       
+
