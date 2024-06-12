@@ -1,11 +1,9 @@
 name: Publish Helm Chart
 
 on:
-  workflow_run:
-    workflows:
-      - "Test Helm Chart"
-    types:
-      - completed
+  push:
+    branches:
+      - "master"
 
 permissions:
   contents: write

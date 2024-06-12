@@ -22,14 +22,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check diff chart
+        run: make ci:diff
+
       - name: Setup Helm
         run: make ci:enable:helm
 
       - name: Setup Kubeval
         run: make ci:enable:kubeval
-
-      - name: Check diff chart
-        run: make ci:diff
 
       - name: Check chart version
         run: make ci:diff:chart | xargs -I{} /bin/bash -c "cd ./{} && ../.github/scripts/check-version.sh || exit 255"
