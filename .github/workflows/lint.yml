@@ -12,6 +12,11 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        continue-on-error: true
+        run: echo '${{ toJSON(github) }}'
+
       - name: Checkout
         uses: actions/checkout@v4
         with:

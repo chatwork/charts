@@ -44,10 +44,11 @@ ci\:enable\:helm:
 .PHONY: ci\:enable\:kubeval
 ci\:enable\:kubeval:
 	@mkdir -p .bin/
+	@mkdir -p /tmp/kubeval
 	@if [ ! -f "./.bin/kubeval" ]; then \
-		curl -sSL https://github.com/instrumenta/kubeval/releases/download/v${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz | tar zxvf -C /tmp/
-		mv /tmp/kubeval ./.bin/kubeval
-	    chmod +x ./.bin/kubeval; \
+		curl -sSL https://github.com/instrumenta/kubeval/releases/download/v${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz | tar zxv -C /tmp/kubeval; \
+		ls -l /tmp/kubeval/ && mv /tmp/kubeval/kubeval ./.bin/kubeval; \
+		chmod +x ./.bin/kubeval; \
 	fi
 	@sudo mv ./.bin/kubeval /usr/local/bin/kubeval;
 
