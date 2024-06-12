@@ -2,8 +2,8 @@ name: Lint Helm Chart
 
 on:
   push:
-    branches:
-      - "!gh-pages"
+    branches-ignore:
+      - "gh-pages"
 
 permissions:
   contents: read
@@ -12,8 +12,15 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        continue-on-error: true
+        run: echo '${{ toJSON(github) }}'
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Helm
         run: make ci:enable:helm
