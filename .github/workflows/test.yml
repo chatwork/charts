@@ -1,11 +1,7 @@
 name: Test Helm Chart
 
 on:
-  workflow_run:
-    workflows:
-      - "Lint Helm Chart"
-    types:
-      - completed
+  push:
     branches-ignore:
       - "gh-pages"
 
