@@ -412,6 +412,19 @@ rollout:
   workloadRef:
     enabled: false
   template: {}
-  replicaCount: 3
+  # If you want fix replicaCount, disable autoscalingRollout.enabled and uncomment the following line
+  #replicaCount: 3
   revisionHistoryLimit: 10
   strategy: {}
+
+# HPA Configurattion for Rollout
+autoscalingRollout:
+  # If true, enable HPA.
+  enabled: false
+  annotations: {}
+  labels: {}
+  minReplicas:
+  maxReplicas:
+  metrics: []
+  # This feature is available since 1.18
+  behavior: {}
