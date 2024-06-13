@@ -1,4 +1,4 @@
-KUBERNETES_VERSION = $${KUBERNETES_VERSION:-"1.28.0"}
+KUBERNETES_VERSION = $${KUBERNETES_VERSION:-"1.30.0"}
 RELEASE = $$(basename $$PWD)
 
 helmInstallOptions = -i --wait --set "terminationGracePeriodSeconds=0"
@@ -18,7 +18,7 @@ lint-daemonset:
 	@echo "=> Linting default values.yaml"
 	helm lint --strict
 	@echo "=> Validating default value.yaml"
-	helm template . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/chatwork/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 	@echo ""
 
 .PHONY: lint-daemonset-mailcatcher
@@ -26,7 +26,7 @@ lint-daemonset-mailcatcher:
 	@echo "=> Linting default values.yaml"
 	helm lint $(mailcatcher) --strict
 	@echo "=> Validating default value.yaml"
-	helm template $(mailcatcher) . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template $(mailcatcher) . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/chatwork/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 	@echo ""
 
 .PHONY: lint-deployment
@@ -34,7 +34,7 @@ lint-deployment:
 	@echo "=> Linting default values.yaml"
 	helm lint --set deployment.enabled=true --set daemonset.enabled=false --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP --strict
 	@echo "=> Validating default value.yaml"
-	helm template --set deployment.enabled=true --set daemonset.enabled=false --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template --set deployment.enabled=true --set daemonset.enabled=false --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/chatwork/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 	@echo ""
 
 .PHONY: lint-deployment-mailcatcher
@@ -42,7 +42,7 @@ lint-deployment-mailcatcher:
 	@echo "=> Linting default values.yaml"
 	helm lint --set deployment.enabled=true --set daemonset.enabled=false $(mailcatcher) --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP --strict
 	@echo "=> Validating default value.yaml"
-	helm template --set deployment.enabled=true --set daemonset.enabled=false $(mailcatcher) --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template --set deployment.enabled=true --set daemonset.enabled=false $(mailcatcher) --set deployment.podDisruptionBudget.enabled=true --set deployment.service.type=ClusterIP . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/chatwork/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 	@echo ""
 
 .PHONY: test
