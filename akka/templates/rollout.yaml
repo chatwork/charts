@@ -19,8 +19,10 @@ spec:
   template:
     {{- toYaml .Values.rollout.template | nindent 4 }}
   {{- end }}
+  {{- if and (not .Values.autoscalingRollout.enabled) (ne .Values.rollout.replicaCount nil) }}
   replicas: {{ .Values.rollout.replicaCount }}
+  {{- end }}
   revisionHistoryLimit: {{ .Values.rollout.revisionHistoryLimit }}
-  strategy: 
+  strategy:
     {{- toYaml .Values.rollout.strategy | nindent 4 }}
 {{- end }}

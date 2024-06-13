@@ -25,7 +25,39 @@ spec:
     {{- toYaml .Values.autoscaling.metrics | nindent 4 }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   scaleTargetRef:
-    kind: {{ .Values.autoscaling.scaleTargetRef.kind }}
-    apiVersion: {{ .Values.autoscaling.scaleTargetRef.apiVersion }}
+    kind: Deployment
+    apiVersion: apps/v1
+    name: "{{ template "akka.fullname" . }}"
+{{- end }}
+
+{{- if .Values.autoscalingRollout.enabled -}}
+---
+{{- if semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: autoscaling/v2
+{{- else }}
+apiVersion: autoscaling/v2beta2
+{{- end }}
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    {{- toYaml .Values.autoscalingRollout.annotations | nindent 4}}
+  labels:
+    {{- include "akka.labels" . | nindent 4 }}
+    {{- with .Values.autoscalingRollout.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: "{{ template "akka.fullname" . }}"
+spec:
+  {{- with .Values.autoscalingRollout.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  maxReplicas: {{ .Values.autoscalingRollout.maxReplicas }}
+  metrics:
+    {{- toYaml .Values.autoscalingRollout.metrics | nindent 4 }}
+  minReplicas: {{ .Values.autoscalingRollout.minReplicas }}
+  scaleTargetRef:
+    kind: Rollout
+    apiVersion: argoproj.io/v1alpha1
     name: "{{ template "akka.fullname" . }}"
 {{- end }}
