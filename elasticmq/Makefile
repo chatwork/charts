@@ -15,7 +15,7 @@ lint-default:
 	@echo "=> Linting default values.yaml"
 	helm lint --strict
 	@echo "=> Validating default value.yaml"
-	helm template . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/cw-ozaki/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+	helm template . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/chatwork/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 	@echo ""
 
 .PHONY: test
