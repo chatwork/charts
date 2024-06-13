@@ -12,7 +12,7 @@ lint: lint-default
 .PHONY: lint-default
 lint-default:
 	@echo "=> Indent check default values.yaml"
-	../.circleci/lint-chart.sh $$PWD/templates
+	../.github/scripts/lint-chart.sh $$PWD/templates
 	@echo "=> Linting default values.yaml"
 	helm lint --strict
 	@echo "=> Validating default value.yaml"

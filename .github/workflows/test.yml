@@ -1,0 +1,38 @@
+name: Test Helm Chart
+
+on:
+  push:
+    branches-ignore:
+      - "gh-pages"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        continue-on-error: true
+        run: echo '${{ toJSON(github) }}'
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup K8s
+        run: make ci:enable:k8s
+
+      - name: Setup Helm
+        run: make ci:enable:helm
+
+      - name: Check diff chart
+        run: make ci:diff
+
+      - name: Create resources
+        run: make ci:diff | xargs -I{} /bin/bash -c "cd ./{} && kubectl create namespace {} --dry-run -o yaml | kubectl apply -f - || exit 255"
+
+      - name: Test
+        run: RC=0; for target in `make ci:diff`;do cd ./$target; kubectl config set-context --current --namespace=$target; make install && make test && make uninstall || RC=255; cd ..; done; exit $RC

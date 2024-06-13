@@ -1,0 +1,84 @@
+name: Publish Helm Chart
+
+on:
+  push:
+    branches:
+      - "master"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: |
+      ${{ github.event.workflow_run.conclusion == 'success' }} &&
+      ${{ github.event.workflow_run.head_branch == 'master' }}
+    env:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      CHATWORK_API_TOKEN: ${{ secrets.CHATWORK_API_TOKEN }}
+      CHATWORK_NOTIFICATION_ROOM_ID: ${{ secrets.CHATWORK_NOTIFICATION_ROOM_ID}}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        continue-on-error: true
+        run: echo '${{ toJSON(github) }}'
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Helm
+        run: make ci:enable:helm
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: .dist
+
+      - name: Check diff chart
+        run: make ci:diff:chart | xargs -I{} helm package {} -d .dist/
+
+      - name: Helm repo index
+        run: helm repo index .dist/ --url https://chatwork.github.io/charts
+
+      - name: Commit and push
+        working-directory: .dist
+        run: |
+          # https://github.com/orgs/community/discussions/26560
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+          git add .
+          git commit --allow-empty-message -m "$GITHUB_SHA"
+          git push origin gh-pages
+
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
+      - name: Notification success
+        if: success()
+        run: |
+          make ci:diff:chart | xargs -I{} /bin/bash -c '
+            version=$(helm inspect chart ./{} | awk "/^version:/ {print $NF}");
+            changelog=$(make ci:changelog -e DIR="{}/");
+            make ci:notify -e TITLE="Release chatwork/charts {}:${version} (gogo)" \
+                           -e BODY="$(echo -e "changelog\n${changelog}")";
+          '
+
+      - name: Notification failed
+        if: failure()
+        run: |
+          make ci:diff:chart | xargs -I{} /bin/bash -c '
+            version=$(helm inspect chart ./{} | awk '/^version:/ {print $NF}');
+            make ci:notify -e TITLE="CircleCI: Failed push chatwork/charts {}:${version} (devil)" \
+                           -e BODY="$(git log -1 --pretty=format:"%h - %an : %s" ${CIRCLE_BRANCH})";
+          '
+
