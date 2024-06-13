@@ -25,7 +25,7 @@ spec:
     {{- toYaml .Values.autoscaling.metrics | nindent 4 }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   scaleTargetRef:
-    kind: {{ .Values.autoscaling.scaleTargetRef.kind }}
-    apiVersion: {{ .Values.autoscaling.scaleTargetRef.apiVersion }}
+    kind: Deployment
+    apiVersion: apps/v1
     name: "{{ template "akka.fullname" . }}"
 {{- end }}
