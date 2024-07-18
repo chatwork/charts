@@ -4,10 +4,7 @@ RELEASE = $$(basename $$PWD)
 .PHONY: install
 install:
 	helm upgrade -i --set replicaCount=3 $(RELEASE) . --debug
-	@for pod in $(shell kubectl get pod -n akka -o jsonpath='{.items[*].metadata.name}'); do \
-		echo "Describing pod $$pod"; \
-		kubectl describe pod $$pod -n akka; \
-	done
+	kubectl get pod -n akka
 
 .PHONY: lint
 lint: lint-default lint-local-akka-http lint-cluster-discovery-dns lint-cluster-discovery-kubernetes-api lint-cluster-discovery-aggregate lint-cluster-multi-eks-cluster lint-use-environment-variable-and-secret
