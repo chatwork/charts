@@ -4,6 +4,7 @@ RELEASE = $$(basename $$PWD)
 .PHONY: install
 install:
 	helm upgrade -i --set replicaCount=3 $(RELEASE) . --debug
+	sleep 180s
 	kubectl get pod -n akka
 
 .PHONY: lint
