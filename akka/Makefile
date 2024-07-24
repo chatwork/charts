@@ -6,6 +6,7 @@ install:
 	helm upgrade -i --set replicaCount=3 $(RELEASE) .
 	sleep 180s
 	kubectl describe po $(kubectl get po -n akka | grep akka | cut -d ' ' -f 1)
+	kubectl logs $(kubectl get po -n akka | grep akka | cut -d ' ' -f 1)
 
 .PHONY: lint
 lint: lint-default lint-local-akka-http lint-cluster-discovery-dns lint-cluster-discovery-kubernetes-api lint-cluster-discovery-aggregate lint-cluster-multi-eks-cluster lint-use-environment-variable-and-secret
