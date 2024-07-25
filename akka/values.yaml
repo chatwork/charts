@@ -125,8 +125,6 @@ containerName: ""
 
 command: []
 
-args: ["-javaagent:kanela-agent.jar"]
-
 env: []
   # - name: DEMO_GREETING
   #   value: "Hello from the environment"
