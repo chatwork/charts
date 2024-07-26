@@ -1,11 +1,9 @@
-KUBERNETES_VERSION = $${KUBERNETES_VERSION:-"1.28.0"}
+KUBERNETES_VERSION = $${KUBERNETES_VERSION:-"1.30.0"}
 RELEASE = $$(basename $$PWD)
 
 .PHONY: install
 install:
-	helm upgrade -i --set replicaCount=3 $(RELEASE) .
-	sleep 180s
-	kubectl get po -n akka
+	helm upgrade -i --set replicaCount=3 --wait $(RELEASE) .
 	for pod in $$(kubectl get po -n akka | grep akka | cut -d ' ' -f 1); do kubectl logs $$pod -n akka; sleep 3; done
 
 .PHONY: lint
