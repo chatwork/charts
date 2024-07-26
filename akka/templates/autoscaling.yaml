@@ -30,7 +30,7 @@ spec:
     name: "{{ template "akka.fullname" . }}"
 {{- end }}
 
-{{- if .Values.autoscalingRollout.enabled -}}
+{{ if .Values.autoscalingRollout.enabled }}
 ---
 {{- if semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: autoscaling/v2
