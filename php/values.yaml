@@ -464,3 +464,14 @@ fpm:
 # TEST
 test:
   enabled: true
+
+# Rollout configurations
+rollout:
+  enabled: false
+  workloadRef:
+    enabled: false
+  template: {}
+  # If you want fix replicaCount, disable autoscalingRollout.enabled and uncomment the following line
+  #replicaCount: 3
+  revisionHistoryLimit: 10
+  strategy: {}
