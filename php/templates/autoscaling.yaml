@@ -31,3 +31,35 @@ spec:
     {{- toYaml .Values.autoscaling.behavior | nindent 4 }}
   {{- end }}
 {{- end }}
+
+{{ if .Values.autoscalingRollout.enabled }}
+---
+{{- if semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: autoscaling/v2
+{{- else }}
+apiVersion: autoscaling/v2beta2
+{{- end }}
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    {{- toYaml .Values.autoscalingRollout.annotations | nindent 4}}
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+    {{- with .Values.autoscalingRollout.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: "{{ template "php.fullname" . }}-rollout"
+spec:
+  {{- with .Values.autoscalingRollout.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  maxReplicas: {{ .Values.autoscalingRollout.maxReplicas }}
+  metrics:
+    {{- toYaml .Values.autoscalingRollout.metrics | nindent 4 }}
+  minReplicas: {{ .Values.autoscalingRollout.minReplicas }}
+  scaleTargetRef:
+    kind: Rollout
+    apiVersion: argoproj.io/v1alpha1
+    name: "{{ template "php.fullname" . }}"
+{{- end }}

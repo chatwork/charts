@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: "{{ include "akka.containerName" . }}"
+  name: {{ include "php.fullname" . }}
   labels:
     {{- include "php.labels" . | nindent 4 }}
     {{- range $k, $v := .Values.labels }}
