@@ -1,0 +1,28 @@
+{{- $root := . -}}
+{{- if .Values.rollout.enabled -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "php.fullname" . }}
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+    {{- range $k, $v := .Values.labels }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
+spec:
+  {{- if .Values.rollout.workloadRef.enabled }}
+  workloadRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "php.fullname" . }}
+  {{- else }}
+  template:
+    {{- toYaml .Values.rollout.template | nindent 4 }}
+  {{- end }}
+  {{- if and (not .Values.autoscalingRollout.enabled) (ne .Values.rollout.replicaCount nil) }}
+  replicas: {{ .Values.rollout.replicaCount }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.rollout.revisionHistoryLimit }}
+  strategy:
+    {{- toYaml .Values.rollout.strategy | nindent 4 }}
+{{- end }}
