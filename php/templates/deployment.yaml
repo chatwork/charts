@@ -13,7 +13,7 @@ metadata:
     {{- end }}
   name: {{ include "php.fullname" . }}
 spec:
-  {{- if and (not .Values.autoscaling.enabled) .Values.replicaCount }}
+  {{- if and (not .Values.autoscaling.enabled) (ne .Values.replicaCount nil) }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
