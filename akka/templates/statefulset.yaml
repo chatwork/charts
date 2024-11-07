@@ -1,7 +1,7 @@
 {{- $root := . -}}
-{{- if eq .Values.workloadType "Deployment" }}
+{{- if eq .Values.workloadType "StatefulSet" }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   annotations:
     {{- with .Values.annotations }}
@@ -20,8 +20,8 @@ spec:
   selector:
     matchLabels:
       {{- include "akka.selectorLabels" . | nindent 6 }}
-  strategy:
-    {{- toYaml .Values.strategy | nindent 4 }}
+  updateStrategy:
+    {{- toYaml .Values.statefulSet.updateStrategy | nindent 4 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
@@ -215,7 +215,7 @@ spec:
       readinessGates:
         {{- toYaml .Values.readinessGate | nindent 8 }}
       restartPolicy: "{{ .Values.restartPolicy }}"
-      priorityClassName: {{ .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       serviceAccountName: "{{ include "akka.serviceAccountName" . }}"

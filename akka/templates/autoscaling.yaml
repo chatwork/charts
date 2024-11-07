@@ -25,7 +25,11 @@ spec:
     {{- toYaml .Values.autoscaling.metrics | nindent 4 }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   scaleTargetRef:
+    {{- if eq .Values.workloadType "StatefulSet" -}}
+    kind: StatefulSet
+    {{- else -}}
     kind: Deployment
+    {{- end -}}
     apiVersion: apps/v1
     name: "{{ template "akka.fullname" . }}"
 {{- end }}

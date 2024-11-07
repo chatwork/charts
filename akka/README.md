@@ -171,6 +171,8 @@ The following table lists the configurable parameters of the akka chart and thei
 | `rollout.replicaCount` | Number of replicas for the rollout | `3` |
 | `rollout.revisionHistoryLimit` | The number of old ReplicaSets to retain to allow rollback for the rollout | `10` |
 | `rollout.strategy` | Specifies the strategy used to replace old pods by new ones for the rollout | `{}` |
+| `workloadType` | Specifies workload type. "Deplyment" or "StatefulSet" | `"Deployment"` |
+| `statefulSet.updateStrategy` | Specifies the strategy used to replace old pods by new ones for the StatefulSet | `{}` |
 
 ## Akka Configuration file
 
