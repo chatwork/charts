@@ -429,9 +429,8 @@ autoscalingRollout:
   # This feature is available since 1.18
   behavior: {}
 
-# Specify workload type
-# "Deployment" or "StatefulSet"
-workloadType: "Deployment"
+createDeployment: true
+createStatefulSet: false
 
 statefulSet:
   podManagementPolicy: Parallel

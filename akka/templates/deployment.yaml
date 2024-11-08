@@ -1,5 +1,5 @@
 {{- $root := . -}}
-{{- if eq .Values.workloadType "Deployment" }}
+{{- if .Values.createDeployment -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
