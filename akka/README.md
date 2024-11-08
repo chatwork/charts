@@ -173,6 +173,7 @@ The following table lists the configurable parameters of the akka chart and thei
 | `rollout.strategy` | Specifies the strategy used to replace old pods by new ones for the rollout | `{}` |
 | `workloadType` | Specifies workload type. "Deplyment" or "StatefulSet" | `"Deployment"` |
 | `statefulSet.updateStrategy` | Specifies the strategy used to replace old pods by new ones for the StatefulSet | `{}` |
+| `statefulSet.podManagementPolicy` | statefulset allows you to relax its ordering guarantees while preserving its uniqueness and identity guarantees  | `Parallel` |
 
 ## Akka Configuration file
 

@@ -22,6 +22,7 @@ spec:
       {{- include "akka.selectorLabels" . | nindent 6 }}
   updateStrategy:
     {{- toYaml .Values.statefulSet.updateStrategy | nindent 4 }}
+  podManagementPolicy: {{ .Values.statefulSet.podManagementPolicy }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
