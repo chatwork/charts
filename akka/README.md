@@ -175,7 +175,8 @@ The following table lists the configurable parameters of the akka chart and thei
 | `createStatefulSet` | Specifies whether to create a statefulset resource | `false` |
 | `statefulSet.updateStrategy` | Specifies the strategy used to replace old pods by new ones for the StatefulSet | `{}` |
 | `statefulSet.podManagementPolicy` | statefulset allows you to relax its ordering guarantees while preserving its uniqueness and identity guarantees  | `Parallel` |
-| `statefulSet.overrideFullName` | Override full name of statefulset | `""` |
+| `statefulSet.env` | Extra environment variables that will be passed onto pods for StatefulSet. If not set it will be fallback to `env`.| `[]` |
+
 
 ## Akka Configuration file
 

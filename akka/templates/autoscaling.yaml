@@ -1,5 +1,6 @@
 {{- $root := . -}}
-{{- if .Values.autoscaling.enabled -}}
+{{/* Autoscaler for StatefulSet is not supported for now */}}
+{{- if and .Values.autoscaling.enabled .Values.createDeployment (not .Values.createStatefulSet) -}}
 {{- if semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: autoscaling/v2
 {{- else }}
@@ -25,11 +26,7 @@ spec:
     {{- toYaml .Values.autoscaling.metrics | nindent 4 }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   scaleTargetRef:
-    {{- if eq .Values.workloadType "StatefulSet" -}}
-    kind: StatefulSet
-    {{- else -}}
     kind: Deployment
-    {{- end -}}
     apiVersion: apps/v1
     name: "{{ template "akka.fullname" . }}"
 {{- end }}

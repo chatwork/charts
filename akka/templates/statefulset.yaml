@@ -64,7 +64,7 @@ spec:
           command:
             {{- toYaml .Values.command | nindent 12 }}
           env:
-            {{- toYaml .Values.env | nindent 12 }}
+            {{- toYaml (default .Values.env .Values.statefulSet.env)| nindent 12 }}
           envFrom:
             {{- toYaml .Values.envFrom | nindent 12 }}
           name: "{{ include "akka.containerName" . }}"

@@ -433,5 +433,6 @@ createDeployment: true
 createStatefulSet: false
 
 statefulSet:
+  env: []
   podManagementPolicy: Parallel
   updateStrategy: {}
