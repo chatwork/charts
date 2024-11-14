@@ -429,10 +429,11 @@ autoscalingRollout:
   # This feature is available since 1.18
   behavior: {}
 
-createDeployment: true
-createStatefulSet: false
+deployment:
+  enabled: true
 
 statefulSet:
+  enabled: false
   env: []
   podManagementPolicy: Parallel
   updateStrategy: {}

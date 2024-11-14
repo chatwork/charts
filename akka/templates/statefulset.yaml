@@ -1,5 +1,5 @@
 {{- $root := . -}}
-{{- if .Values.createStatefulSet }}
+{{- if .Values.statefulSet.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
