@@ -428,3 +428,12 @@ autoscalingRollout:
   metrics: []
   # This feature is available since 1.18
   behavior: {}
+
+deployment:
+  enabled: true
+
+statefulSet:
+  enabled: false
+  env: []
+  podManagementPolicy: Parallel
+  updateStrategy: {}

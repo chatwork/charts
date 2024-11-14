@@ -1,7 +1,7 @@
 {{- $root := . -}}
-{{- if .Values.deployment.enabled -}}
+{{- if .Values.statefulSet.enabled }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   annotations:
     {{- with .Values.annotations }}
@@ -20,8 +20,9 @@ spec:
   selector:
     matchLabels:
       {{- include "akka.selectorLabels" . | nindent 6 }}
-  strategy:
-    {{- toYaml .Values.strategy | nindent 4 }}
+  updateStrategy:
+    {{- toYaml .Values.statefulSet.updateStrategy | nindent 4 }}
+  podManagementPolicy: {{ .Values.statefulSet.podManagementPolicy }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
@@ -63,7 +64,7 @@ spec:
           command:
             {{- toYaml .Values.command | nindent 12 }}
           env:
-            {{- toYaml .Values.env | nindent 12 }}
+            {{- toYaml (default .Values.env .Values.statefulSet.env)| nindent 12 }}
           envFrom:
             {{- toYaml .Values.envFrom | nindent 12 }}
           name: "{{ include "akka.containerName" . }}"
@@ -215,7 +216,7 @@ spec:
       readinessGates:
         {{- toYaml .Values.readinessGate | nindent 8 }}
       restartPolicy: "{{ .Values.restartPolicy }}"
-      priorityClassName: {{ .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       serviceAccountName: "{{ include "akka.serviceAccountName" . }}"

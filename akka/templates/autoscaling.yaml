@@ -1,5 +1,6 @@
 {{- $root := . -}}
-{{- if .Values.autoscaling.enabled -}}
+{{/* Autoscaler for StatefulSet is not supported for now */}}
+{{- if and .Values.autoscaling.enabled .Values.deployment.enabled (not .Values.statefulSet.enabled) -}}
 {{- if semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: autoscaling/v2
 {{- else }}
