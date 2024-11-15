@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   annotations:
-    {{- with .Values.annotations }}
+    {{- with .Values.statefulSet.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
   labels:

@@ -433,6 +433,7 @@ deployment:
   enabled: true
 
 statefulSet:
+  annotations: {}
   enabled: false
   env: []
   podManagementPolicy: Parallel
