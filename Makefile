@@ -1,7 +1,7 @@
-KIND_VERSION = 0.23.0
-KUBERNETES_VERSION = 1.30.0
-KIND_NODE_HASH = 047357ac0cfea04663786a612ba1eaba9702bef25227a794b52890dd8bcd692e
-HELM_VERSION = 3.15.1
+KIND_VERSION = 0.27.0
+KUBERNETES_VERSION = 1.32.0
+KIND_NODE_HASH = f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
+HELM_VERSION = 3.17.3
 KUBEVAL_VERSION = 0.16.1
 
 .PHONY: apply
@@ -26,7 +26,7 @@ ci\:enable\:k8s:
 	@sudo cp ./.bin/kind /usr/local/bin/kind;
 
 	@if [ ! -f "./.bin/kubectl" ]; then \
-	    curl -sSL -o ./.bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v$(KUBERNETES_VERSION)/bin/linux/amd64/kubectl; \
+	    curl -sSL -o ./.bin/kubectl https://dl.k8s.io/release/v$(KUBERNETES_VERSION)/bin/linux/amd64/kubectl; \
 	    chmod +x ./.bin/kubectl; \
 	fi
 	@sudo cp ./.bin/kubectl /usr/local/bin/kubectl;
