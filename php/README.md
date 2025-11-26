@@ -96,6 +96,8 @@ The following table lists the configurable parameters of the PHP chart and their
 | `serviceAccount.labels` | Labels for the created service account | `{}` |
 | `serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template | `` |
 | `test.enabled` | Enables helm test | `true` |
+| `test.image` | Image used for helm test pod | `curlimages/curl` |
+| `test.tag` | Tag for helm test image | `latest` |
 
 ### Init containers
 

@@ -11,7 +11,7 @@ metadata:
 spec:
   containers:
     - name: {{ template "php.fullname" . }}-test
-      image: appropriate/curl
+      image: "{{ default "curlimages/curl" .Values.test.image }}:{{ default "latest" .Values.test.tag }}"
       command:
         - /bin/sh
         - -c
