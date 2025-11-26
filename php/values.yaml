@@ -464,6 +464,8 @@ fpm:
 # TEST
 test:
   enabled: true
+  image: curlimages/curl
+  tag: latest
 
 # Rollout configurations
 rollout:
