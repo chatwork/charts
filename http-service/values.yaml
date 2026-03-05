@@ -41,15 +41,7 @@ pod:
   labels: {}
   securityContext: {}
 
-affinity: {} # affinity
-
-# -- Node affinity for targeting specific node groups.
-# Set key and value to generate a
-# requiredDuringSchedulingIgnoredDuringExecution node affinity rule.
-# Concrete defaults (e.g. ARM nodes) are set in Helmfile settings.
-#nodeAffinity:
-#  key: ""
-#  value: ""
+affinity: {} # affinity (e.g. node affinity for ARM, set via Helmfile settings)
 
 nodeSelector: {} # nodeSelector
 
