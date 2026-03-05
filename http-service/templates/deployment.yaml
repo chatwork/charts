@@ -4,13 +4,13 @@ kind: Deployment
 metadata:
   name: {{ include "http-service.fullname" . }}
   namespace: {{ .Release.Namespace }}
-  {{- with .Values.annotations }}
+  {{- with .Values.deployment.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
     {{- include "http-service.labels" . | nindent 4 }}
-    {{- with .Values.labels }}
+    {{- with .Values.deployment.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
@@ -32,12 +32,12 @@ spec:
       annotations:
         checksum/configmap: '{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}'
         checksum/secret: '{{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}'
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.pod.annotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "http-service.selectorLabels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
+        {{- with .Values.pod.labels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
@@ -68,7 +68,7 @@ spec:
         {{- tpl (. | toYaml) $root | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "http-service.serviceAccountName" . }}
-      {{- with .Values.podSecurityContext }}
+      {{- with .Values.pod.securityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
