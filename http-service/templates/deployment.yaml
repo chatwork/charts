@@ -94,6 +94,9 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.extraPodSpec }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
       {{- if .Values.initContainers.enabled }}
       initContainers:
         {{- range $container := .Values.initContainers.containers }}

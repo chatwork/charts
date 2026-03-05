@@ -43,6 +43,10 @@ pod:
 
 affinity: {} # affinity (e.g. node affinity for ARM, set via Helmfile settings)
 
+tolerations: [] # tolerations for tainted nodes
+
+topologySpreadConstraints: [] # pod spread across topology domains
+
 nodeSelector: {} # nodeSelector
 
 imagePullSecrets: [] # imagePullSecrets
@@ -54,6 +58,8 @@ priorityClassName: "" # priorityClassName
 progressDeadlineSeconds: "" # progressDeadlineSeconds
 
 volumes: [] # pod volumes(initContainers, containers)
+
+extraPodSpec: {} # arbitrary additional Pod spec fields (escape hatch)
 
 # -- Main container image
 image:
