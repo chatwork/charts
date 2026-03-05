@@ -215,31 +215,20 @@ podDisruptionBudget:
   minAvailable: # podDisruptionBudget minAvailable
 
 ingress:
-  # -- Private ingress (internal ALB)
-  private:
-    enabled: false
-    annotations: {}
-    labels: {}
-    hosts: []
-    #  - host: api.internal.example.com
-    #    paths:
-    #      - path: "/*"
-    #        pathType: ImplementationSpecific
-    #        portNumber: 80
-    tls: []
-
-  # -- Public ingress (internet-facing ALB)
-  public:
-    enabled: false
-    annotations: {}
-    labels: {}
-    hosts: []
-    #  - host: api.example.com
-    #    paths:
-    #      - path: "/*"
-    #        pathType: ImplementationSpecific
-    #        portNumber: 80
-    tls: []
+  enabled: false # if true, you can use ingress
+  ingresses: {} # name -> spec map, create as many Ingress resources as needed
+    # your-ingress-name:
+    #   annotations: {}
+    #   labels: {}
+    #   tls: []
+    #     - hosts: []
+    #       secretName: ""
+    #   hosts: []
+    #     - host:
+    #       paths:
+    #         - path: "/*"
+    #           pathType: ImplementationSpecific
+    #           portNumber: 80
 
 test:
   enabled: false # if true, you can use helm test
