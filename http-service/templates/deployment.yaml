@@ -13,6 +13,11 @@ metadata:
     {{- end }}
   labels:
     {{- include "http-service.labels" . | nindent 4 }}
+    {{- if .Values.datadog.enabled }}
+    tags.datadoghq.com/env: {{ required "datadog.env is required when datadog.enabled is true" .Values.datadog.env }}
+    tags.datadoghq.com/service: {{ required "datadog.service is required when datadog.enabled is true" .Values.datadog.service }}
+    tags.datadoghq.com/version: {{ required "datadog.version is required when datadog.enabled is true" .Values.datadog.version | quote }}
+    {{- end }}
     {{- with .Values.deployment.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -38,6 +43,11 @@ spec:
       {{- end }}
       labels:
         {{- include "http-service.selectorLabels" . | nindent 8 }}
+        {{- if .Values.datadog.enabled }}
+        tags.datadoghq.com/env: {{ required "datadog.env is required when datadog.enabled is true" .Values.datadog.env }}
+        tags.datadoghq.com/service: {{ required "datadog.service is required when datadog.enabled is true" .Values.datadog.service }}
+        tags.datadoghq.com/version: {{ required "datadog.version is required when datadog.enabled is true" .Values.datadog.version | quote }}
+        {{- end }}
         {{- with .Values.pod.labels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
