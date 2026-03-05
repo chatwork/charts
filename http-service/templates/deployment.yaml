@@ -4,10 +4,13 @@ kind: Deployment
 metadata:
   name: {{ include "http-service.fullname" . }}
   namespace: {{ .Release.Namespace }}
-  {{- with .Values.deployment.annotations }}
   annotations:
+    {{- if .Values.reloader.enabled }}
+    reloader.stakater.com/auto: "true"
+    {{- end }}
+    {{- with .Values.deployment.annotations }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
   labels:
     {{- include "http-service.labels" . | nindent 4 }}
     {{- with .Values.deployment.labels }}
