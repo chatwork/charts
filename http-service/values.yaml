@@ -72,10 +72,23 @@ image:
 containerPort: 8080 # port exposed by the main container
 
 # -- Graceful shutdown configuration (required).
-# The template uses this to set terminationGracePeriodSeconds and
-# generate a preStop lifecycle hook (sleep for deregistration delay).
+# The template auto-generates:
+#   - preStop lifecycle hook: sleep for trafficDrainSeconds
+#   - terminationGracePeriodSeconds: trafficDrainSeconds + appShutdownTimeoutSeconds
+#
+# Timeline:
+#   |-- terminationGracePeriodSeconds (drain + app) --|
+#   |-- preStop sleep (drain) --|-- app shutdown ------|
+#                                ^
+#                             SIGTERM
+#
+# Why preStop sleep? When a Pod terminates, Kubernetes removes it from
+# Endpoints and runs preStop simultaneously. But the ALB/NLB target group
+# deregistration takes time — during that gap, traffic still arrives.
+# The sleep holds the container alive until routing fully stops.
 #gracefulShutdown:
-#  seconds: 30
+#  trafficDrainSeconds: 25        # wait for LB deregistration to complete
+#  appShutdownTimeoutSeconds: 30  # time the app gets after SIGTERM
 
 command: [] # container command override
 args: [] # container args override
