@@ -54,15 +54,15 @@ spec:
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- tpl (. | toYaml) $root | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{- tpl (. | toYaml) $root | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.readinessGates }}
       readinessGates:
-        {{- tpl (. | toYaml) $root | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "http-service.serviceAccountName" . }}
       {{- with .Values.pod.securityContext }}
@@ -75,7 +75,7 @@ spec:
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
-        {{- tpl (. | toYaml) $root | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.priorityClassName }}
       priorityClassName: {{ . }}
@@ -99,7 +99,7 @@ spec:
       {{- end }}
       {{- with .Values.volumes }}
       volumes:
-        {{- tpl (. | toYaml) $root | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if .Values.initContainers.enabled }}
       initContainers:
@@ -122,15 +122,15 @@ spec:
           {{- end }}
           {{- with $container.env }}
           env:
-            {{- tpl (. | toYaml) $root | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with $container.envFrom }}
           envFrom:
-            {{- tpl (. | toYaml) $root | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with $container.volumeMounts }}
           volumeMounts:
-            {{- tpl (. | toYaml) $root | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
         {{- end }}
       {{- end }}
