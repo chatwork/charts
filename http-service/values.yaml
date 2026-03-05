@@ -22,6 +22,16 @@ labels: {} # labels for  deployment
 
 revisionHistoryLimit: "" # revisionHistoryLimit
 
+# -- Datadog unified service tags.
+# When enabled, the template auto-generates tags.datadoghq.com/{env,service,version}
+# labels on both the Deployment and Pod. Set enabled to false for services
+# using alternative observability (e.g. OpenTelemetry).
+datadog:
+  enabled: true
+  #env: ""      # required when enabled
+  #service: ""  # required when enabled
+  #version: ""  # required when enabled
+
 podAnnotations: {} # pod annotations
 
 podLabels: {} # pod labels
