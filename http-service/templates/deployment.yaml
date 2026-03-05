@@ -52,20 +52,6 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.useHostNetwork }}
-      hostNetwork: {{ .Values.useHostNetwork }}
-      dnsPolicy: ClusterFirstWithHostNet
-      {{- end }}
-      {{- if and (not .Values.useHostNetwork) .Values.dnsPolicy }}
-      dnsPolicy: {{ .Values.dnsPolicy }}
-      {{- end }}
-      {{- with .Values.shareProcessNamespace }}
-      shareProcessNamespace: {{ . }}
-      {{- end }}
-      {{- with .Values.dnsConfig }}
-      dnsConfig:
-        {{- toYaml . | indent 8 }}
-      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- tpl (. | toYaml) $root | nindent 8 }}
@@ -90,9 +76,6 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- tpl (. | toYaml) $root | nindent 8 }}
-      {{- end }}
-      {{- with .Values.restartPolicy }}
-      restartPolicy: {{ . }}
       {{- end }}
       {{- with .Values.priorityClassName }}
       priorityClassName: {{ . }}
