@@ -50,6 +50,12 @@ image:
 
 containerPort: 8080 # port exposed by the main container
 
+# -- Graceful shutdown configuration (required).
+# The template uses this to set terminationGracePeriodSeconds and
+# generate a preStop lifecycle hook (sleep for deregistration delay).
+#gracefulShutdown:
+#  seconds: 30
+
 command: [] # container command override
 args: [] # container args override
 env: [] # environment variables
