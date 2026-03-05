@@ -162,11 +162,23 @@ secrets: {} # transform Secret's manifest. You can set `data`, `stringData` and 
 #    key: base64-encoded-value
 
 autoscaling:
-  enabled: false # if true, you can use hpa
-  behavior: {} # autscaling behavior https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior
-  metrics: [] # autoscaling metrics
-  maxReplicas: 2 # autoscaling maxReplicas
-  minReplicas: 1 # autoscaling minReplicas
+  # type: none - fixed replicas, no autoscaler
+  # type: hpa  - Kubernetes-native HorizontalPodAutoscaler
+  # type: keda - KEDA ScaledObject (manages HPA internally)
+  type: none
+  #minReplicas: 1
+  #maxReplicas: 10
+
+  # -- HPA-specific (required when type: hpa)
+  #hpa:
+  #  metrics: []
+  #  behavior: {}
+
+  # -- KEDA-specific (required when type: keda)
+  #keda:
+  #  triggers: []
+  #  pollingInterval: 30
+  #  cooldownPeriod: 300
 
 service:
   enabled: false # if true, you can use service
