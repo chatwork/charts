@@ -97,9 +97,9 @@ spec:
       {{- with .Values.priorityClassName }}
       priorityClassName: {{ . }}
       {{- end }}
-      {{- with .Values.terminationGracePeriodSeconds }}
-      terminationGracePeriodSeconds: {{ . }}
-      {{- end }}
+      {{- $drainSeconds := required "gracefulShutdown.trafficDrainSeconds is required" .Values.gracefulShutdown.trafficDrainSeconds }}
+      {{- $appSeconds := required "gracefulShutdown.appShutdownTimeoutSeconds is required" .Values.gracefulShutdown.appShutdownTimeoutSeconds }}
+      terminationGracePeriodSeconds: {{ add $drainSeconds $appSeconds }}
       {{- with .Values.progressDeadlineSeconds }}
       progressDeadlineSeconds: {{ . }}
       {{- end }}
@@ -178,6 +178,12 @@ spec:
           envFrom:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - sleep
+                  - {{ $drainSeconds | quote }}
           {{- with .Values.startupProbe }}
           startupProbe:
             {{- toYaml . | nindent 12 }}
