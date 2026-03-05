@@ -17,8 +17,13 @@ spec:
   metrics:
     {{- toYaml (required "autoscaling.hpa.metrics is required when type is hpa" .Values.autoscaling.hpa.metrics) | nindent 4 }}
   scaleTargetRef:
+    {{- if .Values.rollout.enabled }}
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    {{- else }}
     apiVersion: apps/v1
     kind: Deployment
+    {{- end }}
     name: {{ include "http-service.fullname" . }}
   minReplicas: {{ required "autoscaling.minReplicas is required" .Values.autoscaling.minReplicas }}
   maxReplicas: {{ required "autoscaling.maxReplicas is required" .Values.autoscaling.maxReplicas }}

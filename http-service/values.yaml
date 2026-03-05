@@ -180,6 +180,16 @@ autoscaling:
   #  pollingInterval: 30
   #  cooldownPeriod: 300
 
+# -- Argo Rollouts integration.
+# When enabled, creates a Rollout resource that references the Deployment
+# via workloadRef for canary/blue-green deployment strategies.
+rollout:
+  enabled: false
+  #strategy:
+  #  canary:
+  #    maxSurge: "25%"
+  #    maxUnavailable: 0
+
 service:
   enabled: false # if true, you can use service
   type: ClusterIP # service type(ClusterIP, NodePort, LoadBalancer)
