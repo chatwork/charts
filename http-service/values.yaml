@@ -170,10 +170,10 @@ serviceAccount:
   annotations: {} # serviceAccount annotations
 
 podDisruptionBudget:
-  enabled: false # if ture, you can use podDisruptionBudget
+  enabled: true # PDB enabled by default to protect availability
   annotations: {} # podDisruptionBudget annotations
   labels: {} # podDisruptionBudget labels
-  maxUnavailable: # podDisruptionBudget maxUnavailable
+  maxUnavailable: 1 # allow at most 1 pod unavailable during disruptions
   minAvailable: # podDisruptionBudget minAvailable
 
 ingress:
