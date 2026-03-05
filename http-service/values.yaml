@@ -41,83 +41,46 @@ progressDeadlineSeconds: "" # progressDeadlineSeconds
 
 volumes: [] # pod volumes(initContainers, containers)
 
-containers: [] # application containers
-#  - name: app1
-#
-#    image:
-#      repository: chatwork/app1
-#      tag: latest
-#      pullPolicy: Always
-#
-#    command: []
-#    args: []
-#
-#    securityContext: {}
-#
-#    ports: []
-#    workingDir: /workingDir
-#
-#    env: []
-#      # - name: DEMO_GREETING
-#      #   value: "Hello from the environment"
-#
-#    envFrom: []
-#      # - configMapRef:
-#      #     name: special-config
-#
-#    lifecycle: {}
-#
-#    startupProbe: {}
-#      #httpGet: {}
-#      #   scheme: HTTP
-#      #   path: [your http path]
-#      #   port: [your http port]
-#      #tcpSocket: {}
-#      #   port: [your tcp port]
-#      #exec: {}
-#      #   command: [your command]
-#      #initialDelaySeconds: 30
-#      #periodSeconds: 5
-#      #timeoutSeconds: 5
-#      #successThreshold: 1
-#      #failureThreshold: 3
-#
-#    readinessProbe: {}
-#      #httpGet: {}
-#      #   scheme: HTTP
-#      #   path: [your http path]
-#      #   port: [your http port]
-#      #tcpSocket: {}
-#      #   port: [your tcp port]
-#      #exec: {}
-#      #   command: [your command]
-#      #initialDelaySeconds: 60
-#      #periodSeconds: 5
-#      #timeoutSeconds: 5
-#      #successThreshold: 1
-#      #failureThreshold: 3
-#
-#    livenessProbe: {}
-#      # If true, enable the liveness probe.
-#      #httpGet: {}
-#      #   scheme: HTTP
-#      #   path: [your http path]
-#      #   port: [your http port]
-#      #tcpSocket: {}
-#      #   port: [your tcp port]
-#      #exec: {}
-#      #   command: [your command]
-#      #initialDelaySeconds: 60
-#      #periodSeconds: 5
-#      #timeoutSeconds: 5
-#      #successThreshold: 1
-#      #failureThreshold: 3
-#
-#    resources: {}
-#
-#    volumeMounts: []
-#      # - name: volume-name
-#      #   mountPath: /path/to
+# -- Main container image
+image:
+  repository: ""
+  tag: ""
+  pullPolicy: IfNotPresent
+
+containerPort: 8080 # port exposed by the main container
+
+command: [] # container command override
+args: [] # container args override
+env: [] # environment variables
+envFrom: [] # environment variable sources
+resources: {} # container resources (limits/requests)
+securityContext: {} # container security context
+volumeMounts: [] # container volume mounts
+
+# -- Health check probes.
+# startupProbe and livenessProbe are required in the template (rendering fails if not set).
+# readinessProbe is optional.
+#startupProbe:
+#  httpGet:
+#    path: /healthz
+#    port: 8080
+#  failureThreshold: 5
+#  initialDelaySeconds: 10
+#  periodSeconds: 1
+#livenessProbe:
+#  httpGet:
+#    path: /healthz
+#    port: 8080
+#  failureThreshold: 2
+#  periodSeconds: 10
+#readinessProbe:
+#  httpGet:
+#    path: /ready
+#    port: 8080
+#  periodSeconds: 5
+#  failureThreshold: 3
+
+extraContainers: [] # additional sidecar containers (escape hatch)
 
 initContainers:
   enabled: false # if true, you can use initContainers
