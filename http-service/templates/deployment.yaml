@@ -86,16 +86,9 @@ spec:
       {{- with .Values.progressDeadlineSeconds }}
       progressDeadlineSeconds: {{ . }}
       {{- end }}
-      {{- if .Values.topologySpreadConstraints }}
+      {{- with .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
-        {{- range .Values.topologySpreadConstraints }}
-        - maxSkew: {{ .maxSkew }}
-          topologyKey: {{ .topologyKey }}
-          whenUnsatisfiable: {{ .whenUnsatisfiable }}
-          labelSelector:
-            matchLabels:
-              {{- include "http-service.selectorLabels" $root | nindent 14 }}
-        {{- end }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.volumes }}
       volumes:
