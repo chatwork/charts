@@ -141,14 +141,14 @@ configmaps: {} # transform ConfigMap manifest. You can set `binaryData`, `data`
 #    annotations:
 #      foo: bar
 #    data:
-#      slime: '₍Ꙭ̂₎'
+#      key: value
 
 secrets: {} # transform Secret's manifest. You can set `data`, `stringData` and `type`
 #  your-secret-name:
 #    annotations:
 #      foo: bar
 #  data:
-#    slime: 4oKN6pmszILigo4K
+#    key: base64-encoded-value
 
 autoscaling:
   enabled: false # if true, you can use hpa
