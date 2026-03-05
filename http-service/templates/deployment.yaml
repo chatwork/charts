@@ -184,14 +184,10 @@ spec:
                 command:
                   - sleep
                   - {{ $drainSeconds | quote }}
-          {{- with .Values.startupProbe }}
           startupProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.livenessProbe }}
+            {{- toYaml (required "startupProbe is required" .Values.startupProbe) | nindent 12 }}
           livenessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- toYaml (required "livenessProbe is required" .Values.livenessProbe) | nindent 12 }}
           {{- with .Values.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
