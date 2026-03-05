@@ -1,5 +1,7 @@
-{{- $root := . -}}
-{{- if .Values.autoscaling.enabled -}}
+{{- if not (has .Values.autoscaling.type (list "none" "hpa" "keda")) }}
+{{- fail "autoscaling.type must be one of: none, hpa, keda" }}
+{{- end }}
+{{- if eq .Values.autoscaling.type "hpa" }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -8,16 +10,16 @@ metadata:
   labels:
     {{- include "http-service.labels" . | nindent 4 }}
 spec:
-  {{- with .Values.autoscaling.behavior }}
+  {{- with (required "autoscaling.hpa.behavior is required when type is hpa" .Values.autoscaling.hpa).behavior }}
   behavior:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   metrics:
-    {{- toYaml .Values.autoscaling.metrics | nindent 4 }}
+    {{- toYaml (required "autoscaling.hpa.metrics is required when type is hpa" .Values.autoscaling.hpa.metrics) | nindent 4 }}
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ include "http-service.fullname" . }}
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  minReplicas: {{ required "autoscaling.minReplicas is required" .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ required "autoscaling.maxReplicas is required" .Values.autoscaling.maxReplicas }}
 {{- end }}
