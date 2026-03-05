@@ -20,10 +20,8 @@ spec:
   selector:
     matchLabels:
       {{- include "http-service.selectorLabels" . | nindent 6 }}
-  {{- with .Values.deployment.strategy }}
   strategy:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- toYaml .Values.strategy | nindent 4 }}
   {{- with .Values.revisionHistoryLimit }}
   revisionHistoryLimit: {{ . }}
   {{- end }}
