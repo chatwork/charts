@@ -6,10 +6,11 @@ nameOverride:  # Override name of app
 
 fullnameOverride:  # Override the full qualified app name
 
-deployment:
-  enabled: false # Enable deployment
-
-strategy: {} # rolling update strategy for deployment
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: "25%"
+    maxUnavailable: 1
 
 annotations: {} # annotations for  deployment
 
