@@ -152,61 +152,52 @@ spec:
         {{- end }}
       {{- end }}
       containers:
-        {{- range $container := .Values.containers }}
-        - name: {{ include "http-service.fullname" $root }}-{{ $container.name }}
-          {{- with $container.securityContext }}
+        - name: {{ include "http-service.fullname" . }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: {{ $container.image.repository }}:{{ $container.image.tag }}
-          {{- with $container.image.pullPolicy }}
-          imagePullPolicy: {{ . }}
-          {{- end }}
-          {{- with $container.ports }}
           ports:
-            {{- tpl (. | toYaml) $root | nindent 12 }}
-          {{- end }}
-          {{- with $container.command }}
+            - containerPort: {{ .Values.containerPort }}
+              protocol: TCP
+          {{- with .Values.command }}
           command:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with $container.args }}
+          {{- with .Values.args }}
           args:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with $container.workingDir }}
-          workingDir: {{ . }}
-          {{- end }}
-          {{- with $container.env }}
+          {{- with .Values.env }}
           env:
-            {{- tpl (. | toYaml) $root | nindent 12 }}
-          {{- end }}
-          {{- with $container.envFrom }}
-          envFrom:
-            {{- tpl (. | toYaml) $root | nindent 12 }}
-          {{- end }}
-          {{- with $container.lifecycle }}
-          lifecycle:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with $container.startupProbe }}
+          {{- with .Values.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.startupProbe }}
           startupProbe:
-            {{- tpl (. | toYaml) $root | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with $container.readinessProbe }}
-          readinessProbe:
-            {{- tpl (. | toYaml) $root | nindent 12 }}
-          {{- end }}
-          {{- with $container.livenessProbe }}
+          {{- with .Values.livenessProbe }}
           livenessProbe:
-            {{- tpl (. | toYaml) $root | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with $container.resources }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with $container.volumeMounts }}
+          {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- tpl (. | toYaml) $root | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- end }}
+        {{- with .Values.extraContainers }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
