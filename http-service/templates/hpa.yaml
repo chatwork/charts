@@ -1,16 +1,12 @@
 {{- $root := . -}}
 {{- if .Values.autoscaling.enabled -}}
-{{- if semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: autoscaling/v2
-{{- else }}
-apiVersion: autoscaling/v2beta2
-{{- end }}
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "slime.fullname" . }}
+  name: {{ include "http-service.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "slime.labels" . | nindent 4 }}
+    {{- include "http-service.labels" . | nindent 4 }}
 spec:
   {{- with .Values.autoscaling.behavior }}
   behavior:
@@ -21,7 +17,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "slime.fullname" . }}
+    name: {{ include "http-service.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
 {{- end }}

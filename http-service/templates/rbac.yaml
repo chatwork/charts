@@ -3,8 +3,8 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
-    {{- include "slime.labels" . | nindent 4 }}
-  name: {{ include "slime.fullname" . }}
+    {{- include "http-service.labels" . | nindent 4 }}
+  name: {{ include "http-service.fullname" . }}
 rules:
   {{- with .Values.clusterRole.rules }}
   {{- toYaml . | nindent 2 }}
@@ -14,15 +14,15 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
-    {{- include "slime.labels" . | nindent 4 }}
-  name: {{ include "slime.fullname" . }}
+    {{- include "http-service.labels" . | nindent 4 }}
+  name: {{ include "http-service.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "slime.fullname" . }}
+  name: {{ include "http-service.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ include "slime.serviceAccountName" . }}
+    name: {{ include "http-service.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 ---
 {{- end }}
@@ -31,8 +31,8 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
-    {{- include "slime.labels" . | nindent 4 }}
-  name: {{ include "slime.fullname" . }}
+    {{- include "http-service.labels" . | nindent 4 }}
+  name: {{ include "http-service.fullname" . }}
   namespace: {{ .Release.Namespace }}
 rules:
   {{- with .Values.role.rules }}
@@ -43,16 +43,16 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
-    {{- include "slime.labels" . | nindent 4 }}
-  name: {{ include "slime.fullname" . }}
+    {{- include "http-service.labels" . | nindent 4 }}
+  name: {{ include "http-service.fullname" . }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ include "slime.fullname" . }}
+  name: {{ include "http-service.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ include "slime.serviceAccountName" . }}
+    name: {{ include "http-service.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 ---
 {{- end }}
@@ -63,10 +63,10 @@ metadata:
   annotations:
     {{- toYaml .Values.serviceAccount.annotations | nindent 4 }}
   labels:
-    {{- include "slime.labels" . | nindent 4 }}
+    {{- include "http-service.labels" . | nindent 4 }}
     {{- with .Values.serviceAccount.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  name: {{ include "slime.serviceAccountName" . }}
+  name: {{ include "http-service.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 {{- end -}}
