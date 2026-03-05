@@ -1,16 +1,15 @@
-{{- if .Values.deployment.enabled -}}
 {{- $root := . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "slime.fullname" . }}
+  name: {{ include "http-service.fullname" . }}
   namespace: {{ .Release.Namespace }}
   {{- with .Values.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-    {{- include "slime.labels" . | nindent 4 }}
+    {{- include "http-service.labels" . | nindent 4 }}
     {{- with .Values.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -20,7 +19,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "slime.selectorLabels" . | nindent 6 }}
+      {{- include "http-service.selectorLabels" . | nindent 6 }}
   {{- with .Values.deployment.strategy }}
   strategy:
     {{- toYaml . | nindent 4 }}
@@ -37,7 +36,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "slime.selectorLabels" . | nindent 8 }}
+        {{- include "http-service.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -68,7 +67,7 @@ spec:
       readinessGates:
         {{- tpl (. | toYaml) $root | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "slime.serviceAccountName" . }}
+      serviceAccountName: {{ include "http-service.serviceAccountName" . }}
       {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
@@ -101,7 +100,7 @@ spec:
           whenUnsatisfiable: {{ .whenUnsatisfiable }}
           labelSelector:
             matchLabels:
-              {{- include "slime.selectorLabels" $root | nindent 14 }}
+              {{- include "http-service.selectorLabels" $root | nindent 14 }}
         {{- end }}
       {{- end }}
       {{- with .Values.volumes }}
@@ -111,7 +110,7 @@ spec:
       {{- if .Values.initContainers.enabled }}
       initContainers:
         {{- range $container := .Values.initContainers.containers }}
-        - name: {{ include "slime.fullname" $root }}-{{ $container.name }}
+        - name: {{ include "http-service.fullname" $root }}-{{ $container.name }}
           image: {{ $container.image.repository }}:{{ $container.image.tag }}
           {{- with $container.image.pullPolicy }}
           imagePullPolicy: {{ . }}
@@ -143,7 +142,7 @@ spec:
       {{- end }}
       containers:
         {{- range $container := .Values.containers }}
-        - name: {{ include "slime.fullname" $root }}-{{ $container.name }}
+        - name: {{ include "http-service.fullname" $root }}-{{ $container.name }}
           {{- with $container.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
@@ -200,4 +199,3 @@ spec:
             {{- tpl (. | toYaml) $root | nindent 12 }}
           {{- end }}
       {{- end }}
-{{- end }}
