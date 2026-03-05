@@ -30,6 +30,14 @@ podSecurityContext: {} # pod securityContext
 
 affinity: {} # affinity
 
+# -- Node affinity for targeting specific node groups.
+# Set key and value to generate a
+# requiredDuringSchedulingIgnoredDuringExecution node affinity rule.
+# Concrete defaults (e.g. ARM nodes) are set in Helmfile settings.
+#nodeAffinity:
+#  key: ""
+#  value: ""
+
 nodeSelector: {} # nodeSelector
 
 imagePullSecrets: [] # imagePullSecrets
