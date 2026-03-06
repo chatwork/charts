@@ -1,23 +1,23 @@
-{{- if .Values.podDisruptionBudget.enabled }}
+{{- if .Values.pod.disruptionBudget.enabled }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  {{- with .Values.podDisruptionBudget.annotations }}
+  {{- with .Values.pod.disruptionBudget.annotations }}
   annotations:
     {{- toYaml . | nindent 4}}
   {{- end }}
   labels:
     {{- include "http-service.labels" . | nindent 4 }}
-    {{- with .Values.podDisruptionBudget.labels }}
+    {{- with .Values.pod.disruptionBudget.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
   name: {{ template "http-service.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
-  {{- with .Values.podDisruptionBudget.maxUnavailable }}
+  {{- with .Values.pod.disruptionBudget.maxUnavailable }}
   maxUnavailable: {{ . }}
   {{- end }}
-  {{- with .Values.podDisruptionBudget.minAvailable }}
+  {{- with .Values.pod.disruptionBudget.minAvailable }}
   minAvailable: {{ . }}
   {{- end }}
   selector:

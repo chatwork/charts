@@ -40,6 +40,12 @@ pod:
   annotations: {}
   labels: {}
   securityContext: {}
+  disruptionBudget:
+    enabled: true # PDB enabled by default to protect availability
+    annotations: {} # PDB annotations
+    labels: {} # PDB labels
+    maxUnavailable: 1 # allow at most 1 pod unavailable during disruptions
+    minAvailable: # PDB minAvailable
 
 affinity: {} # affinity (e.g. node affinity for ARM, set via Helmfile settings)
 
@@ -228,13 +234,6 @@ serviceAccount:
   name: # if you create serviceAccount, you can set name
   labels: {} # service account labels
   annotations: {} # serviceAccount annotations
-
-podDisruptionBudget:
-  enabled: true # PDB enabled by default to protect availability
-  annotations: {} # podDisruptionBudget annotations
-  labels: {} # podDisruptionBudget labels
-  maxUnavailable: 1 # allow at most 1 pod unavailable during disruptions
-  minAvailable: # podDisruptionBudget minAvailable
 
 ingress:
   enabled: false # if true, you can use ingress

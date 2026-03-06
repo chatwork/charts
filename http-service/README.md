@@ -14,7 +14,7 @@ helm install my-service chatwork/http-service -f values.yaml
 | Concern | Default | Rationale |
 |---------|---------|-----------|
 | Strategy | \`RollingUpdate\` (maxSurge 25%, maxUnavailable 1) | Zero-downtime deploys |
-| PDB | \`enabled: true\`, \`maxUnavailable: 1\` | Protect availability during node drain |
+| PDB | \`pod.disruptionBudget.enabled: true\`, \`maxUnavailable: 1\` | Protect availability during node drain |
 | Reloader | \`enabled: true\` | Auto-restart on ConfigMap/Secret changes |
 | Datadog tags | \`enabled: true\` | Unified service tags (\`env\`, \`service\`, \`version\`) on Deployment and Pod |
 | Graceful shutdown | Required (\`trafficDrainSeconds\` + \`appShutdownTimeoutSeconds\`) | Prevent traffic loss during termination |
