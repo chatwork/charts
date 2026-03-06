@@ -7,7 +7,7 @@ metadata:
   labels:
     {{- include "http-service.labels" . | nindent 4 }}
 spec:
-  {{- with (required "autoscaling.hpa.behavior is required when type is hpa" .Values.autoscaling.hpa).behavior }}
+  {{- with (required "autoscaling.hpa is required when type is hpa" .Values.autoscaling.hpa).behavior }}
   behavior:
     {{- toYaml . | nindent 4 }}
   {{- end }}

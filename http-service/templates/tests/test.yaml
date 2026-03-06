@@ -34,11 +34,11 @@ spec:
         {{- end }}
       {{- with $container.envFrom }}
       envFrom:
-        {{- tpl (. | toYaml) $root | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with $container.resources }}
       resources:
-        {{- tpl (. | toYaml) $root | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
   {{- end }}
   restartPolicy: Never
