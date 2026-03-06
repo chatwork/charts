@@ -1,11 +1,9 @@
-# Basic deployment with fixed replicas
+# Deployment with Argo Rollouts canary strategy
 image:
   repository: nginx
   tag: latest
 
 containerPort: 80
-
-replicas: 2
 
 gracefulShutdown:
   trafficDrainSeconds: 25
@@ -37,8 +35,28 @@ resources:
 datadog:
   enabled: true
   env: production
-  service: nginx-example
+  service: nginx-example-rollout
   version: "1.0.0"
+
+autoscaling:
+  type: hpa
+  minReplicas: 2
+  maxReplicas: 10
+  hpa:
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 50
+
+rollout:
+  enabled: true
+  strategy:
+    canary:
+      maxSurge: "25%"
+      maxUnavailable: 0
 
 service:
   enabled: true
@@ -48,12 +66,3 @@ service:
       targetPort: 80
       port: 80
       protocol: TCP
-
-test:
-  enabled: true
-  containers:
-    - name: test
-      image:
-        repository: curlimages/curl
-        tag: latest
-      command: ["sh", "-c", "curl -sf http://$APP_FULLNAME.$NAMESPACE"]

@@ -1,36 +1,44 @@
-fullnameOverride: nginx-example-ingress
-nameOverride: nginx-example-ingress
+# Deployment with Ingress
+image:
+  repository: nginx
+  tag: latest
 
-deployment:
-  enabled: true
-
-strategy:
-  type: RollingUpdate
-
-  rollingUpdate:
-    maxSurge: 1
-    maxUnavailable: 1
+containerPort: 80
 
 replicas: 2
 
-containers:
-  - name: nginx
-    image:
-      repository: nginx
-      tag: latest
+gracefulShutdown:
+  trafficDrainSeconds: 25
+  appShutdownTimeoutSeconds: 30
 
-    ports:
-      - name: http
-        containerPort: 80
-        protocol: TCP
+startupProbe:
+  httpGet:
+    path: /
+    port: 80
+  failureThreshold: 5
+  initialDelaySeconds: 10
+  periodSeconds: 1
 
-    resources:
-      requests:
-        cpu: 0.1
-        memory: 128Mi
-      limits:
-        cpu: 0.1
-        memory: 128Mi
+livenessProbe:
+  httpGet:
+    path: /
+    port: 80
+  failureThreshold: 2
+  periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+datadog:
+  enabled: true
+  env: production
+  service: nginx-example-ingress
+  version: "1.0.0"
 
 service:
   enabled: true
@@ -44,51 +52,14 @@ service:
 ingress:
   enabled: true
   ingresses:
-    example1:
+    main:
       ingressClassName: alb
       annotations:
-        alb.ingress.kubernetes.io/backend-protocol: HTTP
-        alb.ingress.kubernetes.io/healthcheck-path: /
-        alb.ingress.kubernetes.io/healthcheck-port: '80'
-        alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-        alb.ingress.kubernetes.io/inbound-cidrs: '0.0.0.0/0'
-        alb.ingress.kubernetes.io/listen-ports: |-
-          [
-            {
-              "HTTP": 80
-            }
-          ]
         alb.ingress.kubernetes.io/scheme: internal
         alb.ingress.kubernetes.io/target-type: ip
       hosts:
         - host: example.com
           paths:
-            - path: "/path1/*"
+            - path: "/*"
               pathType: ImplementationSpecific
               portNumber: 80
-
-    example2:
-      ingressClassName: alb
-      annotations:
-        alb.ingress.kubernetes.io/backend-protocol: HTTP
-        alb.ingress.kubernetes.io/healthcheck-path: /
-        alb.ingress.kubernetes.io/healthcheck-port: '80'
-        alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-        alb.ingress.kubernetes.io/inbound-cidrs: '0.0.0.0/0'
-        alb.ingress.kubernetes.io/listen-ports: |-
-          [
-            {
-              "HTTP": 80
-            }
-          ]
-        alb.ingress.kubernetes.io/scheme: internal
-        alb.ingress.kubernetes.io/target-type: ip
-      hosts:
-        - host: example.com
-          paths:
-            - path: "/path2/*"
-              pathType: ImplementationSpecific
-              portNumber: 80
-
-test:
-  enabled: false

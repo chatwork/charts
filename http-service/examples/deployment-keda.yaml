@@ -1,11 +1,9 @@
-# Basic deployment with fixed replicas
+# Deployment with KEDA autoscaling
 image:
   repository: nginx
   tag: latest
 
 containerPort: 80
-
-replicas: 2
 
 gracefulShutdown:
   trafficDrainSeconds: 25
@@ -37,8 +35,21 @@ resources:
 datadog:
   enabled: true
   env: production
-  service: nginx-example
+  service: nginx-example-keda
   version: "1.0.0"
+
+autoscaling:
+  type: keda
+  minReplicas: 2
+  maxReplicas: 10
+  keda:
+    pollingInterval: 30
+    cooldownPeriod: 300
+    triggers:
+      - type: cpu
+        metadata:
+          type: Utilization
+          value: "50"
 
 service:
   enabled: true
@@ -48,12 +59,3 @@ service:
       targetPort: 80
       port: 80
       protocol: TCP
-
-test:
-  enabled: true
-  containers:
-    - name: test
-      image:
-        repository: curlimages/curl
-        tag: latest
-      command: ["sh", "-c", "curl -sf http://$APP_FULLNAME.$NAMESPACE"]
