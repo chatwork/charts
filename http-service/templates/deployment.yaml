@@ -22,6 +22,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
+  {{- if not (has .Values.autoscaling.type (list "none" "hpa" "keda")) }}
+  {{- fail "autoscaling.type must be one of: none, hpa, keda" }}
+  {{- end }}
   {{- if and (ne .Values.autoscaling.type "none") .Values.replicas }}
   {{- fail "replicas should not be set when autoscaling.type is hpa or keda — the autoscaler manages replica count" }}
   {{- end }}
