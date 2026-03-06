@@ -16,14 +16,16 @@ spec:
     kind: Deployment
     {{- end }}
     name: {{ include "http-service.fullname" . }}
+  {{- $keda := required "autoscaling.keda is required when type is keda" .Values.autoscaling.keda }}
+  {{- $triggers := required "autoscaling.keda.triggers is required when type is keda" $keda.triggers }}
   minReplicaCount: {{ required "autoscaling.minReplicas is required" .Values.autoscaling.minReplicas }}
   maxReplicaCount: {{ required "autoscaling.maxReplicas is required" .Values.autoscaling.maxReplicas }}
-  {{- with (required "autoscaling.keda is required when type is keda" .Values.autoscaling.keda).pollingInterval }}
+  {{- with $keda.pollingInterval }}
   pollingInterval: {{ . }}
   {{- end }}
-  {{- with .Values.autoscaling.keda.cooldownPeriod }}
+  {{- with $keda.cooldownPeriod }}
   cooldownPeriod: {{ . }}
   {{- end }}
   triggers:
-    {{- toYaml (required "autoscaling.keda.triggers is required when type is keda" .Values.autoscaling.keda.triggers) | nindent 4 }}
+    {{- toYaml $triggers | nindent 4 }}
 {{- end }}

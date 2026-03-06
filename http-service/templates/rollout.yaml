@@ -17,6 +17,7 @@ spec:
   {{- with .Values.revisionHistoryLimit }}
   revisionHistoryLimit: {{ . }}
   {{- end }}
+  {{- $strategy := required "rollout.strategy is required when rollout.enabled is true" .Values.rollout.strategy }}
   strategy:
-    {{- toYaml (required "rollout.strategy is required when rollout.enabled is true" .Values.rollout.strategy) | nindent 4 }}
+    {{- toYaml $strategy | nindent 4 }}
 {{- end }}

@@ -1,4 +1,9 @@
 {{- $root := . }}
+{{- if .Values.datadog.enabled }}
+{{- $_ := required "datadog.env is required when datadog.enabled is true" .Values.datadog.env }}
+{{- $_ := required "datadog.service is required when datadog.enabled is true" .Values.datadog.service }}
+{{- $_ := required "datadog.version is required when datadog.enabled is true" .Values.datadog.version }}
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,9 +19,9 @@ metadata:
   labels:
     {{- include "http-service.labels" . | nindent 4 }}
     {{- if .Values.datadog.enabled }}
-    tags.datadoghq.com/env: {{ required "datadog.env is required when datadog.enabled is true" .Values.datadog.env }}
-    tags.datadoghq.com/service: {{ required "datadog.service is required when datadog.enabled is true" .Values.datadog.service }}
-    tags.datadoghq.com/version: {{ required "datadog.version is required when datadog.enabled is true" .Values.datadog.version | quote }}
+    tags.datadoghq.com/env: {{ .Values.datadog.env }}
+    tags.datadoghq.com/service: {{ .Values.datadog.service }}
+    tags.datadoghq.com/version: {{ .Values.datadog.version | quote }}
     {{- end }}
     {{- with .Values.deployment.labels }}
     {{- toYaml . | nindent 4 }}
@@ -50,9 +55,9 @@ spec:
       labels:
         {{- include "http-service.selectorLabels" . | nindent 8 }}
         {{- if .Values.datadog.enabled }}
-        tags.datadoghq.com/env: {{ required "datadog.env is required when datadog.enabled is true" .Values.datadog.env }}
-        tags.datadoghq.com/service: {{ required "datadog.service is required when datadog.enabled is true" .Values.datadog.service }}
-        tags.datadoghq.com/version: {{ required "datadog.version is required when datadog.enabled is true" .Values.datadog.version | quote }}
+        tags.datadoghq.com/env: {{ .Values.datadog.env }}
+        tags.datadoghq.com/service: {{ .Values.datadog.service }}
+        tags.datadoghq.com/version: {{ .Values.datadog.version | quote }}
         {{- end }}
         {{- with .Values.pod.labels }}
         {{- toYaml . | nindent 8 }}
@@ -169,10 +174,12 @@ spec:
                 command:
                   - sleep
                   - {{ $drainSeconds | quote }}
+          {{- $startupProbe := required "startupProbe is required" .Values.startupProbe }}
+          {{- $livenessProbe := required "livenessProbe is required" .Values.livenessProbe }}
           startupProbe:
-            {{- toYaml (required "startupProbe is required" .Values.startupProbe) | nindent 12 }}
+            {{- toYaml $startupProbe | nindent 12 }}
           livenessProbe:
-            {{- toYaml (required "livenessProbe is required" .Values.livenessProbe) | nindent 12 }}
+            {{- toYaml $livenessProbe | nindent 12 }}
           {{- with .Values.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
