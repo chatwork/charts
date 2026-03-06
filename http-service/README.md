@@ -1,116 +1,82 @@
-# slime
+# http-service
 
-₍Ꙭ̂₎ < Not my bad slime
+An opinionated Helm chart for language-agnostic HTTP services with sensible defaults.
 
-₍Ꙭ̂₎ < I will transform into anything
+## Install
 
-## TL;DR;
+\`\`\`sh
+helm repo add chatwork https://chatwork.github.io/charts
+helm install my-service chatwork/http-service -f values.yaml
+\`\`\`
 
-```
-$ helm install chatwork/slime
-```
+## Opinionated defaults
 
-## Prerequisites
+| Concern | Default | Rationale |
+|---------|---------|-----------|
+| Strategy | \`RollingUpdate\` (maxSurge 25%, maxUnavailable 1) | Zero-downtime deploys |
+| PDB | \`enabled: true\`, \`maxUnavailable: 1\` | Protect availability during node drain |
+| Reloader | \`enabled: true\` | Auto-restart on ConfigMap/Secret changes |
+| Datadog tags | \`enabled: true\` | Unified service tags (\`env\`, \`service\`, \`version\`) on Deployment and Pod |
+| Graceful shutdown | Required (\`trafficDrainSeconds\` + \`appShutdownTimeoutSeconds\`) | Prevent traffic loss during termination |
+| Probes | \`startupProbe\` and \`livenessProbe\` required, \`readinessProbe\` optional | Enforce health check discipline |
 
-* Kubernetes 1.18+
+## Required values
 
-## Installing the Chart
+The following values must be provided — the template will fail with an explicit error if they are missing:
 
+- \`image.repository\` / \`image.tag\`
+- \`gracefulShutdown.trafficDrainSeconds\` — seconds to sleep in preStop, waiting for LB deregistration
+- \`gracefulShutdown.appShutdownTimeoutSeconds\` — seconds the app gets after SIGTERM
+- \`startupProbe\`
+- \`livenessProbe\`
+- \`datadog.env\` / \`datadog.service\` / \`datadog.version\` (when \`datadog.enabled: true\`)
 
-To install the chart with the release name `my-release`:
+## Autoscaling
 
-```
-$ helm install --name my-release chatwork/slime
-```
+Controlled by \`autoscaling.type\`:
 
-The command deploys the slime chart on the Kubernetes cluster in the default configuration. The [configuration](https://github.com/chatwork/charts/tree/master/slime#configuration) section lists the parameters that can be configured during installation.
+| Type | Description |
+|------|-------------|
+| \`none\` | Fixed replicas (set \`replicas\` value) |
+| \`hpa\` | Kubernetes-native HorizontalPodAutoscaler |
+| \`keda\` | KEDA ScaledObject (manages HPA internally) |
 
-## Uninstalling the Chart
+When \`autoscaling.type\` is \`hpa\` or \`keda\`, setting \`replicas\` will cause a template error to prevent conflicts.
 
-To uninstall/delete the `my-release` deployment:
+## Argo Rollouts
 
-```
-$ helm delete my-release
-```
+Set \`rollout.enabled: true\` to create a Rollout resource that references the Deployment via \`workloadRef\`. The HPA/KEDA \`scaleTargetRef\` automatically switches to target the Rollout.
 
-The command removes all the Kubernetes components associated with the chart and deletes the release.
+\`rollout.strategy\` is required when enabled.
 
-## Difference from raw chart
+## Graceful shutdown
 
-[raw chart](https://github.com/chatwork/charts/tree/master/raw) is is very useful, but it is too flexible and can be difficult to write if you are not used to helm.
-Therefore, this chart has some format for writing. If it is a simple `deployment` + `service` + `ingress`, this chart is surely easier to write than `raw chart`,
-but it does not allow you to define any resources(CRDS, cert-manager,...) freely.
+The chart auto-generates \`terminationGracePeriodSeconds\` and a preStop hook:
 
-Use each charts as needed or use them together.
+\`\`\`
+|-- terminationGracePeriodSeconds (drain + app) --|
+|-- preStop sleep (drain) --|-- app shutdown ------|
+                             ^
+                          SIGTERM
+\`\`\`
 
-## Configuration
+The preStop sleep holds the container alive while the load balancer finishes deregistering the Pod.
 
-The following table lists the configurable parameters of the slime chart and their default values.
+## Examples
 
-| Parameter                            | Description                                                                                                                                        | Default       |
-|--------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| `nameOverride`                       | Override name of app                                                                                                                               | `null`        |
-| `fullnameOverride`                   | Override the full qualified app name                                                                                                               | `null`        |
-| `deployment.enabled`                 | Enable deployment                                                                                                                                  | `false`       |
-| `strategy`                           | rolling update strategy for deployment                                                                                                             | `{}`          |
-| `annotations`                        | annotations for  deployment                                                                                                                        | `{}`          |
-| `labels`                             | labels for  deployment                                                                                                                             | `{}`          |
-| `replicas`                           | replicas for deployment                                                                                                                            | `1`           |
-| `revisionHistoryLimit`               | revisionHistoryLimit                                                                                                                               | `""`          |
-| `podAnnotations`                     | pod annotations                                                                                                                                    | `{}`          |
-| `podLabels`                          | pod labels                                                                                                                                         | `{}`          |
-| `podSecurityContext`                 | pod securityContext                                                                                                                                | `{}`          |
-| `affinity`                           | affinity                                                                                                                                           | `{}`          |
-| `nodeSelector`                       | nodeSelector                                                                                                                                       | `{}`          |
-| `imagePullSecrets`                   | imagePullSecrets                                                                                                                                   | `[]`          |
-| `readinessGates`                     | readinessGates                                                                                                                                     | `[]`          |
-| `priorityClassName`                  | priorityClassName                                                                                                                                  | `""`          |
-| `progressDeadlineSeconds`            | progressDeadlineSeconds                                                                                                                            | `""`          |
-| `volumes`                            | pod volumes(initContainers, containers)                                                                                                            | `[]`          |
-| `containers`                         | application containers                                                                                                                             | `[]`          |
-| `initContainers.enabled`             | if true, you can use initContainers                                                                                                                | `false`       |
-| `initContainers.containers`          | initContainers config                                                                                                                              | `[]`          |
-| `configmaps`                         | transform ConfigMap manifest. You can set `binaryData`, `data`                                                                                     | `{}`          |
-| `secrets`                            | transform Secret's manifest. You can set `data`, `stringData` and `type`                                                                           | `{}`          |
-| `autoscaling.enabled`                | if true, you can use hpa                                                                                                                           | `false`       |
-| `autoscaling.behavior`               | autscaling behavior https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior                       | `{}`          |
-| `autoscaling.metrics`                | autoscaling metrics                                                                                                                                | `[]`          |
-| `autoscaling.maxReplicas`            | autoscaling maxReplicas                                                                                                                            | `2`           |
-| `autoscaling.minReplicas`            | autoscaling minReplicas                                                                                                                            | `1`           |
-| `service.enabled`                    | if true, you can use service                                                                                                                       | `false`       |
-| `service.type`                       | service type(ClusterIP, NodePort, LoadBalancer)                                                                                                    | `"ClusterIP"` |
-| `service.ports`                      | service ports                                                                                                                                      | `{}`          |
-| `clusterRole.enabled`                | if true, you can use clusterRole                                                                                                                   | `false`       |
-| `clusterRole.rules`                  | clusterRole rules                                                                                                                                  | `[]`          |
-| `role.enabled`                       | if true, you can use role                                                                                                                          | `false`       |
-| `role.rules`                         | role rules                                                                                                                                         | `[]`          |
-| `serviceAccount.create`              | if true, you can create serviceAccount                                                                                                             | `false`       |
-| `serviceAccount.name`                | if you create serviceAccount, you can set name                                                                                                     | `null`        |
-| `serviceAccount.labels`              | service account labels                                                                                                                             | `{}`          |
-| `serviceAccount.annotations`         | serviceAccount annotations                                                                                                                         | `{}`          |
-| `podDisruptionBudget.enabled`        | if ture, you can use podDisruptionBudget                                                                                                           | `false`       |
-| `podDisruptionBudget.annotations`    | podDisruptionBudget annotations                                                                                                                    | `{}`          |
-| `podDisruptionBudget.labels`         | podDisruptionBudget labels                                                                                                                         | `{}`          |
-| `podDisruptionBudget.maxUnavailable` | podDisruptionBudget maxUnavailable                                                                                                                 | `null`        |
-| `podDisruptionBudget.minAvailable`   | podDisruptionBudget minAvailable                                                                                                                   | `null`        |
-| `ingress.enabled`                    | if true, you can use ingress                                                                                                                       | `false`       |
-| `ingress.ingresses`                  | ingresses config                                                                                                                                   | `{}`          |
-| `cronJob.enabled`                    | if true, you can use CronJob                                                                                                                       | `false`       |
-| `schedule`                           | CronJob's schedule                                                                                                                                 | `""`          |
-| `cronJobRestartPolicy`               | CronJob's restartPolicy                                                                                                                            | `OnFailure`   |
-| `concurrencyPolicy`                  | CronJob's concurrencyPolicy                                                                                                                        | `Allow`       |
-| `failedJobsHistoryLimit`             | CronJob's failedJobsHistoryLimit                                                                                                                   | `1`           |
-| `startingDeadlineSeconds`            | CronJob's startingDeadlineSeconds                                                                                                                  | `null`        |
-| `successfulJobsHistoryLimit`         | CronJob's successfulJobsHistoryLimit                                                                                                               | `3`           |
-| `suspend`                            | CronJob's suspend                                                                                                                                  | `null`        |
-| `timeZone`                           | CronJob's timeZone https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#cronjob-v1-batch                                           | `null`        |
-| `cronJobContainers`                  | CronJob's containers https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#jobtemplatespec-v1-batch                                 | `[]`          |
-| `cronJobVolumes`                     | CronJob's pod volumes(initContainers, containers)                                                                                                  | `[]`          |
-| `extraCronJobVolumes`                | CronJob's extra pod volumes(initContainers, containers). Use when you want to add volume other than the common settings for each application. | `[]`          |
-| `test.enabled`                       | if true, you can use helm test                                                                                                                     | `false`       |
-| `test.containers`                    | helm test container config                                                                                                                         | `[]`          |
+See [\`examples/\`](examples/) for values files covering common patterns:
 
+| File | Pattern |
+|------|---------|
+| \`deployment.yaml\` | Basic deployment with fixed replicas |
+| \`deployment-hpa.yaml\` | HPA autoscaling |
+| \`deployment-ingress.yaml\` | Ingress with ALB |
+| \`deployment-keda.yaml\` | KEDA autoscaling |
+| \`deployment-rollout.yaml\` | Argo Rollouts canary |
 
-# generate README
+## Lint & test
 
-This README is generated with https://github.com/rapidsai/frigate
+\`\`\`sh
+make lint           # lint all examples
+make test           # deploy + helm test (requires cluster)
+\`\`\`
