@@ -1,0 +1,59 @@
+# Basic deployment with fixed replicas
+image:
+  repository: nginx
+  tag: latest
+
+containerPort: 80
+
+replicas: 2
+
+gracefulShutdown:
+  trafficDrainSeconds: 25
+  appShutdownTimeoutSeconds: 30
+
+startupProbe:
+  httpGet:
+    path: /
+    port: 80
+  failureThreshold: 5
+  initialDelaySeconds: 10
+  periodSeconds: 1
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: 80
+  failureThreshold: 2
+  periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+datadog:
+  enabled: true
+  env: production
+  service: nginx-example
+  version: "1.0.0"
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    http:
+      targetPort: 80
+      port: 80
+      protocol: TCP
+
+test:
+  enabled: true
+  containers:
+    - name: test
+      image:
+        repository: curlimages/curl
+        tag: latest
+      command: ["sh", "-c", "curl -sf http://$APP_FULLNAME.$NAMESPACE"]

@@ -1,0 +1,30 @@
+{{- $root := . }}
+{{- range $name, $value := .Values.configmaps }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "http-service.fullname" $root }}-{{ $name }}
+  namespace: {{ $root.Release.Namespace }}
+  labels:
+    {{- include "http-service.labels" $root | nindent 4 }}
+    {{- with $value.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    checksum/configmap: '{{ toYaml $value | sha256sum }}'
+    {{- with $value.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- if and (semverCompare ">=1.19-0" $root.Capabilities.KubeVersion.GitVersion) $value.immutable }}
+immutable: {{ $value.immutable }}
+{{- end }}
+{{- with $value.binaryData }}
+binaryData:
+  {{- . | toYaml | nindent 2 }}
+{{- end }}
+{{- with $value.data }}
+data:
+  {{- . | toYaml | nindent 2 }}
+{{- end }}
+{{- end }}

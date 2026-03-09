@@ -1,0 +1,269 @@
+# Default values for example.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride:  # Override name of app
+
+fullnameOverride:  # Override the full qualified app name
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: "25%"
+    maxUnavailable: 1
+
+# -- Reloader annotation for auto-restarting on ConfigMap/Secret changes.
+# When enabled, adds reloader.stakater.com/auto: "true" to Deployment annotations.
+reloader:
+  enabled: true
+
+deployment:
+  annotations: {}
+  labels: {}
+
+# -- Fixed replica count (used when autoscaling.type is none)
+#replicas: 1
+
+revisionHistoryLimit: "" # revisionHistoryLimit
+
+# -- Datadog unified service tags.
+# When enabled, the template auto-generates tags.datadoghq.com/{env,service,version}
+# labels on both the Deployment and Pod. Set enabled to false for services
+# using alternative observability (e.g. OpenTelemetry).
+datadog:
+  enabled: true
+  #env: ""      # required when enabled
+  #service: ""  # required when enabled
+  #version: ""  # required when enabled
+
+pod:
+  annotations: {}
+  labels: {}
+  securityContext: {}
+  disruptionBudget:
+    enabled: true # PDB enabled by default to protect availability
+    annotations: {} # PDB annotations
+    labels: {} # PDB labels
+    maxUnavailable: 1 # allow at most 1 pod unavailable during disruptions
+    minAvailable: # PDB minAvailable
+
+affinity: {} # affinity (e.g. node affinity for ARM, set via Helmfile settings)
+
+tolerations: [] # tolerations for tainted nodes
+
+topologySpreadConstraints: [] # pod spread across topology domains
+
+nodeSelector: {} # nodeSelector
+
+imagePullSecrets: [] # imagePullSecrets
+
+readinessGates: [] # readinessGates
+
+priorityClassName: "" # priorityClassName
+
+progressDeadlineSeconds: "" # progressDeadlineSeconds
+
+volumes: [] # pod volumes(initContainers, containers)
+
+extraPodSpec: {} # arbitrary additional Pod spec fields (escape hatch)
+
+# -- Main container image
+image:
+  repository: ""
+  tag: ""
+  pullPolicy: IfNotPresent
+
+containerPort: 8080 # port exposed by the main container
+
+# -- Graceful shutdown configuration (required).
+# The template auto-generates:
+#   - preStop lifecycle hook: sleep for trafficDrainSeconds
+#   - terminationGracePeriodSeconds: trafficDrainSeconds + appShutdownTimeoutSeconds
+#
+# Timeline:
+#   |-- terminationGracePeriodSeconds (drain + app) --|
+#   |-- preStop sleep (drain) --|-- app shutdown ------|
+#                                ^
+#                             SIGTERM
+#
+# Why preStop sleep? When a Pod terminates, Kubernetes removes it from
+# Endpoints and runs preStop simultaneously. But the ALB/NLB target group
+# deregistration takes time — during that gap, traffic still arrives.
+# The sleep holds the container alive until routing fully stops.
+#gracefulShutdown:
+#  trafficDrainSeconds: 25        # wait for LB deregistration to complete
+#  appShutdownTimeoutSeconds: 30  # time the app gets after SIGTERM
+
+command: [] # container command override
+args: [] # container args override
+env: [] # environment variables
+envFrom: [] # environment variable sources
+resources: {} # container resources (limits/requests)
+securityContext: {} # container security context
+volumeMounts: [] # container volume mounts
+
+# -- Health check probes.
+# startupProbe and livenessProbe are required in the template (rendering fails if not set).
+# readinessProbe is optional.
+#startupProbe:
+#  httpGet:
+#    path: /healthz
+#    port: 8080
+#  failureThreshold: 5
+#  initialDelaySeconds: 10
+#  periodSeconds: 1
+#livenessProbe:
+#  httpGet:
+#    path: /healthz
+#    port: 8080
+#  failureThreshold: 2
+#  periodSeconds: 10
+#readinessProbe:
+#  httpGet:
+#    path: /ready
+#    port: 8080
+#  periodSeconds: 5
+#  failureThreshold: 3
+
+extraContainers: [] # additional sidecar containers (escape hatch)
+
+initContainers:
+  enabled: false # if true, you can use initContainers
+
+  containers: [] # initContainers config
+  #  - name: init
+  #
+  #    image:
+  #      repository: chatwork/init
+  #      tag: latest
+  #
+  #    command: []
+  #    args: []
+  #
+  #    env: []
+  #    # - name: DEMO_GREETING
+  #    #   value: "Hello from the environment"
+  #
+  #    envFrom: []
+  #    # - configMapRef:
+  #    #     name: special-config
+  #    volumeMounts: []
+  #    # - name: volume-name
+  #    #   mountPath: /path/to
+
+configmaps: {} # transform ConfigMap manifest. You can set `binaryData`, `data`
+#  your-configmap-name:
+#    labels:
+#      a: b
+#    annotations:
+#      foo: bar
+#    data:
+#      key: value
+
+secrets: {} # transform Secret's manifest. You can set `data`, `stringData` and `type`
+#  your-secret-name:
+#    annotations:
+#      foo: bar
+#  data:
+#    key: base64-encoded-value
+
+autoscaling:
+  # type: none - fixed replicas, no autoscaler
+  # type: hpa  - Kubernetes-native HorizontalPodAutoscaler
+  # type: keda - KEDA ScaledObject (manages HPA internally)
+  type: none
+  #minReplicas: 1
+  #maxReplicas: 10
+
+  # -- HPA-specific (required when type: hpa)
+  #hpa:
+  #  metrics: []
+  #  behavior: {}
+
+  # -- KEDA-specific (required when type: keda)
+  #keda:
+  #  triggers: []
+  #  pollingInterval: 30
+  #  cooldownPeriod: 300
+
+# -- Argo Rollouts integration.
+# When enabled, creates a Rollout resource that references the Deployment
+# via workloadRef for canary/blue-green deployment strategies.
+rollout:
+  enabled: false
+  #strategy:
+  #  canary:
+  #    maxSurge: "25%"
+  #    maxUnavailable: 0
+
+service:
+  enabled: false # if true, you can use service
+  type: ClusterIP # service type(ClusterIP, NodePort, LoadBalancer)
+  ports: {} # service ports
+  #  http:
+  #    # container port
+  #    targetPort: 8080
+  #    # svc port
+  #    port: 80
+  #    protocol: TCP
+
+clusterRole:
+  enabled: false # if true, you can use clusterRole
+  rules: [] # clusterRole rules
+  #  - apiGroups:
+  #    - ""
+  #    resources:
+  #    - nodes
+  #    verbs:
+  #    - get
+  #    - list
+  #    - watch
+
+role:
+  enabled: false # if true, you can use role
+  rules: [] # role rules
+  #  - apiGroups:
+  #    - ""
+  #    resources:
+  #    - pods
+  #    verbs:
+  #    - watch
+
+serviceAccount:
+  create: false # if true, you can create serviceAccount
+  name: # if you create serviceAccount, you can set name
+  labels: {} # service account labels
+  annotations: {} # serviceAccount annotations
+
+ingress:
+  enabled: false # if true, you can use ingress
+  ingresses: {} # name -> spec map, create as many Ingress resources as needed
+    # your-ingress-name:
+    #   annotations: {}
+    #   labels: {}
+    #   tls: []
+    #     - hosts: []
+    #       secretName: ""
+    #   hosts: []
+    #     - host:
+    #       paths:
+    #         - path: "/*"
+    #           pathType: ImplementationSpecific
+    #           portNumber: 80
+
+test:
+  enabled: false # if true, you can use helm test
+  containers: [] # helm test container config
+  #- name: app1-test
+  #
+  #  image:
+  #    repository: curl
+  #    tag: latest
+  #    pullPolicy: Always
+  #  # you can use environment vairables $RELEASE_NAME, $NAMESPACE, $APP_FULLNAME
+  #  command: ["curl","$RELEASE_NAME.$NAMESPACE"]
+  #
+  #  env: []
+  #
+  #  envFrom: []
+

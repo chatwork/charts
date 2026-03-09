@@ -1,0 +1,29 @@
+{{- if eq .Values.autoscaling.type "hpa" }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "http-service.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "http-service.labels" . | nindent 4 }}
+spec:
+  {{- $hpa := required "autoscaling.hpa is required when type is hpa" .Values.autoscaling.hpa }}
+  {{- $metrics := required "autoscaling.hpa.metrics is required when type is hpa" $hpa.metrics }}
+  {{- with $hpa.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  metrics:
+    {{- toYaml $metrics | nindent 4 }}
+  scaleTargetRef:
+    {{- if .Values.rollout.enabled }}
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    {{- else }}
+    apiVersion: apps/v1
+    kind: Deployment
+    {{- end }}
+    name: {{ include "http-service.fullname" . }}
+  minReplicas: {{ required "autoscaling.minReplicas is required" .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ required "autoscaling.maxReplicas is required" .Values.autoscaling.maxReplicas }}
+{{- end }}

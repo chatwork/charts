@@ -1,0 +1,23 @@
+{{- if .Values.rollout.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "http-service.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "http-service.labels" . | nindent 4 }}
+    {{- with .Values.deployment.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  workloadRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "http-service.fullname" . }}
+  {{- with .Values.revisionHistoryLimit }}
+  revisionHistoryLimit: {{ . }}
+  {{- end }}
+  {{- $strategy := required "rollout.strategy is required when rollout.enabled is true" .Values.rollout.strategy }}
+  strategy:
+    {{- toYaml $strategy | nindent 4 }}
+{{- end }}
