@@ -2,4 +2,4 @@ apiVersion: v2
 name: http-service
 description: An opinionated Helm chart for language-agnostic HTTP services with sensible defaults
 type: application
-version: 0.1.0
+version: 0.2.0
