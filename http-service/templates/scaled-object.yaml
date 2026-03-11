@@ -1,4 +1,6 @@
 {{- if eq .Values.autoscaling.type "keda" }}
+{{- $keda := required "autoscaling.keda is required when type is keda" .Values.autoscaling.keda }}
+{{- $triggers := required "autoscaling.keda.triggers is required when type is keda" $keda.triggers }}
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
@@ -6,6 +8,10 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "http-service.labels" . | nindent 4 }}
+  {{- with $keda.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   scaleTargetRef:
     {{- if .Values.rollout.enabled }}
@@ -16,8 +22,6 @@ spec:
     kind: Deployment
     {{- end }}
     name: {{ include "http-service.fullname" . }}
-  {{- $keda := required "autoscaling.keda is required when type is keda" .Values.autoscaling.keda }}
-  {{- $triggers := required "autoscaling.keda.triggers is required when type is keda" $keda.triggers }}
   minReplicaCount: {{ required "autoscaling.minReplicas is required" .Values.autoscaling.minReplicas }}
   maxReplicaCount: {{ required "autoscaling.maxReplicas is required" .Values.autoscaling.maxReplicas }}
   {{- with $keda.pollingInterval }}
