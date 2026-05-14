@@ -15,7 +15,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  {{- if and (not .Values.autoscaling.enabled) .Values.replicas }}
+  {{- if and (not .Values.autoscaling.enabled) (ne .Values.replicas nil) }}
   replicas: {{ .Values.replicas }}
   {{- end }}
   selector:
