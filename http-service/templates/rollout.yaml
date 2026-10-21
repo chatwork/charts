@@ -4,20 +4,41 @@ kind: Rollout
 metadata:
   name: {{ include "http-service.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- if .Values.reloader.enabled }}
+    reloader.stakater.com/auto: "true"
+    {{- end }}
+    {{- with .Values.deployment.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   labels:
     {{- include "http-service.labels" . | nindent 4 }}
+    {{- if .Values.datadog.enabled }}
+    tags.datadoghq.com/env: {{ .Values.datadog.env }}
+    tags.datadoghq.com/service: {{ .Values.datadog.service }}
+    tags.datadoghq.com/version: {{ .Values.datadog.version | quote }}
+    {{- end }}
     {{- with .Values.deployment.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  workloadRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: {{ include "http-service.fullname" . }}
+  {{- if eq .Values.autoscaling.type "none" }}
+  {{- with .Values.replicas }}
+  replicas: {{ . }}
+  {{- end }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "http-service.selectorLabels" . | nindent 6 }}
   {{- with .Values.revisionHistoryLimit }}
   revisionHistoryLimit: {{ . }}
   {{- end }}
   {{- $strategy := required "rollout.strategy is required when rollout.enabled is true" .Values.rollout.strategy }}
   strategy:
     {{- toYaml $strategy | nindent 4 }}
+  {{- with .Values.progressDeadlineSeconds }}
+  progressDeadlineSeconds: {{ . }}
+  {{- end }}
+  template:
+    {{- include "http-service.podTemplate" . | nindent 4 }}
 {{- end }}
