@@ -6,7 +6,7 @@ install:
 	helm upgrade -i -f examples/deployment.yaml --wait $(RELEASE) .
 
 .PHONY: lint
-lint: lint-deployment lint-deployment-hpa lint-deployment-ingress lint-deployment-keda lint-deployment-rollout
+lint: lint-deployment lint-deployment-hpa lint-deployment-ingress lint-deployment-keda lint-deployment-rollout lint-deployment-rollout-fixed-replicas
 
 .PHONY: lint-deployment
 lint-deployment:
@@ -42,6 +42,13 @@ lint-deployment-rollout:
 	helm lint --strict -f examples/deployment-rollout.yaml
 	@echo "=> Validating examples/deployment-rollout.yaml"
 	helm template -f examples/deployment-rollout.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
+
+.PHONY: lint-deployment-rollout-fixed-replicas
+lint-deployment-rollout-fixed-replicas:
+	@echo "=> Linting examples/deployment-rollout-fixed-replicas.yaml"
+	helm lint --strict -f examples/deployment-rollout-fixed-replicas.yaml
+	@echo "=> Validating examples/deployment-rollout-fixed-replicas.yaml"
+	helm template -f examples/deployment-rollout-fixed-replicas.yaml . | kubeval --strict --ignore-missing-schemas --additional-schema-locations https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/ --kubernetes-version $(KUBERNETES_VERSION) --exit-on-error
 
 .PHONY: test
 test: test-deployment
