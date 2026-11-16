@@ -477,6 +477,9 @@ rollout:
   #replicaCount: 3
   revisionHistoryLimit: 10
   strategy: {}
+  # spec.rollbackWindow of the Rollout. Rendered only when set.
+  # e.g. rollbackWindow: {revisions: 1}
+  rollbackWindow: {}
 
 # HPA Configurattion for Rollout
 autoscalingRollout:

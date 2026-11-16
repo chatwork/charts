@@ -25,4 +25,8 @@ spec:
   revisionHistoryLimit: {{ .Values.rollout.revisionHistoryLimit }}
   strategy:
     {{- toYaml .Values.rollout.strategy | nindent 4 }}
+  {{- with .Values.rollout.rollbackWindow }}
+  rollbackWindow:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}
