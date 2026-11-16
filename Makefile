@@ -1,3 +1,7 @@
+# Nested make calls (e.g. $(shell make ci:diff:from)) must not print "Entering directory":
+# ci:diff output is consumed as a list of chart names.
+MAKEFLAGS += --no-print-directory
+
 KIND_VERSION = 0.29.0
 KUBERNETES_VERSION = 1.33.0
 KIND_NODE_HASH = 050072256b9a903bd914c0b2866828150cb229cea0efe5892e2b644d5dd3b34f
